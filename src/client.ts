@@ -67,6 +67,7 @@ export async function replay(
                 messages,
                 model: modelName,
                 max_tokens: maxTokensNumber,
+                temperature: 0.7,
                 stream: true
             }),
             signal: controller.signal,
@@ -167,6 +168,7 @@ async function requestAzure(options: {
             messages,
             model: modelName,
             max_tokens: maxTokensNumber,
+            temperature: 0.7,
             stream: true
         }),
         signal: signal,
