@@ -1,4 +1,4 @@
-import { Message } from './types';
+import { Message, OpenAIMessage } from './types';
 import * as wordCount from './utils';
 import { createParser } from 'eventsource-parser'
 
@@ -56,7 +56,7 @@ export async function replay(
 
     let fullText = '';
     try {
-        const messages = prompts.map(msg => ({ role: msg.role, content: msg.content }))
+        const messages: OpenAIMessage[] = prompts.map(msg => ({ role: msg.role, content: msg.content }))
         const response = await fetch(`${host}/v1/chat/completions`, {
             method: 'POST',
             headers: {
@@ -138,4 +138,38 @@ export async function* iterableStreamAsync(stream: ReadableStream): AsyncIterabl
     } finally {
         reader.releaseLock()
     }
+}
+
+async function requestAzure(options: {
+    endpoint: string,
+    deploymentName: string,
+    apikey: string,
+    modelName: string
+    messages: OpenAIMessage[],
+    maxTokensNumber: number
+    signal: AbortSignal,
+}) {
+    let { endpoint, deploymentName, apikey, modelName, messages, maxTokensNumber, signal } = options
+    if (!endpoint.endsWith('/')) {
+        endpoint += '/'
+    }
+    if (!endpoint.startsWith('https://')) {
+        endpoint = 'https://' + endpoint
+    }
+    const url = `${endpoint}openai/deployments/${deploymentName}/chat/completions?api-version=2023-03-15-preview`
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'api-key': apikey,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            messages,
+            model: modelName,
+            max_tokens: maxTokensNumber,
+            stream: true
+        }),
+        signal: signal,
+    });
+    return response
 }
