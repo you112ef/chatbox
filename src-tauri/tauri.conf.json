@@ -36,9 +36,9 @@
                 "all": true
             },
             "dialog": {
-                "all": true, 
-                "open": true, 
-                "save": true 
+                "all": true,
+                "open": true,
+                "save": true
             },
             "os": {
                 "all": true
@@ -76,8 +76,8 @@
                 "digestAlgorithm": "sha256",
                 "timestampUrl": "",
                 "webviewInstallMode": {
-                    "silent": true,
-                    "type": "embedBootstrapper"
+                    "type": "fixedRuntime",
+                    "path": "./Microsoft.WebView2.FixedVersionRuntime.109.0.1518.78.x64.cab"
                 }
             }
         },
