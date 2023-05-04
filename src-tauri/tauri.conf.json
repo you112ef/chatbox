@@ -77,7 +77,7 @@
                 "timestampUrl": "",
                 "webviewInstallMode": {
                     "type": "fixedRuntime",
-                    "path": "./Microsoft.WebView2.FixedVersionRuntime.109.0.1518.78.x64.cab"
+                    "path": "./Microsoft.WebView2.FixedVersionRuntime.109.0.1518.78.x64"
                 }
             }
         },
