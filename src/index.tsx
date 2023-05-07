@@ -42,15 +42,18 @@ disableMenu()
     try {
         const conf = await store.readConfig()
         const version = await api.getVersion()
+        const platfrom = await api.getPlatform()
         ReactGA.initialize([{
             trackingId: GAID,
             gaOptions: {
                 app_version: version,
-                clientId: conf.uuid
+                clientId: conf.uuid,
+                chatbox_platform: platfrom
             },
             gtagOptions: {
                 app_version: version,
-                clientId: conf.uuid
+                clientId: conf.uuid,
+                chatbox_platform: platfrom
             }
         }])
     } catch (e) {

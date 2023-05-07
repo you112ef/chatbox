@@ -41,7 +41,7 @@ export const openLink = async (url: string) => {
 
 export const getPlatform = async () => {
     if (isWeb) {
-        return 'Web'
+        return 'web'
     }
     return api.os.platform()
 }
