@@ -25,8 +25,6 @@ import * as api from './api';
 import { ThemeSwitcherProvider } from './theme/ThemeSwitcher';
 import { useTranslation } from "react-i18next";
 import icon from './icon.png'
-import { save } from '@tauri-apps/api/dialog';
-import { writeTextFile } from '@tauri-apps/api/fs';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import * as remote from './remote'
@@ -210,18 +208,10 @@ function Main() {
         )
     }
     const saveSession = async (session:Session) => {
-        const filePath = await save({
-            filters: [{
-              name: 'Export',
-              extensions: ['md']
-            }]
-          });
-        if(filePath){
-            const content = session.messages
-                .map(msg => `**${msg.role}**:\n${msg.content}`)
-                .join('\n\n--------------------\n\n')
-            await writeTextFile(filePath!!, content)
-        }
+        const content = session.messages
+            .map(msg => `**${msg.role}**:\n${msg.content}`)
+            .join('\n\n--------------------\n\n')
+        return api.exportTextFile('Export.md', content)
     }
 
     const generate = async (session: Session, promptMsgs: Message[], targetMsg: Message) => {

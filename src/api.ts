@@ -1,64 +1,75 @@
 import * as api from '@tauri-apps/api'
-import { Store } from "tauri-plugin-store-api";
+import FsStorage from './storage/FsStorage'
+import WebStorage from './storage/WebStorage'
 
-const store = new Store('config.json')
+const isWeb: boolean = !window.__TAURI_IPC__
 
-setInterval(async () => {
-    try {
-        await store.save()
-    } catch (e) {
-        console.log(e)
-    }
-}, 5 * 60 * 1000)
-
-export const writeStore = async (key: string, value: any) => {
-    await store.set(key, value)
-    if (key === 'settings') {
-        await store.save()
-    }
-}
-
-export const readStore = async (key: string): Promise<any | undefined> => {
-    await handleCompatibilityV0_1()
-    const value = await store.get(key)
-    return value || undefined
-}
-
-async function handleCompatibilityV0_1() {
-    // 第一次启动时，将旧版本的配置文件迁移到新的配置文件中
-    try {
-        const handled = await store.get('hasHandleCompatibilityV0_1')
-        if (!handled) {
-            const oldConfigJson = await api.fs.readTextFile('chatbox/config.json', { dir: api.fs.Dir.LocalData })
-            const oldConfig = JSON.parse(oldConfigJson)
-            for (const key in oldConfig) {
-                await store.set(key, oldConfig[key])
-            }
-            await store.set("hasHandleCompatibilityV0_1", true)
-            await store.save()
-        }
-    } catch (e) {
-        console.log(e)
-    }
-}
+export const storage = isWeb ? new WebStorage() : new FsStorage()
 
 export const shouldUseDarkColors = async (): Promise<boolean> => {
+    if (isWeb) {
+        return (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    }
     const theme = await api.window.appWindow.theme()
     return theme === 'dark'
 }
 
 export async function onSystemThemeChange(callback: () => void) {
+    if (isWeb) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', callback)
+        return () => {
+            window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', callback)
+        }
+    }
     return api.window.appWindow.onThemeChanged(callback)
 }
 
 export const getVersion = async () => {
+    if (isWeb) {
+        return 'Web'
+    }
     return api.app.getVersion()
 }
 
 export const openLink = async (url: string) => {
+    if (isWeb) {
+        window.open(url)
+        return
+    }
     return api.shell.open(url)
 }
 
 export const getPlatform = async () => {
+    if (isWeb) {
+        return 'Web'
+    }
     return api.os.platform()
 }
+
+export async function exportTextFile(filename: string, content: string) {
+    if (isWeb) {
+        exportTextFileFromWebPage(filename, content)
+        return
+    }
+    const extensions = filename.split('.').slice(1)
+    const filePath = await api.dialog.save({
+        filters: [{
+            name: filename,
+            extensions: extensions
+        }]
+    });
+    if (filePath) {
+        await api.fs.writeTextFile(filePath!!, content)
+    }
+}
+
+function exportTextFileFromWebPage(filename: string, content: string) {
+    var eleLink = document.createElement('a');
+    eleLink.download = filename;
+    eleLink.style.display = 'none';
+    var blob = new Blob([content]);
+    eleLink.href = URL.createObjectURL(blob);
+    document.body.appendChild(eleLink);
+    eleLink.click();
+    document.body.removeChild(eleLink);
+};

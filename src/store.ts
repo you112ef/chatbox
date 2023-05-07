@@ -26,7 +26,7 @@ export function getDefaultSettings(): Settings {
 }
 
 export async function readSettings(): Promise<Settings> {
-    const setting: Settings | undefined = await api.readStore('settings')
+    const setting: Settings | undefined = await api.storage.get('settings')
     if (!setting) {
         return getDefaultSettings()
     }
@@ -41,26 +41,26 @@ export async function writeSettings(settings: Settings) {
         settings.apiHost = getDefaultSettings().apiHost
     }
     console.log('writeSettings.apiHost', settings.apiHost)
-    return api.writeStore('settings', settings)
+    return api.storage.set('settings', settings)
 }
 
 export async function readConfig(): Promise<Config> {
-    let config: Config | undefined = await api.readStore('configs')
+    let config: Config | undefined = await api.storage.get('configs')
     if (!config) {
         config = { uuid: uuidv4() }
-        await api.writeStore('configs', config)
+        await api.storage.set('configs', config)
     }
     return config;
 }
 
 export async function writeConfig(config: Config) {
-    return api.writeStore('configs', config)
+    return api.storage.set('configs', config)
 }
 
 // session store
 
 export async function readSessions(settings: Settings): Promise<Session[]> {
-    let sessions: Session[] | undefined = await api.readStore('chat-sessions')
+    let sessions: Session[] | undefined = await api.storage.get('chat-sessions')
     if (!sessions) {
         return defaults.sessions
     }
@@ -77,7 +77,7 @@ export async function readSessions(settings: Settings): Promise<Session[]> {
 }
 
 export async function writeSessions(sessions: Session[]) {
-    return api.writeStore('chat-sessions', sessions)
+    return api.storage.set('chat-sessions', sessions)
 }
 
 // react hook
