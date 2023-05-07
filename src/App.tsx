@@ -71,18 +71,18 @@ function Main() {
 
     const sortedSessions = sortSessions(store.chatSessions)
     function handleDragEnd(event: DragEndEvent) {
-        const {active, over} = event;
+        const { active, over } = event;
         if (!over) {
             return
         }
         if (active.id !== over.id) {
-            const oldIndex = sortedSessions.findIndex(({id}) => id === active.id);
-            const newIndex = sortedSessions.findIndex(({id}) => id === over.id);
+            const oldIndex = sortedSessions.findIndex(({ id }) => id === active.id);
+            const newIndex = sortedSessions.findIndex(({ id }) => id === over.id);
             const newReversed = arrayMove(sortedSessions, oldIndex, newIndex);
             store.setSessions(sortSessions(newReversed))
         }
     }
-    
+
 
     // 是否展示设置窗口
     const [openSettingWindow, setOpenSettingWindow] = React.useState(false);
@@ -310,19 +310,23 @@ function Main() {
                         }}
                         spacing={2}
                     >
-                        <Toolbar variant="dense" sx={{
-                            display: "flex",
-                            alignItems: "flex-end",
-                        }} >
-                            <img src={icon} style={{
-                                width: '35px',
-                                height: '35px',
-                                marginRight: '5px',
-                            }} />
-                            <Typography variant="h5" color="inherit" component="div">
-                                Chatbox
-                            </Typography>
-                        </Toolbar>
+                        <a href='https://chatboxapp.xyz/redirect_app/homepage'
+                            target='_blank' style={{ textDecoration: 'none' }}
+                        >
+                            <Toolbar variant="dense" sx={{
+                                display: "flex",
+                                alignItems: "flex-end",
+                            }} >
+                                <img src={icon} style={{
+                                    width: '35px',
+                                    height: '35px',
+                                    marginRight: '5px',
+                                }} />
+                                <Typography variant="h5" color="inherit" component="div">
+                                    Chatbox
+                                </Typography>
+                            </Toolbar>
+                        </a>
 
                         <MenuList
                             sx={{
@@ -348,33 +352,33 @@ function Main() {
                                 onDragEnd={handleDragEnd}
                             >
                                 <SortableContext items={sortedSessions} strategy={verticalListSortingStrategy}>
-                                {
-                                    sortedSessions.map((session, ix) => (
-                                        <SortableItem key={session.id} id={session.id}>
-                                            <SessionItem key={session.id}
-                                                selected={store.currentSession.id === session.id}
-                                                session={session}
-                                                switchMe={() => {
-                                                    store.switchCurrentSession(session)
-                                                    document.getElementById('message-input')?.focus() // better way?
-                                                }}
-                                                deleteMe={() => store.deleteChatSession(session)}
-                                                copyMe={() => {
-                                                    const newSession = createSession(session.name + ' copied')
-                                                    newSession.messages = session.messages
-                                                    store.createChatSession(newSession, ix)
-                                                }}
-                                                switchStarred={() => {
-                                                    store.updateChatSession({
-                                                        ...session,
-                                                        starred: !session.starred
-                                                    })
-                                                }}
-                                                editMe={() => setConfigureChatConfig(session)}
-                                            />
-                                        </SortableItem>
-                                    ))
-                                }
+                                    {
+                                        sortedSessions.map((session, ix) => (
+                                            <SortableItem key={session.id} id={session.id}>
+                                                <SessionItem key={session.id}
+                                                    selected={store.currentSession.id === session.id}
+                                                    session={session}
+                                                    switchMe={() => {
+                                                        store.switchCurrentSession(session)
+                                                        document.getElementById('message-input')?.focus() // better way?
+                                                    }}
+                                                    deleteMe={() => store.deleteChatSession(session)}
+                                                    copyMe={() => {
+                                                        const newSession = createSession(session.name + ' copied')
+                                                        newSession.messages = session.messages
+                                                        store.createChatSession(newSession, ix)
+                                                    }}
+                                                    switchStarred={() => {
+                                                        store.updateChatSession({
+                                                            ...session,
+                                                            starred: !session.starred
+                                                        })
+                                                    }}
+                                                    editMe={() => setConfigureChatConfig(session)}
+                                                />
+                                            </SortableItem>
+                                        ))
+                                    }
                                 </SortableContext>
                             </DndContext>
                         </MenuList>
@@ -416,7 +420,7 @@ function Main() {
                                 </ListItemIcon>
                                 <ListItemText>
                                     <Badge color="primary" variant="dot" invisible={!store.needCheckUpdate}
-                                    sx={{ paddingRight: '8px' }} >
+                                        sx={{ paddingRight: '8px' }} >
                                         <Typography sx={{ opacity: 0.5 }}>
                                             {t('About')} ({store.version})
                                         </Typography>
