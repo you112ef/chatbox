@@ -58,9 +58,9 @@
 
 Visit **[chatboxapp.xyz](https://chatboxapp.xyz/)** to download the latest version.
 
-### Download from Github Releases
+### Download from GitHub Releases
 
-You can visit **[Github Releases](https://github.com/Bin-Huang/chatbox/releases)** to browse and download all previous versions.
+You can visit **[GitHub Releases](https://github.com/Bin-Huang/chatbox/releases)** to browse and download all previous versions.
 
 ### Download via package manager
 
@@ -100,6 +100,8 @@ At first, I didn't know that it would be so popular. I listened to the feedback 
 - [x] Copy button for code blocks
 - [x] Stop button for AI message generation
 - [x] Drag-and-drop sorting of tabs
+- [x] [Web version](https://web.chatboxapp.xyz)
+- [ ] Azure OpenAI API compatibility
 - [ ] Improved prompt settings
 - [ ] Prompt Library
 - [ ] Talk with files
