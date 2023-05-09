@@ -3,12 +3,12 @@ import Block from './Block'
 import * as client from './client'
 import SessionItem from './SessionItem'
 import {
-    Toolbar, Box, Badge, Snackbar, Chip,
+    Toolbar, Box, Badge, Snackbar,
     List, ListSubheader, ListItemText, MenuList,
     IconButton, Button, Stack, Grid, MenuItem, ListItemIcon, Typography, Divider,
     TextField,
 } from '@mui/material';
-import { Session, createSession, Message, createMessage, SponsorAd } from './types'
+import { Session, createSession, Message, createMessage } from './types'
 import useStore from './store'
 import SettingWindow from './SettingWindow'
 import ChatConfigWindow from './ChatConfigWindow'
@@ -21,16 +21,13 @@ import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import Save from '@mui/icons-material/Save'
 import CleanWidnow from './CleanWindow';
 import AboutWindow from './AboutWindow';
-import * as api from './api';
 import { ThemeSwitcherProvider } from './theme/ThemeSwitcher';
 import { useTranslation } from "react-i18next";
 import icon from './icon.png'
 import { save } from '@tauri-apps/api/dialog';
 import { writeTextFile } from '@tauri-apps/api/fs';
-import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import * as remote from './remote'
-import "./ga"
+import SponsorChip from './SponsorChip'
+
 import "./styles/App.scss"
 
 import type { DragEndEvent } from '@dnd-kit/core';
@@ -74,18 +71,18 @@ function Main() {
 
     const sortedSessions = sortSessions(store.chatSessions)
     function handleDragEnd(event: DragEndEvent) {
-        const {active, over} = event;
+        const { active, over } = event;
         if (!over) {
             return
         }
         if (active.id !== over.id) {
-            const oldIndex = sortedSessions.findIndex(({id}) => id === active.id);
-            const newIndex = sortedSessions.findIndex(({id}) => id === over.id);
+            const oldIndex = sortedSessions.findIndex(({ id }) => id === active.id);
+            const newIndex = sortedSessions.findIndex(({ id }) => id === over.id);
             const newReversed = arrayMove(sortedSessions, oldIndex, newIndex);
             store.setSessions(sortSessions(newReversed))
         }
     }
-    
+
 
     // 是否展示设置窗口
     const [openSettingWindow, setOpenSettingWindow] = React.useState(false);
@@ -199,6 +196,7 @@ function Main() {
             store.settings.maxContextSize,
             store.settings.maxTokens,
             store.settings.model,
+            store.settings.temperature,
             prompts.nameConversation(session.messages.slice(0, 3)),
             ({ text: name }) => {
                 name = name.replace(/['"“”]/g, '')
@@ -210,14 +208,14 @@ function Main() {
             }
         )
     }
-    const saveSession = async (session:Session) => {
+    const saveSession = async (session: Session) => {
         const filePath = await save({
             filters: [{
-              name: 'Export',
-              extensions: ['md']
+                name: 'Export',
+                extensions: ['md']
             }]
-          });
-        if(filePath){
+        });
+        if (filePath) {
             const content = session.messages
                 .map(msg => `**${msg.role}**:\n${msg.content}`)
                 .join('\n\n--------------------\n\n')
@@ -233,6 +231,7 @@ function Main() {
             store.settings.maxContextSize,
             store.settings.maxTokens,
             store.settings.model,
+            store.settings.temperature,
             promptMsgs,
             ({ text, cancel }) => {
                 for (let i = 0; i < session.messages.length; i++) {
@@ -278,10 +277,7 @@ function Main() {
         messageScrollRef.current = null
     }
 
-    const [messageInput, setMessageInput] = useState('')
-    useEffect(() => {
-        document.getElementById('message-input')?.focus() // better way?
-    }, [messageInput])
+    const [quoteCache, setQuoteCache] = useState('')
 
     const sessionListRef = useRef<HTMLDivElement>(null)
     const handleCreateNewSession = () => {
@@ -290,15 +286,6 @@ function Main() {
             sessionListRef.current.scrollTo(0, 0)
         }
     }
-
-    const [showSponsorAD, setShowSponsorAD] = useState(true)
-    const [sponsorAD, setSponsorAD] = useState<SponsorAd | null>(null)
-    useEffect(() => {
-        (async () => {
-            const ad = await remote.getSponsorAd()
-            setSponsorAD(ad)
-        })()
-    }, [store.currentSession.id])
 
     return (
         <Box className='App'>
@@ -319,19 +306,23 @@ function Main() {
                         }}
                         spacing={2}
                     >
-                        <Toolbar variant="dense" sx={{
-                            display: "flex",
-                            alignItems: "flex-end",
-                        }} >
-                            <img src={icon} style={{
-                                width: '35px',
-                                height: '35px',
-                                marginRight: '5px',
-                            }} />
-                            <Typography variant="h5" color="inherit" component="div">
-                                Chatbox
-                            </Typography>
-                        </Toolbar>
+                        <a href='https://chatboxapp.xyz/redirect_app/homepage'
+                            target='_blank' style={{ textDecoration: 'none' }}
+                        >
+                            <Toolbar variant="dense" sx={{
+                                display: "flex",
+                                alignItems: "flex-end",
+                            }} >
+                                <img src={icon} style={{
+                                    width: '35px',
+                                    height: '35px',
+                                    marginRight: '5px',
+                                }} />
+                                <Typography variant="h5" color="inherit" component="div">
+                                    Chatbox
+                                </Typography>
+                            </Toolbar>
+                        </a>
 
                         <MenuList
                             sx={{
@@ -357,33 +348,33 @@ function Main() {
                                 onDragEnd={handleDragEnd}
                             >
                                 <SortableContext items={sortedSessions} strategy={verticalListSortingStrategy}>
-                                {
-                                    sortedSessions.map((session, ix) => (
-                                        <SortableItem key={session.id} id={session.id}>
-                                            <SessionItem key={session.id}
-                                                selected={store.currentSession.id === session.id}
-                                                session={session}
-                                                switchMe={() => {
-                                                    store.switchCurrentSession(session)
-                                                    document.getElementById('message-input')?.focus() // better way?
-                                                }}
-                                                deleteMe={() => store.deleteChatSession(session)}
-                                                copyMe={() => {
-                                                    const newSession = createSession(session.name + ' copied')
-                                                    newSession.messages = session.messages
-                                                    store.createChatSession(newSession, ix)
-                                                }}
-                                                switchStarred={() => {
-                                                    store.updateChatSession({
-                                                        ...session,
-                                                        starred: !session.starred
-                                                    })
-                                                }}
-                                                editMe={() => setConfigureChatConfig(session)}
-                                            />
-                                        </SortableItem>
-                                    ))
-                                }
+                                    {
+                                        sortedSessions.map((session, ix) => (
+                                            <SortableItem key={session.id} id={session.id}>
+                                                <SessionItem key={session.id}
+                                                    selected={store.currentSession.id === session.id}
+                                                    session={session}
+                                                    switchMe={() => {
+                                                        store.switchCurrentSession(session)
+                                                        document.getElementById('message-input')?.focus() // better way?
+                                                    }}
+                                                    deleteMe={() => store.deleteChatSession(session)}
+                                                    copyMe={() => {
+                                                        const newSession = createSession(session.name + ' copied')
+                                                        newSession.messages = session.messages
+                                                        store.createChatSession(newSession, ix)
+                                                    }}
+                                                    switchStarred={() => {
+                                                        store.updateChatSession({
+                                                            ...session,
+                                                            starred: !session.starred
+                                                        })
+                                                    }}
+                                                    editMe={() => setConfigureChatConfig(session)}
+                                                />
+                                            </SortableItem>
+                                        ))
+                                    }
                                 </SortableContext>
                             </DndContext>
                         </MenuList>
@@ -425,7 +416,7 @@ function Main() {
                                 </ListItemIcon>
                                 <ListItemText>
                                     <Badge color="primary" variant="dot" invisible={!store.needCheckUpdate}
-                                    sx={{ paddingRight: '8px' }} >
+                                        sx={{ paddingRight: '8px' }} >
                                         <Typography sx={{ opacity: 0.5 }}>
                                             {t('About')} ({store.version})
                                         </Typography>
@@ -457,28 +448,7 @@ function Main() {
                                         {store.currentSession.name}
                                     </span>
                                 </Typography>
-                                {
-                                    showSponsorAD && sponsorAD && (
-                                        <Chip size='small'
-                                            sx={{
-                                                maxWidth: '400px',
-                                                height: 'auto',
-                                                '& .MuiChip-label': {
-                                                    display: 'block',
-                                                    whiteSpace: 'normal',
-                                                },
-                                                borderRadius: '8px',
-                                                marginRight: '25px',
-                                                opacity: 0.6,
-                                            }}
-                                            icon={<CampaignOutlinedIcon />}
-                                            deleteIcon={<CancelOutlinedIcon />}
-                                            onDelete={() => setShowSponsorAD(false)}
-                                            onClick={() => api.openLink(sponsorAD.url)}
-                                            label={sponsorAD.text}
-                                        />
-                                    )
-                                }
+                                <SponsorChip sessionId={store.currentSession.id} />
                                 <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}
                                     onClick={() => setSessionClean(store.currentSession)}
                                 >
@@ -544,7 +514,7 @@ function Main() {
                                         quoteMsg={() => {
                                             let input = msg.content.split('\n').map((line: any) => `> ${line}`).join('\n')
                                             input += '\n\n-------------------\n\n'
-                                            setMessageInput(input)
+                                            setQuoteCache(input)
                                         }}
                                     />
                                 ))
@@ -552,8 +522,8 @@ function Main() {
                         </List>
                         <Box sx={{ padding: '20px 0' }}>
                             <MessageInput
-                                messageInput={messageInput}
-                                setMessageInput={setMessageInput}
+                                quoteCache={quoteCache}
+                                setQuotaCache={setQuoteCache}
                                 onSubmit={async (newUserMsg: Message, needGenerating = true) => {
                                     if (needGenerating) {
                                         const promptsMsgs = [...store.currentSession.messages, newUserMsg]
@@ -633,13 +603,20 @@ function Main() {
 
 function MessageInput(props: {
     onSubmit: (newMsg: Message, needGenerating?: boolean) => void
-    messageInput: string
-    setMessageInput: (value: string) => void
+    quoteCache: string
+    setQuotaCache(cache: string): void
 }) {
     const { t } = useTranslation()
-    const { messageInput, setMessageInput } = props
+    const [messageInput, setMessageInput] = useState('')
+    useEffect(() => {
+        if (props.quoteCache !== '') {
+            setMessageInput(props.quoteCache)
+            props.setQuotaCache('')
+            document.getElementById('message-input')?.focus()
+        }
+    }, [props.quoteCache])
     const submit = (needGenerating = true) => {
-        if (messageInput.length === 0) {
+        if (messageInput.trim() === '') {
             return
         }
         props.onSubmit(createMessage('user', messageInput), needGenerating)
