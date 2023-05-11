@@ -33,6 +33,7 @@ import * as remote from './remote'
 import SponsorChip from './SponsorChip'
 import "./styles/App.scss"
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
+import * as api from './api'
 
 import type { DragEndEvent } from '@dnd-kit/core';
 import {
