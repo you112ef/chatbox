@@ -19,13 +19,16 @@ import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCirc
 import LightbulbCircleIcon from '@mui/icons-material/LightbulbCircle';
 
 const { useEffect } = React
+
 const models: string[] = ['gpt-3.5-turbo', 'gpt-3.5-turbo-0301', 'gpt-4', 'gpt-4-0314', 'gpt-4-32k', 'gpt-4-32k-0314'];
+
 const languages: string[] = ['en', 'zh-Hans', 'zh-Hant'];
 const languageMap: { [key: string]: string } = {
     'en': 'English',
     'zh-Hans': '简体中文',
     'zh-Hant': '繁體中文',
 };
+
 interface Props {
     open: boolean
     settings: Settings
@@ -113,118 +116,122 @@ export default function SettingWindow(props: Props) {
         <Dialog open={props.open} onClose={onCancel} fullWidth >
             <DialogTitle>{t('settings')}</DialogTitle>
             <DialogContent>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    label={t('openai api key')}
-                    type="password"
-                    fullWidth
-                    variant="outlined"
-                    value={settingsEdit.openaiKey}
-                    onChange={(e) => setSettingsEdit({ ...settingsEdit, openaiKey: e.target.value.trim() })}
-                />
+
                 <FormControl fullWidth variant="outlined" margin="dense">
-                    <InputLabel htmlFor="language-select">{t('language')}</InputLabel>
+                    <InputLabel htmlFor="ai-provider-select">AI Provider</InputLabel>
                     <Select
-                        label="language"
-                        id="language-select"
-                        value={settingsEdit.language}
+                        label="ai-provider"
+                        id="ai-provider-select"
+                        value={settingsEdit.aiProvider}
                         onChange={(e) => {
-                            setSettingsEdit({ ...settingsEdit, language: e.target.value });
+                            setSettingsEdit({ ...settingsEdit, aiProvider: e.target.value as any });
                         }}>
-                        {languages.map((language) => (
-                            <MenuItem key={language} value={language}>
-                                {languageMap[language]}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <FormControl sx={{ flexDirection: 'row', alignItems: 'center', paddingTop: 1, paddingBottom: 1 }}>
-                    <span style={{ marginRight: 10 }}>{t('theme')}</span>
-                    <ThemeChangeButton value={settingsEdit.theme} onChange={theme => changeModeWithPreview(theme)} />
-                </FormControl>
-                <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                    <InputLabel>Font Size</InputLabel>
-                    <Select
-                        labelId="select-font-size"
-                        value={settingsEdit.fontSize}
-                        label="FontSize"
-                        onChange={(event) => {
-                            setSettingsEdit({ ...settingsEdit, fontSize: event.target.value as number })
-                        }}
-                    >
-                        {
-                            [12, 13, 14, 15, 16, 17, 18].map((size) => (
-                                <MenuItem key={size} value={size}>{size}px</MenuItem>
-                            ))
-                        }
+                        <MenuItem key="openai" value="openai">OpenAI API</MenuItem>
+                        <MenuItem key="azure" value="azure">Azure OpenAI</MenuItem>
+                        <MenuItem key="claude" value="claude" disabled>Claude API ({t('Coming soon')})</MenuItem>
+                        <MenuItem key="chatglm" value="chatglm" disabled>ChatGLM-6B ({t('Coming soon')})</MenuItem>
+                        <MenuItem key="hunyuan" value="hunyuan" disabled>腾讯混元 ({t('Coming soon')})</MenuItem>
                     </Select>
                 </FormControl>
 
-                <FormGroup>
-                    <FormControlLabel control={<Switch />}
-                        label={t('show word count')}
-                        checked={settingsEdit.showWordCount}
-                        onChange={(e, checked) => setSettingsEdit({ ...settingsEdit, showWordCount: checked })}
-                    />
-                </FormGroup>
-                <FormGroup>
-                    <FormControlLabel control={<Switch />}
-                        label={t('show estimated token count')}
-                        checked={settingsEdit.showTokenCount}
-                        onChange={(e, checked) => setSettingsEdit({ ...settingsEdit, showTokenCount: checked })}
-                    />
-                </FormGroup>
+                {
+                    settingsEdit.aiProvider === 'openai' && (
+                        <>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                label={t('openai api key')}
+                                type="password"
+                                fullWidth
+                                variant="outlined"
+                                value={settingsEdit.openaiKey}
+                                onChange={(e) => setSettingsEdit({ ...settingsEdit, openaiKey: e.target.value.trim() })}
+                            />
+                            <>
+                                <TextField
+                                    margin="dense"
+                                    label={t('api host')}
+                                    type="text"
+                                    fullWidth
+                                    variant="outlined"
+                                    value={settingsEdit.apiHost}
+                                    onChange={(e) => setSettingsEdit({ ...settingsEdit, apiHost: e.target.value.trim() })}
+                                />
+                                {
+                                    !settingsEdit.apiHost.match(/^(https?:\/\/)?api.openai.com(:\d+)?$/) && (
+                                        <Alert severity="warning">
+                                            {t('proxy warning', { apiHost: settingsEdit.apiHost })}
+                                            <Button onClick={() => setSettingsEdit({ ...settingsEdit, apiHost: getDefaultSettings().apiHost })}>{t('reset')}</Button>
+                                        </Alert>
+                                    )
+                                }
+                                {
+                                    settingsEdit.apiHost.startsWith('http://') && (
+                                        <Alert severity="warning">
+                                            {<Trans
+                                                i18nKey="protocol warning"
+                                                components={{ bold: <strong /> }}
+                                            />}
+                                        </Alert>
+                                    )
+                                }
+                                {
+                                    !settingsEdit.apiHost.startsWith('http') && (
+                                        <Alert severity="error">
+                                            {<Trans
+                                                i18nKey="protocol error"
+                                                components={{ bold: <strong /> }}
+                                            />}
+                                        </Alert>
+                                    )
+                                }
+
+                            </>
+                        </>
+                    )
+                }
+
+                {
+                    settingsEdit.aiProvider === 'azure' && (
+                        <>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                label={"azureApikey"}
+                                type="password"
+                                fullWidth
+                                variant="outlined"
+                                value={settingsEdit.azureApikey}
+                                onChange={(e) => setSettingsEdit({ ...settingsEdit, azureApikey: e.target.value.trim() })}
+                            />
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                label={"azureDeploymentName"}
+                                type="text"
+                                fullWidth
+                                variant="outlined"
+                                value={settingsEdit.azureDeploymentName}
+                                onChange={(e) => setSettingsEdit({ ...settingsEdit, azureDeploymentName: e.target.value.trim() })}
+                            />
+                            <TextField
+                                placeholder="xxxx"
+                                // helperText={<h1>help help</h1>}
+                                autoFocus
+                                margin="dense"
+                                label={"azureEndpoint"}
+                                type="text"
+                                fullWidth
+                                variant="outlined"
+                                value={settingsEdit.azureEndpoint}
+                                onChange={(e) => setSettingsEdit({ ...settingsEdit, azureEndpoint: e.target.value.trim() })}
+                            />
+                        </>
+                    )
+                }
+
                 <Accordion>
                     <AccordionSummary aria-controls="panel1a-content">
-                        <Typography>{t('proxy')}</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <TextField
-                            margin="dense"
-                            label={t('api host')}
-                            type="text"
-                            fullWidth
-                            variant="outlined"
-                            value={settingsEdit.apiHost}
-                            onChange={(e) => setSettingsEdit({ ...settingsEdit, apiHost: e.target.value.trim() })}
-                        />
-
-                        {
-                            !settingsEdit.apiHost.match(/^(https?:\/\/)?api.openai.com(:\d+)?$/) && (
-                                <Alert severity="warning">
-                                    {t('proxy warning', {apiHost:settingsEdit.apiHost })}
-                                    <Button onClick={() => setSettingsEdit({ ...settingsEdit, apiHost: getDefaultSettings().apiHost })}>{t('reset')}</Button>
-                                </Alert>
-                            )
-                        }
-                        {
-                            settingsEdit.apiHost.startsWith('http://') && (
-                                <Alert severity="warning">
-                                    {<Trans
-                                    i18nKey="protocol warning"
-                                    components={{ bold: <strong /> }}
-                                    />}
-                                </Alert>
-                            )
-                        }
-                        {
-                            !settingsEdit.apiHost.startsWith('http') && (
-                                <Alert severity="error">
-                                    {<Trans
-                                    i18nKey="protocol error"
-                                    components={{ bold: <strong /> }}
-                                    />}
-                                </Alert>
-                            )
-                        }
-
-                    </AccordionDetails>
-                </Accordion>
-                <Accordion>
-                    <AccordionSummary
-                        aria-controls="panel1a-content"
-                    >
                         <Typography>{t('model')} & {t('token')} </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -354,6 +361,60 @@ export default function SettingWindow(props: Props) {
 
                     </AccordionDetails>
                 </Accordion>
+
+                <br />
+
+                <FormControl sx={{ flexDirection: 'row', alignItems: 'center', paddingTop: 1, paddingBottom: 1 }}>
+                    <span style={{ marginRight: 10 }}>{t('theme')}</span>
+                    <ThemeChangeButton value={settingsEdit.theme} onChange={theme => changeModeWithPreview(theme)} />
+                </FormControl>
+                <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                    <InputLabel>Font Size</InputLabel>
+                    <Select
+                        labelId="select-font-size"
+                        value={settingsEdit.fontSize}
+                        label="FontSize"
+                        onChange={(event) => {
+                            setSettingsEdit({ ...settingsEdit, fontSize: event.target.value as number })
+                        }}
+                    >
+                        {
+                            [12, 13, 14, 15, 16, 17, 18].map((size) => (
+                                <MenuItem key={size} value={size}>{size}px</MenuItem>
+                            ))
+                        }
+                    </Select>
+                </FormControl>
+                <FormControl variant="outlined" margin="dense">
+                    <InputLabel htmlFor="language-select">{t('language')}</InputLabel>
+                    <Select
+                        label="language"
+                        id="language-select"
+                        value={settingsEdit.language}
+                        size='small'
+                        onChange={(e) => {
+                            setSettingsEdit({ ...settingsEdit, language: e.target.value });
+                        }}>
+                        {languages.map((language) => (
+                            <MenuItem key={language} value={language}>
+                                {languageMap[language]}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
+                <FormGroup row>
+                    <FormControlLabel control={<Switch />}
+                        label={t('show word count')}
+                        checked={settingsEdit.showWordCount}
+                        onChange={(e, checked) => setSettingsEdit({ ...settingsEdit, showWordCount: checked })}
+                    />
+                    <FormControlLabel control={<Switch />}
+                        label={t('show estimated token count')}
+                        checked={settingsEdit.showTokenCount}
+                        onChange={(e, checked) => setSettingsEdit({ ...settingsEdit, showTokenCount: checked })}
+                    />
+                </FormGroup>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onCancel}>{t('cancel')}</Button>
