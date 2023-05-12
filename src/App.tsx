@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, MutableRefObject } from 'react';
 import Block from './Block'
 import * as client from './client'
 import SessionItem from './SessionItem'
@@ -26,14 +26,15 @@ import { useTranslation } from "react-i18next";
 import icon from './icon.png'
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import { save } from '@tauri-apps/api/dialog';
+import { writeTextFile } from '@tauri-apps/api/fs';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
-import MenuSharpIcon from '@mui/icons-material/MenuSharp';
-import * as remote from './remote'
 import SponsorChip from './SponsorChip'
 import "./styles/App.scss"
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import * as api from './api'
+import SendIcon from '@mui/icons-material/Send';
 
 import type { DragEndEvent } from '@dnd-kit/core';
 import {
@@ -327,6 +328,8 @@ function Main() {
         }
     }
 
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
     return (
         <Box className='App'>
             <Grid container sx={{
@@ -404,7 +407,7 @@ function Main() {
                                                 session={session}
                                                 switchMe={() => {
                                                     store.switchCurrentSession(session)
-                                                    document.getElementById('message-input')?.focus() // better way?
+                                                    textareaRef?.current?.focus()
                                                 }}
                                                 deleteMe={() => store.deleteChatSession(session)}
                                                 copyMe={() => {
@@ -630,6 +633,7 @@ function Main() {
                                         messageScrollRef.current = { msgId: newUserMsg.id, smooth: true }
                                     }
                                 }}
+                                textareaRef={textareaRef}
                             />
                         </Box>
                     </Stack>
@@ -697,6 +701,7 @@ function MessageInput(props: {
     onSubmit: (newMsg: Message, needGenerating?: boolean) => void
     quoteCache: string
     setQuotaCache(cache: string): void
+    textareaRef: MutableRefObject<HTMLTextAreaElement | null>
 }) {
     const { t } = useTranslation()
     const [messageInput, setMessageInput] = useState('')
@@ -704,7 +709,7 @@ function MessageInput(props: {
         if (props.quoteCache !== '') {
             setMessageInput(props.quoteCache)
             props.setQuotaCache('')
-            document.getElementById('message-input')?.focus()
+            props.textareaRef?.current?.focus()
         }
     }, [props.quoteCache])
     const submit = (needGenerating = true) => {
@@ -717,7 +722,7 @@ function MessageInput(props: {
     useEffect(() => {
         function keyboardShortcut(e: KeyboardEvent) {
             if (e.key === 'i' && (e.metaKey || e.ctrlKey)) {
-                document.getElementById('message-input')?.focus();
+                props.textareaRef?.current?.focus();
             }
         }
         window.addEventListener('keydown', keyboardShortcut);
@@ -725,15 +730,17 @@ function MessageInput(props: {
             window.removeEventListener('keydown', keyboardShortcut)
         }
     }, [])
+
     return (
-        <form onSubmit={(e) => {
+        <form  onSubmit={(e) => {
             e.preventDefault()
             submit()
         }}>
             <Stack direction="column" spacing={1} >
-                <Grid container spacing={2}>
+                <Grid container spacing={1}>
                     <Grid item xs>
                         <TextField
+                            inputRef={props.textareaRef}
                             multiline
                             label="Prompt"
                             value={messageInput}
@@ -758,8 +765,8 @@ function MessageInput(props: {
                     </Grid>
                     <Grid item xs='auto'>
                         <Button type='submit' variant="contained" size='large'
-                            style={{ fontSize: '16px', padding: '10px 20px' }}>
-                            {t('send')}
+                            style={{ padding: '15px 16px' }}>
+                                <SendIcon />
                         </Button>
                     </Grid>
                 </Grid>
