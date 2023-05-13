@@ -62,5 +62,8 @@
   "meticulous": "Meticulous",
   "creative": "Creative",
   "Special thanks to the following sponsors:": "Special thanks to the following sponsors:",
-  "Coming soon": "Coming soon"
+  "Coming soon": "Coming soon",
+  "Azure API Key": "Azure API Key",
+  "Azure Deployment Name": "Azure Deployment Name",
+  "Azure Endpoint": "Azure Endpoint"
 }

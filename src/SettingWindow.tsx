@@ -144,6 +144,7 @@ export default function SettingWindow(props: Props) {
                                 type="password"
                                 fullWidth
                                 variant="outlined"
+                                placeholder='sk-xxxxxxxxxxxxxxxxxxxxxxxx'
                                 value={settingsEdit.openaiKey}
                                 onChange={(e) => setSettingsEdit({ ...settingsEdit, openaiKey: e.target.value.trim() })}
                             />
@@ -154,6 +155,7 @@ export default function SettingWindow(props: Props) {
                                     type="text"
                                     fullWidth
                                     variant="outlined"
+                                    placeholder='https://api.openai.com'
                                     value={settingsEdit.apiHost}
                                     onChange={(e) => setSettingsEdit({ ...settingsEdit, apiHost: e.target.value.trim() })}
                                 />
@@ -195,9 +197,20 @@ export default function SettingWindow(props: Props) {
                     settingsEdit.aiProvider === 'azure' && (
                         <>
                             <TextField
+                                placeholder="https://<resource_name>.openai.azure.com/"
                                 autoFocus
                                 margin="dense"
-                                label={"azureApikey"}
+                                label={t("Azure Endpoint")}
+                                type="text"
+                                fullWidth
+                                variant="outlined"
+                                value={settingsEdit.azureEndpoint}
+                                onChange={(e) => setSettingsEdit({ ...settingsEdit, azureEndpoint: e.target.value.trim() })}
+                            />
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                label={t("Azure API Key")}
                                 type="password"
                                 fullWidth
                                 variant="outlined"
@@ -207,24 +220,12 @@ export default function SettingWindow(props: Props) {
                             <TextField
                                 autoFocus
                                 margin="dense"
-                                label={"azureDeploymentName"}
+                                label={t("Azure Deployment Name")}
                                 type="text"
                                 fullWidth
                                 variant="outlined"
                                 value={settingsEdit.azureDeploymentName}
                                 onChange={(e) => setSettingsEdit({ ...settingsEdit, azureDeploymentName: e.target.value.trim() })}
-                            />
-                            <TextField
-                                placeholder="xxxx"
-                                // helperText={<h1>help help</h1>}
-                                autoFocus
-                                margin="dense"
-                                label={"azureEndpoint"}
-                                type="text"
-                                fullWidth
-                                variant="outlined"
-                                value={settingsEdit.azureEndpoint}
-                                onChange={(e) => setSettingsEdit({ ...settingsEdit, azureEndpoint: e.target.value.trim() })}
                             />
                         </>
                     )
