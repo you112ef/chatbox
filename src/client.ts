@@ -1,4 +1,4 @@
-import { Message } from './types';
+import { Message, OpenAIMessage, Settings } from './types';
 import * as wordCount from './utils';
 import { createParser } from 'eventsource-parser'
 
@@ -10,12 +10,7 @@ export interface OnTextCallbackResult {
 }
 
 export async function replay(
-    apiKey: string,
-    host: string,
-    maxContextSize: string,
-    maxTokens: string,
-    modelName: string,
-    temperature: number,
+    setting: Settings,
     msgs: Message[],
     onText?: (option: OnTextCallbackResult) => void,
     onError?: (error: Error) => void,
@@ -28,8 +23,8 @@ export async function replay(
         msgs = msgs.slice(1)
     }
 
-    const maxTokensNumber = Number(maxTokens)
-    const maxLen = Number(maxContextSize)
+    const maxTokensNumber = Number(setting.maxTokens)
+    const maxLen = Number(setting.maxContextSize)
     let totalLen = head ? wordCount.estimateTokens(head.content) : 0
 
     let prompts: Message[] = []
@@ -57,22 +52,38 @@ export async function replay(
 
     let fullText = '';
     try {
-        const messages = prompts.map(msg => ({ role: msg.role, content: msg.content }))
-        const response = await fetch(`${host}/v1/chat/completions`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                messages,
-                model: modelName,
-                max_tokens: maxTokensNumber,
-                temperature,
-                stream: true,
-            }),
-            signal: controller.signal,
-        });
+        const messages: OpenAIMessage[] = prompts.map(msg => ({ role: msg.role, content: msg.content }))
+        let response: Response | null = null
+        switch (setting.aiProvider) {
+            case 'openai':
+                response = await requestOpenAI({
+                    host: setting.apiHost,
+                    apiKey: setting.openaiKey,
+                    modelName: setting.model,
+                    maxTokensNumber: maxTokensNumber,
+                    temperature: setting.temperature,
+                    messages,
+                    signal: controller.signal,
+                })
+                break;
+            case 'azure':
+                response = await requestAzure({
+                    endpoint: setting.azureEndpoint,
+                    deploymentName: setting.azureDeploymentName,
+                    apikey: setting.azureApikey,
+                    modelName: setting.model,
+                    messages,
+                    maxTokensNumber,
+                    temperature: setting.temperature,
+                    signal: controller.signal,
+                })
+                break;
+            default:
+                break;
+        }
+        if (!response) {
+            throw new Error('unsupported ai provider: ' + setting.aiProvider)
+        }
         await handleSSE(response, (message) => {
             if (message === '[DONE]') {
                 return;
@@ -140,4 +151,67 @@ export async function* iterableStreamAsync(stream: ReadableStream): AsyncIterabl
     } finally {
         reader.releaseLock()
     }
+}
+
+async function requestOpenAI(options: {
+    host: string
+    apiKey: string
+    modelName: string
+    maxTokensNumber: number
+    temperature: number
+    messages: OpenAIMessage[]
+    signal: AbortSignal
+}) {
+    const { host, apiKey, modelName, maxTokensNumber, temperature, messages, signal } = options
+    const response = await fetch(`${host}/v1/chat/completions`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            messages,
+            model: modelName,
+            max_tokens: maxTokensNumber,
+            temperature,
+            stream: true,
+        }),
+        signal: signal,
+    })
+    return response
+}
+
+async function requestAzure(options: {
+    endpoint: string,
+    deploymentName: string,
+    apikey: string,
+    modelName: string
+    messages: OpenAIMessage[],
+    maxTokensNumber: number
+    temperature: number
+    signal: AbortSignal,
+}) {
+    let { endpoint, deploymentName, apikey, modelName, messages, maxTokensNumber, temperature, signal } = options
+    if (!endpoint.endsWith('/')) {
+        endpoint += '/'
+    }
+    endpoint = endpoint.replace(/^https?:\/\//, '')
+    endpoint = 'https://' + endpoint
+    const url = `${endpoint}openai/deployments/${deploymentName}/chat/completions?api-version=2023-03-15-preview`
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'api-key': apikey,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            messages,
+            model: modelName,
+            max_tokens: maxTokensNumber,
+            temperature,
+            stream: true
+        }),
+        signal: signal,
+    });
+    return response
 }

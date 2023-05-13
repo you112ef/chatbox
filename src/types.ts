@@ -38,8 +38,17 @@ export function createSession(name: string = "Untitled"): Session {
 }
 
 export interface Settings {
+    aiProvider: 'openai' | 'azure'
+
+    // openai
     openaiKey: string
     apiHost: string
+
+    // azure
+    azureEndpoint: string
+    azureDeploymentName: string
+    azureApikey: string
+
     model: string
     maxContextSize: string
     temperature: number
