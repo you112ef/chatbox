@@ -193,9 +193,8 @@ async function requestAzure(options: {
     if (!endpoint.endsWith('/')) {
         endpoint += '/'
     }
-    if (!endpoint.startsWith('https://')) {
-        endpoint = 'https://' + endpoint
-    }
+    endpoint = endpoint.replace(/^https?:\/\//, '')
+    endpoint = 'https://' + endpoint
     const url = `${endpoint}openai/deployments/${deploymentName}/chat/completions?api-version=2023-03-15-preview`
     const response = await fetch(url, {
         method: 'POST',
