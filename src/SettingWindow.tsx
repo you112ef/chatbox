@@ -371,7 +371,7 @@ export default function SettingWindow(props: Props) {
                     <ThemeChangeButton value={settingsEdit.theme} onChange={theme => changeModeWithPreview(theme)} />
                 </FormControl>
                 <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                    <InputLabel>Font Size</InputLabel>
+                    <InputLabel>{t('Font Size')}</InputLabel>
                     <Select
                         labelId="select-font-size"
                         value={settingsEdit.fontSize}

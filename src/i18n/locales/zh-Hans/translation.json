@@ -65,5 +65,6 @@
   "Coming soon": "敬请期待",
   "Azure API Key": "密钥",
   "Azure Deployment Name": "模型部署名称",
-  "Azure Endpoint": "终结点"
+  "Azure Endpoint": "终结点",
+  "Font Size": "字体大小"
 }
