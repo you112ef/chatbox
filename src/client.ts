@@ -74,6 +74,7 @@ export async function replay(
                     modelName: setting.model,
                     messages,
                     maxTokensNumber,
+                    temperature: setting.temperature,
                     signal: controller.signal,
                 })
                 break;
@@ -187,9 +188,10 @@ async function requestAzure(options: {
     modelName: string
     messages: OpenAIMessage[],
     maxTokensNumber: number
+    temperature: number
     signal: AbortSignal,
 }) {
-    let { endpoint, deploymentName, apikey, modelName, messages, maxTokensNumber, signal } = options
+    let { endpoint, deploymentName, apikey, modelName, messages, maxTokensNumber, temperature, signal } = options
     if (!endpoint.endsWith('/')) {
         endpoint += '/'
     }
@@ -206,7 +208,7 @@ async function requestAzure(options: {
             messages,
             model: modelName,
             max_tokens: maxTokensNumber,
-            temperature: 0.7,
+            temperature,
             stream: true
         }),
         signal: signal,
