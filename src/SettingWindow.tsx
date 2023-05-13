@@ -364,6 +364,7 @@ export default function SettingWindow(props: Props) {
                 </Accordion>
 
                 <br />
+                <br />
 
                 <FormControl sx={{ flexDirection: 'row', alignItems: 'center', paddingTop: 1, paddingBottom: 1 }}>
                     <span style={{ marginRight: 10 }}>{t('theme')}</span>
@@ -430,7 +431,7 @@ const Accordion = styled((props: AccordionProps) => (
 ))(({ theme }) => ({
     border: `1px solid ${theme.palette.divider}`,
     '&:not(:last-child)': {
-        borderBottom: 0,
+        // borderBottom: 0,
     },
     '&:before': {
         display: 'none',
@@ -458,5 +459,5 @@ const AccordionSummary = styled((props: AccordionSummaryProps) => (
 
 const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
     padding: theme.spacing(2),
-    borderTop: '1px solid rgba(0, 0, 0, .125)',
+    border: '1px solid rgba(0, 0, 0, .125)',
 }));
