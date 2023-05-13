@@ -237,12 +237,7 @@ function Main() {
     };
     const generateName = async (session: Session) => {
         client.replay(
-            store.settings.openaiKey,
-            store.settings.apiHost,
-            store.settings.maxContextSize,
-            store.settings.maxTokens,
-            store.settings.model,
-            store.settings.temperature,
+            store.settings,
             prompts.nameConversation(session.messages.slice(0, 3)),
             ({ text: name }) => {
                 name = name.replace(/['"“”]/g, '')
@@ -272,12 +267,7 @@ function Main() {
     const generate = async (session: Session, promptMsgs: Message[], targetMsg: Message) => {
         messageScrollRef.current = { msgId: targetMsg.id, smooth: false }
         await client.replay(
-            store.settings.openaiKey,
-            store.settings.apiHost,
-            store.settings.maxContextSize,
-            store.settings.maxTokens,
-            store.settings.model,
-            store.settings.temperature,
+            store.settings,
             promptMsgs,
             ({ text, cancel }) => {
                 for (let i = 0; i < session.messages.length; i++) {
