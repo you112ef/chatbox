@@ -23,6 +23,10 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          lfs: true
+      - name: Checkout LFS objects
+        run: git lfs checkout
 
       - name: Get version
         id: get_version
