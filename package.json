@@ -6,7 +6,7 @@
   "description": "a cross-platform desktop client for ChatGPT API (OpenAI API)",
   "scripts": {
     "start:react": "react-scripts start",
-    "build:react": "GENERATE_SOURCEMAP=false react-scripts build",
+    "build:react": "cross-env GENERATE_SOURCEMAP=false react-scripts build",
     "test:react": "react-scripts test",
     "eject:react": "react-scripts eject",
     "serve:web": "npx serve ./build",
