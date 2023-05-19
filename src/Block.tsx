@@ -101,7 +101,7 @@ function _Block(props: Props) {
     }, [onStop, props.refreshMsg]);
 
     const tips: string[] = []
-    if (props.showModelName) {
+    if (props.showModelName && props.msg.role === 'assistant') {
         tips.push(`model: ${props.msg.model || 'unknown'}`)
     }
     if (props.showWordCount) {
@@ -192,7 +192,11 @@ function _Block(props: Props) {
                                         wordWrap: 'break-word',
                                     }}
                                     className='msg-content'
-                                    dangerouslySetInnerHTML={{ __html: md.render(msg.content) }}
+                                    dangerouslySetInnerHTML={{
+                                        __html: md.render(
+                                            typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)
+                                        )
+                                    }}
                                 />
                             )
                         }

@@ -1,8 +1,8 @@
 import * as api from '@tauri-apps/api'
 import FsStorage from './storage/FsStorage'
 import WebStorage from './storage/WebStorage'
+import { isWeb } from './env'
 
-const isWeb: boolean = !window.__TAURI_IPC__
 
 export const storage = isWeb ? new WebStorage() : new FsStorage()
 
@@ -73,3 +73,20 @@ function exportTextFileFromWebPage(filename: string, content: string) {
     eleLink.click();
     document.body.removeChild(eleLink);
 };
+
+export async function httpPost(url: string, header: {[key: string]: string}, body: string) {
+    if (isWeb) {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: header,
+            body: body
+        })
+        return res.json()
+    }
+    const res = await api.http.fetch(url, {
+        method: 'POST',
+        headers: header,
+        body: api.http.Body.text(body)
+    })
+    return res.data
+}

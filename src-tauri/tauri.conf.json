@@ -33,7 +33,11 @@
                 ]
             },
             "http": {
-                "all": true
+                "all": true,
+                "scope": [
+                    "http://*",
+                    "https://*"
+                ]
             },
             "dialog": {
                 "all": true,

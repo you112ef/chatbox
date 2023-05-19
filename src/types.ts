@@ -38,7 +38,7 @@ export function createSession(name: string = "Untitled"): Session {
 }
 
 export interface Settings {
-    aiProvider: 'openai' | 'azure'
+    aiProvider: 'openai' | 'azure' | 'chatglm-6b'
 
     // openai
     openaiKey: string
@@ -48,6 +48,9 @@ export interface Settings {
     azureEndpoint: string
     azureDeploymentName: string
     azureApikey: string
+
+    // chatglm-6b
+    chatglm6bUrl: string
 
     model: string
     maxContextSize: string
@@ -59,6 +62,19 @@ export interface Settings {
     theme: ThemeMode
     language: string
     fontSize: number
+}
+
+export function getMsgDisplayModelName(settings: Settings) {
+    switch (settings.aiProvider) {
+        case 'openai':
+            return settings.model
+        case 'azure':
+            return `Azure OpenAI (${settings.azureDeploymentName})`
+        case 'chatglm-6b':
+            return 'ChatGLM-6B'
+        default:
+            return 'unknown'
+    }
 }
 
 export const OpenAIRoleEnum = {

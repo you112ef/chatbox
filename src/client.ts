@@ -1,6 +1,7 @@
 import { Message, OpenAIMessage, Settings } from './types';
 import * as wordCount from './utils';
 import { createParser } from 'eventsource-parser'
+import * as api from './api'
 
 export interface OnTextCallbackResult {
     // response content
@@ -53,53 +54,85 @@ export async function replay(
     let fullText = '';
     try {
         const messages: OpenAIMessage[] = prompts.map(msg => ({ role: msg.role, content: msg.content }))
-        let response: Response | null = null
         switch (setting.aiProvider) {
             case 'openai':
-                response = await requestOpenAI({
-                    host: setting.apiHost,
-                    apiKey: setting.openaiKey,
-                    modelName: setting.model,
-                    maxTokensNumber: maxTokensNumber,
-                    temperature: setting.temperature,
-                    messages,
-                    signal: controller.signal,
-                })
+                await requestOpenAI(
+                    {
+                        host: setting.apiHost,
+                        apiKey: setting.openaiKey,
+                        modelName: setting.model,
+                        maxTokensNumber: maxTokensNumber,
+                        temperature: setting.temperature,
+                        messages,
+                        signal: controller.signal,
+                    },
+                    (message) => {
+                        if (message === '[DONE]') {
+                            return;
+                        }
+                        const data = JSON.parse(message)
+                        if (data.error) {
+                            throw new Error(`Error from OpenAI: ${JSON.stringify(data)}`)
+                        }
+                        const text = data.choices[0]?.delta?.content
+                        if (text !== undefined) {
+                            fullText += text
+                            if (onText) {
+                                onText({ text: fullText, cancel })
+                            }
+                        }
+                    },
+                )
                 break;
             case 'azure':
-                response = await requestAzure({
-                    endpoint: setting.azureEndpoint,
-                    deploymentName: setting.azureDeploymentName,
-                    apikey: setting.azureApikey,
-                    modelName: setting.model,
-                    messages,
-                    maxTokensNumber,
-                    temperature: setting.temperature,
-                    signal: controller.signal,
-                })
+                await requestAzure(
+                    {
+                        endpoint: setting.azureEndpoint,
+                        deploymentName: setting.azureDeploymentName,
+                        apikey: setting.azureApikey,
+                        modelName: setting.model,
+                        messages,
+                        maxTokensNumber,
+                        temperature: setting.temperature,
+                        signal: controller.signal,
+                    },
+                    (message) => {
+                        if (message === '[DONE]') {
+                            return;
+                        }
+                        const data = JSON.parse(message)
+                        if (data.error) {
+                            throw new Error(`Error from Azure OpenAI: ${JSON.stringify(data)}`)
+                        }
+                        const text = data.choices[0]?.delta?.content
+                        if (text !== undefined) {
+                            fullText += text
+                            if (onText) {
+                                onText({ text: fullText, cancel })
+                            }
+                        }
+                    },
+                )
+                break;
+            case 'chatglm-6b':
+                await requestChatGLM6B(
+                    {
+                        url: setting.chatglm6bUrl,
+                        messages,
+                        temperature: setting.temperature,
+                        signal: controller.signal,
+                    },
+                    (message) => {
+                        fullText = message
+                        if (onText) {
+                            onText({ text: fullText, cancel })
+                        }
+                    }
+                )
                 break;
             default:
-                break;
+                throw new Error('unsupported ai provider: ' + setting.aiProvider)
         }
-        if (!response) {
-            throw new Error('unsupported ai provider: ' + setting.aiProvider)
-        }
-        await handleSSE(response, (message) => {
-            if (message === '[DONE]') {
-                return;
-            }
-            const data = JSON.parse(message)
-            if (data.error) {
-                throw new Error(`Error from OpenAI: ${JSON.stringify(data)}`)
-            }
-            const text = data.choices[0]?.delta?.content
-            if (text !== undefined) {
-                fullText += text
-                if (onText) {
-                    onText({ text: fullText, cancel })
-                }
-            }
-        })
     } catch (error) {
         // if a cancellation is performed
         // do not throw an exception
@@ -161,7 +194,7 @@ async function requestOpenAI(options: {
     temperature: number
     messages: OpenAIMessage[]
     signal: AbortSignal
-}) {
+}, sseHandler: (message: string) => void) {
     const { host, apiKey, modelName, maxTokensNumber, temperature, messages, signal } = options
     const response = await fetch(`${host}/v1/chat/completions`, {
         method: 'POST',
@@ -178,7 +211,7 @@ async function requestOpenAI(options: {
         }),
         signal: signal,
     })
-    return response
+    return handleSSE(response, sseHandler)
 }
 
 async function requestAzure(options: {
@@ -190,7 +223,7 @@ async function requestAzure(options: {
     maxTokensNumber: number
     temperature: number
     signal: AbortSignal,
-}) {
+}, sseHandler: (message: string) => void) {
     let { endpoint, deploymentName, apikey, modelName, messages, maxTokensNumber, temperature, signal } = options
     if (!endpoint.endsWith('/')) {
         endpoint += '/'
@@ -213,5 +246,67 @@ async function requestAzure(options: {
         }),
         signal: signal,
     });
-    return response
+    return handleSSE(response, sseHandler)
+}
+
+async function requestChatGLM6B(options: {
+    url: string,
+    messages: OpenAIMessage[],
+    temperature: number
+    signal: AbortSignal,
+}, handler: (message: string) => void) {
+    let { url, messages, temperature, signal } = options
+
+    let prompt = ''
+    const history: [string, string][] = []
+    let userTmp = ''
+    let assistantTmp = ''
+    for (const msg of messages) {
+        switch (msg.role) {
+            case 'system':
+                history.push([msg.content, '好的，我照做，一切都听你的'])
+                prompt = msg.content
+                break
+            case 'user':
+                if (assistantTmp) {
+                    history.push([userTmp, assistantTmp])
+                    userTmp = ''
+                    assistantTmp = ''
+                }
+                if (userTmp) {
+                    userTmp += '\n' + msg.content
+                } else {
+                    userTmp = msg.content
+                }
+                prompt = msg.content
+                break
+            case 'assistant':
+                if (assistantTmp) {
+                    assistantTmp += '\n' + msg.content
+                } else {
+                    assistantTmp = msg.content
+                }
+                break
+        }
+    }
+    if (assistantTmp) {
+        history.push([userTmp, assistantTmp])
+    }
+
+    const json = await api.httpPost(
+        url,
+        {
+            'Content-Type': 'application/json',
+        },
+        JSON.stringify({
+            prompt,
+            history,
+            // temperature,
+        }),
+    )
+    if (json.status !== 200) {
+        return handler(JSON.stringify(json))
+    }
+    const str = typeof json.response === 'string' ? json.response : JSON.stringify(json.response)
+    return handler(str)
 }

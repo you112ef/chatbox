@@ -17,6 +17,7 @@ export function getDefaultSettings(): Settings {
         azureApikey: '',
         azureDeploymentName: '',
         azureEndpoint: '',
+        chatglm6bUrl: '',
         model: "gpt-3.5-turbo",
         temperature: 0.7,
         maxContextSize: "4000",
