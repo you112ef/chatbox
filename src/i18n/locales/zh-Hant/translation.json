@@ -67,6 +67,7 @@
   "Azure Deployment Name": "模型部署名稱",
   "Azure Endpoint": "終端節點",
   "Font Size": "字型大小",
+  "AI Provider": "AI 提供者",
   "ChatGLM-6B URL Helper": "支援開源模型 <1>ChatGLM-6B</1> 的 <0>API 介面</0>",
   "ChatGLM-6B Warnning for Chatbox-Web": "您似乎正在使用 Chatbox 網頁版本，可能與 ChatGLM-6B 存在跨域等網路問題。建議下載 Chatbox 客戶端以避免潛在問題"
 }

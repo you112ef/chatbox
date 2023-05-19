@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     Button, Alert, Chip,
-    Dialog, DialogContent, DialogActions, DialogTitle, DialogContentText, TextField,
+    Dialog, DialogContent, DialogActions, DialogTitle, TextField,
     FormGroup, FormControlLabel, Switch, Select, MenuItem, FormControl, InputLabel, Slider, Typography, Box,
 } from '@mui/material';
 import { Settings } from './types'
@@ -119,7 +119,7 @@ export default function SettingWindow(props: Props) {
             <DialogContent>
 
                 <FormControl fullWidth variant="outlined" margin="dense">
-                    <InputLabel htmlFor="ai-provider-select">AI Provider</InputLabel>
+                    <InputLabel htmlFor="ai-provider-select">{t('AI Provider')}</InputLabel>
                     <Select
                         label="ai-provider"
                         id="ai-provider-select"
