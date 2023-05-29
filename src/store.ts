@@ -1,11 +1,14 @@
 import { useState, useEffect, useRef } from 'react'
-import { Settings, createSession, Session, Message, Config } from './types'
+import { Settings, getEmptySession, Session, Message, Config, CopilotDetail } from './types'
 import * as defaults from './defaults'
 import { v4 as uuidv4 } from 'uuid';
 import { ThemeMode } from './theme';
 import * as api from './api'
 import * as remote from './remote'
 import { useTranslation } from "react-i18next";
+import useSWR from 'swr'
+import { activateLicense, deactivateLicense, validateLicense } from './lemonsqueezy'
+import { FetchError } from 'ofetch'
 
 // setting store
 
@@ -71,7 +74,7 @@ export async function readSessions(settings: Settings): Promise<Session[]> {
         return defaults.sessions
     }
     if (sessions.length === 0) {
-        return [createSession()]
+        return [getEmptySession()]
     }
     return sessions.map((s: any) => {
         // 兼容旧版本的数据
@@ -135,7 +138,7 @@ export default function useStore() {
         i18n.changeLanguage(settings.language).then();
     }
 
-    const [chatSessions, _setChatSessions] = useState<Session[]>([createSession()])
+    const [chatSessions, _setChatSessions] = useState<Session[]>([getEmptySession()])
     const [currentSession, switchCurrentSession] = useState<Session>(chatSessions[0])
     useEffect(() => {
         readSessions(settings).then((sessions: Session[]) => {
@@ -151,7 +154,7 @@ export default function useStore() {
     const deleteChatSession = (target: Session) => {
         const sessions = chatSessions.filter((s) => s.id !== target.id)
         if (sessions.length === 0) {
-            sessions.push(createSession())
+            sessions.push(getEmptySession())
         }
         if (target.id === currentSession.id) {
             switchCurrentSession(sessions[0])
@@ -176,7 +179,25 @@ export default function useStore() {
         switchCurrentSession(session)
     }
     const createEmptyChatSession = () => {
-        createChatSession(createSession())
+        createChatSession(getEmptySession())
+    }
+    const createChatSessionWithCopilot = (copilot: CopilotDetail) => {
+        const msgs: Message[] = []
+        msgs.push({ id: uuidv4(), role: 'system', content: copilot.prompt })
+        if (copilot.demoQuestion) {
+            msgs.push({ id: uuidv4(), role: 'user', content: copilot.demoQuestion })
+        }
+        if (copilot.demoAnswer) {
+            msgs.push({ id: uuidv4(), role: 'assistant', content: copilot.demoAnswer })
+        }
+        createChatSession({
+            id: uuidv4(),
+            name: copilot.name,
+            picUrl: copilot.picUrl,
+            messages: msgs,
+            starred: false,
+            copilotId: copilot.id,
+        })
     }
 
     const setMessages = (session: Session, messages: Message[]) => {
@@ -195,6 +216,45 @@ export default function useStore() {
         _setToasts(toasts.filter((t) => t.id !== id))
     }
 
+    // license activation
+    const activateQuery = useSWR<{ valid: boolean }>(
+        `license:${settings.premiumLicenseKey || ''}`,
+        async () => {
+            const licenseKey = settings.premiumLicenseKey || ''
+            if (!licenseKey) {
+                return { valid: false }
+            }
+            let instanceId = (settings.premiumLicenseInstances || {})[licenseKey]
+            if (!instanceId) {
+                instanceId = await activateLicense(licenseKey, await api.getInstanceName())
+                setSettings({
+                    ...settings,
+                    premiumLicenseInstances: {
+                        ...(settings.premiumLicenseInstances || {}),
+                        [licenseKey]: instanceId,
+                    },
+                })
+            }
+            return validateLicense(licenseKey, instanceId)
+        },
+        {
+            fallbackData: (settings.premiumLicenseInstances || {})[settings.premiumLicenseKey || ''] ? { valid: true } : undefined,
+            revalidateOnFocus: false,
+            dedupingInterval: 10 * 60 * 1000,
+            onError(err) {
+                if (err instanceof FetchError) {
+                    if (err.status === 404) {
+                        setSettings({
+                            ...settings,
+                            premiumLicenseKey: '',
+                            premiumLicenseInstances: {},
+                        })
+                    }
+                }
+            },
+        },
+    )
+
     return {
         version,
         needCheckUpdate,
@@ -208,6 +268,7 @@ export default function useStore() {
         updateChatSession,
         deleteChatSession,
         createEmptyChatSession,
+        createChatSessionWithCopilot,
 
         setSessions,
         currentSession,
@@ -216,5 +277,82 @@ export default function useStore() {
         toasts,
         addToast,
         removeToast,
+
+        premiumActivated: activateQuery.data?.valid || false,
+        premiumIsLoading: activateQuery.isLoading,
     }
+}
+
+export async function readCopilots(): Promise<CopilotDetail[]> {
+    const copilots: CopilotDetail[] | undefined = await api.storage.get('myCopilots')
+    return copilots || []
+}
+
+export async function writeCopilots(copilots: CopilotDetail[]) {
+    return api.storage.set('myCopilots', copilots)
+}
+
+export function useCopilots() {
+    const [copilots, _setCopilots] = useState<CopilotDetail[]>([])
+    useEffect(() => {
+        readCopilots().then((copilots) => {
+            _setCopilots(copilots)
+        })
+    }, [])
+
+    const setCopilots = (copilots: CopilotDetail[]) => {
+        _setCopilots(copilots)
+        writeCopilots(copilots)
+    }
+
+    const addOrUpdate = (copilot: CopilotDetail) => {
+        let found = false
+        const newCopilots = copilots.map((c) => {
+            if (c.id === copilot.id) {
+                found = true
+                return copilot
+            }
+            return c
+        })
+        if (!found) {
+            newCopilots.push(copilot)
+        }
+        setCopilots(newCopilots)
+    }
+
+    const remove = (id: string) => {
+        const newCopilots = copilots.filter((c) => c.id !== id)
+        setCopilots(newCopilots)
+    }
+
+    return {
+        copilots,
+        setCopilots,
+        addOrUpdate,
+        remove,
+    }
+}
+
+export function useRemoteCopilots(lang: string, windowOpen: boolean) {
+    const [copilots, _setCopilots] = useState<CopilotDetail[]>([])
+    useEffect(() => {
+        if (windowOpen) {
+            remote.listCopilots(lang).then((copilots) => {
+                _setCopilots(copilots)
+            })
+        }
+    }, [lang, windowOpen])
+    return { copilots }
+}
+
+export function usePremiumPrice() {
+    const [price, setPrice] = useState('???')
+    const [discount, setDiscount] = useState('')
+    useEffect(() => {
+        remote.getPremiumPrice().then((data) => {
+            setPrice(`$${data.price}`)
+            setDiscount(`-${data.discountLabel}`)
+        })
+    }, [])
+    return { price, discount }
 }

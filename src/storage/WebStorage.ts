@@ -12,4 +12,8 @@ export default class WebStorage implements Interface {
     public async get<T>(key: string): Promise<T | undefined> {
         return store.get(key) || undefined
     }
+
+    public async del(key: string) {
+        return store.remove(key)
+    }
 }

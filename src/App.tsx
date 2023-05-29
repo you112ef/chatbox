@@ -8,13 +8,11 @@ import {
     IconButton, Button, ButtonGroup, Stack, Grid, MenuItem, ListItemIcon, Typography, Divider,
     TextField, useTheme, useMediaQuery, debounce,
 } from '@mui/material';
-import { Session, createSession, Message, createMessage, getMsgDisplayModelName } from './types'
+import { Session, getEmptySession, Message, createMessage, getMsgDisplayModelName } from './types'
 import useStore from './store'
 import SettingWindow from './SettingWindow'
 import ChatConfigWindow from './ChatConfigWindow'
-import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import SettingsIcon from '@mui/icons-material/Settings';
-import AddIcon from '@mui/icons-material/Add';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import * as prompts from './prompts';
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
@@ -24,10 +22,6 @@ import AboutWindow from './AboutWindow';
 import { ThemeSwitcherProvider } from './theme/ThemeSwitcher';
 import { useTranslation } from "react-i18next";
 import icon from './icon.png'
-import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import { save } from '@tauri-apps/api/dialog';
-import { writeTextFile } from '@tauri-apps/api/fs';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 import SponsorChip from './SponsorChip'
@@ -35,6 +29,9 @@ import "./styles/App.scss"
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import * as api from './api'
 import SendIcon from '@mui/icons-material/Send';
+import CopilotWindow from './CopilotWindow';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
+import AddIcon from '@mui/icons-material/AddCircleOutline';
 
 import type { DragEndEvent } from '@dnd-kit/core';
 import {
@@ -90,15 +87,18 @@ function Main() {
     }
 
     // 是否展示设置窗口
-    const [openSettingWindow, setOpenSettingWindow] = React.useState(false);
+    const [openSettingWindow, setOpenSettingWindow] = React.useState<'ai' | 'display' | 'premium' | null>(null);
     useEffect(() => {
         if (store.needSetting) {
-            setOpenSettingWindow(true)
+            setOpenSettingWindow('ai')
         }
     }, [store.needSetting])
 
     // 是否展示相关信息的窗口
     const [openAboutWindow, setOpenAboutWindow] = React.useState(false);
+
+    // 是否展示copilot窗口
+    const [openCopilotWindow, setOpenCopilotWindow] = React.useState(false);
 
     // 是否展示菜单栏
     const theme = useTheme();
@@ -415,7 +415,7 @@ function Main() {
                                                         }}
                                                         deleteMe={() => store.deleteChatSession(session)}
                                                         copyMe={() => {
-                                                            const newSession = createSession(session.name + ' copied')
+                                                            const newSession = getEmptySession(session.name + ' copied')
                                                             newSession.messages = session.messages
                                                             store.createChatSession(newSession, ix)
                                                         }}
@@ -448,8 +448,21 @@ function Main() {
                                         {/* ⌘N */}
                                     </Typography>
                                 </MenuItem>
+
+                                <MenuItem onClick={() => setOpenCopilotWindow(true)}>
+                                    <ListItemIcon>
+                                        <IconButton>
+                                            <SmartToyIcon fontSize="small" />
+                                        </IconButton>
+                                    </ListItemIcon>
+                                    <ListItemText>
+                                        <Typography>{t('My Copilots')}</Typography>
+                                    </ListItemText>
+                                </MenuItem>
+
+
                                 <MenuItem onClick={() => {
-                                    setOpenSettingWindow(true)
+                                    setOpenSettingWindow('ai')
                                 }}
                                 >
                                     <ListItemIcon>
@@ -558,6 +571,7 @@ function Main() {
                                         showWordCount={store.settings.showWordCount || false}
                                         showTokenCount={store.settings.showTokenCount || false}
                                         showModelName={store.settings.showModelName || false}
+                                        assistantPicUrl={store.currentSession.picUrl}
                                         setMsg={(updated) => {
                                             store.currentSession.messages = store.currentSession.messages.map((m) => {
                                                 if (m.id === updated.id) {
@@ -643,16 +657,22 @@ function Main() {
                     </Stack>
                 </Grid>
 
-                <SettingWindow open={openSettingWindow}
+                <SettingWindow open={!!openSettingWindow}
                     settings={store.settings}
+                    targetTab={openSettingWindow || undefined}
+                    premiumActivated={store.premiumActivated}
+                    premiumIsLoading={store.premiumIsLoading}
+                    activatePremium={(licenseKey: string) => {
+                        store.setSettings({ ...store.settings, premiumLicenseKey: licenseKey })
+                    }}
                     save={(settings) => {
                         store.setSettings(settings)
-                        setOpenSettingWindow(false)
+                        setOpenSettingWindow(null)
                         if (settings.fontSize !== store.settings.fontSize) {
                             store.addToast(t('font size changed, effective after next launch'))
                         }
                     }}
-                    close={() => setOpenSettingWindow(false)}
+                    close={() => setOpenSettingWindow(null)}
                 />
                 <AboutWindow open={openAboutWindow} version={store.version} lang={store.settings.language}
                     close={() => setOpenAboutWindow(false)}
@@ -685,6 +705,17 @@ function Main() {
                         />
                     )
                 }
+                <CopilotWindow open={openCopilotWindow}
+                    premiumActivated={store.premiumActivated}
+                    lang={store.settings.language}
+                    useCopilot={(detail) => {
+                        store.createChatSessionWithCopilot(detail)
+                    }}
+                    openPremiumPage={() => {
+                        setOpenSettingWindow('premium')
+                    }}
+                    close={() => setOpenCopilotWindow(false)}
+                />
                 {
                     store.toasts.map((toast) => (
                         <Snackbar

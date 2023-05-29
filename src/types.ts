@@ -8,11 +8,13 @@ export type Message = OpenAIMessage & {
     model?: string
 }
 
-export interface Session{
+export interface Session {
     id: string
     name: string
+    picUrl?: string
     messages: Message[]
     starred?: boolean
+    copilotId?: string
 }
 
 export function createMessage(role: OpenAIRoleEnumType = OpenAIRoleEnum.User, content: string = ''): Message {
@@ -23,7 +25,7 @@ export function createMessage(role: OpenAIRoleEnumType = OpenAIRoleEnum.User, co
     }
 }
 
-export function createSession(name: string = "Untitled"): Session {
+export function getEmptySession(name: string = "Untitled"): Session {
     return {
         id: uuidv4(),
         name: name,
@@ -56,12 +58,19 @@ export interface Settings {
     maxContextSize: string
     temperature: number
     maxTokens: string
+
     showWordCount?: boolean
     showTokenCount?: boolean
     showModelName?: boolean
+
     theme: ThemeMode
     language: string
     fontSize: number
+
+    premiumLicenseKey?: string
+    premiumLicenseInstances?: {
+        [key: string]: string
+    }
 }
 
 export function getMsgDisplayModelName(settings: Settings) {
@@ -91,7 +100,7 @@ export interface OpenAIMessage {
     'name'?: string;
 }
 
-export interface Config{
+export interface Config {
     uuid: string
 }
 
@@ -107,4 +116,16 @@ export interface SponsorAboutBanner {
     link: string
     title: string
     description: string
+}
+
+export interface CopilotDetail {
+    id: string
+    name: string
+    picUrl?: string
+    prompt: string
+    demoQuestion?: string
+    demoAnswer?: string
+    starred?: boolean
+    usedCount: number
+    shared?: boolean
 }

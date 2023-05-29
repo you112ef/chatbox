@@ -29,4 +29,8 @@ export default class FsStorage implements Interface {
         const value: any = await this.store.get(key)
         return value || undefined
     }
+
+    public async del(key: string) {
+        await this.store.delete(key)
+    }
 }

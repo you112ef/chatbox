@@ -2,7 +2,7 @@ import * as api from '@tauri-apps/api'
 import FsStorage from './storage/FsStorage'
 import WebStorage from './storage/WebStorage'
 import { isWeb } from './env'
-
+import { getOS, getBrowser } from './navigator'
 
 export const storage = isWeb ? new WebStorage() : new FsStorage()
 
@@ -44,6 +44,14 @@ export const getPlatform = async () => {
         return 'web'
     }
     return api.os.platform()
+}
+
+export async function getInstanceName() {
+    const platform = await getPlatform()
+    if (platform === 'web') {
+        return `${getOS()} / ${getBrowser()}`
+    }
+    return platform
 }
 
 export async function exportTextFile(filename: string, content: string) {

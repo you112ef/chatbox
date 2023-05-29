@@ -68,6 +68,7 @@ export interface Props {
     showWordCount: boolean
     showTokenCount: boolean
     showModelName: boolean
+    assistantPicUrl?: string
     setMsg: (msg: Message) => void
     delMsg: () => void
     refreshMsg: () => void
@@ -162,7 +163,13 @@ function _Block(props: Props) {
                             <Box sx={{ marginTop: '8px' }}>
                                 {
                                     {
-                                        assistant: <Avatar><SmartToyIcon /></Avatar>,
+                                        assistant: (
+                                            props.assistantPicUrl ? (
+                                                <Avatar src={props.assistantPicUrl}></Avatar>
+                                            ) : (
+                                                <Avatar><SmartToyIcon /></Avatar>
+                                            )
+                                        ),
                                         user: <Avatar><PersonIcon /></Avatar>,
                                         system: <Avatar><SettingsIcon /></Avatar>
                                     }[msg.role]
@@ -191,7 +198,7 @@ function _Block(props: Props) {
                                         wordBreak: 'break-word',
                                         wordWrap: 'break-word',
                                     }}
-                                    className='msg-content'
+                                    className={'msg-content ' + (msg.role === 'system' ? 'msg-content-system': '')}
                                     dangerouslySetInnerHTML={{
                                         __html: md.render(
                                             typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)
@@ -343,5 +350,9 @@ const StyledMenu = styled((props: MenuProps) => (
 export default function Block(props: Props) {
     return useMemo(() => {
         return <_Block {...props} />
-    }, [props.msg, props.showWordCount, props.showTokenCount, props.showModelName])
+    }, [
+        props.msg,
+        props.showWordCount, props.showTokenCount, props.showModelName,
+        props.assistantPicUrl
+    ])
 }
