@@ -345,14 +345,14 @@ export function useRemoteCopilots(lang: string, windowOpen: boolean) {
     return { copilots }
 }
 
-export function usePremiumPrice() {
-    const [price, setPrice] = useState('???')
-    const [discount, setDiscount] = useState('')
-    useEffect(() => {
-        remote.getPremiumPrice().then((data) => {
-            setPrice(`$${data.price}`)
-            setDiscount(`-${data.discountLabel}`)
-        })
-    }, [])
-    return { price, discount }
-}
+// export function usePremiumPrice() {
+//     const [price, setPrice] = useState('???')
+//     const [discount, setDiscount] = useState('')
+//     useEffect(() => {
+//         remote.getPremiumPrice().then((data) => {
+//             setPrice(`$${data.price}`)
+//             setDiscount(`-${data.discountLabel}`)
+//         })
+//     }, [])
+//     return { price, discount }
+// }

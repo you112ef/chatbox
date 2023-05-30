@@ -22,8 +22,8 @@ interface Props {
     open: boolean
     close(): void
     useCopilot(detail: CopilotDetail): void
-    openPremiumPage(): void
-    premiumActivated: boolean
+    // openPremiumPage(): void
+    // premiumActivated: boolean
     lang: string
 }
 
@@ -62,7 +62,6 @@ export default function CopilotWindow(props: Props) {
                     copilotEdit ? (
                         <CopilotForm
                             copilotDetail={copilotEdit}
-                            premiumActivated={props.premiumActivated}
                             close={() => {
                                 setCopilotEdit(null)
                             }}
@@ -70,7 +69,8 @@ export default function CopilotWindow(props: Props) {
                                 store.addOrUpdate(detail)
                                 setCopilotEdit(null)
                             }}
-                            openPremiumPage={props.openPremiumPage}
+                            // premiumActivated={props.premiumActivated}
+                            // openPremiumPage={props.openPremiumPage}
                         />
                     ) : (
                         <Button
@@ -315,10 +315,10 @@ function ScrollableTabsButtonAuto(props: TabsProps) {
 
 interface CopilotFormProps {
     copilotDetail: CopilotDetail
-    premiumActivated: boolean
     close(): void
     save(copilotDetail: CopilotDetail): void
-    openPremiumPage(): void
+    // premiumActivated: boolean
+    // openPremiumPage(): void
 }
 
 function CopilotForm(props: CopilotFormProps) {
@@ -363,7 +363,6 @@ function CopilotForm(props: CopilotFormProps) {
                 helperText={helperTexts['name']}
             />
             <TextField
-                autoFocus
                 margin="dense"
                 label={t('Copilot Prompt')}
                 placeholder={t('Copilot Prompt Demo') as any}
@@ -374,22 +373,21 @@ function CopilotForm(props: CopilotFormProps) {
                 helperText={helperTexts['prompt']}
             />
             <TextField
-                autoFocus
                 margin="dense"
-                label={t('Copilot Avatar URL(Premium only)')}
+                label={t('Copilot Avatar URL')}
                 placeholder='http://xxxxx/xxx.png'
                 fullWidth
                 variant="outlined"
                 value={copilotEdit.picUrl}
                 onChange={inputHandler('picUrl')}
-                disabled={!props.premiumActivated}
-                helperText={
-                    props.premiumActivated ? (
-                        <></>
-                    ) : (
-                        <Button onClick={props.openPremiumPage}>{t('Unlock Copilot Avatar by Upgrading to Premium Edition')}</Button>
-                    )
-                }
+                // disabled={!props.premiumActivated}
+                // helperText={
+                //     props.premiumActivated ? (
+                //         <></>
+                //     ) : (
+                //         <Button onClick={props.openPremiumPage}>{t('Unlock Copilot Avatar by Upgrading to Premium Edition')}</Button>
+                //     )
+                // }
             />
             <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
                 <FormGroup row>

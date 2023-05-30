@@ -87,7 +87,7 @@ function Main() {
     }
 
     // 是否展示设置窗口
-    const [openSettingWindow, setOpenSettingWindow] = React.useState<'ai' | 'display' | 'premium' | null>(null);
+    const [openSettingWindow, setOpenSettingWindow] = React.useState<'ai' | 'display' | null>(null);
     useEffect(() => {
         if (store.needSetting) {
             setOpenSettingWindow('ai')
@@ -706,14 +706,14 @@ function Main() {
                     )
                 }
                 <CopilotWindow open={openCopilotWindow}
-                    premiumActivated={store.premiumActivated}
                     lang={store.settings.language}
                     useCopilot={(detail) => {
                         store.createChatSessionWithCopilot(detail)
                     }}
-                    openPremiumPage={() => {
-                        setOpenSettingWindow('premium')
-                    }}
+                    // premiumActivated={store.premiumActivated}
+                    // openPremiumPage={() => {
+                    //     setOpenSettingWindow('premium')
+                    // }}
                     close={() => setOpenCopilotWindow(false)}
                 />
                 {

@@ -5,7 +5,7 @@ import {
     FormGroup, FormControlLabel, Switch, Select, MenuItem, FormControl, InputLabel, Slider, Typography, Box,
 } from '@mui/material';
 import { Settings } from './types'
-import { getDefaultSettings, usePremiumPrice } from './store'
+import { getDefaultSettings } from './store'
 import ThemeChangeButton from './theme/ThemeChangeIcon';
 import { ThemeMode } from './theme/index';
 import { useThemeSwicher } from './theme/ThemeSwitcher';
@@ -36,7 +36,7 @@ const languageMap: { [key: string]: string } = {
 
 interface Props {
     open: boolean
-    targetTab?: 'ai' | 'display' | 'premium'
+    targetTab?: 'ai' | 'display'
     settings: Settings
     premiumActivated: boolean,
     premiumIsLoading: boolean,
@@ -120,7 +120,7 @@ export default function SettingWindow(props: Props) {
     }
 
     // 标签页控制
-    const [currentTab, setCurrentTab] = React.useState<'ai' | 'display' | 'premium'>('ai');
+    const [currentTab, setCurrentTab] = React.useState<'ai' | 'display'>('ai');
     useEffect(() => {
         if (props.targetTab) {
             setCurrentTab(props.targetTab)
@@ -135,7 +135,7 @@ export default function SettingWindow(props: Props) {
                     <Tabs value={currentTab} onChange={(_, value) => setCurrentTab(value)} >
                         <Tab label={t('ai')} value='ai' />
                         <Tab label={t('display')} value='display' />
-                        <Tab label={t('premium')} value='premium' />
+                        {/* <Tab label={t('premium')} value='premium' /> */}
                     </Tabs>
                 </Box>
 
@@ -484,7 +484,7 @@ export default function SettingWindow(props: Props) {
                     )
                 }
 
-                {
+                {/* {
                     currentTab === 'premium' && (
                         <Box>
                             <TextField
@@ -518,7 +518,7 @@ export default function SettingWindow(props: Props) {
                             <PremiumDetail premiumActivated={props.premiumActivated} premiumIsLoading={props.premiumIsLoading} />
                         </Box>
                     )
-                }
+                } */}
 
             </DialogContent >
             <DialogActions>
@@ -565,68 +565,68 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
     border: '1px solid rgba(0, 0, 0, .125)',
 }));
 
-function PremiumDetail(props: { premiumActivated: boolean, premiumIsLoading: boolean }) {
-    const { t } = useTranslation();
-    const { price, discount } = usePremiumPrice()
-    return (
-        <Box sx={{ marginTop: '30px' }}>
-            {
-                props.premiumActivated ? (
-                    <Box>
-                        <span style={{ fontSize: '20px', marginBottom: '4px' }}>{t('You are already a Premium user')}</span>
-                    </Box>
-                ) : (
-                    <>
-                        <Box>
-                            <span style={{ padding: '4px', color: 'white', backgroundColor: '#FFA500' }}>
-                                {t('pre-sale discount')} {discount}
-                            </span>
-                        </Box>
-                        <Box>
-                            <span style={{ fontSize: '50px', color: 'primary', fontWeight: 'bold' }}>{price}</span>
-                            <span style={{ fontSize: '35px', textDecoration: 'line-through', marginLeft: '10px', opacity: 0.7 }}>$49</span>
-                            <span style={{ fontSize: '20px', marginLeft: '10px', opacity: 0.7 }}>/{t('lifetime license')}</span>
-                        </Box>
-                    </>
-                )
-            }
-            <Box>
-                {
-                    [
-                        t('Setting the avatar for Copilot'),
-                        t('Full-text search of chat history (coming soon)'),
-                        t('Web browsing (coming soon)'),
-                        t('Can be activated on up to 5 devices'),
-                        t('Access to all future premium feature updates'),
-                        t('Support for ChatBox development'),
-                    ].map((item) => (
-                        <Box sx={{ display: 'flex', margin: '4px 0' }}>
-                            <CheckCircleIcon color='primary' />
-                            <span style={{ marginLeft: '5px' }}>{item}</span>
-                        </Box>
-                    ))
-                }
-            </Box>
-            <Box sx={{ marginTop: '10px' }}>
-                {
-                    props.premiumActivated ? (
-                        <Button variant='outlined' onClick={() => { api.openLink('https://app.lemonsqueezy.com/my-orders') }}>
-                            {t('Manage Activated Devices')}
-                        </Button>
-                    ) : (
-                        <>
-                            <Button variant='contained' onClick={() => { api.openLink('https://benn.lemonsqueezy.com/checkout/buy/7a4d873f-c6fb-45a3-ac39-0a14f6bde227?logo=0&discount=0') }}>
-                                {t('Purchase License')}
-                            </Button>
-                            <Button variant='outlined' sx={{ marginLeft: '10px' }}
-                                onClick={() => { api.openLink('https://app.lemonsqueezy.com/my-orders') }}
-                            >
-                                {t('Retrieve License')}
-                            </Button>
-                        </>
-                    )
-                }
-            </Box>
-        </Box>
-    )
-}
+// function PremiumDetail(props: { premiumActivated: boolean, premiumIsLoading: boolean }) {
+//     const { t } = useTranslation();
+//     const { price, discount } = usePremiumPrice()
+//     return (
+//         <Box sx={{ marginTop: '30px' }}>
+//             {
+//                 props.premiumActivated ? (
+//                     <Box>
+//                         <span style={{ fontSize: '20px', marginBottom: '4px' }}>{t('You are already a Premium user')}</span>
+//                     </Box>
+//                 ) : (
+//                     <>
+//                         <Box>
+//                             <span style={{ padding: '4px', color: 'white', backgroundColor: '#FFA500' }}>
+//                                 {t('pre-sale discount')} {discount}
+//                             </span>
+//                         </Box>
+//                         <Box>
+//                             <span style={{ fontSize: '50px', color: 'primary', fontWeight: 'bold' }}>{price}</span>
+//                             <span style={{ fontSize: '35px', textDecoration: 'line-through', marginLeft: '10px', opacity: 0.7 }}>$49</span>
+//                             <span style={{ fontSize: '20px', marginLeft: '10px', opacity: 0.7 }}>/{t('lifetime license')}</span>
+//                         </Box>
+//                     </>
+//                 )
+//             }
+//             <Box>
+//                 {
+//                     [
+//                         t('Setting the avatar for Copilot'),
+//                         t('Full-text search of chat history (coming soon)'),
+//                         t('Web browsing (coming soon)'),
+//                         t('Can be activated on up to 5 devices'),
+//                         t('Access to all future premium feature updates'),
+//                         t('Support for ChatBox development'),
+//                     ].map((item) => (
+//                         <Box sx={{ display: 'flex', margin: '4px 0' }}>
+//                             <CheckCircleIcon color='primary' />
+//                             <span style={{ marginLeft: '5px' }}>{item}</span>
+//                         </Box>
+//                     ))
+//                 }
+//             </Box>
+//             <Box sx={{ marginTop: '10px' }}>
+//                 {
+//                     props.premiumActivated ? (
+//                         <Button variant='outlined' onClick={() => { api.openLink('https://app.lemonsqueezy.com/my-orders') }}>
+//                             {t('Manage Activated Devices')}
+//                         </Button>
+//                     ) : (
+//                         <>
+//                             <Button variant='contained' onClick={() => { api.openLink('https://benn.lemonsqueezy.com/checkout/buy/7a4d873f-c6fb-45a3-ac39-0a14f6bde227?logo=0&discount=0') }}>
+//                                 {t('Purchase License')}
+//                             </Button>
+//                             <Button variant='outlined' sx={{ marginLeft: '10px' }}
+//                                 onClick={() => { api.openLink('https://app.lemonsqueezy.com/my-orders') }}
+//                             >
+//                                 {t('Retrieve License')}
+//                             </Button>
+//                         </>
+//                     )
+//                 }
+//             </Box>
+//         </Box>
+//     )
+// }
