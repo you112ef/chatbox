@@ -6,8 +6,6 @@ import {
 } from '@mui/material';
 import { Settings } from './types'
 import ThemeChangeButton from './theme/ThemeChangeIcon';
-import { ThemeMode } from './theme/index';
-import { useThemeSwicher } from './theme/ThemeSwitcher';
 import { styled } from '@mui/material/styles';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
@@ -21,6 +19,8 @@ import * as defaults from './stores/defaults'
 import { useAtom } from 'jotai';
 import { settingsAtom } from './stores/atoms';
 import * as toastActions from './stores/toastActions';
+import { switchTheme } from './hooks/useThemeSwitcher'
+import { ThemeMode } from './types'
 
 // TODO: 做好默认值预设，考虑缺失情况
 
@@ -107,7 +107,6 @@ export default function SettingWindow(props: Props) {
         }
     };
 
-    const [, { setMode }] = useThemeSwicher();
     useEffect(() => {
         setSettingsEdit(settings)
     }, [settings])
@@ -124,13 +123,13 @@ export default function SettingWindow(props: Props) {
         props.close()
         setSettingsEdit(settings)
         // need to restore the previous theme
-        setMode(settings.theme ?? ThemeMode.System);
+        switchTheme(settings.theme ?? ThemeMode.System);
     }
 
     // preview theme
     const changeModeWithPreview = (newMode: ThemeMode) => {
         setSettingsEdit({ ...settingsEdit, theme: newMode });
-        setMode(newMode);
+        switchTheme(newMode);
     }
 
     return (

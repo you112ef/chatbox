@@ -78,7 +78,7 @@ function exportTextFileFromWebPage(filename: string, content: string) {
     document.body.removeChild(eleLink);
 };
 
-export async function httpPost(url: string, header: {[key: string]: string}, body: string) {
+export async function httpPost(url: string, header: { [key: string]: string }, body: string) {
     if (isWeb) {
         const res = await fetch(url, {
             method: 'POST',

@@ -28,6 +28,8 @@ export const languageAtom = focusAtom(settingsAtom, (optic) => optic.prop('langu
 export const showWordCountAtom = focusAtom(settingsAtom, (optic) => optic.prop('showWordCount'))
 export const showTokenCountAtom = focusAtom(settingsAtom, (optic) => optic.prop('showTokenCount'))
 export const showModelNameAtom = focusAtom(settingsAtom, (optic) => optic.prop('showModelName'))
+export const themeAtom = focusAtom(settingsAtom, (optic) => optic.prop('theme'))
+export const fontSizeAtom = focusAtom(settingsAtom, (optic) => optic.prop('fontSize'))
 
 // configs
 
@@ -114,3 +116,7 @@ export const toastsAtom = atom<Toast[]>([])
 // quote 消息引用
 
 export const quoteAtom = atom<string>('')
+
+// theme
+
+export const realThemeAtom = atom<'light' | 'dark'>('light')

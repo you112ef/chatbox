@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid';
-import { ThemeMode } from './theme';
 
 export type Message = OpenAIMessage & {
     id: string;
@@ -133,4 +132,10 @@ export interface CopilotDetail {
 export interface Toast {
     id: string
     content: string
+}
+
+export enum ThemeMode {
+    Dark,
+    Light,
+    System,
 }

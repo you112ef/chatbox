@@ -1,5 +1,5 @@
 import { Config, Settings } from '../types'
-import { ThemeMode } from '../theme';
+import { ThemeMode } from '../types'
 import { v4 as uuidv4 } from 'uuid';
 
 export function settings(): Settings {

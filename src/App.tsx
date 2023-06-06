@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as client from './client'
+import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider } from '@mui/material/styles';
 import {
     Toolbar, Box, Badge, Snackbar,
     List, ListSubheader, ListItemText, MenuList,
@@ -16,7 +18,7 @@ import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import Save from '@mui/icons-material/Save'
 import CleanWidnow from './CleanWindow';
 import AboutWindow from './AboutWindow';
-import { ThemeSwitcherProvider } from './theme/ThemeSwitcher';
+import useThemeSwicher from './hooks/useThemeSwitcher';
 import { useTranslation } from "react-i18next";
 import icon from './icon.png'
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
@@ -506,9 +508,11 @@ function Main() {
 export default function App() {
     useI18nEffect()
     useAnalytics()
+    const theme = useThemeSwicher()
     return (
-        <ThemeSwitcherProvider>
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
             <Main />
-        </ThemeSwitcherProvider>
+        </ThemeProvider>
     )
 }
