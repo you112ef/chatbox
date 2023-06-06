@@ -1,10 +1,6 @@
 import * as api from '@tauri-apps/api'
-import FsStorage from './storage/FsStorage'
-import WebStorage from './storage/WebStorage'
-import { isWeb } from './env'
 import { getOS, getBrowser } from './navigator'
-
-export const storage = isWeb ? new WebStorage() : new FsStorage()
+import { isWeb } from './env'
 
 export const shouldUseDarkColors = async (): Promise<boolean> => {
     if (isWeb) {

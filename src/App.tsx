@@ -1,15 +1,12 @@
-import React, { useEffect, useRef, useState, MutableRefObject } from 'react';
-import Block from './Block'
+import React, { useEffect, useRef } from 'react';
 import * as client from './client'
-import SessionItem from './SessionItem'
 import {
     Toolbar, Box, Badge, Snackbar,
     List, ListSubheader, ListItemText, MenuList,
     IconButton, Button, ButtonGroup, Stack, Grid, MenuItem, ListItemIcon, Typography, Divider,
     TextField, useTheme, useMediaQuery, debounce,
 } from '@mui/material';
-import { Session, getEmptySession, Message, createMessage, getMsgDisplayModelName } from './types'
-import useStore from './store'
+import { Session } from './types'
 import SettingWindow from './SettingWindow'
 import ChatConfigWindow from './ChatConfigWindow'
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -28,71 +25,42 @@ import SponsorChip from './SponsorChip'
 import "./styles/App.scss"
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import * as api from './api'
-import SendIcon from '@mui/icons-material/Send';
 import CopilotWindow from './CopilotWindow';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import AddIcon from '@mui/icons-material/AddCircleOutline';
-
-import type { DragEndEvent } from '@dnd-kit/core';
-import {
-    DndContext,
-    KeyboardSensor,
-    MouseSensor,
-    TouchSensor,
-    closestCenter,
-    useSensor,
-    useSensors,
-} from '@dnd-kit/core';
-import {
-    SortableContext,
-    arrayMove,
-    sortableKeyboardCoordinates,
-    verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
-import { SortableItem } from './SortableItem';
+import * as atoms from './stores/atoms'
+import { useAtomValue } from 'jotai'
+import MessageInput from './MessageInput';
+import useAnalytics from './hooks/useAnalytics';
+import { useI18nEffect } from './hooks/useI18nEffect';
+import useVersion from './hooks/useVersion';
+import Toasts from './Toasts';
+import SessionList from './SessionList';
+import MessageList from './MessageList';
+import * as toastActions from './stores/toastActions';
+import * as sessionActions from './stores/sessionActions';
+import * as settingActions from './stores/settingActions'
 
 function Main() {
     const { t } = useTranslation()
-    const store = useStore()
-    const sensors = useSensors(
-        useSensor(TouchSensor, {
-            activationConstraint: {
-                delay: 250,
-                tolerance: 5,
-            },
-        }),
-        useSensor(MouseSensor, {
-            activationConstraint: {
-                distance: 10,
-            },
-        }),
-        useSensor(KeyboardSensor, {
-            coordinateGetter: sortableKeyboardCoordinates,
-        })
-    );
 
-    const sortedSessions = sortSessions(store.chatSessions)
-    function handleDragEnd(event: DragEndEvent) {
-        const { active, over } = event;
-        if (!over) {
-            return
-        }
-        if (active.id !== over.id) {
-            const oldIndex = sortedSessions.findIndex(({ id }) => id === active.id);
-            const newIndex = sortedSessions.findIndex(({ id }) => id === over.id);
-            const newReversed = arrayMove(sortedSessions, oldIndex, newIndex);
-            store.setSessions(sortSessions(newReversed))
-        }
-    }
+    // states
+    const currentSession = useAtomValue(atoms.currentSessionAtom)
+    const settings = useAtomValue(atoms.settingsAtom)
+
+    // actions
+
+    const versionHook = useVersion()
 
     // 是否展示设置窗口
     const [openSettingWindow, setOpenSettingWindow] = React.useState<'ai' | 'display' | null>(null);
     useEffect(() => {
-        if (store.needSetting) {
-            setOpenSettingWindow('ai')
-        }
-    }, [store.needSetting])
+        setTimeout(() => {
+            if (settingActions.needEditSetting()) {
+                setOpenSettingWindow('ai')
+            }
+        }, 1500)
+    }, [])
 
     // 是否展示相关信息的窗口
     const [openAboutWindow, setOpenAboutWindow] = React.useState(false);
@@ -148,7 +116,7 @@ function Main() {
     // 切换到当前会话，自动滚动到最后一条消息
     useEffect(() => {
         messageListToBottom();
-    }, [store.currentSession.id])
+    }, [currentSession.id])
 
     // show scroll to top or bottom button when user scroll
     const [atScrollTop, setAtScrollTop] = React.useState(false);
@@ -195,12 +163,12 @@ function Main() {
     // 会话名称自动生成
     useEffect(() => {
         if (
-            store.currentSession.name === 'Untitled'
-            && store.currentSession.messages.findIndex(msg => msg.role === 'assistant') !== -1
+            currentSession.name === 'Untitled'
+            && currentSession.messages.findIndex(msg => msg.role === 'assistant') !== -1
         ) {
-            generateName(store.currentSession)
+            generateName(currentSession)
         }
-    }, [store.currentSession.messages])
+    }, [currentSession.messages])
 
     const codeBlockCopyEvent = useRef((e: Event) => {
         const target: HTMLElement = e.target as HTMLElement;
@@ -219,7 +187,7 @@ function Main() {
         // do copy
         // * thats lines copy from copy block content action
         navigator.clipboard.writeText(content);
-        store.addToast(t('copied to clipboard'));
+        toastActions.add(t('copied to clipboard'));
     });
 
     // bind code block copy event on mounted
@@ -236,16 +204,16 @@ function Main() {
     const [sessionClean, setSessionClean] = React.useState<Session | null>(null);
 
     const editCurrentSession = () => {
-        setConfigureChatConfig(store?.currentSession)
+        setConfigureChatConfig(currentSession)
     };
     const generateName = async (session: Session) => {
         client.replay(
-            store.settings,
+            settings,
             prompts.nameConversation(session.messages.slice(0, 3)),
             ({ text: name }) => {
                 name = name.replace(/['"“”]/g, '')
                 session.name = name
-                store.updateChatSession(session)
+                sessionActions.modify(session)
             },
             (err) => {
                 console.log(err)
@@ -259,74 +227,9 @@ function Main() {
         return api.exportTextFile('Export.md', content)
     }
 
-    const generate = async (session: Session, promptMsgs: Message[], targetMsg: Message) => {
-        for (let i = 0; i < session.messages.length; i++) {
-            if (session.messages[i].id === targetMsg.id) {
-                session.messages[i] = {
-                    ...session.messages[i],
-                    content: '...',
-                    cancel: undefined,
-                    model: getMsgDisplayModelName(store.settings),
-                    generating: true
-                }
-                break;
-            }
-        }
-        store.updateChatSession(session)
-
-        messageScrollRef.current = { msgId: targetMsg.id, smooth: false }
-        await client.replay(
-            store.settings,
-            promptMsgs,
-            ({ text, cancel }) => {
-                for (let i = 0; i < session.messages.length; i++) {
-                    if (session.messages[i].id === targetMsg.id) {
-                        session.messages[i] = {
-                            ...session.messages[i],
-                            content: text,
-                            cancel,
-                            model: getMsgDisplayModelName(store.settings),
-                            generating: true
-                        }
-                        break;
-                    }
-                }
-                store.updateChatSession(session)
-            },
-            (err) => {
-                for (let i = 0; i < session.messages.length; i++) {
-                    if (session.messages[i].id === targetMsg.id) {
-                        session.messages[i] = {
-                            ...session.messages[i],
-                            content: t('api request failed:') + ' \n```\n' + err.message + '\n```',
-                            model: getMsgDisplayModelName(store.settings),
-                            generating: false
-                        }
-                        break
-                    }
-                }
-                store.updateChatSession(session)
-            }
-        )
-        for (let i = 0; i < session.messages.length; i++) {
-            if (session.messages[i].id === targetMsg.id) {
-                session.messages[i] = {
-                    ...session.messages[i],
-                    generating: false
-                }
-                break
-            }
-        }
-        store.updateChatSession(session)
-
-        messageScrollRef.current = null
-    }
-
-    const [quoteCache, setQuoteCache] = useState('')
-
     const sessionListRef = useRef<HTMLDivElement>(null)
     const handleCreateNewSession = () => {
-        store.createEmptyChatSession()
+        sessionActions.createEmptyThenSwitch()
         if (sessionListRef.current) {
             sessionListRef.current.scrollTo(0, 0)
         }
@@ -396,42 +299,10 @@ function Main() {
                                 component="div"
                                 ref={sessionListRef}
                             >
-                                <DndContext
-                                    modifiers={[restrictToVerticalAxis]}
-                                    sensors={sensors}
-                                    collisionDetection={closestCenter}
-                                    onDragEnd={handleDragEnd}
-                                >
-                                    <SortableContext items={sortedSessions} strategy={verticalListSortingStrategy}>
-                                        {
-                                            sortedSessions.map((session, ix) => (
-                                                <SortableItem key={session.id} id={session.id}>
-                                                    <SessionItem key={session.id}
-                                                        selected={store.currentSession.id === session.id}
-                                                        session={session}
-                                                        switchMe={() => {
-                                                            store.switchCurrentSession(session)
-                                                            textareaRef?.current?.focus()
-                                                        }}
-                                                        deleteMe={() => store.deleteChatSession(session)}
-                                                        copyMe={() => {
-                                                            const newSession = getEmptySession(session.name + ' copied')
-                                                            newSession.messages = session.messages
-                                                            store.createChatSession(newSession, ix)
-                                                        }}
-                                                        switchStarred={() => {
-                                                            store.updateChatSession({
-                                                                ...session,
-                                                                starred: !session.starred
-                                                            })
-                                                        }}
-                                                        editMe={() => setConfigureChatConfig(session)}
-                                                    />
-                                                </SortableItem>
-                                            ))
-                                        }
-                                    </SortableContext>
-                                </DndContext>
+                                <SessionList
+                                    setConfigureChatConfig={setConfigureChatConfig}
+                                    textareaRef={textareaRef}
+                                />
                             </MenuList>
 
                             <Divider />
@@ -483,10 +354,10 @@ function Main() {
                                         </IconButton>
                                     </ListItemIcon>
                                     <ListItemText>
-                                        <Badge color="primary" variant="dot" invisible={!store.needCheckUpdate}
+                                        <Badge color="primary" variant="dot" invisible={!versionHook.needCheckUpdate}
                                             sx={{ paddingRight: '8px' }} >
                                             <Typography sx={{ opacity: 0.5 }}>
-                                                {t('About')} ({store.version})
+                                                {t('About')} ({versionHook.version})
                                             </Typography>
                                         </Badge>
                                     </ListItemText>
@@ -539,17 +410,17 @@ function Main() {
                                 }}
                             >
                                 <span onClick={() => { editCurrentSession() }} style={{ cursor: 'pointer' }}>
-                                    {store.currentSession.name}
+                                    {currentSession.name}
                                 </span>
                             </Typography>
-                            <SponsorChip sessionId={store.currentSession.id} />
+                            <SponsorChip sessionId={currentSession.id} />
                             <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}
-                                onClick={() => setSessionClean(store.currentSession)}
+                                onClick={() => setSessionClean(currentSession)}
                             >
                                 <CleaningServicesIcon />
                             </IconButton>
                             <IconButton edge="start" color="inherit" aria-label="menu" sx={{}}
-                                onClick={() => saveSession(store.currentSession)}
+                                onClick={() => saveSession(currentSession)}
                             >
                                 <Save />
                             </IconButton>
@@ -565,53 +436,7 @@ function Main() {
                             component="div"
                             ref={messageListRef}
                         >
-                            {
-                                store.currentSession.messages.map((msg, ix) => (
-                                    <Block id={msg.id} key={msg.id} msg={msg}
-                                        showWordCount={store.settings.showWordCount || false}
-                                        showTokenCount={store.settings.showTokenCount || false}
-                                        showModelName={store.settings.showModelName || false}
-                                        assistantPicUrl={store.currentSession.picUrl}
-                                        setMsg={(updated) => {
-                                            store.currentSession.messages = store.currentSession.messages.map((m) => {
-                                                if (m.id === updated.id) {
-                                                    return updated
-                                                }
-                                                return m
-                                            })
-                                            store.updateChatSession(store.currentSession)
-                                        }}
-                                        delMsg={() => {
-                                            store.currentSession.messages = store.currentSession.messages.filter((m) => m.id !== msg.id)
-                                            store.updateChatSession(store.currentSession)
-                                        }}
-                                        refreshMsg={() => {
-                                            if (msg.role === 'assistant') {
-                                                const promptMsgs = store.currentSession.messages.slice(0, ix)
-                                                generate(store.currentSession, promptMsgs, msg)
-                                            } else {
-                                                const promptsMsgs = store.currentSession.messages.slice(0, ix + 1)
-                                                const newAssistantMsg = createMessage('assistant', '....')
-                                                const newMessages = [...store.currentSession.messages]
-                                                newMessages.splice(ix + 1, 0, newAssistantMsg)
-                                                store.currentSession.messages = newMessages
-                                                store.updateChatSession(store.currentSession)
-                                                generate(store.currentSession, promptsMsgs, newAssistantMsg)
-                                                messageScrollRef.current = { msgId: newAssistantMsg.id, smooth: true }
-                                            }
-                                        }}
-                                        copyMsg={() => {
-                                            navigator.clipboard.writeText(msg.content)
-                                            store.addToast(t('copied to clipboard'))
-                                        }}
-                                        quoteMsg={() => {
-                                            let input = msg.content.split('\n').map((line: any) => `> ${line}`).join('\n')
-                                            input += '\n\n-------------------\n\n'
-                                            setQuoteCache(input)
-                                        }}
-                                    />
-                                ))
-                            }
+                            <MessageList messageScrollRef={messageScrollRef} />
                         </List>
                         <Box sx={{ padding: '20px 0', position: 'relative', }}>
                             {(needScroll && <ButtonGroup
@@ -635,22 +460,8 @@ function Main() {
                                 </IconButton>
                             </ButtonGroup>)}
                             <MessageInput
-                                quoteCache={quoteCache}
-                                setQuotaCache={setQuoteCache}
-                                onSubmit={async (newUserMsg: Message, needGenerating = true) => {
-                                    if (needGenerating) {
-                                        const promptsMsgs = [...store.currentSession.messages, newUserMsg]
-                                        const newAssistantMsg = createMessage('assistant', '....')
-                                        store.currentSession.messages = [...store.currentSession.messages, newUserMsg, newAssistantMsg]
-                                        store.updateChatSession(store.currentSession)
-                                        generate(store.currentSession, promptsMsgs, newAssistantMsg)
-                                        messageScrollRef.current = { msgId: newAssistantMsg.id, smooth: true }
-                                    } else {
-                                        store.currentSession.messages = [...store.currentSession.messages, newUserMsg]
-                                        store.updateChatSession(store.currentSession)
-                                        messageScrollRef.current = { msgId: newUserMsg.id, smooth: true }
-                                    }
-                                }}
+                                currentSessionId={currentSession.id}
+                                messageScrollRef={messageScrollRef}
                                 textareaRef={textareaRef}
                             />
                         </Box>
@@ -658,33 +469,16 @@ function Main() {
                 </Grid>
 
                 <SettingWindow open={!!openSettingWindow}
-                    settings={store.settings}
                     targetTab={openSettingWindow || undefined}
-                    premiumActivated={store.premiumActivated}
-                    premiumIsLoading={store.premiumIsLoading}
-                    activatePremium={(licenseKey: string) => {
-                        store.setSettings({ ...store.settings, premiumLicenseKey: licenseKey })
-                    }}
-                    save={(settings) => {
-                        store.setSettings(settings)
-                        setOpenSettingWindow(null)
-                        if (settings.fontSize !== store.settings.fontSize) {
-                            store.addToast(t('font size changed, effective after next launch'))
-                        }
-                    }}
                     close={() => setOpenSettingWindow(null)}
                 />
-                <AboutWindow open={openAboutWindow} version={store.version} lang={store.settings.language}
+                <AboutWindow open={openAboutWindow} version={versionHook.version} lang={settings.language}
                     close={() => setOpenAboutWindow(false)}
                 />
                 {
                     configureChatConfig !== null && (
                         <ChatConfigWindow open={configureChatConfig !== null}
                             session={configureChatConfig}
-                            save={(session) => {
-                                store.updateChatSession(session)
-                                setConfigureChatConfig(null)
-                            }}
                             close={() => setConfigureChatConfig(null)}
                         />
                     )
@@ -692,139 +486,26 @@ function Main() {
                 {
                     sessionClean !== null && (
                         <CleanWidnow open={sessionClean !== null}
-                            session={sessionClean}
-                            save={(session) => {
-                                sessionClean.messages.forEach((msg) => {
-                                    msg?.cancel?.();
-                                });
-
-                                store.updateChatSession(session)
-                                setSessionClean(null)
-                            }}
                             close={() => setSessionClean(null)}
                         />
                     )
                 }
                 <CopilotWindow open={openCopilotWindow}
-                    lang={store.settings.language}
-                    useCopilot={(detail) => {
-                        store.createChatSessionWithCopilot(detail)
-                    }}
                     // premiumActivated={store.premiumActivated}
                     // openPremiumPage={() => {
                     //     setOpenSettingWindow('premium')
                     // }}
                     close={() => setOpenCopilotWindow(false)}
                 />
-                {
-                    store.toasts.map((toast) => (
-                        <Snackbar
-                            key={toast.id}
-                            open
-                            onClose={() => store.removeToast(toast.id)}
-                            message={toast.content}
-                            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                        />
-                    ))
-                }
+                <Toasts />
             </Grid>
         </Box >
     );
 }
 
-function MessageInput(props: {
-    onSubmit: (newMsg: Message, needGenerating?: boolean) => void
-    quoteCache: string
-    setQuotaCache(cache: string): void
-    textareaRef: MutableRefObject<HTMLTextAreaElement | null>
-}) {
-    const { t } = useTranslation()
-    const [messageInput, setMessageInput] = useState('')
-    useEffect(() => {
-        if (props.quoteCache !== '') {
-            setMessageInput(props.quoteCache)
-            props.setQuotaCache('')
-            props.textareaRef?.current?.focus()
-        }
-    }, [props.quoteCache])
-    const submit = (needGenerating = true) => {
-        if (messageInput.trim() === '') {
-            return
-        }
-        props.onSubmit(createMessage('user', messageInput), needGenerating)
-        setMessageInput('')
-    }
-    useEffect(() => {
-        function keyboardShortcut(e: KeyboardEvent) {
-            if (e.key === 'i' && (e.metaKey || e.ctrlKey)) {
-                props.textareaRef?.current?.focus();
-            }
-        }
-        window.addEventListener('keydown', keyboardShortcut);
-        return () => {
-            window.removeEventListener('keydown', keyboardShortcut)
-        }
-    }, [])
-
-    return (
-        <form onSubmit={(e) => {
-            e.preventDefault()
-            submit()
-        }}>
-            <Stack direction="column" spacing={1} >
-                <Grid container spacing={1}>
-                    <Grid item xs>
-                        <TextField
-                            inputRef={props.textareaRef}
-                            multiline
-                            label="Prompt"
-                            value={messageInput}
-                            onChange={(event) => setMessageInput(event.target.value)}
-                            fullWidth
-                            maxRows={12}
-                            autoFocus
-                            id='message-input'
-                            onKeyDown={(event) => {
-                                if (event.keyCode === 13 && !event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey) {
-                                    event.preventDefault()
-                                    submit()
-                                    return
-                                }
-                                if (event.keyCode === 13 && event.ctrlKey) {
-                                    event.preventDefault()
-                                    submit(false)
-                                    return
-                                }
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs='auto'>
-                        <Button type='submit' variant="contained" size='large'
-                            style={{ padding: '15px 16px' }}>
-                            <SendIcon />
-                        </Button>
-                    </Grid>
-                </Grid>
-                <Typography variant='caption' style={{ opacity: 0.3 }}>{t('[Enter] send, [Shift+Enter] line break, [Ctrl+Enter] send without generating')}</Typography>
-            </Stack>
-        </form>
-    )
-}
-
-function sortSessions(sessions: Session[]): Session[] {
-    let reversed: Session[] = []
-    let pinned: Session[] = []
-    for (const sess of sessions) {
-        if (sess.starred) {
-            pinned.push(sess)
-            continue
-        }
-        reversed.unshift(sess)
-    }
-    return pinned.concat(reversed)
-}
-
 export default function App() {
+    useI18nEffect()
+    useAnalytics()
     return (
         <ThemeSwitcherProvider>
             <Main />

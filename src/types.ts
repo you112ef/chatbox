@@ -129,3 +129,8 @@ export interface CopilotDetail {
     usedCount: number
     shared?: boolean
 }
+
+export interface Toast {
+    id: string
+    content: string
+}

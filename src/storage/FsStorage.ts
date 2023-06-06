@@ -1,12 +1,13 @@
 import { Store } from "tauri-plugin-store-api";
-import Interface from './Interface'
+import BaseStorage from './BaseStorage'
 
-export default class FsStorage implements Interface {
+export default class FsStorage extends BaseStorage {
     private filepath: string
     private store: Store
     private timer: NodeJS.Timeout
 
     constructor(filepath = 'config.json') {
+        super()
         this.filepath = filepath
         this.store = new Store(this.filepath)
         this.timer = setInterval(async () => {
@@ -18,19 +19,24 @@ export default class FsStorage implements Interface {
         }, 5 * 60 * 1000)
     }
 
-    public async set(key: string, value: any) {
+    public async setItem<T>(key: string, value: T) {
         await this.store.set(key, value)
-        if (key === 'settings') {
-            await this.store.save()
+    }
+
+    public async getItem<T>(key: string, initialValue: T): Promise<T> {
+        let value: any = await this.store.get(key)
+        if (value === undefined || value === null) {
+            value = initialValue
         }
+        return value
     }
 
-    public async get<T>(key: string): Promise<T | undefined> {
-        const value: any = await this.store.get(key)
-        return value || undefined
-    }
-
-    public async del(key: string) {
+    public async removeItem(key: string) {
         await this.store.delete(key)
     }
+
+    public async save() {
+        await this.store.save()
+    }
+
 }

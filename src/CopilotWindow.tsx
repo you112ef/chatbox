@@ -4,33 +4,56 @@ import {
     Dialog, DialogContent, DialogActions, DialogTitle, TextField,
     FormGroup, FormControlLabel, Switch, MenuItem, Typography, Box, ButtonGroup,
 } from '@mui/material';
-import { CopilotDetail } from './types'
-import { Trans, useTranslation } from 'react-i18next'
+import { Config, CopilotDetail, Message } from './types'
+import { useTranslation } from 'react-i18next'
 import EditIcon from '@mui/icons-material/Edit';
-import { styled } from '@mui/material/styles';
 import StyledMenu from './StyledMenu';
 import StarIcon from '@mui/icons-material/Star';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
-import { readConfig, useCopilots, useRemoteCopilots } from './store'
+import { useMyCopilots, useRemoteCopilots } from './hooks/useCopilots'
 import * as remote from './remote'
 import { v4 as uuidv4 } from 'uuid';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import * as atoms from './stores/atoms'
+import { useAtomValue, useSetAtom } from 'jotai'
 
 interface Props {
     open: boolean
     close(): void
-    useCopilot(detail: CopilotDetail): void
     // openPremiumPage(): void
     // premiumActivated: boolean
-    lang: string
 }
 
 export default function CopilotWindow(props: Props) {
+    const language = useAtomValue(atoms.languageAtom)
+    const setCurrentSession = useSetAtom(atoms.currentSessionAtom)
+    const configs = useAtomValue(atoms.configsAtom)
+
     const { t } = useTranslation()
-    const store = useCopilots()
-    const remoteStore = useRemoteCopilots(props.lang, props.open)
+
+    const store = useMyCopilots()
+    const remoteStore = useRemoteCopilots(language, props.open)
+
+    const createChatSessionWithCopilot = (copilot: CopilotDetail) => {
+        const msgs: Message[] = []
+        msgs.push({ id: uuidv4(), role: 'system', content: copilot.prompt })
+        if (copilot.demoQuestion) {
+            msgs.push({ id: uuidv4(), role: 'user', content: copilot.demoQuestion })
+        }
+        if (copilot.demoAnswer) {
+            msgs.push({ id: uuidv4(), role: 'assistant', content: copilot.demoAnswer })
+        }
+        setCurrentSession({
+            id: uuidv4(),
+            name: copilot.name,
+            picUrl: copilot.picUrl,
+            messages: msgs,
+            starred: false,
+            copilotId: copilot.id,
+        })
+    }
 
     const useCopilot = (detail: CopilotDetail) => {
         const newDetail = { ...detail, usedCount: (detail.usedCount || 0) + 1 }
@@ -38,7 +61,7 @@ export default function CopilotWindow(props: Props) {
             remote.recordCopilotShare(newDetail)
         }
         store.addOrUpdate(newDetail)
-        props.useCopilot(detail)
+        createChatSessionWithCopilot(newDetail)
         props.close()
     }
 
@@ -77,7 +100,7 @@ export default function CopilotWindow(props: Props) {
                             variant="outlined"
                             startIcon={<AddCircleOutlineIcon />}
                             onClick={() => {
-                                getEmptyCopilot().then(setCopilotEdit)
+                                getEmptyCopilot(configs).then(setCopilotEdit)
                             }}
                         >
                             {t('Create New Copilot')}
@@ -406,8 +429,7 @@ function CopilotForm(props: CopilotFormProps) {
     )
 }
 
-export async function getEmptyCopilot(): Promise<CopilotDetail> {
-    const conf = await readConfig()
+export async function getEmptyCopilot(conf: Config): Promise<CopilotDetail> {
     return {
         id: `${conf.uuid}:${uuidv4()}`,
         name: '',

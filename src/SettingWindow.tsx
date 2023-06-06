@@ -1,11 +1,10 @@
 import React from 'react';
 import {
-    Button, Alert, Chip, Tabs, Tab, ButtonGroup,
+    Button, Alert, Chip, Tabs, Tab,
     Dialog, DialogContent, DialogActions, DialogTitle, TextField,
     FormGroup, FormControlLabel, Switch, Select, MenuItem, FormControl, InputLabel, Slider, Typography, Box,
 } from '@mui/material';
 import { Settings } from './types'
-import { getDefaultSettings } from './store'
 import ThemeChangeButton from './theme/ThemeChangeIcon';
 import { ThemeMode } from './theme/index';
 import { useThemeSwicher } from './theme/ThemeSwitcher';
@@ -17,11 +16,13 @@ import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import { Trans, useTranslation } from 'react-i18next'
 import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle';
 import LightbulbCircleIcon from '@mui/icons-material/LightbulbCircle';
-import * as api from './api'
-import SettingsIcon from '@mui/icons-material/Settings';
-import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import * as env from './env'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import * as defaults from './stores/defaults'
+import { useAtom } from 'jotai';
+import { settingsAtom } from './stores/atoms';
+import * as toastActions from './stores/toastActions';
+
+// TODO: 做好默认值预设，考虑缺失情况
 
 const { useEffect } = React
 
@@ -37,17 +38,23 @@ const languageMap: { [key: string]: string } = {
 interface Props {
     open: boolean
     targetTab?: 'ai' | 'display'
-    settings: Settings
-    premiumActivated: boolean,
-    premiumIsLoading: boolean,
     close(): void
-    save(settings: Settings): void
-    activatePremium(licenseKey: string): void
 }
 
 export default function SettingWindow(props: Props) {
     const { t } = useTranslation()
-    const [settingsEdit, setSettingsEdit] = React.useState<Settings>(props.settings);
+    const [settings, setSettings] = useAtom(settingsAtom)
+
+    // 标签页控制
+    const [currentTab, setCurrentTab] = React.useState<'ai' | 'display'>('ai');
+    useEffect(() => {
+        if (props.targetTab) {
+            setCurrentTab(props.targetTab)
+        }
+    }, [props.targetTab, props.open])
+
+    const [settingsEdit, setSettingsEdit] = React.useState<Settings>(settings);
+
     const handleRepliesTokensSliderChange = (event: Event, newValue: number | number[], activeThumb: number) => {
         if (newValue === 8192) {
             setSettingsEdit({ ...settingsEdit, maxTokens: 'inf' });
@@ -102,15 +109,22 @@ export default function SettingWindow(props: Props) {
 
     const [, { setMode }] = useThemeSwicher();
     useEffect(() => {
-        setSettingsEdit(props.settings)
-    }, [props.settings])
+        setSettingsEdit(settings)
+    }, [settings])
+
+    const onSave = () => {
+        setSettings(settingsEdit)
+        if (settings.fontSize !== settingsEdit.fontSize) {
+            toastActions.add(t('font size changed, effective after next launch'))
+        }
+        props.close()
+    }
 
     const onCancel = () => {
         props.close()
-        setSettingsEdit(props.settings)
-
+        setSettingsEdit(settings)
         // need to restore the previous theme
-        setMode(props.settings.theme ?? ThemeMode.System);
+        setMode(settings.theme ?? ThemeMode.System);
     }
 
     // preview theme
@@ -118,14 +132,6 @@ export default function SettingWindow(props: Props) {
         setSettingsEdit({ ...settingsEdit, theme: newMode });
         setMode(newMode);
     }
-
-    // 标签页控制
-    const [currentTab, setCurrentTab] = React.useState<'ai' | 'display'>('ai');
-    useEffect(() => {
-        if (props.targetTab) {
-            setCurrentTab(props.targetTab)
-        }
-    }, [props.targetTab, props.open])
 
     return (
         <Dialog open={props.open} onClose={onCancel} fullWidth>
@@ -188,7 +194,7 @@ export default function SettingWindow(props: Props) {
                                                 !settingsEdit.apiHost.match(/^(https?:\/\/)?api.openai.com(:\d+)?$/) && (
                                                     <Alert severity="warning">
                                                         {t('proxy warning', { apiHost: settingsEdit.apiHost })}
-                                                        <Button onClick={() => setSettingsEdit({ ...settingsEdit, apiHost: getDefaultSettings().apiHost })}>{t('reset')}</Button>
+                                                        <Button onClick={() => setSettingsEdit({ ...settingsEdit, apiHost: defaults.settings().apiHost })}>{t('reset')}</Button>
                                                     </Alert>
                                                 )
                                             }
@@ -306,11 +312,11 @@ export default function SettingWindow(props: Props) {
                                                 {t('click here to')}
                                                 <Button onClick={() => setSettingsEdit({
                                                     ...settingsEdit,
-                                                    model: getDefaultSettings().model,
-                                                    maxContextSize: getDefaultSettings().maxContextSize,
-                                                    maxTokens: getDefaultSettings().maxTokens,
-                                                    showModelName: getDefaultSettings().showModelName,
-                                                    temperature: getDefaultSettings().temperature,
+                                                    model: defaults.settings().model,
+                                                    maxContextSize: defaults.settings().maxContextSize,
+                                                    maxTokens: defaults.settings().maxTokens,
+                                                    showModelName: defaults.settings().showModelName,
+                                                    temperature: defaults.settings().temperature,
                                                 })}>{t('reset')}</Button>
                                                 {t('to default values.')}
                                             </Alert>
@@ -523,7 +529,7 @@ export default function SettingWindow(props: Props) {
             </DialogContent >
             <DialogActions>
                 <Button onClick={onCancel}>{t('cancel')}</Button>
-                <Button onClick={() => props.save(settingsEdit)}>{t('save')}</Button>
+                <Button onClick={onSave}>{t('save')}</Button>
             </DialogActions>
         </Dialog >
     );

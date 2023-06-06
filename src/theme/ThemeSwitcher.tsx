@@ -1,10 +1,11 @@
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { createContext, useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import useEvent from '../hooks/useEvent';
-import useStore from '../store';
 import { ThemeMode, fetchThemeDesign, RealThemeMode } from './index';
 import * as api from '../api'
 import CssBaseline from '@mui/material/CssBaseline';
+import * as atoms from '../stores/atoms'
+import { useAtomValue } from 'jotai';
 
 export interface ThemeSwitcherAction {
     setMode: (mode: ThemeMode) => void;
@@ -29,7 +30,7 @@ function getThemeModeFromLocal<T>(key: string, defaultValue: T) {
 }
 
 export function ThemeSwitcherProvider(props: ThemeSwitcherProviderProps) {
-    const { settings } = useStore();
+    const settings = useAtomValue(atoms.settingsAtom)
     const [mode, setMode] = useState<ThemeMode>(getThemeModeFromLocal(THEME_MODE, ThemeMode.System));
     // `shouldUseDarkColors` becomes asynchronous after being called by tauri,
     // here need to use a useState to convert `shouldUseDarkColors` to synchronous

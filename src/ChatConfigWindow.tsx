@@ -4,13 +4,12 @@ import {
 } from '@mui/material';
 import { Session } from './types'
 import { useTranslation } from "react-i18next";
-
+import * as sessionActions from './stores/sessionActions'
 const { useEffect } = React
 
 interface Props {
     open: boolean
     session: Session
-    save(session: Session): void
     close(): void
 }
 
@@ -32,7 +31,7 @@ export default function ChatConfigWindow(props: Props) {
             dataEdit.name = props.session.name
         }
         dataEdit.name = dataEdit.name.trim()
-        props.save(dataEdit)
+        sessionActions.modify(dataEdit)
         props.close()
     }
 
