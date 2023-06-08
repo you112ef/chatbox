@@ -108,6 +108,7 @@ function _Block(props: Props) {
 
     // stop action
     const onStop = useCallback(() => {
+        currentMessageActions.modify({ ...msg, generating: false })
         msg?.cancel?.();
     }, [msg]);
 
