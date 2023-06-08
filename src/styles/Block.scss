@@ -128,3 +128,23 @@ html[data-theme='dark'] {
     //     background-color: #212121;
     // }
 }
+
+.loading {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #1976d2;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: loadingrotation 0.2s linear infinite;
+}
+
+@keyframes loadingrotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+} 

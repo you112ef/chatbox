@@ -85,7 +85,7 @@ export async function generate(sessionId: string, targetMsg: Message, messageScr
     }
     targetMsg = {
         ...targetMsg,
-        content: '...',
+        content: '',
         cancel: undefined,
         model: getMsgDisplayModelName(settings),
         generating: true
