@@ -279,15 +279,19 @@ function _Block(props: Props) {
                                                         </Tooltip>
                                                     )
                                             }
-                                            <Tooltip title={t('edit')} placement='top' >
-                                                <IconButton aria-label="edit" color='primary' onClick={() => {
-                                                    setIsHovering(false)
-                                                    setAnchorEl(null)
-                                                    setMsgEdit(msg)
-                                                }} >
-                                                    <EditIcon fontSize='small' />
-                                                </IconButton>
-                                            </Tooltip>
+                                            {
+                                                !(msg.model === 'Chatbox-AI') && (
+                                                    <Tooltip title={t('edit')} placement='top' >
+                                                        <IconButton aria-label="edit" color='primary' onClick={() => {
+                                                            setIsHovering(false)
+                                                            setAnchorEl(null)
+                                                            setMsgEdit(msg)
+                                                        }} >
+                                                            <EditIcon fontSize='small' />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                )
+                                            }
                                             <Tooltip title={t('copy')} placement='top'>
                                                 <IconButton aria-label="copy" color='primary' onClick={onCopyMsg}>
                                                     <CopyAllIcon fontSize='small' />

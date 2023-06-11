@@ -81,12 +81,14 @@ export interface Settings {
 
 export function getMsgDisplayModelName(settings: Settings) {
     switch (settings.aiProvider) {
-        case 'openai':
+        case ModelProvider.OpenAI:
             return settings.model
-        case 'azure':
+        case ModelProvider.Azure:
             return `Azure OpenAI (${settings.azureDeploymentName})`
-        case 'chatglm-6b':
+        case ModelProvider.ChatGLM6B:
             return 'ChatGLM-6B'
+        case ModelProvider.ChatboxAI:
+            return 'Chatbox-AI'
         default:
             return 'unknown'
     }
