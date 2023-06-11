@@ -1,10 +1,10 @@
-import { Config, Settings } from '../types'
+import { Config, Settings, ModelProvider } from '../types'
 import { ThemeMode } from '../types'
 import { v4 as uuidv4 } from 'uuid';
 
 export function settings(): Settings {
     return {
-        aiProvider: 'openai',
+        aiProvider: ModelProvider.OpenAI,
         openaiKey: '',
         apiHost: 'https://api.openai.com',
         azureApikey: '',

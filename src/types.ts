@@ -38,8 +38,15 @@ export function getEmptySession(name: string = "Untitled"): Session {
     }
 }
 
+export enum ModelProvider {
+    ChatboxAI = 'chatbox-ai',
+    OpenAI = 'openai',
+    Azure = 'azure',
+    ChatGLM6B = 'chatglm-6b'
+}
+
 export interface Settings {
-    aiProvider: 'openai' | 'azure' | 'chatglm-6b'
+    aiProvider: ModelProvider
 
     // openai
     openaiKey: string
@@ -66,8 +73,8 @@ export interface Settings {
     language: string
     fontSize: number
 
-    premiumLicenseKey?: string
-    premiumLicenseInstances?: {
+    licenseKey?: string
+    licenseInstances?: {
         [key: string]: string
     }
 }
@@ -138,4 +145,9 @@ export enum ThemeMode {
     Dark,
     Light,
     System,
+}
+
+export interface RemoteConfig{
+    setting_chatboxai_first: boolean
+    product_ids: number[]
 }

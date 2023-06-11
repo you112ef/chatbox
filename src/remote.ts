@@ -1,4 +1,4 @@
-import { Config, CopilotDetail, SponsorAboutBanner, SponsorAd } from './types'
+import { Config, CopilotDetail, SponsorAboutBanner, SponsorAd, RemoteConfig } from './types'
 
 const releaseHost = "https://releases.chatboxai.app"
 
@@ -61,6 +61,17 @@ export async function getPremiumPrice(): Promise<{
     discountLabel: string
 }> {
     const res = await fetch(`${apiHost}/api/premium/price`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    const json = await res.json()
+    return json['data']
+}
+
+export async function getRemoteConfig(config: keyof RemoteConfig): Promise<Pick<RemoteConfig, typeof config>> {
+    const res = await fetch(`${apiHost}/api/remote_config/${config}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'

@@ -12,19 +12,19 @@ export function usePremium() {
 
     // license activation
     const activateQuery = useSWR<{ valid: boolean }>(
-        `license:${settings.premiumLicenseKey || ''}`,
+        `license:${settings.licenseKey || ''}`,
         async () => {
-            const licenseKey = settings.premiumLicenseKey || ''
+            const licenseKey = settings.licenseKey || ''
             if (!licenseKey) {
                 return { valid: false }
             }
-            let instanceId = (settings.premiumLicenseInstances || {})[licenseKey]
+            let instanceId = (settings.licenseInstances || {})[licenseKey]
             if (!instanceId) {
                 instanceId = await activateLicense(licenseKey, await api.getInstanceName())
                 setSettings((settings) => ({
                     ...settings,
-                    premiumLicenseInstances: {
-                        ...(settings.premiumLicenseInstances || {}),
+                    licenseInstances: {
+                        ...(settings.licenseInstances || {}),
                         [licenseKey]: instanceId,
                     },
                 }))
@@ -32,7 +32,7 @@ export function usePremium() {
             return validateLicense(licenseKey, instanceId)
         },
         {
-            fallbackData: (settings.premiumLicenseInstances || {})[settings.premiumLicenseKey || ''] ? { valid: true } : undefined,
+            fallbackData: (settings.licenseInstances || {})[settings.licenseKey || ''] ? { valid: true } : undefined,
             revalidateOnFocus: false,
             dedupingInterval: 10 * 60 * 1000,
             onError(err) {
@@ -40,8 +40,8 @@ export function usePremium() {
                     if (err.status === 404) {
                         setSettings((settings) => ({
                             ...settings,
-                            premiumLicenseKey: '',
-                            premiumLicenseInstances: {},
+                            licenseKey: '',
+                            licenseInstances: {},
                         }))
                     }
                 }
@@ -52,7 +52,7 @@ export function usePremium() {
     const activate = (licenseKey: string) => {
         setSettings((settings) => ({
             ...settings,
-            premiumLicenseKey: licenseKey,
+            licenseKey: licenseKey,
         }))
     }
 

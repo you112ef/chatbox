@@ -1,4 +1,4 @@
-import { Message, OpenAIMessage, Settings } from './types';
+import { Config, Message, ModelProvider, OpenAIMessage, Settings } from './types';
 import * as wordCount from './utils';
 import { createParser } from 'eventsource-parser'
 import * as api from './api'
@@ -10,8 +10,9 @@ export interface OnTextCallbackResult {
     cancel: () => void;
 }
 
-export async function replay(
+export async function reply(
     setting: Settings,
+    config: Config,
     msgs: Message[],
     onText?: (option: OnTextCallbackResult) => void,
     onError?: (error: Error) => void,
@@ -55,7 +56,38 @@ export async function replay(
     try {
         const messages: OpenAIMessage[] = prompts.map(msg => ({ role: msg.role, content: msg.content }))
         switch (setting.aiProvider) {
-            case 'openai':
+            case ModelProvider.ChatboxAI:
+                const license = setting.licenseKey || ''
+                const instanceId = (setting.licenseInstances ? setting.licenseInstances[license] : '') || ''
+                await requestChatboxAI(
+                    {
+                        license: license,
+                        instanceId: instanceId,
+                        uuid: config.uuid,
+                        // maxTokensNumber: maxTokensNumber,
+                        temperature: setting.temperature,
+                        messages,
+                        signal: controller.signal,
+                    },
+                    (message) => {
+                        if (message === '[DONE]') {
+                            return;
+                        }
+                        const data = JSON.parse(message)
+                        if (data.error) {
+                            throw new Error(`Error from Chatbox AI: ${JSON.stringify(data)}`)
+                        }
+                        const text = data.choices[0]?.delta?.content
+                        if (text !== undefined) {
+                            fullText += text
+                            if (onText) {
+                                onText({ text: fullText, cancel })
+                            }
+                        }
+                    },
+                )
+                break;
+            case ModelProvider.OpenAI:
                 await requestOpenAI(
                     {
                         host: setting.apiHost,
@@ -84,7 +116,7 @@ export async function replay(
                     },
                 )
                 break;
-            case 'azure':
+            case ModelProvider.Azure:
                 await requestAzure(
                     {
                         endpoint: setting.azureEndpoint,
@@ -114,7 +146,7 @@ export async function replay(
                     },
                 )
                 break;
-            case 'chatglm-6b':
+            case ModelProvider.ChatGLM6B:
                 await requestChatGLM6B(
                     {
                         url: setting.chatglm6bUrl,
@@ -309,4 +341,33 @@ async function requestChatGLM6B(options: {
     }
     const str = typeof json.response === 'string' ? json.response : JSON.stringify(json.response)
     return handler(str)
+}
+
+async function requestChatboxAI(options: {
+    license: string
+    instanceId: string
+    uuid: string
+    // maxTokensNumber: number
+    temperature: number
+    messages: OpenAIMessage[]
+    signal: AbortSignal
+}, sseHandler: (message: string) => void) {
+    const { license, instanceId, uuid, temperature, messages, signal } = options
+    const response = await fetch(`https://chatboxai.app/api/ai/chat`, {
+        method: 'POST',
+        headers: {
+            'Authorization': license,
+            "Instance-Id": instanceId,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            uuid: uuid,
+            messages,
+            // max_tokens: maxTokensNumber,
+            temperature,
+            stream: true,
+        }),
+        signal: signal,
+    })
+    return handleSSE(response, sseHandler)
 }

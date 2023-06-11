@@ -8,7 +8,7 @@ import {
     IconButton, Button, ButtonGroup, Stack, Grid, MenuItem, ListItemIcon, Typography, Divider,
     TextField, useTheme, useMediaQuery, debounce,
 } from '@mui/material';
-import { Session } from './types'
+import { RemoteConfig, Session, ModelProvider } from './types'
 import SettingWindow from './SettingWindow'
 import ChatConfigWindow from './ChatConfigWindow'
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -27,6 +27,7 @@ import SponsorChip from './SponsorChip'
 import "./styles/App.scss"
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import * as api from './api'
+import * as remote from './remote'
 import CopilotWindow from './CopilotWindow';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import AddIcon from '@mui/icons-material/AddCircleOutline';
@@ -42,6 +43,7 @@ import MessageList from './MessageList';
 import * as toastActions from './stores/toastActions';
 import * as sessionActions from './stores/sessionActions';
 import * as settingActions from './stores/settingActions'
+import { usePremium } from './hooks/usePremium';
 
 function Main() {
     const { t } = useTranslation()
@@ -49,20 +51,31 @@ function Main() {
     // states
     const currentSession = useAtomValue(atoms.currentSessionAtom)
     const settings = useAtomValue(atoms.settingsAtom)
+    const configs = useAtomValue(atoms.configsAtom)
 
     // actions
 
     const versionHook = useVersion()
+    const premium = usePremium()
+    console.log(premium.premiumActivated) // 每次启动都执行usePremium，防止用户在其他地方取消订阅
 
     // 是否展示设置窗口
     const [openSettingWindow, setOpenSettingWindow] = React.useState<'ai' | 'display' | null>(null);
     useEffect(() => {
         setTimeout(() => {
-            if (settingActions.needEditSetting()) {
-                setOpenSettingWindow('ai')
-            }
-        }, 1500)
-    }, [])
+            ; (async () => {
+                if (settingActions.needEditSetting()) {
+                    const remoteConfig = await remote.getRemoteConfig('setting_chatboxai_first').catch(() => ({
+                        setting_chatboxai_first: false,
+                    }) as RemoteConfig)
+                    if (remoteConfig.setting_chatboxai_first) {
+                        settingActions.modify({ aiProvider: ModelProvider.ChatboxAI })
+                    }
+                    setOpenSettingWindow('ai')
+                }
+            })()
+        }, 400)
+    }, [settings])
 
     // 是否展示相关信息的窗口
     const [openAboutWindow, setOpenAboutWindow] = React.useState(false);
@@ -209,8 +222,9 @@ function Main() {
         setConfigureChatConfig(currentSession)
     };
     const generateName = async (session: Session) => {
-        client.replay(
+        client.reply(
             settings,
+            configs,
             prompts.nameConversation(session.messages.slice(0, 3)),
             ({ text: name }) => {
                 name = name.replace(/['"“”]/g, '')

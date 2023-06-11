@@ -1,4 +1,5 @@
 import { ofetch } from 'ofetch'
+import * as remote from './remote'
 
 type ActivateResponse =
     | {
@@ -21,7 +22,8 @@ export async function activateLicense(key: string, instanceName: string) {
     if (!resp.activated) {
         throw new Error(resp.error)
     }
-    if (resp.meta.product_id !== 75903) {
+    const remoteConfig = await remote.getRemoteConfig('product_ids')
+    if (!remoteConfig.product_ids.includes(resp.meta.product_id)) {
         throw new Error('Unmatching product')
     }
     return resp.instance.id

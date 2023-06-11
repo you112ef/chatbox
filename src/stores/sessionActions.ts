@@ -79,6 +79,7 @@ export function modifyMessage(sessionId: string, updated: Message) {
 export async function generate(sessionId: string, targetMsg: Message, messageScrollRef: MutableRefObject<{ msgId: string, smooth?: boolean | undefined } | null>) {
     const store = getDefaultStore()
     const settings = store.get(atoms.settingsAtom)
+    const configs = store.get(atoms.configsAtom)
     const session = getSession(sessionId)
     if (!session) {
         return
@@ -99,8 +100,9 @@ export async function generate(sessionId: string, targetMsg: Message, messageScr
     const promptMsgs = session.messages.slice(0, msgIx)
 
     messageScrollRef.current = { msgId: targetMsg.id, smooth: false }
-    await client.replay(
+    await client.reply(
         settings,
+        configs,
         promptMsgs,
         ({ text, cancel }) => {
             targetMsg = {
