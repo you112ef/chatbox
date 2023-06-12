@@ -74,8 +74,8 @@ function Main() {
                     setOpenSettingWindow('ai')
                 }
             })()
-        }, 400)
-    }, [settings])
+        }, 600)
+    }, [])
 
     // 是否展示相关信息的窗口
     const [openAboutWindow, setOpenAboutWindow] = React.useState(false);
