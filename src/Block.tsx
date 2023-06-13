@@ -238,7 +238,7 @@ function _Block(props: Props) {
                                     dangerouslySetInnerHTML={{
                                         __html: md.render(
                                             typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)
-                                        ) + (msg.generating ? '<span class="loading"></span>' : '')
+                                        ) + (msg.generating && msg.content !== '...' ? '<span class="loading"></span>' : '')
                                     }}
                                 />
                             )
