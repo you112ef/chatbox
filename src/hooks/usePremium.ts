@@ -6,6 +6,7 @@ import { settingsAtom } from '../stores/atoms'
 import { activateLicense, deactivateLicense, validateLicense } from '../lemonsqueezy'
 import * as api from '../api'
 import { FetchError } from 'ofetch'
+import { ModelProvider } from '../types'
 
 export function usePremium() {
     const [settings, setSettings] = useAtom(settingsAtom)
@@ -52,6 +53,7 @@ export function usePremium() {
     const activate = (licenseKey: string) => {
         setSettings((settings) => ({
             ...settings,
+            aiProvider: ModelProvider.ChatboxAI,
             licenseKey: licenseKey,
         }))
     }

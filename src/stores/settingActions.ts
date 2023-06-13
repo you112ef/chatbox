@@ -16,7 +16,7 @@ export function needEditSetting() {
     const settings = store.get(atoms.settingsAtom)
     if (
         settings.aiProvider === 'chatbox-ai' &&
-        settings.licenseKey === ''
+        !settings.licenseKey
     ) {
         return true
     }
