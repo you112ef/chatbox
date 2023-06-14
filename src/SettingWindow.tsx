@@ -27,7 +27,17 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 const { useEffect } = React
 
-const models: string[] = ['gpt-3.5-turbo', 'gpt-3.5-turbo-0301', 'gpt-4', 'gpt-4-0314', 'gpt-4-32k', 'gpt-4-32k-0314'];
+const models: string[] = [
+    'gpt-3.5-turbo',
+    'gpt-3.5-turbo-16k',
+    'gpt-3.5-turbo-0613',
+    'gpt-3.5-turbo-16k-0613',
+
+    'gpt-4',
+    'gpt-4-0613',
+    'gpt-4-32k',
+    'gpt-4-32k-0613',
+];
 
 const languages: string[] = ['en', 'zh-Hans', 'zh-Hant'];
 const languageMap: { [key: string]: string } = {
