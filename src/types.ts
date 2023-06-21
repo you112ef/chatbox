@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { Model } from './config';
 
 export type Message = OpenAIMessage & {
     id: string;
@@ -60,10 +61,12 @@ export interface Settings {
     // chatglm-6b
     chatglm6bUrl: string
 
-    model: string
-    maxContextSize: string
+    model: Model
     temperature: number
-    maxTokens: string
+    openaiMaxTokens: number // 生成消息的最大限制，是传入 OpenAI 接口的参数
+    openaiMaxContextTokens: number // 聊天消息上下文的tokens限制
+    // maxContextSize: string 弃用，字段名永远不在使用，避免老版本报错
+    // maxTokens: string 弃用，字段名永远不在使用，避免老版本报错
 
     showWordCount?: boolean
     showTokenCount?: boolean
@@ -149,7 +152,7 @@ export enum ThemeMode {
     System,
 }
 
-export interface RemoteConfig{
+export interface RemoteConfig {
     setting_chatboxai_first: boolean
     product_ids: number[]
 }

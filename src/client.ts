@@ -25,19 +25,19 @@ export async function reply(
         msgs = msgs.slice(1)
     }
 
-    const maxTokensNumber = Number(setting.maxTokens)
-    const maxLen = Number(setting.maxContextSize)
+    const maxTokens = setting.openaiMaxTokens
+    const maxContextTokenLimit = setting.openaiMaxContextTokens
     let totalLen = head ? wordCount.estimateTokens(head.content) : 0
 
     let prompts: Message[] = []
     for (let i = msgs.length - 1; i >= 0; i--) {
         const msg = msgs[i]
-        const msgTokenSize: number = wordCount.estimateTokens(msg.content) + 200 // 200 作为预估的误差补偿
-        if (msgTokenSize + totalLen > maxLen) {
+        const size = wordCount.estimateTokens(msg.content) + 20 // 20 作为预估的误差补偿
+        if (size + totalLen > maxContextTokenLimit) {
             break
         }
         prompts = [msg, ...prompts]
-        totalLen += msgTokenSize
+        totalLen += size
     }
     if (head) {
         prompts = [head, ...prompts]
@@ -93,7 +93,7 @@ export async function reply(
                         host: setting.apiHost,
                         apiKey: setting.openaiKey,
                         modelName: setting.model,
-                        maxTokensNumber: maxTokensNumber,
+                        maxTokensNumber: maxTokens === 0 ? undefined : maxTokens,
                         temperature: setting.temperature,
                         messages,
                         signal: controller.signal,
@@ -124,7 +124,7 @@ export async function reply(
                         apikey: setting.azureApikey,
                         modelName: setting.model,
                         messages,
-                        maxTokensNumber,
+                        maxTokensNumber: maxTokens === 0 ? undefined : maxTokens,
                         temperature: setting.temperature,
                         signal: controller.signal,
                     },
@@ -222,7 +222,7 @@ async function requestOpenAI(options: {
     host: string
     apiKey: string
     modelName: string
-    maxTokensNumber: number
+    maxTokensNumber?: number
     temperature: number
     messages: OpenAIMessage[]
     signal: AbortSignal
@@ -252,7 +252,7 @@ async function requestAzure(options: {
     apikey: string,
     modelName: string
     messages: OpenAIMessage[],
-    maxTokensNumber: number
+    maxTokensNumber?: number
     temperature: number
     signal: AbortSignal,
 }, sseHandler: (message: string) => void) {

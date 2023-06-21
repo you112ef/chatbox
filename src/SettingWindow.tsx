@@ -24,27 +24,9 @@ import { ThemeMode } from './types'
 import * as api from './api'
 import { usePremium, usePremiumPrice } from './hooks/usePremium';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { models, languageNameMap, languages, modelConfigs } from './config'
 
 const { useEffect } = React
-
-const models: string[] = [
-    'gpt-3.5-turbo',
-    'gpt-3.5-turbo-16k',
-    'gpt-3.5-turbo-0613',
-    'gpt-3.5-turbo-16k-0613',
-
-    'gpt-4',
-    'gpt-4-0613',
-    'gpt-4-32k',
-    'gpt-4-32k-0613',
-];
-
-const languages: string[] = ['en', 'zh-Hans', 'zh-Hant'];
-const languageMap: { [key: string]: string } = {
-    'en': 'English',
-    'zh-Hans': '简体中文',
-    'zh-Hant': '繁體中文',
-};
 
 interface Props {
     open: boolean
@@ -113,7 +95,9 @@ export default function SettingWindow(props: Props) {
                                     id="ai-provider-select"
                                     value={settingsEdit.aiProvider}
                                     onChange={(e) => {
-                                        setSettingsEdit({ ...settingsEdit, aiProvider: e.target.value as ModelProvider });
+                                        setSettingsEdit(
+                                            wrapDefaultTokenConfigUpdate({ ...settingsEdit, aiProvider: e.target.value as ModelProvider }),
+                                        );
                                     }}
                                 >
                                     <MenuItem key="chatbox-ai" value={ModelProvider.ChatboxAI}>
@@ -150,7 +134,7 @@ export default function SettingWindow(props: Props) {
                                     }}>
                                     {languages.map((language) => (
                                         <MenuItem key={language} value={language}>
-                                            {languageMap[language]}
+                                            {languageNameMap[language]}
                                         </MenuItem>
                                     ))}
                                 </Select>
@@ -255,55 +239,12 @@ function ModelConfig(props: {
     const premium = usePremium()
 
     const { settingsEdit, setSettingsEdit } = props
-    const handleRepliesTokensSliderChange = (event: Event, newValue: number | number[], activeThumb: number) => {
-        if (newValue === 8192) {
-            setSettingsEdit({ ...settingsEdit, maxTokens: 'inf' });
-        } else {
-            setSettingsEdit({ ...settingsEdit, maxTokens: newValue.toString() });
-        }
-    };
-    const handleMaxContextSliderChange = (event: Event, newValue: number | number[], activeThumb: number) => {
-        if (newValue === 8192) {
-            setSettingsEdit({ ...settingsEdit, maxContextSize: 'inf' });
-        } else {
-            setSettingsEdit({ ...settingsEdit, maxContextSize: newValue.toString() });
-        }
-    };
+
     const handleTemperatureChange = (event: Event, newValue: number | number[], activeThumb: number) => {
         if (typeof newValue === 'number') {
             setSettingsEdit({ ...settingsEdit, temperature: newValue });
         } else {
             setSettingsEdit({ ...settingsEdit, temperature: newValue[activeThumb] });
-        }
-    };
-    const handleRepliesTokensInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value;
-        if (value === 'inf') {
-            setSettingsEdit({ ...settingsEdit, maxTokens: 'inf' });
-        } else {
-            const numValue = Number(value);
-            if (!isNaN(numValue) && numValue >= 0) {
-                if (numValue > 8192) {
-                    setSettingsEdit({ ...settingsEdit, maxTokens: 'inf' });
-                    return;
-                }
-                setSettingsEdit({ ...settingsEdit, maxTokens: value });
-            }
-        }
-    };
-    const handleMaxContextInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value;
-        if (value === 'inf') {
-            setSettingsEdit({ ...settingsEdit, maxContextSize: 'inf' });
-        } else {
-            const numValue = Number(value);
-            if (!isNaN(numValue) && numValue >= 0) {
-                if (numValue > 8192) {
-                    setSettingsEdit({ ...settingsEdit, maxContextSize: 'inf' });
-                    return;
-                }
-                setSettingsEdit({ ...settingsEdit, maxContextSize: value });
-            }
         }
     };
     const onlyShow = (provider: ModelProvider) => {
@@ -373,14 +314,13 @@ function ModelConfig(props: {
                             {t('settings modify warning')}
                             {t('please make sure you know what you are doing.')}
                             {t('click here to')}
-                            <Button onClick={() => setSettingsEdit({
-                                ...settingsEdit,
-                                model: defaults.settings().model,
-                                maxContextSize: defaults.settings().maxContextSize,
-                                maxTokens: defaults.settings().maxTokens,
-                                showModelName: defaults.settings().showModelName,
-                                temperature: defaults.settings().temperature,
-                            })}>{t('reset')}</Button>
+                            <Button onClick={() => setSettingsEdit(
+                                wrapDefaultTokenConfigUpdate({
+                                    ...settingsEdit,
+                                    model: defaults.settings().model,
+                                    temperature: defaults.settings().temperature,
+                                })
+                            )}>{t('reset')}</Button>
                             {t('to default values.')}
                         </Alert>
 
@@ -390,7 +330,9 @@ function ModelConfig(props: {
                                 label="Model"
                                 id="model-select"
                                 value={settingsEdit.model}
-                                onChange={(e) => setSettingsEdit({ ...settingsEdit, model: e.target.value })}>
+                                onChange={(e) => setSettingsEdit(
+                                    wrapDefaultTokenConfigUpdate({ ...settingsEdit, model: e.target.value as any })
+                                )}>
                                 {models.map((model) => (
                                     <MenuItem key={model} value={model}>
                                         {model}
@@ -429,60 +371,8 @@ function ModelConfig(props: {
                             </Box>
                         </Box>
 
-                        <Box sx={{ marginTop: 3, marginBottom: -1 }}>
-                            <Typography id="discrete-slider" gutterBottom>
-                                {t('max tokens in context')}
-                            </Typography>
-                        </Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto' }}>
-                            <Box sx={{ width: '92%' }}>
-                                <Slider
-                                    value={settingsEdit.maxContextSize === 'inf' ? 8192 : Number(settingsEdit.maxContextSize)}
-                                    onChange={handleMaxContextSliderChange}
-                                    aria-labelledby="discrete-slider"
-                                    valueLabelDisplay="auto"
-                                    defaultValue={settingsEdit.maxContextSize === 'inf' ? 8192 : Number(settingsEdit.maxContextSize)}
-                                    step={64}
-                                    min={64}
-                                    max={8192}
-                                />
-                            </Box>
-                            <TextField
-                                sx={{ marginLeft: 2 }}
-                                value={settingsEdit.maxContextSize}
-                                onChange={handleMaxContextInputChange}
-                                type="text"
-                                size="small"
-                                variant="outlined"
-                            />
-                        </Box>
-                        <Box sx={{ marginTop: 3, marginBottom: -1 }}>
-                            <Typography id="discrete-slider" gutterBottom>
-                                {t('max tokens per reply')}
-                            </Typography>
-                        </Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto' }}>
-                            <Box sx={{ width: '92%' }}>
-                                <Slider
-                                    value={settingsEdit.maxTokens === 'inf' ? 8192 : Number(settingsEdit.maxTokens)}
-                                    defaultValue={settingsEdit.maxTokens === 'inf' ? 8192 : Number(settingsEdit.maxTokens)}
-                                    onChange={handleRepliesTokensSliderChange}
-                                    aria-labelledby="discrete-slider"
-                                    valueLabelDisplay="auto"
-                                    step={64}
-                                    min={64}
-                                    max={8192}
-                                />
-                            </Box>
-                            <TextField
-                                sx={{ marginLeft: 2 }}
-                                value={settingsEdit.maxTokens}
-                                onChange={handleRepliesTokensInputChange}
-                                type="text"
-                                size="small"
-                                variant="outlined"
-                            />
-                        </Box>
+                        <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+
                     </AccordionDetails>
                 </Accordion>
             </Box>
@@ -528,14 +418,13 @@ function ModelConfig(props: {
                             {t('settings modify warning')}
                             {t('please make sure you know what you are doing.')}
                             {t('click here to')}
-                            <Button onClick={() => setSettingsEdit({
-                                ...settingsEdit,
-                                model: defaults.settings().model,
-                                maxContextSize: defaults.settings().maxContextSize,
-                                maxTokens: defaults.settings().maxTokens,
-                                showModelName: defaults.settings().showModelName,
-                                temperature: defaults.settings().temperature,
-                            })}>{t('reset')}</Button>
+                            <Button onClick={() => setSettingsEdit(
+                                wrapDefaultTokenConfigUpdate({
+                                    ...settingsEdit,
+                                    model: defaults.settings().model,
+                                    temperature: defaults.settings().temperature,
+                                })
+                            )}>{t('reset')}</Button>
                             {t('to default values.')}
                         </Alert>
                         <Box sx={{ marginTop: 3, marginBottom: 1 }}>
@@ -568,60 +457,8 @@ function ModelConfig(props: {
                             </Box>
                         </Box>
 
-                        <Box sx={{ marginTop: 3, marginBottom: -1 }}>
-                            <Typography id="discrete-slider" gutterBottom>
-                                {t('max tokens in context')}
-                            </Typography>
-                        </Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto' }}>
-                            <Box sx={{ width: '92%' }}>
-                                <Slider
-                                    value={settingsEdit.maxContextSize === 'inf' ? 8192 : Number(settingsEdit.maxContextSize)}
-                                    onChange={handleMaxContextSliderChange}
-                                    aria-labelledby="discrete-slider"
-                                    valueLabelDisplay="auto"
-                                    defaultValue={settingsEdit.maxContextSize === 'inf' ? 8192 : Number(settingsEdit.maxContextSize)}
-                                    step={64}
-                                    min={64}
-                                    max={8192}
-                                />
-                            </Box>
-                            <TextField
-                                sx={{ marginLeft: 2 }}
-                                value={settingsEdit.maxContextSize}
-                                onChange={handleMaxContextInputChange}
-                                type="text"
-                                size="small"
-                                variant="outlined"
-                            />
-                        </Box>
-                        <Box sx={{ marginTop: 3, marginBottom: -1 }}>
-                            <Typography id="discrete-slider" gutterBottom>
-                                {t('max tokens per reply')}
-                            </Typography>
-                        </Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto' }}>
-                            <Box sx={{ width: '92%' }}>
-                                <Slider
-                                    value={settingsEdit.maxTokens === 'inf' ? 8192 : Number(settingsEdit.maxTokens)}
-                                    defaultValue={settingsEdit.maxTokens === 'inf' ? 8192 : Number(settingsEdit.maxTokens)}
-                                    onChange={handleRepliesTokensSliderChange}
-                                    aria-labelledby="discrete-slider"
-                                    valueLabelDisplay="auto"
-                                    step={64}
-                                    min={64}
-                                    max={8192}
-                                />
-                            </Box>
-                            <TextField
-                                sx={{ marginLeft: 2 }}
-                                value={settingsEdit.maxTokens}
-                                onChange={handleRepliesTokensInputChange}
-                                type="text"
-                                size="small"
-                                variant="outlined"
-                            />
-                        </Box>
+                        <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+
                     </AccordionDetails>
                 </Accordion>
             </Box>
@@ -689,53 +526,212 @@ function ModelConfig(props: {
                         )
                     }
                     <Card sx={{ marginTop: '20px', padding: '14px' }} elevation={3} >
+                        {
+                            premium.premiumActivated && (
+                                <span style={{ fontWeight: 'bold', backgroundColor: 'green', color: 'white', padding: '2px 4px' }}>
+                                    {t('License Activated')}!
+                                </span>
+                            )
+                        }
+                        <Typography sx={{ opacity: '1' }}>
+                            {t('Chatbox AI provides an affordable solution to boost productivity with AI')}
+                        </Typography>
+                        <Box>
                             {
-                                premium.premiumActivated && (
-                                    <span style={{fontWeight: 'bold', backgroundColor: 'green', color: 'white', padding: '2px 4px'}}>
-                                        {t('License Activated')}!
-                                    </span>
+                                [
+                                    t('Fast access to AI services'),
+                                    t('Hassle-free setup'),
+                                    t('Ideal for work and study'),
+                                ].map((item) => (
+                                    <Box sx={{ display: 'flex', margin: '4px 0' }} >
+                                        <CheckCircleOutlineIcon color={premium.premiumActivated ? 'success' : 'action'} />
+                                        <b style={{ marginLeft: '5px' }}>{item}</b>
+                                    </Box>
+                                ))
+                            }
+                        </Box>
+                        <Box sx={{ marginTop: '10px' }}>
+                            {
+                                premium.premiumActivated ? (
+                                    <Button variant='outlined' onClick={() => { api.openLink('https://app.lemonsqueezy.com/my-orders') }}>
+                                        {t('Manage License and Devices')}
+                                    </Button>
+                                ) : (
+                                    <>
+                                        <Button variant='outlined' onClick={() => { api.openLink('https://benn.lemonsqueezy.com/checkout/buy/4ef6934d-ad7d-4dcc-86a2-4c09ff3e7132?logo=0&discount=0') }}>
+                                            {t('Get License')}
+                                        </Button>
+                                        <Button variant='text' sx={{ marginLeft: '10px' }}
+                                            onClick={() => { api.openLink('https://app.lemonsqueezy.com/my-orders') }}
+                                        >
+                                            {t('Retrieve License')}
+                                        </Button>
+                                    </>
                                 )
                             }
-                            <Typography sx={{ opacity: '1' }}>
-                                {t('Chatbox AI provides an affordable solution to boost productivity with AI')}
-                            </Typography>
-                            <Box>
-                                {
-                                    [
-                                        t('Fast access to AI services'),
-                                        t('Hassle-free setup'),
-                                        t('Ideal for work and study'),
-                                    ].map((item) => (
-                                        <Box sx={{ display: 'flex', margin: '4px 0' }} >
-                                            <CheckCircleOutlineIcon color={ premium.premiumActivated ? 'success' : 'action'} />
-                                            <b style={{ marginLeft: '5px' }}>{item}</b>
-                                        </Box>
-                                    ))
-                                }
-                            </Box>
-                            <Box sx={{ marginTop: '10px' }}>
-                                {
-                                    premium.premiumActivated ? (
-                                        <Button variant='outlined' onClick={() => { api.openLink('https://app.lemonsqueezy.com/my-orders') }}>
-                                            {t('Manage License and Devices')}
-                                        </Button>
-                                    ) : (
-                                        <>
-                                            <Button variant='outlined' onClick={() => { api.openLink('https://benn.lemonsqueezy.com/checkout/buy/4ef6934d-ad7d-4dcc-86a2-4c09ff3e7132?logo=0&discount=0') }}>
-                                                {t('Get License')}
-                                            </Button>
-                                            <Button variant='text' sx={{ marginLeft: '10px' }}
-                                                onClick={() => { api.openLink('https://app.lemonsqueezy.com/my-orders') }}
-                                            >
-                                                {t('Retrieve License')}
-                                            </Button>
-                                        </>
-                                    )
-                                }
-                            </Box>
+                        </Box>
                     </Card>
                 </Box>
             </Box>
         </Box>
     )
+}
+
+function TokenConfig(props: {
+    settingsEdit: Settings
+    setSettingsEdit: (settings: Settings) => void
+}) {
+    const { t } = useTranslation();
+
+    const { settingsEdit, setSettingsEdit } = props
+
+    const {
+        maxTokenLimit,
+        minTokenLimit,
+        maxContextTokenLimit,
+        minContextTokenLimit,
+        totalTokenLimit,
+    } = getTokenLimits(settingsEdit)
+
+    const sliderChangeHandler = (key: 'openaiMaxTokens' | 'openaiMaxContextTokens', max: number, min: number) => {
+        return (event: Event, newValue: number | number[], activeThumb: number) => {
+            if (Array.isArray(newValue)) {
+                newValue = newValue[0]
+            }
+            newValue = Math.floor(newValue)
+            if (newValue > max) {
+                newValue = max
+            }
+            if (newValue < min) {
+                newValue = min
+            }
+            const otherKey = key === 'openaiMaxTokens' ? 'openaiMaxContextTokens' : 'openaiMaxTokens'
+            if (newValue + settingsEdit[otherKey] > totalTokenLimit) {
+                settingsEdit[otherKey] = totalTokenLimit - newValue
+            }
+            settingsEdit[key] = newValue
+            setSettingsEdit({ ...settingsEdit });
+        };
+    }
+    const inputChangeHandler = (key: 'openaiMaxTokens' | 'openaiMaxContextTokens', max: number, min: number) => {
+        return (event: React.ChangeEvent<HTMLInputElement>) => {
+            const raw = event.target.value;
+            let newValue = parseInt(raw)
+            if (isNaN(newValue)) {
+                return
+            }
+            newValue = Math.floor(newValue)
+            if (newValue > max) {
+                newValue = max
+            }
+            if (newValue < min) {
+                newValue = min
+            }
+            const otherKey = key === 'openaiMaxTokens' ? 'openaiMaxContextTokens' : 'openaiMaxTokens'
+            if (newValue + settingsEdit[otherKey] > totalTokenLimit) {
+                settingsEdit[otherKey] = totalTokenLimit - newValue
+            }
+            settingsEdit[key] = newValue
+            setSettingsEdit({ ...settingsEdit });
+        };
+    }
+    return (
+        <Box>
+            <Box sx={{ marginTop: 3, marginBottom: -1 }}>
+                <Typography id="discrete-slider" gutterBottom>
+                    {t('max tokens in context')}
+                </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto' }}>
+                <Box sx={{ width: '92%' }}>
+                    <Slider
+                        value={settingsEdit.openaiMaxContextTokens}
+                        onChange={sliderChangeHandler('openaiMaxContextTokens', maxContextTokenLimit, minContextTokenLimit)}
+                        aria-labelledby="discrete-slider"
+                        valueLabelDisplay="auto"
+                        step={64}
+                        min={minContextTokenLimit}
+                        max={maxContextTokenLimit}
+                    />
+                </Box>
+                <TextField
+                    sx={{ marginLeft: 2, width: '100px' }}
+                    value={settingsEdit.openaiMaxContextTokens}
+                    onChange={inputChangeHandler('openaiMaxContextTokens', maxContextTokenLimit, minContextTokenLimit)}
+                    type="text"
+                    size="small"
+                    variant="outlined"
+                />
+            </Box>
+            <Box sx={{ marginTop: 3, marginBottom: -1 }}>
+                <Typography id="discrete-slider" gutterBottom>
+                    {t('max tokens to generate')}
+                </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto' }}>
+                <Box sx={{ width: '92%' }}>
+                    <Slider
+                        value={settingsEdit.openaiMaxTokens}
+                        onChange={sliderChangeHandler('openaiMaxTokens', maxTokenLimit, minTokenLimit)}
+                        aria-labelledby="discrete-slider"
+                        valueLabelDisplay="auto"
+                        step={64}
+                        min={minTokenLimit}
+                        max={maxTokenLimit}
+                    />
+                </Box>
+                {
+                    settingsEdit.openaiMaxTokens === 0 ? (
+                        <Box sx={{ marginLeft: 2, width: '100px' }}>
+                            <span style={{padding: '5px'}}>{t('Auto')}</span>
+                        </Box>
+                    ) : (
+                        <TextField
+                            sx={{ marginLeft: 2, width: '100px' }}
+                            value={settingsEdit.openaiMaxTokens}
+                            onChange={inputChangeHandler('openaiMaxTokens', maxTokenLimit, minTokenLimit)}
+                            type="text"
+                            size="small"
+                            variant="outlined"
+                        />
+                    )
+                }
+            </Box>
+        </Box>
+    )
+}
+
+function wrapDefaultTokenConfigUpdate(settings: Settings): Settings {
+    // 自动更新模型的token设置
+    if (settings.aiProvider === ModelProvider.OpenAI) {
+        const limits = getTokenLimits(settings)
+        settings.openaiMaxTokens = limits.minTokenLimit // 默认最小值
+        settings.openaiMaxContextTokens = limits.maxContextTokenLimit // 默认最大值
+    } else if (settings.aiProvider === ModelProvider.Azure) {
+        settings.openaiMaxTokens = defaults.settings().openaiMaxTokens
+        settings.openaiMaxContextTokens = defaults.settings().openaiMaxContextTokens
+    }
+    return { ...settings }
+}
+
+/**
+ * 根据设置获取模型的 maxTokens、maxContextTokens 的取值范围
+ * @param settings 
+ * @returns 
+ */
+function getTokenLimits(settings: Settings) {
+    const totalTokenLimit = settings.aiProvider === ModelProvider.OpenAI
+        ? modelConfigs[settings.model].maxTokens
+        : 32 * 1000
+    const maxContextTokenLimit = Math.floor(totalTokenLimit / 1000) * 1000
+    const minContextTokenLimit = 256
+    const maxTokenLimit = totalTokenLimit - minContextTokenLimit
+    const minTokenLimit = 0
+    return {
+        maxTokenLimit,
+        minTokenLimit,
+        maxContextTokenLimit,
+        minContextTokenLimit,
+        totalTokenLimit,
+    }
 }

@@ -12,8 +12,8 @@
     "api host": "API 域名",
     "model": "模型",
     "token": "Token",
-    "max tokens in context": "上下文中的最大 Token 数",
-    "max tokens per reply": "每个回复的最大 Token 数",
+    "max tokens in context": "上下文的最大Token数",
+    "max tokens to generate": "生成回答的最大Token数",
     "show model name": "显示模型名称",
     "settings modify warning": "这些设置面向专业的开发者，如果您不知道这些设置的含义，请不要修改它们，否则可能会导致请求错误。在修改前，请确认您的账户可以访问被选择的模型（不管您是什么账户类型，其中一些模型都需要额外申请，否则会导致请求出现 404 错误）；同时，请确认 token 数量没有超过被选择模型的限制，否则上下文超出限制后将会直接报错。",
     "please make sure you know what you are doing.": "请确保您知道自己在做什么。",
@@ -107,5 +107,6 @@
     "Chatbox AI provides an affordable solution to boost productivity with AI": "Chatbox AI 旨在让更多人享受AI带来的工作效率提升，你只需按照成本价支付背后的模型成本费用",
     "Fast access to AI services": "零门槛使用 AI 能力",
     "Hassle-free setup": "无需烦恼各种技术难题",
-    "Ideal for work and study": "适用于办公与学习场景"
+    "Ideal for work and study": "适用于办公与学习场景",
+    "Auto": "自动"
 }
