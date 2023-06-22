@@ -1,12 +1,12 @@
 {
-  "name": "electron-react-boilerplate",
+  "name": "chatbox",
   "version": "4.6.0",
-  "description": "A foundation for scalable desktop apps",
+  "description": "A cross-platform desktop client for ChatGPT API (OpenAI API)",
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://github.com/electron-react-boilerplate"
+    "name": "Benn Huang",
+    "email": "hi@benn.app",
+    "url": "https://github.com/Bin-Huang"
   },
   "main": "./dist/main/main.js",
   "scripts": {

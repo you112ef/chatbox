@@ -130,6 +130,7 @@ const configuration: webpack.Configuration = {
       },
       isBrowser: false,
       isDevelopment: false,
+      favicon: path.join(webpackPaths.srcRendererPath, 'favicon.ico'),
     }),
 
     new webpack.DefinePlugin({
