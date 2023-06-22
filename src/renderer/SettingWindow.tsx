@@ -716,8 +716,8 @@ function wrapDefaultTokenConfigUpdate(settings: Settings): Settings {
 
 /**
  * 根据设置获取模型的 maxTokens、maxContextTokens 的取值范围
- * @param settings 
- * @returns 
+ * @param settings
+ * @returns
  */
 function getTokenLimits(settings: Settings) {
     const totalTokenLimit = settings.aiProvider === ModelProvider.OpenAI

@@ -34,7 +34,7 @@ export default function AboutWindow(props: Props) {
                     <img src={iconPNG} style={{ width: '100px', margin: 0 }} />
                     <h3 style={{ margin: '4px 0 5px 0' }}>Chatbox(v{props.version})</h3>
                     <span>
-                        <Trans 
+                        <Trans
                             i18nKey="About Message"
                             values={{ Author: "Benn Huang" }}
                             components={[<a href={`https://chatboxai.app/redirect_app/author/${props.lang}`} target='_blank'></a>]}
