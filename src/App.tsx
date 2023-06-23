@@ -44,6 +44,7 @@ import * as toastActions from './stores/toastActions';
 import * as sessionActions from './stores/sessionActions';
 import * as settingActions from './stores/settingActions'
 import { usePremium } from './hooks/usePremium';
+import RemoteDialogWindow from './RemoteDialogWindow';
 
 function Main() {
     const { t } = useTranslation()
@@ -513,6 +514,8 @@ function Main() {
                     // }}
                     close={() => setOpenCopilotWindow(false)}
                 />
+                <RemoteDialogWindow />
+
                 <Toasts />
             </Grid>
         </Box >
