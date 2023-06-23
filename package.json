@@ -258,7 +258,7 @@
         "publish": {
             "provider": "github",
             "owner": "Bin-Huang",
-            "repo": "chatbox"
+            "repo": "chatbox-pro"
         }
     },
     "devEngines": {
