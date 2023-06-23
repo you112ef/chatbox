@@ -54,17 +54,17 @@ export default class MenuBuilder {
 
   buildDarwinTemplate(): MenuItemConstructorOptions[] {
     const subMenuAbout: DarwinMenuItemConstructorOptions = {
-      label: 'Electron',
+      label: 'Chatbox',
       submenu: [
         {
-          label: 'About ElectronReact',
+          label: 'About Chatbox',
           selector: 'orderFrontStandardAboutPanel:',
         },
         { type: 'separator' },
         { label: 'Services', submenu: [] },
         { type: 'separator' },
         {
-          label: 'Hide ElectronReact',
+          label: 'Hide Chatbox',
           accelerator: 'Command+H',
           selector: 'hide:',
         },
@@ -117,13 +117,13 @@ export default class MenuBuilder {
             this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
           },
         },
-        {
-          label: 'Toggle Developer Tools',
-          accelerator: 'Alt+Command+I',
-          click: () => {
-            this.mainWindow.webContents.toggleDevTools();
-          },
-        },
+        // {
+        //   label: 'Toggle Developer Tools',
+        //   accelerator: 'Alt+Command+I',
+        //   click: () => {
+        //     this.mainWindow.webContents.toggleDevTools();
+        //   },
+        // },
       ],
     };
     const subMenuViewProd: MenuItemConstructorOptions = {
@@ -157,27 +157,27 @@ export default class MenuBuilder {
         {
           label: 'Learn More',
           click() {
-            shell.openExternal('https://electronjs.org');
+            shell.openExternal('https://chatboxai.app');
           },
         },
         {
-          label: 'Documentation',
+          label: 'Github Repo',
           click() {
-            shell.openExternal(
-              'https://github.com/electron/electron/tree/main/docs#readme'
-            );
+            shell.openExternal('https://github.com/Bin-Huang/chatbox');
           },
         },
-        {
-          label: 'Community Discussions',
-          click() {
-            shell.openExternal('https://www.electronjs.org/community');
-          },
-        },
+        // {
+        //   label: 'Community Discussions',
+        //   click() {
+        //     shell.openExternal('https://www.electronjs.org/community');
+        //   },
+        // },
         {
           label: 'Search Issues',
           click() {
-            shell.openExternal('https://github.com/electron/electron/issues');
+            shell.openExternal(
+              'https://github.com/Bin-Huang/chatbox/issues?q=is%3Aissue'
+            );
           },
         },
       ],
@@ -232,13 +232,13 @@ export default class MenuBuilder {
                     );
                   },
                 },
-                {
-                  label: 'Toggle &Developer Tools',
-                  accelerator: 'Alt+Ctrl+I',
-                  click: () => {
-                    this.mainWindow.webContents.toggleDevTools();
-                  },
-                },
+                // {
+                //   label: 'Toggle &Developer Tools',
+                //   accelerator: 'Alt+Ctrl+I',
+                //   click: () => {
+                //     this.mainWindow.webContents.toggleDevTools();
+                //   },
+                // },
               ]
             : [
                 {
@@ -258,27 +258,27 @@ export default class MenuBuilder {
           {
             label: 'Learn More',
             click() {
-              shell.openExternal('https://electronjs.org');
+              shell.openExternal('https://chatboxai.app');
             },
           },
           {
-            label: 'Documentation',
+            label: 'Github Repo',
             click() {
-              shell.openExternal(
-                'https://github.com/electron/electron/tree/main/docs#readme'
-              );
+              shell.openExternal('https://github.com/Bin-Huang/chatbox');
             },
           },
-          {
-            label: 'Community Discussions',
-            click() {
-              shell.openExternal('https://www.electronjs.org/community');
-            },
-          },
+          // {
+          //   label: 'Community Discussions',
+          //   click() {
+          //     shell.openExternal('https://www.electronjs.org/community');
+          //   },
+          // },
           {
             label: 'Search Issues',
             click() {
-              shell.openExternal('https://github.com/electron/electron/issues');
+              shell.openExternal(
+                'https://github.com/Bin-Huang/chatbox/issues?q=is%3Aissue'
+              );
             },
           },
         ],
