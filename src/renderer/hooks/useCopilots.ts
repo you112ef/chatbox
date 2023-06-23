@@ -1,50 +1,48 @@
-import { useState, useEffect } from 'react'
-import * as remote from '../remote'
-import { CopilotDetail } from '../types'
-import { useAtom } from 'jotai'
-import { myCopilotsAtom } from '../stores/atoms'
+import { useState, useEffect } from 'react';
+import * as remote from '../remote';
+import { CopilotDetail } from '../types';
+import { useAtom } from 'jotai';
+import { myCopilotsAtom } from '../stores/atoms';
 
 export function useMyCopilots() {
-    const [copilots, setCopilots] = useAtom(myCopilotsAtom)
+    const [copilots, setCopilots] = useAtom(myCopilotsAtom);
 
     const addOrUpdate = (target: CopilotDetail) => {
         setCopilots((copilots) => {
-            let found = false
+            let found = false;
             const newCopilots = copilots.map((c) => {
                 if (c.id === target.id) {
-                    found = true
-                    return target
+                    found = true;
+                    return target;
                 }
-                return c
-            })
+                return c;
+            });
             if (!found) {
-                newCopilots.push(target)
+                newCopilots.push(target);
             }
-            return newCopilots
-        })
-    }
+            return newCopilots;
+        });
+    };
 
     const remove = (id: string) => {
-        setCopilots((copilots) => copilots.filter((c) => c.id !== id))
-    }
+        setCopilots((copilots) => copilots.filter((c) => c.id !== id));
+    };
 
     return {
         copilots,
         addOrUpdate,
         remove,
-    }
+    };
 }
 
-
 export function useRemoteCopilots(lang: string, windowOpen: boolean) {
-    const [copilots, _setCopilots] = useState<CopilotDetail[]>([])
+    const [copilots, _setCopilots] = useState<CopilotDetail[]>([]);
     useEffect(() => {
         if (windowOpen) {
             remote.listCopilots(lang).then((copilots) => {
-                _setCopilots(copilots)
-            })
+                _setCopilots(copilots);
+            });
         }
-    }, [lang, windowOpen])
-    return { copilots }
+    }, [lang, windowOpen]);
+    return { copilots };
 }
-

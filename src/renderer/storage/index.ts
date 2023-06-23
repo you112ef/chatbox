@@ -1,5 +1,5 @@
-import StoreStorage from './StoreStorage'
+import StoreStorage from './StoreStorage';
 
-const storage = new StoreStorage()
+const storage = new StoreStorage();
 
-export default storage
+export default storage;

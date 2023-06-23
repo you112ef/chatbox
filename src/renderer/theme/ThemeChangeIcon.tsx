@@ -1,5 +1,5 @@
 import { Button, ButtonGroup } from '@mui/material';
-import { ThemeMode } from '../types'
+import { ThemeMode } from '../types';
 import BrightnessMediumIcon from '@mui/icons-material/BrightnessMedium';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
@@ -20,8 +20,12 @@ interface ThemeChangeIconProps {
 export default function ThemeChangeButton(props: ThemeChangeIconProps) {
     return (
         <ButtonGroup>
-            {menuItems.map(item => (
-                <Button key={item} color={item === props.value ? 'primary' : 'inherit'} onClick={() => props.onChange(item)}>
+            {menuItems.map((item) => (
+                <Button
+                    key={item}
+                    color={item === props.value ? 'primary' : 'inherit'}
+                    onClick={() => props.onChange(item)}
+                >
                     {ThemeModeMapIcon[item]}
                 </Button>
             ))}

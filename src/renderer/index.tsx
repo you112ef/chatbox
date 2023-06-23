@@ -17,11 +17,10 @@ root.render(
     </React.StrictMode>
 );
 
-
 // calling IPC exposed from preload script
 window.electron.ipcRenderer.once('ipc-example', (arg: any) => {
-  // eslint-disable-next-line no-console
-  console.log(arg);
+    // eslint-disable-next-line no-console
+    console.log(arg);
 });
 window.electron.ipcRenderer.sendMessage('ipc-example', ['ping']);
 

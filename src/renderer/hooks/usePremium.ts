@@ -1,39 +1,50 @@
-import { useState, useEffect } from 'react'
-import * as remote from '../remote'
-import useSWR from 'swr'
-import { useAtom } from 'jotai'
-import { settingsAtom } from '../stores/atoms'
-import { activateLicense, deactivateLicense, validateLicense } from '../lemonsqueezy'
-import * as api from '../api'
-import { FetchError } from 'ofetch'
-import { ModelProvider } from '../types'
+import { useState, useEffect } from 'react';
+import * as remote from '../remote';
+import useSWR from 'swr';
+import { useAtom } from 'jotai';
+import { settingsAtom } from '../stores/atoms';
+import {
+    activateLicense,
+    deactivateLicense,
+    validateLicense,
+} from '../lemonsqueezy';
+import * as api from '../api';
+import { FetchError } from 'ofetch';
+import { ModelProvider } from '../types';
 
 export function usePremium() {
-    const [settings, setSettings] = useAtom(settingsAtom)
+    const [settings, setSettings] = useAtom(settingsAtom);
 
     // license activation
     const activateQuery = useSWR<{ valid: boolean }>(
         `license:${settings.licenseKey || ''}`,
         async () => {
-            const licenseKey = settings.licenseKey || ''
+            const licenseKey = settings.licenseKey || '';
             if (!licenseKey) {
-                return { valid: false }
+                return { valid: false };
             }
-            let instanceId = (settings.licenseInstances || {})[licenseKey]
+            let instanceId = (settings.licenseInstances || {})[licenseKey];
             if (!instanceId) {
-                instanceId = await activateLicense(licenseKey, await api.getInstanceName())
+                instanceId = await activateLicense(
+                    licenseKey,
+                    await api.getInstanceName()
+                );
                 setSettings((settings) => ({
                     ...settings,
                     licenseInstances: {
                         ...(settings.licenseInstances || {}),
                         [licenseKey]: instanceId,
                     },
-                }))
+                }));
             }
-            return validateLicense(licenseKey, instanceId)
+            return validateLicense(licenseKey, instanceId);
         },
         {
-            fallbackData: (settings.licenseInstances || {})[settings.licenseKey || ''] ? { valid: true } : undefined,
+            fallbackData: (settings.licenseInstances || {})[
+                settings.licenseKey || ''
+            ]
+                ? { valid: true }
+                : undefined,
             revalidateOnFocus: false,
             dedupingInterval: 10 * 60 * 1000,
             onError(err) {
@@ -43,36 +54,36 @@ export function usePremium() {
                             ...settings,
                             licenseKey: '',
                             licenseInstances: {},
-                        }))
+                        }));
                     }
                 }
             },
-        },
-    )
+        }
+    );
 
     const activate = (licenseKey: string) => {
         setSettings((settings) => ({
             ...settings,
             aiProvider: ModelProvider.ChatboxAI,
             licenseKey: licenseKey,
-        }))
-    }
+        }));
+    };
 
     return {
         premiumActivated: activateQuery.data?.valid || false,
         premiumIsLoading: activateQuery.isLoading,
         activate,
-    }
+    };
 }
 
 export function usePremiumPrice() {
-    const [price, setPrice] = useState('???')
-    const [discount, setDiscount] = useState('')
+    const [price, setPrice] = useState('???');
+    const [discount, setDiscount] = useState('');
     useEffect(() => {
         remote.getPremiumPrice().then((data) => {
-            setPrice(`$${data.price}`)
-            setDiscount(`-${data.discountLabel}`)
-        })
-    }, [])
-    return { price, discount }
+            setPrice(`$${data.price}`);
+            setDiscount(`-${data.discountLabel}`);
+        });
+    }, []);
+    return { price, discount };
 }

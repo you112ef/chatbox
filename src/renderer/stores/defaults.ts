@@ -1,5 +1,5 @@
-import { Config, Settings, ModelProvider } from '../types'
-import { ThemeMode } from '../types'
+import { Config, Settings, ModelProvider } from '../types';
+import { ThemeMode } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 
 export function settings(): Settings {
@@ -11,7 +11,7 @@ export function settings(): Settings {
         azureDeploymentName: '',
         azureEndpoint: '',
         chatglm6bUrl: '',
-        model: "gpt-3.5-turbo",
+        model: 'gpt-3.5-turbo',
         temperature: 0.7,
         openaiMaxTokens: 0,
         openaiMaxContextTokens: 4000,
@@ -23,9 +23,9 @@ export function settings(): Settings {
         theme: ThemeMode.System,
         language: 'en',
         fontSize: 13,
-    }
+    };
 }
 
 export function configs(): Config {
-    return { uuid: uuidv4() }
+    return { uuid: uuidv4() };
 }

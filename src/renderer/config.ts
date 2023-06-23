@@ -24,13 +24,15 @@ export const modelConfigs = {
     'gpt-4-32k-0613': {
         maxTokens: 32768,
     },
-}
-export type Model = (keyof typeof modelConfigs)
+};
+export type Model = keyof typeof modelConfigs;
 export const models = Array.from(Object.keys(modelConfigs)) as Model[];
 
 export const languageNameMap = {
-    'en': 'English',
+    en: 'English',
     'zh-Hans': '简体中文',
     'zh-Hant': '繁體中文',
 };
-export const languages = Array.from(Object.keys(languageNameMap)) as (keyof typeof languageNameMap)[];
+export const languages = Array.from(
+    Object.keys(languageNameMap)
+) as (keyof typeof languageNameMap)[];
