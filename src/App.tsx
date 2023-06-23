@@ -180,7 +180,7 @@ function Main() {
     useEffect(() => {
         if (
             currentSession.name === 'Untitled'
-            && currentSession.messages.findIndex(msg => msg.role === 'assistant') !== -1
+            && currentSession.messages.findIndex(msg => msg.role === 'assistant' && !msg.generating) !== -1
         ) {
             generateName(currentSession)
         }
@@ -229,8 +229,7 @@ function Main() {
             prompts.nameConversation(session.messages.slice(0, 3)),
             ({ text: name }) => {
                 name = name.replace(/['"“”]/g, '')
-                session.name = name
-                sessionActions.modify(session)
+                sessionActions.modifyName(session.id, name)
             },
             (err) => {
                 console.log(err)
