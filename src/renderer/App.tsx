@@ -61,6 +61,7 @@ import * as toastActions from './stores/toastActions';
 import * as sessionActions from './stores/sessionActions';
 import * as settingActions from './stores/settingActions';
 import { usePremium } from './hooks/usePremium';
+import RemoteDialogWindow from './RemoteDialogWindow';
 
 function Main() {
     const { t } = useTranslation();
@@ -212,7 +213,7 @@ function Main() {
         if (
             currentSession.name === 'Untitled' &&
             currentSession.messages.findIndex(
-                (msg) => msg.role === 'assistant'
+                (msg) => msg.role === 'assistant' && !msg.generating
             ) !== -1
         ) {
             generateName(currentSession);
@@ -269,8 +270,7 @@ function Main() {
             prompts.nameConversation(session.messages.slice(0, 3)),
             ({ text: name }) => {
                 name = name.replace(/['"“”]/g, '');
-                session.name = name;
-                sessionActions.modify(session);
+                sessionActions.modifyName(session.id, name);
             },
             (err) => {
                 console.log(err);
@@ -630,6 +630,8 @@ function Main() {
                     // }}
                     close={() => setOpenCopilotWindow(false)}
                 />
+                <RemoteDialogWindow />
+
                 <Toasts />
             </Grid>
         </Box>

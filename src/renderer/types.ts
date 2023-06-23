@@ -108,7 +108,7 @@ export const OpenAIRoleEnum = {
 } as const;
 
 export type OpenAIRoleEnumType =
-    (typeof OpenAIRoleEnum)[keyof typeof OpenAIRoleEnum];
+    typeof OpenAIRoleEnum[keyof typeof OpenAIRoleEnum];
 
 export interface OpenAIMessage {
     role: OpenAIRoleEnumType;

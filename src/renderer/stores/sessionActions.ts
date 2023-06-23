@@ -23,6 +23,18 @@ export function modify(update: Session) {
     );
 }
 
+export function modifyName(sessionId: string, name: string) {
+    const store = getDefaultStore();
+    store.set(atoms.sessionsAtom, (sessions) =>
+        sessions.map((s) => {
+            if (s.id === sessionId) {
+                return { ...s, name };
+            }
+            return s;
+        })
+    );
+}
+
 export function createEmptyThenSwitch() {
     const store = getDefaultStore();
     const session = getEmptySession();

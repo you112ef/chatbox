@@ -92,3 +92,24 @@ export async function getRemoteConfig(
     const json = await res.json();
     return json['data'];
 }
+
+export interface DialogConfig {
+    markdown: string;
+    buttons: { label: string; url: string }[];
+}
+
+export async function getdialogConfig(params: {
+    uuid: string;
+    language: string;
+    version: string;
+}): Promise<null | DialogConfig> {
+    const res = await fetch(`${apiHost}/api/dialog_config`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(params),
+    });
+    const json = await res.json();
+    return json['data'] || null;
+}
