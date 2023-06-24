@@ -721,7 +721,7 @@ function wrapDefaultTokenConfigUpdate(settings: Settings): Settings {
  */
 function getTokenLimits(settings: Settings) {
     const totalTokenLimit = settings.aiProvider === ModelProvider.OpenAI
-        ? modelConfigs[settings.model].maxTokens
+        ? (modelConfigs[settings.model]?.maxTokens || 4000) // 旧版本用户可能依然使用 modelConfigs 中弃用删除的模型，需要兼容 undefined 情况
         : 32 * 1000
     const maxContextTokenLimit = Math.floor(totalTokenLimit / 1000) * 1000
     const minContextTokenLimit = 256
