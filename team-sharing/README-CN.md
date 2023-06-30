@@ -15,6 +15,7 @@ Chatbox 可以让你的团队成员共享同一个 OpenAI API 账号的资源，
 ## 2. 环境安装
 
 登陆你的服务器，执行下面的命令
+
 ```shell
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
@@ -22,54 +23,56 @@ sh get-docker.sh
 
 ## 3. 启动 Chatbox 共享服务器（HTTP）
 
-- 将下面 `<YOUR_OPENAI_KEY>` 替换成你的 OpenAI API KEY。
-- 执行下面的命令，启动服务器。
+-   将下面 `<YOUR_OPENAI_KEY>` 替换成你的 OpenAI API KEY。
+-   执行下面的命令，启动服务器。
 
 ```shell
 docker run -p 80:80 -p 443:443 \
 -v ./caddy_config:/config -v ./caddy_data:/data \
 -e KEY=<YOUR_OPENAI_KEY> \
-bensdocker/chatbox-team 
+bensdocker/chatbox-team
 ```
 
 示例：
+
 ```shell
 docker run -p 80:80 -p 443:443 \
 -v ./caddy_config:/config -v ./caddy_data:/data \
 -e KEY=sk-xxxxxxxxxxxxxxxxxxx \
-bensdocker/chatbox-team 
+bensdocker/chatbox-team
 ```
 
 ## 4. 启动 Chatbox 共享服务器（HTTPS，推荐）
 
 如果你有一个域名，那么可以使用 HTTPS 来启动服务器，这样所有的对话消息在网络传输时都以密文加密，在隐私上更安全。
 
-- 让你的域名解析到这台服务器（并等待五分钟生效）；
-- 将下面 `<YOUR_DOMAIN>` 替换成你域名；
-- 将下面 `<YOUR_OPENAI_KEY>` 替换成你的 OpenAI API KEY；
-- 执行下面的命令，启动服务器。
+-   让你的域名解析到这台服务器（并等待五分钟生效）；
+-   将下面 `<YOUR_DOMAIN>` 替换成你域名；
+-   将下面 `<YOUR_OPENAI_KEY>` 替换成你的 OpenAI API KEY；
+-   执行下面的命令，启动服务器。
 
 ```shell
 docker run -p 80:80 -p 443:443 \
 -v ./caddy_config:/config -v ./caddy_data:/data \
 -e HOST=<YOUR_DOMAIN> \
 -e KEY=<YOUR_OPENAI_KEY> \
-bensdocker/chatbox-team 
+bensdocker/chatbox-team
 ```
 
 示例：
+
 ```shell
 docker run -p 80:80 -p 443:443 \
 -v ./caddy_config:/config -v ./caddy_data:/data \
 -e HOST=proxy.chatbox.run \
 -e KEY=sk-xxxxxxxxxxxxxxxxxx \
-bensdocker/chatbox-team 
+bensdocker/chatbox-team
 ```
 
 ## 5. 分享服务器地址
 
-- 如果你启动的是 HTTP，那么地址是 `http://<你的服务器IP>:80`；
-- 如果你启动的是 HTTPS，那么地址是 `https://<你的域名>`。
+-   如果你启动的是 HTTP，那么地址是 `http://<你的服务器IP>:80`；
+-   如果你启动的是 HTTPS，那么地址是 `https://<你的域名>`。
 
 向你的团队成员分享服务器地址。他们只需要在 Chatbox 设置中的 `API Host` 中填入地址，**不需要填写 API KEY**，就可以共享 OpenAI API 资源了。
 
