@@ -97,3 +97,31 @@ spctl -a -vv --verbose=4 ./release/build/mac/Chatbox.app
 # 对比
 spctl -a -vv --verbose=4 /Applications/Safari.app
 ```
+
+## 配置路径
+
+### 配置文件
+
+MacOS:
+
+```shell
+/Users/benn/Library/Application Support/xyz.chatboxapp.app
+
+cd /Users/benn/Library/Application\ Support/xyz.chatboxapp.app
+```
+
+Windows:
+
+```shell
+%APPDATA%/xyz.chatboxapp.app
+```
+
+### 主进程的日志文件
+
+MacOS
+
+```shell
+~/Library/Logs/xyz.chatboxapp.app/main.log
+
+tail -n 100 ~/Library/Logs/xyz.chatboxapp.app/main.log
+```
