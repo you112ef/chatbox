@@ -62,7 +62,7 @@ npm run release
 npm run build:renderer
 ```
 
-启动Web服务
+启动 Web 服务
 
 ```shell
 npm run serve:web

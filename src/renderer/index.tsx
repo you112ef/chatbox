@@ -8,7 +8,6 @@ import './i18n.js'
 
 import './styles/index.css'
 import './styles/index.scss'
-
 ;(async () => {
     const version = await api.getVersion().catch(() => 'unknown')
     Sentry.init({

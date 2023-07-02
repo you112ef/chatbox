@@ -13,9 +13,27 @@ export default class MenuBuilder {
     }
 
     buildMenu(): Menu {
-        if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
-            this.setupDevelopmentEnvironment()
-        }
+        this.mainWindow.webContents.on('context-menu', (_, props) => {
+            const items: (Electron.MenuItem | Electron.MenuItemConstructorOptions)[] = [
+                { role: 'copy' },
+                { role: 'cut' },
+                { role: 'paste' },
+                // { role: 'selectAll' },
+                // { role: 'zoom' },
+                // { role: 'zoomIn' },
+                // { role: 'zoomOut' },
+            ]
+            if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+                items.push({
+                    label: 'Inspect element',
+                    click: () => {
+                        this.mainWindow.webContents.inspectElement(x, y)
+                    },
+                })
+            }
+            const { x, y } = props
+            Menu.buildFromTemplate(items).popup({ window: this.mainWindow })
+        })
 
         const template = process.platform === 'darwin' ? this.buildDarwinTemplate() : this.buildDefaultTemplate()
 
@@ -23,21 +41,6 @@ export default class MenuBuilder {
         Menu.setApplicationMenu(menu)
 
         return menu
-    }
-
-    setupDevelopmentEnvironment(): void {
-        this.mainWindow.webContents.on('context-menu', (_, props) => {
-            const { x, y } = props
-
-            Menu.buildFromTemplate([
-                {
-                    label: 'Inspect element',
-                    click: () => {
-                        this.mainWindow.webContents.inspectElement(x, y)
-                    },
-                },
-            ]).popup({ window: this.mainWindow })
-        })
     }
 
     buildDarwinTemplate(): MenuItemConstructorOptions[] {
