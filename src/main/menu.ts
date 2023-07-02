@@ -13,11 +13,17 @@ export default class MenuBuilder {
     }
 
     buildMenu(): Menu {
+        let isCN = false
+        try {
+            isCN = app.getLocale().startsWith('zh')
+        } catch (e) {
+            console.log(e)
+        }
         this.mainWindow.webContents.on('context-menu', (_, props) => {
             const items: (Electron.MenuItem | Electron.MenuItemConstructorOptions)[] = [
-                { role: 'copy' },
-                { role: 'cut' },
-                { role: 'paste' },
+                { role: 'copy', label: isCN ? '复制' : 'Copy' },
+                { role: 'cut', label: isCN ? '剪切' : 'Cut' },
+                { role: 'paste', label: isCN ? '粘贴' : 'Paste' },
                 // { role: 'selectAll' },
                 // { role: 'zoom' },
                 // { role: 'zoomIn' },
