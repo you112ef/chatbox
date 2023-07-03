@@ -29,12 +29,11 @@ RUN npm install && npm run build:renderer
 
 # Release app
 
-FROM nginx:latest
+FROM caddy:2.6.4-alpine
 
 RUN rm -rf /usr/share/nginx/html/*
 
-COPY --from=builder /app/release/app/dist/renderer /usr/share/nginx/html
+COPY --from=builder /app/release/app/dist/renderer /usr/share/caddy
+COPY Caddyfile /etc/caddy/Caddyfile
 
 EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
