@@ -1,4 +1,5 @@
 import { app, Menu, shell, BrowserWindow, MenuItemConstructorOptions } from 'electron'
+import Locale from './locales'
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
     selector?: string
@@ -13,17 +14,12 @@ export default class MenuBuilder {
     }
 
     buildMenu(): Menu {
-        let isCN = false
-        try {
-            isCN = app.getLocale().startsWith('zh')
-        } catch (e) {
-            console.log(e)
-        }
+        const locale = new Locale()
         this.mainWindow.webContents.on('context-menu', (_, props) => {
             const items: (Electron.MenuItem | Electron.MenuItemConstructorOptions)[] = [
-                { role: 'copy', label: isCN ? '复制' : 'Copy' },
-                { role: 'cut', label: isCN ? '剪切' : 'Cut' },
-                { role: 'paste', label: isCN ? '粘贴' : 'Paste' },
+                { role: 'copy', label: locale.t('Copy'), accelerator: 'CmdOrCtrl+C' },
+                { role: 'cut', label: locale.t('Cut'), accelerator: 'CmdOrCtrl+X' },
+                { role: 'paste', label: locale.t('Paste'), accelerator: 'CmdOrCtrl+V' },
                 // { role: 'selectAll' },
                 // { role: 'zoom' },
                 // { role: 'zoomIn' },

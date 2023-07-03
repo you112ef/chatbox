@@ -9,19 +9,43 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path'
-import { app, BrowserWindow, shell, ipcMain, nativeTheme, session } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, nativeTheme, session, dialog } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
 import MenuBuilder from './menu'
 import { resolveHtmlPath } from './util'
+import Locale from './locales'
 import Store from 'electron-store'
 
 class AppUpdater {
     constructor() {
         log.transports.file.level = 'info'
+        const locale = new Locale()
+
         autoUpdater.logger = log
         autoUpdater.setFeedURL('https://chatboxai.app/api/auto_upgrade')
         autoUpdater.checkForUpdatesAndNotify()
+        let hasDialog = false
+        autoUpdater.on('update-downloaded', (event) => {
+            if (hasDialog) {
+                return
+            }
+            hasDialog = true
+            dialog
+                .showMessageBox({
+                    type: 'info',
+                    buttons: [
+                        locale.t('Restart'),
+                        locale.t('Later'),
+                    ],
+                    title: locale.t('App_Update'),
+                    message: event.releaseName || locale.t('New_Version'),
+                    detail: locale.t('New_Version_Downloaded'),
+                })
+                .then((returnValue) => {
+                    if (returnValue.response === 0) autoUpdater.quitAndInstall()
+                })
+        })
     }
 }
 

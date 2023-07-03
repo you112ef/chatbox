@@ -246,7 +246,8 @@
         "win": {
             "target": [
                 "nsis"
-            ]
+            ],
+            "artifactName": "${productName}-${version}-Setup.${ext}"
         },
         "linux": {
             "target": [
