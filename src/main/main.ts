@@ -34,10 +34,7 @@ class AppUpdater {
             dialog
                 .showMessageBox({
                     type: 'info',
-                    buttons: [
-                        locale.t('Restart'),
-                        locale.t('Later'),
-                    ],
+                    buttons: [locale.t('Restart'), locale.t('Later')],
                     title: locale.t('App_Update'),
                     message: event.releaseName || locale.t('New_Version'),
                     detail: locale.t('New_Version_Downloaded'),

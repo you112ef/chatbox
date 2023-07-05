@@ -127,6 +127,7 @@ tail -n 100 ~/Library/Logs/xyz.chatboxapp.app/main.log
 ```
 
 Windows
+
 ```
 %USERPROFILE%\AppData\Roaming\{app name}\logs\main.log
 ```
