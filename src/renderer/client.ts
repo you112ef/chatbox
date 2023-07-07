@@ -10,13 +10,7 @@ export interface OnTextCallbackResult {
     cancel: () => void
 }
 
-export async function reply(
-    setting: Settings,
-    config: Config,
-    msgs: Message[],
-    onText?: (option: OnTextCallbackResult) => void,
-    onError?: (error: Error) => void
-) {
+function genMessageContext(msgs: Message[], openaiMaxContextTokens: number) {
     if (msgs.length === 0) {
         throw new Error('No messages to replay')
     }
@@ -24,16 +18,12 @@ export async function reply(
     if (head) {
         msgs = msgs.slice(1)
     }
-
-    const maxTokens = setting.openaiMaxTokens
-    const maxContextTokenLimit = setting.openaiMaxContextTokens
     let totalLen = head ? wordCount.estimateTokens(head.content) : 0
-
     let prompts: Message[] = []
     for (let i = msgs.length - 1; i >= 0; i--) {
         const msg = msgs[i]
         const size = wordCount.estimateTokens(msg.content) + 20 // 20 作为预估的误差补偿
-        if (size + totalLen > maxContextTokenLimit) {
+        if (size + totalLen > openaiMaxContextTokens) {
             break
         }
         prompts = [msg, ...prompts]
@@ -42,6 +32,17 @@ export async function reply(
     if (head) {
         prompts = [head, ...prompts]
     }
+    return prompts
+}
+
+export async function reply(
+    setting: Settings,
+    config: Config,
+    msgs: Message[],
+    onText?: (option: OnTextCallbackResult) => void,
+    onError?: (error: Error) => void
+) {
+    const messageContext = genMessageContext(msgs, setting.openaiMaxContextTokens)
 
     // fetch has been canceled
     let hasCancel = false
@@ -54,9 +55,9 @@ export async function reply(
 
     let fullText = ''
     try {
-        const messages: OpenAIMessage[] = prompts.map((msg) => ({
-            role: msg.role,
-            content: msg.content,
+        const messages: OpenAIMessage[] = messageContext.map((m) => ({
+            role: m.role,
+            content: m.content,
         }))
         switch (setting.aiProvider) {
             case ModelProvider.ChatboxAI:
@@ -96,7 +97,7 @@ export async function reply(
                         host: setting.apiHost,
                         apiKey: setting.openaiKey,
                         modelName: setting.model,
-                        maxTokensNumber: maxTokens === 0 ? undefined : maxTokens,
+                        maxTokensNumber: setting.openaiMaxTokens === 0 ? undefined : setting.openaiMaxTokens,
                         temperature: setting.temperature,
                         messages,
                         signal: controller.signal,
@@ -127,7 +128,7 @@ export async function reply(
                         apikey: setting.azureApikey,
                         modelName: setting.model,
                         messages,
-                        maxTokensNumber: maxTokens === 0 ? undefined : maxTokens,
+                        maxTokensNumber: setting.openaiMaxTokens === 0 ? undefined : setting.openaiMaxTokens,
                         temperature: setting.temperature,
                         signal: controller.signal,
                     },
@@ -178,7 +179,6 @@ export async function reply(
         if (onError) {
             onError(error as any)
         }
-        throw error
     }
     return fullText
 }
