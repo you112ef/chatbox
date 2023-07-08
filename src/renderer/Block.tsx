@@ -13,6 +13,7 @@ import {
     MenuProps,
     Tooltip,
     ButtonGroup,
+    Alert,
 } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import PersonIcon from '@mui/icons-material/Person'
@@ -26,9 +27,8 @@ import StopIcon from '@mui/icons-material/Stop'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import * as wordCount from './utils'
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote'
-import mila from 'markdown-it-link-attributes'
-import { useTranslation, getI18n } from 'react-i18next'
-import { Message, OpenAIRoleEnum, OpenAIRoleEnumType } from './types'
+import { Trans, useTranslation } from 'react-i18next'
+import { aiProviderNameHash, Message, OpenAIRoleEnum, OpenAIRoleEnumType } from './types'
 import ReplayIcon from '@mui/icons-material/Replay'
 import CopyAllIcon from '@mui/icons-material/CopyAll'
 import './styles/Block.scss'
@@ -37,6 +37,7 @@ import { quoteAtom, showModelNameAtom, showTokenCountAtom, showWordCountAtom } f
 import { currsentSessionPicUrlAtom } from './stores/atoms'
 import * as sessionActions from './stores/sessionActions'
 import * as toastActions from './stores/toastActions'
+import * as settingActions from './stores/settingActions'
 import * as currentMessageActions from './stores/currentMessageActions'
 import md from './markdown'
 
@@ -222,22 +223,51 @@ function _Block(props: Props) {
                                 id={msgEdit.id + 'input'}
                             />
                         ) : (
-                            <Box
-                                sx={{
-                                    wordBreak: 'break-word',
-                                    wordWrap: 'break-word',
-                                }}
-                                className={'msg-content ' + (msg.role === 'system' ? 'msg-content-system' : '')}
-                                dangerouslySetInnerHTML={{
-                                    __html:
-                                        md.render(
-                                            typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)
-                                        ) +
-                                        (msg.generating && msg.content !== '...'
-                                            ? '<span class="loading"></span>'
-                                            : ''),
-                                }}
-                            />
+                            <>
+                                <Box
+                                    sx={{
+                                        wordBreak: 'break-word',
+                                        wordWrap: 'break-word',
+                                    }}
+                                    className={'msg-content ' + (msg.role === 'system' ? 'msg-content-system' : '')}
+                                    dangerouslySetInnerHTML={{
+                                        __html:
+                                            md.render(
+                                                typeof msg.content === 'string'
+                                                    ? msg.content
+                                                    : JSON.stringify(msg.content)
+                                            ) +
+                                            (msg.generating && msg.content !== '...'
+                                                ? '<span class="loading"></span>'
+                                                : ''),
+                                    }}
+                                />
+                                {msg.error && (
+                                    <Alert icon={false} severity="error">
+                                        {msg.error}
+                                        <br />
+                                        <br />
+                                        <Trans
+                                            i18nKey={
+                                                msg.error.startsWith('API Error')
+                                                    ? 'api error tips'
+                                                    : 'unknown error tips'
+                                            }
+                                            values={{
+                                                aiProvider: msg.aiProvider
+                                                    ? aiProviderNameHash[msg.aiProvider]
+                                                    : 'AI Provider',
+                                            }}
+                                            components={[
+                                                <a
+                                                    href={`https://chatboxai.app/redirect_app/faqs/${settingActions.getLanguage()}`}
+                                                    target="_blank"
+                                                ></a>,
+                                            ]}
+                                        />
+                                    </Alert>
+                                )}
+                            </>
                         )}
                         <Typography variant="body2" sx={{ opacity: 0.5 }}>
                             {tips.join(', ')}

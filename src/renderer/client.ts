@@ -10,6 +10,12 @@ export interface OnTextCallbackResult {
     cancel: () => void
 }
 
+export class ApiError extends Error {
+    constructor(message: string) {
+        super('API Error: ' + message)
+    }
+}
+
 function genMessageContext(msgs: Message[], openaiMaxContextTokens: number) {
     if (msgs.length === 0) {
         throw new Error('No messages to replay')
@@ -39,15 +45,12 @@ export async function reply(
     setting: Settings,
     config: Config,
     msgs: Message[],
-    onText?: (option: OnTextCallbackResult) => void,
-    onError?: (error: Error) => void
-) {
+    onText?: (option: OnTextCallbackResult) => void
+): Promise<string> {
     const messageContext = genMessageContext(msgs, setting.openaiMaxContextTokens)
 
-    // fetch has been canceled
-    let hasCancel = false
-    // abort signal for fetch
-    const controller = new AbortController()
+    let hasCancel = false // fetch has been canceled
+    const controller = new AbortController() // abort signal for fetch
     const cancel = () => {
         hasCancel = true
         controller.abort()
@@ -79,7 +82,7 @@ export async function reply(
                         }
                         const data = JSON.parse(message)
                         if (data.error) {
-                            throw new Error(`Error from Chatbox AI: ${JSON.stringify(data)}`)
+                            throw new ApiError(`Error from Chatbox AI: ${JSON.stringify(data)}`)
                         }
                         const text = data.choices[0]?.delta?.content
                         if (text !== undefined) {
@@ -108,7 +111,7 @@ export async function reply(
                         }
                         const data = JSON.parse(message)
                         if (data.error) {
-                            throw new Error(`Error from OpenAI: ${JSON.stringify(data)}`)
+                            throw new ApiError(`Error from OpenAI: ${JSON.stringify(data)}`)
                         }
                         const text = data.choices[0]?.delta?.content
                         if (text !== undefined) {
@@ -138,7 +141,7 @@ export async function reply(
                         }
                         const data = JSON.parse(message)
                         if (data.error) {
-                            throw new Error(`Error from Azure OpenAI: ${JSON.stringify(data)}`)
+                            throw new ApiError(`Error from Azure OpenAI: ${JSON.stringify(data)}`)
                         }
                         const text = data.choices[0]?.delta?.content
                         if (text !== undefined) {
@@ -174,22 +177,18 @@ export async function reply(
         // do not throw an exception
         // otherwise the content will be overwritten.
         if (hasCancel) {
-            return
+            return fullText
         }
-        if (onError) {
-            onError(error as any)
-        }
+        throw error
     }
     return fullText
 }
 
 export async function handleSSE(response: Response, onMessage: (message: string) => void) {
+    // 状态码不在 200～299 之间，一般是接口报错了
     if (!response.ok) {
-        const error = await response.json().catch(() => null)
-        throw new Error(error ? JSON.stringify(error) : `${response.status} ${response.statusText}`)
-    }
-    if (response.status !== 200) {
-        throw new Error(`Error from OpenAI: ${response.status} ${response.statusText}`)
+        const errJson = await response.json().catch(() => null)
+        throw new ApiError(errJson ? JSON.stringify(errJson) : `${response.status} ${response.statusText}`)
     }
     if (!response.body) {
         throw new Error('No response body')
@@ -337,19 +336,21 @@ async function requestChatGLM6B(
         history.push([userTmp, assistantTmp])
     }
 
-    const json = await api.httpPost(
-        url,
-        {
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: {
             'Content-Type': 'application/json',
         },
-        JSON.stringify({
+        body: JSON.stringify({
             prompt,
             history,
             // temperature,
-        })
-    )
+        }),
+    })
+    const json = await res.json()
+
     if (json.status !== 200) {
-        return handler(JSON.stringify(json))
+        throw new ApiError(JSON.stringify(json))
     }
     const str = typeof json.response === 'string' ? json.response : JSON.stringify(json.response)
     return handler(str)

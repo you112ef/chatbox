@@ -35,3 +35,9 @@ export function needEditSetting() {
     }
     return false
 }
+
+export function getLanguage() {
+    const store = getDefaultStore()
+    const settings = store.get(atoms.settingsAtom)
+    return settings.language
+}

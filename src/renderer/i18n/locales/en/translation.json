@@ -108,5 +108,7 @@
     "Fast access to AI services": "Fast access to AI services",
     "Hassle-free setup": "Hassle-free setup",
     "Ideal for work and study": "Ideal for work and study",
-    "Auto": "Auto"
+    "Auto": "Auto",
+    "unknown error tips": "Unknown Error. Please check your AI settings and account status, or <0>click here to view the FAQ document</0>.",
+    "api error tips": "An error has occurred with {{aiProvider}}, which is usually caused by incorrect settings or account issues. Please check your AI settings and account status, or <0>click here to view the FAQ document</0>."
 }

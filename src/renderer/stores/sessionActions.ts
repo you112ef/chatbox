@@ -1,9 +1,10 @@
 import { MutableRefObject } from 'react'
 import { getDefaultStore } from 'jotai'
-import { createMessage, Message, Session, getEmptySession, getMsgDisplayModelName } from '../types'
+import { createMessage, Message, Session, getEmptySession, getMsgDisplayModelName, aiProviderNameHash } from '../types'
 import * as atoms from './atoms'
 import * as client from '../client'
-import i18n from 'i18next'
+import * as promptFormat from '../prompts'
+import * as Sentry from '@sentry/react'
 
 export function modify(update: Session) {
     const store = getDefaultStore()
@@ -109,12 +110,15 @@ export async function generate(
     if (!session) {
         return
     }
+    const placeholder = '...'
     targetMsg = {
         ...targetMsg,
-        content: '...',
+        content: placeholder,
         cancel: undefined,
+        aiProvider: settings.aiProvider,
         model: getMsgDisplayModelName(settings),
         generating: true,
+        error: undefined,
     }
     modifyMessage(sessionId, targetMsg)
 
@@ -125,33 +129,31 @@ export async function generate(
     const promptMsgs = session.messages.slice(0, msgIx)
 
     messageScrollRef.current = { msgId: targetMsg.id, smooth: false }
-    await client.reply(
-        settings,
-        configs,
-        promptMsgs,
-        ({ text, cancel }) => {
+
+    try {
+        await client.reply(settings, configs, promptMsgs, ({ text, cancel }) => {
             targetMsg = {
                 ...targetMsg,
                 content: text,
                 cancel,
-                model: getMsgDisplayModelName(settings),
-                generating: true,
             }
             modifyMessage(sessionId, targetMsg)
-        },
-        (err) => {
-            targetMsg = {
-                ...targetMsg,
-                content: i18n.t('api request failed:') + ' \n```\n' + err.message + '\n```',
-                model: getMsgDisplayModelName(settings),
-                generating: false,
-            }
-            modifyMessage(sessionId, targetMsg)
+        })
+    } catch (err: any) {
+        if (!(err instanceof client.ApiError)) {
+            Sentry.captureException(err) // unexpected error should be reported
         }
-    )
+        targetMsg = {
+            ...targetMsg,
+            content: targetMsg.content === placeholder ? '' : targetMsg.content,
+            error: `${err.message}`,    // 这么写是为了避免类型问题
+        }
+        modifyMessage(sessionId, targetMsg)
+    }
     targetMsg = {
         ...targetMsg,
         generating: false,
+        cancel: undefined,
     }
     modifyMessage(sessionId, targetMsg)
 
@@ -175,5 +177,30 @@ export async function refreshMessage(
         insertMessage(sessionId, newAssistantMsg, ix + 1)
         messageScrollRef.current = { msgId: newAssistantMsg.id, smooth: true }
         await generate(sessionId, newAssistantMsg, messageScrollRef)
+    }
+}
+
+export async function generateName(sessionId: string) {
+    const store = getDefaultStore()
+    const settings = store.get(atoms.settingsAtom)
+    const configs = store.get(atoms.configsAtom)
+    const session = getSession(sessionId)
+    if (!session) {
+        return
+    }
+    try {
+        await client.reply(
+            settings,
+            configs,
+            promptFormat.nameConversation(session.messages.slice(0, 3)),
+            ({ text: name }) => {
+                name = name.replace(/['"“”]/g, '')
+                modifyName(session.id, name)
+            }
+        )
+    } catch (e: any) {
+        if (!(e instanceof client.ApiError)) {
+            Sentry.captureException(e) // unexpected error should be reported
+        }
     }
 }

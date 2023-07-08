@@ -5,7 +5,9 @@ export type Message = OpenAIMessage & {
     id: string
     cancel?: () => void
     generating?: boolean
+    aiProvider?: ModelProvider
     model?: string
+    error?: string
 }
 
 export interface Session {
@@ -45,6 +47,13 @@ export enum ModelProvider {
     OpenAI = 'openai',
     Azure = 'azure',
     ChatGLM6B = 'chatglm-6b',
+}
+
+export const aiProviderNameHash = {
+    [ModelProvider.OpenAI]: 'OpenAI API',
+    [ModelProvider.Azure]: 'Azure OpenAI API',
+    [ModelProvider.ChatGLM6B]: 'ChatGLM-6B',
+    [ModelProvider.ChatboxAI]: 'Chatbox-AI',
 }
 
 export interface Settings {
@@ -106,6 +115,7 @@ export const OpenAIRoleEnum = {
 
 export type OpenAIRoleEnumType = (typeof OpenAIRoleEnum)[keyof typeof OpenAIRoleEnum]
 
+// OpenAIMessage OpenAI API 消息类型。（对于业务追加的字段，应该放到 Message 中）
 export interface OpenAIMessage {
     role: OpenAIRoleEnumType
     content: string

@@ -1,18 +1,15 @@
 import React, { useEffect, useRef } from 'react'
-import * as client from './client'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import {
     Toolbar,
     Box,
     Badge,
-    Snackbar,
     List,
     ListSubheader,
     ListItemText,
     MenuList,
     IconButton,
-    Button,
     ButtonGroup,
     Stack,
     Grid,
@@ -20,7 +17,6 @@ import {
     ListItemIcon,
     Typography,
     Divider,
-    TextField,
     useTheme,
     useMediaQuery,
     debounce,
@@ -30,7 +26,6 @@ import SettingWindow from './SettingWindow'
 import ChatConfigWindow from './ChatConfigWindow'
 import SettingsIcon from '@mui/icons-material/Settings'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-import * as prompts from './prompts'
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices'
 import Save from '@mui/icons-material/Save'
 import CleanWidnow from './CleanWindow'
@@ -203,7 +198,7 @@ function Main() {
             currentSession.name === 'Untitled' &&
             currentSession.messages.findIndex((msg) => msg.role === 'assistant' && !msg.generating) !== -1
         ) {
-            generateName(currentSession)
+            sessionActions.generateName(currentSession.id)
         }
     }, [currentSession.messages])
 
@@ -243,21 +238,8 @@ function Main() {
     const editCurrentSession = () => {
         setConfigureChatConfig(currentSession)
     }
-    const generateName = async (session: Session) => {
-        client.reply(
-            settings,
-            configs,
-            prompts.nameConversation(session.messages.slice(0, 3)),
-            ({ text: name }) => {
-                name = name.replace(/['"“”]/g, '')
-                sessionActions.modifyName(session.id, name)
-            },
-            (err) => {
-                console.log(err)
-            }
-        )
-    }
-    const saveSession = async (session: Session) => {
+
+    const exportSession = async (session: Session) => {
         const content = session.messages
             .map((msg) => `**${msg.role}**:\n${msg.content}`)
             .join('\n\n--------------------\n\n')
@@ -490,7 +472,7 @@ function Main() {
                                 color="inherit"
                                 aria-label="menu"
                                 sx={{}}
-                                onClick={() => saveSession(currentSession)}
+                                onClick={() => exportSession(currentSession)}
                             >
                                 <Save />
                             </IconButton>

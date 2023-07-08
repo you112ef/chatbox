@@ -25,7 +25,7 @@ import {
     Box,
     useStepperContext,
 } from '@mui/material'
-import { Settings, ModelProvider } from './types'
+import { Settings, ModelProvider, ThemeMode, aiProviderNameHash } from './types'
 import ThemeChangeButton from './theme/ThemeChangeIcon'
 import { styled } from '@mui/material/styles'
 import MuiAccordionDetails from '@mui/material/AccordionDetails'
@@ -41,7 +41,6 @@ import { useAtom } from 'jotai'
 import { settingsAtom } from './stores/atoms'
 import * as toastActions from './stores/toastActions'
 import { switchTheme } from './hooks/useThemeSwitcher'
-import { ThemeMode } from './types'
 import * as api from './api'
 import { usePremium, usePremiumPrice } from './hooks/usePremium'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
@@ -130,7 +129,7 @@ export default function SettingWindow(props: Props) {
                                 }}
                             >
                                 <MenuItem key="chatbox-ai" value={ModelProvider.ChatboxAI}>
-                                    Chatbox AI
+                                    {aiProviderNameHash[ModelProvider.ChatboxAI]}
                                     <Chip
                                         label={t('Easy Access')}
                                         size="small"
@@ -140,13 +139,13 @@ export default function SettingWindow(props: Props) {
                                     />
                                 </MenuItem>
                                 <MenuItem key="openai" value={ModelProvider.OpenAI}>
-                                    OpenAI API
+                                    {aiProviderNameHash[ModelProvider.OpenAI]}
                                 </MenuItem>
                                 <MenuItem key="azure" value={ModelProvider.Azure}>
-                                    Azure OpenAI
+                                    {aiProviderNameHash[ModelProvider.Azure]}
                                 </MenuItem>
                                 <MenuItem key="chatglm" value={ModelProvider.ChatGLM6B}>
-                                    ChatGLM-6B
+                                    {aiProviderNameHash[ModelProvider.ChatGLM6B]}
                                 </MenuItem>
                                 <MenuItem key="claude" value="claude" disabled>
                                     Claude API ({t('Coming soon')})
