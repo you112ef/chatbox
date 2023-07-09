@@ -1,7 +1,6 @@
 import { Config, Message, ModelProvider, OpenAIMessage, Settings } from './types'
 import * as wordCount from './utils'
 import { createParser } from 'eventsource-parser'
-import * as api from './api'
 
 export interface OnTextCallbackResult {
     // response content
@@ -13,6 +12,14 @@ export interface OnTextCallbackResult {
 export class ApiError extends Error {
     constructor(message: string) {
         super('API Error: ' + message)
+    }
+}
+
+export class NetworkError extends Error {
+    public host: string
+    constructor(message: string, host: string) {
+        super('Network Error: ' + message)
+        this.host = host
     }
 }
 
@@ -247,6 +254,8 @@ async function requestOpenAI(
             stream: true,
         }),
         signal: signal,
+    }).catch((err) => {
+        throw new NetworkError(err.message, host)
     })
     return handleSSE(response, sseHandler)
 }
@@ -285,6 +294,8 @@ async function requestAzure(
             stream: true,
         }),
         signal: signal,
+    }).catch((err) => {
+        throw new NetworkError(err.message, endpoint)
     })
     return handleSSE(response, sseHandler)
 }
@@ -346,6 +357,8 @@ async function requestChatGLM6B(
             history,
             // temperature,
         }),
+    }).catch((err) => {
+        throw new NetworkError(err.message, url)
     })
     const json = await res.json()
 
@@ -384,6 +397,8 @@ async function requestChatboxAI(
             stream: true,
         }),
         signal: signal,
+    }).catch((err) => {
+        throw new NetworkError(err.message, 'https://chatboxai.app')
     })
     return handleSSE(response, sseHandler)
 }

@@ -110,5 +110,6 @@
     "Ideal for work and study": "Ideal for work and study",
     "Auto": "Auto",
     "unknown error tips": "Unknown Error. Please check your AI settings and account status, or <0>click here to view the FAQ document</0>.",
+    "network error tips": "A network error has occurred. Please check your current network status and the connection with {{host}}.",
     "api error tips": "An error has occurred with {{aiProvider}}, which is usually caused by incorrect settings or account issues. Please check your AI settings and account status, or <0>click here to view the FAQ document</0>."
 }

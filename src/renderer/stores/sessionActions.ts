@@ -119,6 +119,7 @@ export async function generate(
         model: getMsgDisplayModelName(settings),
         generating: true,
         error: undefined,
+        errorExtra: undefined,
     }
     modifyMessage(sessionId, targetMsg)
 
@@ -140,13 +141,20 @@ export async function generate(
             modifyMessage(sessionId, targetMsg)
         })
     } catch (err: any) {
-        if (!(err instanceof client.ApiError)) {
+        if (!(err instanceof Error)) {
+            err = new Error(`${err}`)
+        }
+        if (!(err instanceof client.ApiError || err instanceof client.NetworkError)) {
             Sentry.captureException(err) // unexpected error should be reported
         }
         targetMsg = {
             ...targetMsg,
             content: targetMsg.content === placeholder ? '' : targetMsg.content,
             error: `${err.message}`, // 这么写是为了避免类型问题
+            errorExtra: {
+                'aiProvider': settings.aiProvider,
+                'host': err['host']
+            },
         }
         modifyMessage(sessionId, targetMsg)
     }
@@ -199,7 +207,7 @@ export async function generateName(sessionId: string) {
             }
         )
     } catch (e: any) {
-        if (!(e instanceof client.ApiError)) {
+        if (!(e instanceof client.ApiError || e instanceof client.NetworkError)) {
             Sentry.captureException(e) // unexpected error should be reported
         }
     }

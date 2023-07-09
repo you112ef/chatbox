@@ -247,24 +247,47 @@ function _Block(props: Props) {
                                         {msg.error}
                                         <br />
                                         <br />
-                                        <Trans
-                                            i18nKey={
-                                                msg.error.startsWith('API Error')
-                                                    ? 'api error tips'
-                                                    : 'unknown error tips'
-                                            }
-                                            values={{
-                                                aiProvider: msg.aiProvider
-                                                    ? aiProviderNameHash[msg.aiProvider]
-                                                    : 'AI Provider',
-                                            }}
-                                            components={[
-                                                <a
-                                                    href={`https://chatboxai.app/redirect_app/faqs/${settingActions.getLanguage()}`}
-                                                    target="_blank"
-                                                ></a>,
-                                            ]}
-                                        />
+                                        {
+                                            msg.error.startsWith('API Error') && (
+                                                <Trans
+                                                    i18nKey='api error tips'
+                                                    values={{
+                                                        aiProvider: msg.aiProvider
+                                                            ? aiProviderNameHash[msg.aiProvider]
+                                                            : 'AI Provider',
+                                                    }}
+                                                    components={[
+                                                        <a
+                                                            href={`https://chatboxai.app/redirect_app/faqs/${settingActions.getLanguage()}`}
+                                                            target="_blank"
+                                                        ></a>,
+                                                    ]}
+                                                />
+                                            )
+                                        }
+                                        {
+                                            msg.error.startsWith('Network Error') && (
+                                                <Trans
+                                                    i18nKey='network error tips'
+                                                    values={{
+                                                        host: msg.errorExtra?.['host'] || 'AI Provider'
+                                                    }}
+                                                />
+                                            )
+                                        }
+                                        {
+                                            !msg.error.startsWith('API Error') &&!msg.error.startsWith('Network Error') && (
+                                                <Trans
+                                                    i18nKey='unknown error tips'
+                                                    components={[
+                                                        <a
+                                                            href={`https://chatboxai.app/redirect_app/faqs/${settingActions.getLanguage()}`}
+                                                            target="_blank"
+                                                        ></a>,
+                                                    ]}
+                                                />
+                                            )
+                                        }
                                     </Alert>
                                 )}
                             </>

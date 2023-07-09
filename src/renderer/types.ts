@@ -7,7 +7,11 @@ export type Message = OpenAIMessage & {
     generating?: boolean
     aiProvider?: ModelProvider
     model?: string
+
     error?: string
+    errorExtra?: {
+        [key: string]: any
+    }
 }
 
 export interface Session {

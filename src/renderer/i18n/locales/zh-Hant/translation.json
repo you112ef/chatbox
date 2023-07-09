@@ -110,5 +110,6 @@
     "Ideal for work and study": "適用於辦公與學習場景",
     "Auto": "自動化",
     "unknown error tips": "不明錯誤。請檢查 AI 設定和帳戶狀況，或者<0>點擊這裡查看常見問題文件</0>。",
+    "network error tips": "網路錯誤。請檢查目前的網路狀態，以及與 {{host}} 的連接情況。",
     "api error tips": "遇到了來自 {{aiProvider}} 的錯誤，一般是由錯誤設定或帳戶問題引起的。請檢查 AI 設定和帳戶狀況，或者<0>點擊這裡查看常見問題文件</0>。"
 }
