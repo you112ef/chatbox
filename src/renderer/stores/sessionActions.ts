@@ -146,7 +146,7 @@ export async function generate(
         targetMsg = {
             ...targetMsg,
             content: targetMsg.content === placeholder ? '' : targetMsg.content,
-            error: `${err.message}`,    // 这么写是为了避免类型问题
+            error: `${err.message}`, // 这么写是为了避免类型问题
         }
         modifyMessage(sessionId, targetMsg)
     }

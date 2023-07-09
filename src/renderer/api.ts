@@ -125,3 +125,13 @@ function exportTextFileFromWebPage(filename: string, content: string) {
     eleLink.click()
     document.body.removeChild(eleLink)
 }
+
+export const getLocale = async () => {
+    if (isWeb) {
+        return '' // 网页版暂时不自动更改语言，防止网址封禁
+    }
+    if (!electronAPI) {
+        return ''
+    }
+    return electronAPI.invoke('getLocale')
+}

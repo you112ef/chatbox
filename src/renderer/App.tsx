@@ -57,6 +57,7 @@ import * as sessionActions from './stores/sessionActions'
 import * as settingActions from './stores/settingActions'
 import { usePremium } from './hooks/usePremium'
 import RemoteDialogWindow from './RemoteDialogWindow'
+import { useSystemLanguageWhenInit } from './hooks/useDefaultSystemLanguage'
 
 function Main() {
     const { t } = useTranslation()
@@ -74,6 +75,7 @@ function Main() {
     // 是否展示设置窗口
     const [openSettingWindow, setOpenSettingWindow] = React.useState<'ai' | 'display' | null>(null)
     useEffect(() => {
+        // 通过定时器延迟启动，防止处理状态底层存储的异步加载前错误的初始数据
         setTimeout(() => {
             ;(async () => {
                 if (settingActions.needEditSetting()) {
@@ -568,6 +570,7 @@ function Main() {
 export default function App() {
     useI18nEffect()
     useAnalytics()
+    useSystemLanguageWhenInit()
     const theme = useThemeSwicher()
     return (
         <ThemeProvider theme={theme}>

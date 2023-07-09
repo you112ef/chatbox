@@ -1,3 +1,5 @@
+import { Language } from './types'
+
 // Ref: https://platform.openai.com/docs/models/gpt-4
 export const modelConfigs = {
     'gpt-3.5-turbo': {
@@ -33,4 +35,4 @@ export const languageNameMap = {
     'zh-Hans': '简体中文',
     'zh-Hant': '繁體中文',
 }
-export const languages = Array.from(Object.keys(languageNameMap)) as (keyof typeof languageNameMap)[]
+export const languages = Array.from(Object.keys(languageNameMap)) as Language[]

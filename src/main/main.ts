@@ -194,6 +194,13 @@ ipcMain.handle('getVersion', () => {
 ipcMain.handle('getPlatform', () => {
     return process.platform
 })
+ipcMain.handle('getLocale', () => {
+    try {
+        return app.getLocale()
+    } catch (e: any) {
+        return ''
+    }
+})
 ipcMain.handle('openLink', (event, link) => {
     return shell.openExternal(link)
 })

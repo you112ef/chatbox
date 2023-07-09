@@ -83,7 +83,8 @@ export interface Settings {
     showModelName?: boolean
 
     theme: ThemeMode
-    language: string
+    language: Language
+    languageInited?: boolean
     fontSize: number
 
     licenseKey?: string
@@ -91,6 +92,8 @@ export interface Settings {
         [key: string]: string
     }
 }
+
+export type Language = 'en' | 'zh-Hans' | 'zh-Hant'
 
 export function getMsgDisplayModelName(settings: Settings) {
     switch (settings.aiProvider) {

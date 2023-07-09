@@ -171,7 +171,7 @@ export default function SettingWindow(props: Props) {
                                 onChange={(e) => {
                                     setSettingsEdit({
                                         ...settingsEdit,
-                                        language: e.target.value,
+                                        language: e.target.value as any,
                                     })
                                 }}
                             >

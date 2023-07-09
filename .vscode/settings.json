@@ -8,9 +8,9 @@
     "eslint.validate": ["javascript", "javascriptreact", "html", "typescriptreact"],
     "eslint.enable": false,
 
-    "javascript.validate.enable": false,
-    "javascript.format.enable": false,
-    "typescript.format.enable": false,
+    // "javascript.validate.enable": false,
+    // "javascript.format.enable": false,
+    // "typescript.format.enable": false,
 
     "editor.tabSize": 4,
 
