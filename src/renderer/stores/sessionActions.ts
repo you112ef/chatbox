@@ -212,3 +212,15 @@ export async function generateName(sessionId: string) {
         }
     }
 }
+
+/**
+ * 清理会话列表，保留指定数量的会话
+ * @param keepNum 保留的会话数量（顶部顺序）
+ */
+export function clearConversationList(keepNum: number) {
+    const store = getDefaultStore()
+    const keepSessionIds = store.get(atoms.sortedSessionsAtom)
+        .slice(0, keepNum)
+        .map(s => s.id) // 这里必须用 id，因为使用写入 sorted 版本会改变顺序
+    store.set(atoms.sessionsAtom, (sessions) => sessions.filter(s => keepSessionIds.includes(s.id)))
+}

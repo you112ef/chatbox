@@ -17,7 +17,7 @@
     }
 }
 
-// markdown table
+/* // markdown table */
 html[data-theme='light'] .msg-block {
     table {
         background-color: #f8f8f8;
@@ -69,7 +69,7 @@ html[data-theme='dark'] .msg-block {
     }
 }
 
-// code block
+/* // code block */
 .code-block-wrapper {
     width: 100%;
 }
@@ -111,22 +111,22 @@ html[data-theme='dark'] .msg-block {
     opacity: 1;
 }
 
-// message
+/* // message */
 html[data-theme='light'] {
     .assistant-msg {
         background-color: #fafafa;
     }
-    // .system-msg {
+    /* // .system-msg {
     //     background-color: #fafafa;
-    // }
+    // } */
 }
 html[data-theme='dark'] {
     .assistant-msg {
         background-color: #212121;
     }
-    // .system-msg {
-    //     background-color: #212121;
-    // }
+    /* // .system-msg { */
+    /* //     background-color: #212121; */
+    /* // } */
 }
 
 .loading {

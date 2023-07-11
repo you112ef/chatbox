@@ -111,5 +111,7 @@
     "Auto": "自动",
     "unknown error tips": "未知错误。请检查 AI 设置和账户情况，或者<0>点击这里查看常见问题文档</0>。",
     "network error tips": "网络错误。请检查当前的网络状态，以及与 {{host}} 的连接情况。",
-    "api error tips": "遇到了来自 {{aiProvider}} 的错误，一般是由错误设置或账户问题引起的。请检查 AI 设置和账户情况，或者<0>点击这里查看常见问题文档</0>。"
+    "api error tips": "遇到了来自 {{aiProvider}} 的错误，一般是由错误设置或账户问题引起的。请检查 AI 设置和账户情况，或者<0>点击这里查看常见问题文档</0>。",
+    "Clear Conversation List": "会话列表清理",
+    "Keep only the Top N Conversations in List and Permanently Delete the Rest": "仅保留会话列表中最前面的<0>{{n}}</0>条会话，永久删除其余会话"
 }

@@ -48,11 +48,11 @@ export function fetchThemeDesign(realTheme: 'light' | 'dark', fontSize: number):
             ...(realTheme === 'light'
                 ? {}
                 : {
-                      background: {
-                          default: 'rgb(40, 40, 40)',
-                          paper: 'rgb(40, 40, 40)',
-                      },
-                  }),
+                    background: {
+                        default: 'rgb(40, 40, 40)',
+                        paper: 'rgb(40, 40, 40)',
+                    },
+                }),
         },
         typography: {
             // In Chinese and Japanese the characters are usually larger,

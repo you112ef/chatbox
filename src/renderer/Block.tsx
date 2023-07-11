@@ -31,7 +31,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { aiProviderNameHash, Message, OpenAIRoleEnum, OpenAIRoleEnumType } from './types'
 import ReplayIcon from '@mui/icons-material/Replay'
 import CopyAllIcon from '@mui/icons-material/CopyAll'
-import './styles/Block.scss'
+import './styles/block.css'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { quoteAtom, showModelNameAtom, showTokenCountAtom, showWordCountAtom } from './stores/atoms'
 import { currsentSessionPicUrlAtom } from './stores/atoms'
@@ -40,6 +40,7 @@ import * as toastActions from './stores/toastActions'
 import * as settingActions from './stores/settingActions'
 import * as currentMessageActions from './stores/currentMessageActions'
 import md from './markdown'
+import '../../node_modules/highlight.js/styles/github-dark.css'
 
 export interface Props {
     id?: string
