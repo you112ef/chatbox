@@ -264,12 +264,16 @@ function Main() {
 
     return (
         <Box className="App">
-            <Grid
-                container
-                sx={{
-                    height: '100%',
-                }}
-            >
+            {/* 应用标题栏 */}
+            <div style={{
+                height: '26px',
+                padding: '0',
+                margin: '0',
+                '-webkit-app-region': 'drag', // 实现窗口拖动
+                '-webkit-user-select': 'none',
+            } as any}></div>
+
+            <Grid container sx={{ height: 'calc(100% - 40px)' }} >
                 {showMenu && (
                     <Grid
                         item
