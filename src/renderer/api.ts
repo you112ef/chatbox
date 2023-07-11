@@ -135,3 +135,13 @@ export const getLocale = async () => {
     }
     return electronAPI.invoke('getLocale')
 }
+
+export const switchWindowMaximized = async () => {
+    if (isWeb) {
+        return ''
+    }
+    if (!electronAPI) {
+        return ''
+    }
+    return electronAPI.invoke('switchWindowMaximized')
+}

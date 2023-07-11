@@ -265,7 +265,7 @@ function Main() {
     return (
         <Box className="App">
             {/* 应用标题栏 */}
-            <div style={{
+            <div onDoubleClick={api.switchWindowMaximized} style={{
                 height: '26px',
                 padding: '0',
                 margin: '0',

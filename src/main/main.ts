@@ -206,4 +206,15 @@ ipcMain.handle('openLink', (event, link) => {
     return shell.openExternal(link)
 })
 
+ipcMain.handle('switchWindowMaximized', () => {
+    if (!mainWindow) {
+        return
+    }
+    if (mainWindow.isMaximized()) {
+        mainWindow.unmaximize()
+    } else {
+        mainWindow.maximize()
+    }
+})
+
 ipcMain.handle('shouldUseDarkColors', () => nativeTheme.shouldUseDarkColors)
