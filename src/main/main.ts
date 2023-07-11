@@ -91,6 +91,7 @@ const createWindow = async () => {
         height: 728,
         icon: getAssetPath('icon.png'),
         titleBarStyle: 'hidden',
+        titleBarOverlay: true,
         webPreferences: {
             webSecurity: false,
             allowRunningInsecureContent: false,
