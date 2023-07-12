@@ -48,7 +48,7 @@ npm run release
 
 这个命令用于正式版本的打包与发布，需要正确配置 `electron-builder.env` 才能正常工作。
 
-这个命令会在本地打包所有系统平台版本，并进行签名、公证，然后发布到远程资源服务（Cloudflare R2、Github Release Draft）。打包结果在 `release/release` 目录下。
+这个命令会根据当前 commit 的 tag 作为版本号（`v0.0.2`），然后在本地打包所有系统平台版本，并进行签名、公证，然后发布到远程资源服务（Cloudflare R2、Github Release Draft）。打包结果在 `release/release` 目录下。
 
 命令执行完成后，应该检查打印日志中文件上传是否正常、 `[Notarize]` 相关是否正常。
 
