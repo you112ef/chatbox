@@ -266,9 +266,7 @@ function Main() {
         <Box className="App">
             <Grid
                 container
-                sx={{
-                    height: '100%',
-                }}
+                sx={{ height: '100%', paddingTop: '18px' }}
             >
                 {showMenu && (
                     <Grid
@@ -296,7 +294,7 @@ function Main() {
                                 },
                             }}
                         >
-                            <Toolbar variant="dense" className='flex align-center py-4' >
+                            <Toolbar variant="dense" className='flex align-center mb-4' >
                                 <img src={icon} className='w-8 h-8 mr-2 align-middle inline-block' />
                                 <span className='text-2xl align-middle inline-block'>Chatbox</span>
                             </Toolbar>
@@ -422,7 +420,7 @@ function Main() {
                             position: 'relative',
                         }}
                     >
-                        <Toolbar style={{ padding: '0 10px' }}>
+                        <Toolbar variant='dense' style={{ padding: '0 10px' }}>
                             <IconButton onClick={() => setShowMenu(!showMenu)}>
                                 {!showMenu ? (
                                     <img
