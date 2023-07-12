@@ -40,6 +40,8 @@ npm run package
 
 根据当前系统平台进行打包。理论上不需要任何配置就能打包成功，打包结果在 `release/build` 目录下，打包后的应用程序可以正常安装使用，但是因为缺少证书无法作为正式版本直接发布。
 
+有时候 MacOS 打包可能会报错 `hdiutil exited with code ERR_ELECTRON_BUILDER_CANNOT_EXECUTE`，这和 MacOS 系统 Ventura 版本有关，也非常容易解决：进入设置，安全与隐私，完全磁盘访问权限，添加终端应用即可；进入设置，安全与隐私，应用管理，勾选终端。参考：https://github.com/electron-userland/electron-builder/issues/5431
+
 ### 打包与发布（正式版）
 
 ```shell
