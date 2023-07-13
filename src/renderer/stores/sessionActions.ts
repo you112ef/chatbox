@@ -5,6 +5,7 @@ import * as atoms from './atoms'
 import * as client from '../client'
 import * as promptFormat from '../prompts'
 import * as Sentry from '@sentry/react'
+import * as utils from '../utils'
 
 export function modify(update: Session) {
     const store = getDefaultStore()
@@ -56,6 +57,8 @@ export function getSession(sessionId: string) {
 
 export function insertMessage(sessionId: string, msg: Message, index?: number) {
     const store = getDefaultStore()
+    msg.wordCount = utils.countWord(msg.content)
+    msg.tokenCount = utils.estimateTokensFromMessages([msg])
     store.set(atoms.sessionsAtom, (sessions) =>
         sessions.map((s) => {
             if (s.id === sessionId) {
@@ -75,7 +78,7 @@ export function insertMessage(sessionId: string, msg: Message, index?: number) {
     )
 }
 
-export function modifyMessage(sessionId: string, updated: Message) {
+export function modifyMessage(sessionId: string, updated: Message, refreshCounting?: boolean) {
     const store = getDefaultStore()
     store.set(atoms.sessionsAtom, (sessions) =>
         sessions.map((s) => {
@@ -84,10 +87,29 @@ export function modifyMessage(sessionId: string, updated: Message) {
                     ...s,
                     messages: s.messages.map((m) => {
                         if (m.id === updated.id) {
+                            if (refreshCounting) {
+                                updated.wordCount = utils.countWord(updated.content)
+                                updated.tokenCount = utils.estimateTokensFromMessages([updated])
+                            }
                             return updated
                         }
                         return m
                     }),
+                }
+            }
+            return s
+        })
+    )
+}
+
+export function removeMessage(sessionId: string, messageId: string) {
+    const store = getDefaultStore()
+    store.set(atoms.sessionsAtom, (sessions) =>
+        sessions.map((s) => {
+            if (s.id === sessionId) {
+                return {
+                    ...s,
+                    messages: s.messages.filter((m) => m.id !== messageId),
                 }
             }
             return s
@@ -127,7 +149,10 @@ export async function generate(
     if (msgIx < 0) {
         return
     }
-    const promptMsgs = session.messages.slice(0, msgIx)
+    const promptMsgs = genMessageContext(
+        session.messages.slice(0, msgIx),
+        settings.openaiMaxContextTokens,
+    )
 
     messageScrollRef.current = { msgId: targetMsg.id, smooth: false }
 
@@ -156,14 +181,15 @@ export async function generate(
                 'host': err['host']
             },
         }
-        modifyMessage(sessionId, targetMsg)
+        modifyMessage(sessionId, targetMsg, true)
     }
     targetMsg = {
         ...targetMsg,
         generating: false,
         cancel: undefined,
+        tokensUsed: utils.estimateTokensFromMessages([...promptMsgs, targetMsg]),
     }
-    modifyMessage(sessionId, targetMsg)
+    modifyMessage(sessionId, targetMsg, true)
 
     messageScrollRef.current = null
 }
@@ -181,7 +207,7 @@ export async function refreshMessage(
     } else {
         const session = getSession(sessionId)
         const ix = session?.messages.findIndex((m) => m.id === msg.id) ?? -1
-        const newAssistantMsg = createMessage('assistant', '....')
+        const newAssistantMsg = createMessage('assistant', '...')
         insertMessage(sessionId, newAssistantMsg, ix + 1)
         messageScrollRef.current = { msgId: newAssistantMsg.id, smooth: true }
         await generate(sessionId, newAssistantMsg, messageScrollRef)
@@ -223,4 +249,32 @@ export function clearConversationList(keepNum: number) {
         .slice(0, keepNum)
         .map(s => s.id) // 这里必须用 id，因为使用写入 sorted 版本会改变顺序
     store.set(atoms.sessionsAtom, (sessions) => sessions.filter(s => keepSessionIds.includes(s.id)))
+}
+
+/**
+ * 从历史消息中生成 prompt 上下文
+ */
+function genMessageContext(msgs: Message[], openaiMaxContextTokens: number) {
+    if (msgs.length === 0) {
+        throw new Error('No messages to replay')
+    }
+    const head = msgs[0].role === 'system' ? msgs[0] : undefined
+    if (head) {
+        msgs = msgs.slice(1)
+    }
+    let totalLen = head ? utils.estimateTokensFromMessages([head]) : 0
+    let prompts: Message[] = []
+    for (let i = msgs.length - 1; i >= 0; i--) {
+        const msg = msgs[i]
+        const size = utils.estimateTokensFromMessages([msg]) + 20 // 20 作为预估的误差补偿
+        if (size + totalLen > openaiMaxContextTokens) {
+            break
+        }
+        prompts = [msg, ...prompts]
+        totalLen += size
+    }
+    if (head) {
+        prompts = [head, ...prompts]
+    }
+    return prompts
 }

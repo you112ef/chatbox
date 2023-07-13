@@ -12,6 +12,10 @@ export type Message = OpenAIMessage & {
     errorExtra?: {
         [key: string]: any
     }
+
+    wordCount?: number // 当前消息的字数
+    tokenCount?: number // 当前消息的 token 数量
+    tokensUsed?: number // 生成当前消息的 token 使用量
 }
 
 export interface Session {
@@ -84,6 +88,7 @@ export interface Settings {
 
     showWordCount?: boolean
     showTokenCount?: boolean
+    showTokenUsed?: boolean
     showModelName?: boolean
 
     theme: ThemeMode

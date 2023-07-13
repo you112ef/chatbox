@@ -19,6 +19,7 @@ export function settings(): Settings {
         // maxTokens: "2048",
         showWordCount: false,
         showTokenCount: false,
+        showTokenUsed: false,
         showModelName: false,
         theme: ThemeMode.System,
         language: 'en',

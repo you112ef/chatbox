@@ -25,7 +25,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import { styled, alpha } from '@mui/material/styles'
 import StopIcon from '@mui/icons-material/Stop'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import * as wordCount from './utils'
+import * as utils from './utils'
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote'
 import { Trans, useTranslation } from 'react-i18next'
 import { aiProviderNameHash, Message, OpenAIRoleEnum, OpenAIRoleEnumType } from './types'
@@ -34,11 +34,10 @@ import CopyAllIcon from '@mui/icons-material/CopyAll'
 import './styles/block.css'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { quoteAtom, showModelNameAtom, showTokenCountAtom, showWordCountAtom } from './stores/atoms'
-import { currsentSessionPicUrlAtom } from './stores/atoms'
+import { currsentSessionPicUrlAtom, showTokenUsedAtom } from './stores/atoms'
 import * as sessionActions from './stores/sessionActions'
 import * as toastActions from './stores/toastActions'
 import * as settingActions from './stores/settingActions'
-import * as currentMessageActions from './stores/currentMessageActions'
 import md from './markdown'
 import '../../node_modules/highlight.js/styles/github-dark.css'
 
@@ -57,6 +56,7 @@ function _Block(props: Props) {
     const showModelName = useAtomValue(showModelNameAtom)
     const showTokenCount = useAtomValue(showTokenCountAtom)
     const showWordCount = useAtomValue(showWordCountAtom)
+    const showTokenUsed = useAtomValue(showTokenUsedAtom)
     const currentSessionPicUrl = useAtomValue(currsentSessionPicUrlAtom)
 
     const { msg } = props
@@ -88,7 +88,7 @@ function _Block(props: Props) {
 
     // stop action
     const onStop = useCallback(() => {
-        currentMessageActions.modify({ ...msg, generating: false })
+        sessionActions.modifyMessage(props.sessionId, { ...msg, generating: false }, true)
         msg?.cancel?.()
     }, [msg])
 
@@ -104,24 +104,33 @@ function _Block(props: Props) {
     }
 
     const setMsg = (updated: Message) => {
-        currentMessageActions.modify(updated)
+        sessionActions.modifyMessage(props.sessionId, updated, true)
     }
     const onDelMsg = () => {
         setMsgEdit(null)
         setIsHovering(false)
         setAnchorEl(null)
-        currentMessageActions.remove(msg)
+        sessionActions.removeMessage(props.sessionId, msg.id)
     }
 
     const tips: string[] = []
+    if (showWordCount && !msg.generating) {
+        // 兼容旧版本没有提前计算的消息
+        tips.push(`word count: ${
+            msg.wordCount !== undefined ?  msg.wordCount : utils.countWord(msg.content)
+        }`)
+    }
+    if (showTokenCount && !msg.generating) {
+        // 兼容旧版本没有提前计算的消息
+        tips.push(`token count: ~${
+            msg.tokenCount !== undefined ? msg.tokenCount : utils.estimateTokensFromMessages([msg])
+        }`)
+    }
+    if (showTokenUsed && msg.role === 'assistant' && !msg.generating) {
+        tips.push(`tokens used: ~${msg.tokensUsed || 'unknown'}`)
+    }
     if (showModelName && props.msg.role === 'assistant') {
         tips.push(`model: ${props.msg.model || 'unknown'}`)
-    }
-    if (showWordCount) {
-        tips.push(`word count: ${wordCount.countWord(msg.content)}`)
-    }
-    if (showTokenCount) {
-        tips.push(`token estimate: ${wordCount.estimateTokens(msg.content)}`)
     }
     return (
         <ListItem

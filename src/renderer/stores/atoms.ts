@@ -27,6 +27,7 @@ export const settingsAtom = atom(
 export const languageAtom = focusAtom(settingsAtom, (optic) => optic.prop('language'))
 export const showWordCountAtom = focusAtom(settingsAtom, (optic) => optic.prop('showWordCount'))
 export const showTokenCountAtom = focusAtom(settingsAtom, (optic) => optic.prop('showTokenCount'))
+export const showTokenUsedAtom = focusAtom(settingsAtom, (optic) => optic.prop('showTokenUsed'))
 export const showModelNameAtom = focusAtom(settingsAtom, (optic) => optic.prop('showModelName'))
 export const themeAtom = focusAtom(settingsAtom, (optic) => optic.prop('theme'))
 export const fontSizeAtom = focusAtom(settingsAtom, (optic) => optic.prop('fontSize'))
@@ -120,3 +121,6 @@ export const quoteAtom = atom<string>('')
 // theme
 
 export const realThemeAtom = atom<'light' | 'dark'>('light')
+
+// configVersion 配置版本，用于判断是否需要升级迁移配置（migration）
+export const configVersionAtom = atomWithStorage<number>('configVersion', 0, storage)

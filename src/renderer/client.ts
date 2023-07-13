@@ -1,5 +1,5 @@
 import { Config, Message, ModelProvider, OpenAIMessage, Settings } from './types'
-import * as wordCount from './utils'
+import * as utils from './utils'
 import { createParser } from 'eventsource-parser'
 
 export interface OnTextCallbackResult {
@@ -23,39 +23,12 @@ export class NetworkError extends Error {
     }
 }
 
-function genMessageContext(msgs: Message[], openaiMaxContextTokens: number) {
-    if (msgs.length === 0) {
-        throw new Error('No messages to replay')
-    }
-    const head = msgs[0].role === 'system' ? msgs[0] : undefined
-    if (head) {
-        msgs = msgs.slice(1)
-    }
-    let totalLen = head ? wordCount.estimateTokens(head.content) : 0
-    let prompts: Message[] = []
-    for (let i = msgs.length - 1; i >= 0; i--) {
-        const msg = msgs[i]
-        const size = wordCount.estimateTokens(msg.content) + 20 // 20 作为预估的误差补偿
-        if (size + totalLen > openaiMaxContextTokens) {
-            break
-        }
-        prompts = [msg, ...prompts]
-        totalLen += size
-    }
-    if (head) {
-        prompts = [head, ...prompts]
-    }
-    return prompts
-}
-
 export async function reply(
     setting: Settings,
     config: Config,
-    msgs: Message[],
+    messageContext: Message[],
     onText?: (option: OnTextCallbackResult) => void
 ): Promise<string> {
-    const messageContext = genMessageContext(msgs, setting.openaiMaxContextTokens)
-
     let hasCancel = false // fetch has been canceled
     const controller = new AbortController() // abort signal for fetch
     const cancel = () => {

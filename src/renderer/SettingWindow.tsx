@@ -219,7 +219,7 @@ export default function SettingWindow(props: Props) {
                         <FormGroup>
                             <FormControlLabel
                                 control={<Switch />}
-                                label={t('show word count')}
+                                label={t('show message word count')}
                                 checked={settingsEdit.showWordCount}
                                 onChange={(e, checked) =>
                                     setSettingsEdit({
@@ -230,12 +230,23 @@ export default function SettingWindow(props: Props) {
                             />
                             <FormControlLabel
                                 control={<Switch />}
-                                label={t('show estimated token count')}
+                                label={t('show message token count')}
                                 checked={settingsEdit.showTokenCount}
                                 onChange={(e, checked) =>
                                     setSettingsEdit({
                                         ...settingsEdit,
                                         showTokenCount: checked,
+                                    })
+                                }
+                            />
+                            <FormControlLabel
+                                control={<Switch />}
+                                label={t('show message token usage')}
+                                checked={settingsEdit.showTokenUsed}
+                                onChange={(e, checked) =>
+                                    setSettingsEdit({
+                                        ...settingsEdit,
+                                        showTokenUsed: checked,
                                     })
                                 }
                             />

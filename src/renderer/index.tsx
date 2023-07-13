@@ -5,6 +5,7 @@ import * as Sentry from '@sentry/react'
 import reportWebVitals from './reportWebVitals'
 import * as api from './api'
 import './i18n.js'
+import * as migration from './stores/migration'
 
 import './styles/index.css'
 ;(async () => {
@@ -26,6 +27,8 @@ import './styles/index.css'
         release: version,
     })
 })()
+
+migration.migrate()
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
