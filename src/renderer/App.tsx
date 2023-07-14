@@ -78,13 +78,13 @@ function Main() {
     useEffect(() => {
         // 通过定时器延迟启动，防止处理状态底层存储的异步加载前错误的初始数据
         setTimeout(() => {
-            ; (async () => {
+            ;(async () => {
                 if (settingActions.needEditSetting()) {
                     const remoteConfig = await remote.getRemoteConfig('setting_chatboxai_first').catch(
                         () =>
-                        ({
-                            setting_chatboxai_first: false,
-                        } as RemoteConfig)
+                            ({
+                                setting_chatboxai_first: false,
+                            } as RemoteConfig)
                     )
                     if (remoteConfig.setting_chatboxai_first) {
                         settingActions.modify({
@@ -264,10 +264,7 @@ function Main() {
 
     return (
         <Box className="App">
-            <Grid
-                container
-                sx={{ height: '100%', paddingTop: '18px' }}
-            >
+            <Grid container sx={{ height: '100%', paddingTop: '18px' }}>
                 {showMenu && (
                     <Grid
                         item
@@ -294,9 +291,9 @@ function Main() {
                                 },
                             }}
                         >
-                            <Toolbar variant="dense" className='flex align-center mb-4' >
-                                <img src={icon} className='w-8 h-8 mr-2 align-middle inline-block' />
-                                <span className='text-2xl align-middle inline-block'>Chatbox</span>
+                            <Toolbar variant="dense" className="flex align-center mb-4">
+                                <img src={icon} className="w-8 h-8 mr-2 align-middle inline-block" />
+                                <span className="text-2xl align-middle inline-block">Chatbox</span>
                             </Toolbar>
 
                             <MenuList
@@ -309,11 +306,22 @@ function Main() {
                                 }}
                                 className="scroll"
                                 subheader={
-                                    <ListSubheader className='px-4 flex justify-between items-center'>
-                                        <span className='text-xs opacity-80'>{t('chat')}</span>
+                                    <ListSubheader className="px-4 flex justify-between items-center">
+                                        <span className="text-xs opacity-80">{t('chat')}</span>
                                         <IconButton onClick={() => setOpenClearConversationListWindow(true)}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 opacity-80">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                strokeWidth={1.5}
+                                                stroke="currentColor"
+                                                className="w-4 h-4 opacity-80"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
+                                                />
                                             </svg>
                                         </IconButton>
                                     </ListSubheader>
@@ -420,7 +428,7 @@ function Main() {
                             position: 'relative',
                         }}
                     >
-                        <Toolbar variant='dense' style={{ padding: '0 10px' }}>
+                        <Toolbar variant="dense" style={{ padding: '0 10px' }}>
                             <IconButton onClick={() => setShowMenu(!showMenu)}>
                                 {!showMenu ? (
                                     <img
@@ -555,7 +563,10 @@ function Main() {
                     close={() => setOpenCopilotWindow(false)}
                 />
                 <RemoteDialogWindow />
-                <ClearConversationListWindow open={openClearConversationListWindow} close={() => setOpenClearConversationListWindow(false)}/>
+                <ClearConversationListWindow
+                    open={openClearConversationListWindow}
+                    close={() => setOpenClearConversationListWindow(false)}
+                />
                 <Toasts />
             </Grid>
         </Box>

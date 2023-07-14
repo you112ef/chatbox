@@ -28,16 +28,19 @@ export default function ClearConversationListWindow(props: Props) {
     }
     return (
         <Dialog open={props.open} onClose={props.close}>
-            <DialogTitle>
-                {t('Clear Conversation List')}
-            </DialogTitle>
+            <DialogTitle>{t('Clear Conversation List')}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    <Trans i18nKey='Keep only the Top N Conversations in List and Permanently Delete the Rest'
-                        values={{n: value}}
+                    <Trans
+                        i18nKey="Keep only the Top N Conversations in List and Permanently Delete the Rest"
+                        values={{ n: value }}
                         components={[
-                            <Input value={value} onChange={handleInput}
-                                className='w-14' inputProps={{style: {textAlign: 'center'}}} />
+                            <Input
+                                value={value}
+                                onChange={handleInput}
+                                className="w-14"
+                                inputProps={{ style: { textAlign: 'center' } }}
+                            />,
                         ]}
                     />
                 </DialogContentText>

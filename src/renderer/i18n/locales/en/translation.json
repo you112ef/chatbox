@@ -114,5 +114,7 @@
     "network error tips": "A network error has occurred. Please check your current network status and the connection with {{host}}.",
     "api error tips": "An error has occurred with {{aiProvider}}, which is usually caused by incorrect settings or account issues. Please check your AI settings and account status, or <0>click here to view the FAQ document</0>.",
     "Clear Conversation List": "Clear Conversation List",
-    "Keep only the Top N Conversations in List and Permanently Delete the Rest": "Keep only the top <0>{{n}}</0> conversations in list and permanently delete the rest"
+    "Keep only the Top N Conversations in List and Permanently Delete the Rest": "Keep only the top <0>{{n}}</0> conversations in list and permanently delete the rest",
+    "Reset to Default": "Reset to Default",
+    "Default Prompt for New Conversation": "Default Prompt for New Conversation"
 }

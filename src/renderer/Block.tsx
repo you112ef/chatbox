@@ -116,15 +116,13 @@ function _Block(props: Props) {
     const tips: string[] = []
     if (showWordCount && !msg.generating) {
         // 兼容旧版本没有提前计算的消息
-        tips.push(`word count: ${
-            msg.wordCount !== undefined ?  msg.wordCount : utils.countWord(msg.content)
-        }`)
+        tips.push(`word count: ${msg.wordCount !== undefined ? msg.wordCount : utils.countWord(msg.content)}`)
     }
     if (showTokenCount && !msg.generating) {
         // 兼容旧版本没有提前计算的消息
-        tips.push(`token count: ~${
-            msg.tokenCount !== undefined ? msg.tokenCount : utils.estimateTokensFromMessages([msg])
-        }`)
+        tips.push(
+            `token count: ~${msg.tokenCount !== undefined ? msg.tokenCount : utils.estimateTokensFromMessages([msg])}`
+        )
     }
     if (showTokenUsed && msg.role === 'assistant' && !msg.generating) {
         tips.push(`tokens used: ~${msg.tokensUsed || 'unknown'}`)
@@ -257,15 +255,34 @@ function _Block(props: Props) {
                                         {msg.error}
                                         <br />
                                         <br />
-                                        {
-                                            msg.error.startsWith('API Error') && (
+                                        {msg.error.startsWith('API Error') && (
+                                            <Trans
+                                                i18nKey="api error tips"
+                                                values={{
+                                                    aiProvider: msg.aiProvider
+                                                        ? aiProviderNameHash[msg.aiProvider]
+                                                        : 'AI Provider',
+                                                }}
+                                                components={[
+                                                    <a
+                                                        href={`https://chatboxai.app/redirect_app/faqs/${settingActions.getLanguage()}`}
+                                                        target="_blank"
+                                                    ></a>,
+                                                ]}
+                                            />
+                                        )}
+                                        {msg.error.startsWith('Network Error') && (
+                                            <Trans
+                                                i18nKey="network error tips"
+                                                values={{
+                                                    host: msg.errorExtra?.['host'] || 'AI Provider',
+                                                }}
+                                            />
+                                        )}
+                                        {!msg.error.startsWith('API Error') &&
+                                            !msg.error.startsWith('Network Error') && (
                                                 <Trans
-                                                    i18nKey='api error tips'
-                                                    values={{
-                                                        aiProvider: msg.aiProvider
-                                                            ? aiProviderNameHash[msg.aiProvider]
-                                                            : 'AI Provider',
-                                                    }}
+                                                    i18nKey="unknown error tips"
                                                     components={[
                                                         <a
                                                             href={`https://chatboxai.app/redirect_app/faqs/${settingActions.getLanguage()}`}
@@ -273,31 +290,7 @@ function _Block(props: Props) {
                                                         ></a>,
                                                     ]}
                                                 />
-                                            )
-                                        }
-                                        {
-                                            msg.error.startsWith('Network Error') && (
-                                                <Trans
-                                                    i18nKey='network error tips'
-                                                    values={{
-                                                        host: msg.errorExtra?.['host'] || 'AI Provider'
-                                                    }}
-                                                />
-                                            )
-                                        }
-                                        {
-                                            !msg.error.startsWith('API Error') &&!msg.error.startsWith('Network Error') && (
-                                                <Trans
-                                                    i18nKey='unknown error tips'
-                                                    components={[
-                                                        <a
-                                                            href={`https://chatboxai.app/redirect_app/faqs/${settingActions.getLanguage()}`}
-                                                            target="_blank"
-                                                        ></a>,
-                                                    ]}
-                                                />
-                                            )
-                                        }
+                                            )}
                                     </Alert>
                                 )}
                             </>

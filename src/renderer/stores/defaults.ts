@@ -24,9 +24,15 @@ export function settings(): Settings {
         theme: ThemeMode.System,
         language: 'en',
         fontSize: 13,
+
+        defaultPrompt: getDefaultPrompt(),
     }
 }
 
 export function configs(): Config {
     return { uuid: uuidv4() }
+}
+
+export function getDefaultPrompt() {
+    return 'You are a helpful assistant. You can help me by answering my questions. You can also ask me questions.'
 }

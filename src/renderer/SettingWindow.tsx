@@ -23,7 +23,6 @@ import {
     Slider,
     Typography,
     Box,
-    useStepperContext,
 } from '@mui/material'
 import { Settings, ModelProvider, ThemeMode, aiProviderNameHash } from './types'
 import ThemeChangeButton from './theme/ThemeChangeIcon'
@@ -42,15 +41,17 @@ import { settingsAtom } from './stores/atoms'
 import * as toastActions from './stores/toastActions'
 import { switchTheme } from './hooks/useThemeSwitcher'
 import * as api from './api'
-import { usePremium, usePremiumPrice } from './hooks/usePremium'
+import { usePremium } from './hooks/usePremium'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import { models, languageNameMap, languages, modelConfigs } from './config'
 
 const { useEffect } = React
 
+type Tab = 'ai' | 'display' | 'chat'
+
 interface Props {
     open: boolean
-    targetTab?: 'ai' | 'display'
+    targetTab?: Tab
     close(): void
 }
 
@@ -59,7 +60,7 @@ export default function SettingWindow(props: Props) {
     const [settings, setSettings] = useAtom(settingsAtom)
 
     // 标签页控制
-    const [currentTab, setCurrentTab] = React.useState<'ai' | 'display'>('ai')
+    const [currentTab, setCurrentTab] = React.useState<Tab>('ai')
     useEffect(() => {
         if (props.targetTab) {
             setCurrentTab(props.targetTab)
@@ -107,6 +108,7 @@ export default function SettingWindow(props: Props) {
                     <Tabs value={currentTab} onChange={(_, value) => setCurrentTab(value)}>
                         <Tab label={t('ai')} value="ai" />
                         <Tab label={t('display')} value="display" />
+                        <Tab label={t('chat')} value="chat" />
                         {/* <Tab label={t('premium')} value='premium' /> */}
                     </Tabs>
                 </Box>
@@ -265,10 +267,40 @@ export default function SettingWindow(props: Props) {
                     </Box>
                 )}
 
-                {/* {
-                    currentTab === 'premium' && (
-                    )
-                } */}
+                {currentTab === 'chat' && (
+                    <Box>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            label={t('Default Prompt for New Conversation')}
+                            fullWidth
+                            variant="outlined"
+                            value={settingsEdit.defaultPrompt || ''}
+                            multiline
+                            maxRows={8}
+                            onChange={(e) =>
+                                setSettingsEdit({
+                                    ...settingsEdit,
+                                    defaultPrompt: e.target.value.trim(),
+                                })
+                            }
+                        />
+                        <Button
+                            size="small"
+                            variant="text"
+                            color="inherit"
+                            sx={{ opacity: 0.5, textTransform: 'none' }}
+                            onClick={() => {
+                                setSettingsEdit({
+                                    ...settingsEdit,
+                                    defaultPrompt: defaults.getDefaultPrompt(),
+                                })
+                            }}
+                        >
+                            {t('Reset to Default')}
+                        </Button>
+                    </Box>
+                )}
             </DialogContent>
             <DialogActions>
                 <Button onClick={onCancel}>{t('cancel')}</Button>

@@ -1,11 +1,13 @@
 import { MutableRefObject } from 'react'
 import { getDefaultStore } from 'jotai'
-import { createMessage, Message, Session, getEmptySession, getMsgDisplayModelName, aiProviderNameHash } from '../types'
+import { createMessage, Message, Session, getMsgDisplayModelName } from '../types'
 import * as atoms from './atoms'
 import * as client from '../client'
 import * as promptFormat from '../prompts'
 import * as Sentry from '@sentry/react'
 import * as utils from '../utils'
+import { v4 as uuidv4 } from 'uuid'
+import * as defaults from './defaults'
 
 export function modify(update: Session) {
     const store = getDefaultStore()
@@ -149,10 +151,7 @@ export async function generate(
     if (msgIx < 0) {
         return
     }
-    const promptMsgs = genMessageContext(
-        session.messages.slice(0, msgIx),
-        settings.openaiMaxContextTokens,
-    )
+    const promptMsgs = genMessageContext(session.messages.slice(0, msgIx), settings.openaiMaxContextTokens)
 
     messageScrollRef.current = { msgId: targetMsg.id, smooth: false }
 
@@ -177,8 +176,8 @@ export async function generate(
             content: targetMsg.content === placeholder ? '' : targetMsg.content,
             error: `${err.message}`, // 这么写是为了避免类型问题
             errorExtra: {
-                'aiProvider': settings.aiProvider,
-                'host': err['host']
+                aiProvider: settings.aiProvider,
+                host: err['host'],
             },
         }
         modifyMessage(sessionId, targetMsg, true)
@@ -245,10 +244,11 @@ export async function generateName(sessionId: string) {
  */
 export function clearConversationList(keepNum: number) {
     const store = getDefaultStore()
-    const keepSessionIds = store.get(atoms.sortedSessionsAtom)
+    const keepSessionIds = store
+        .get(atoms.sortedSessionsAtom)
         .slice(0, keepNum)
-        .map(s => s.id) // 这里必须用 id，因为使用写入 sorted 版本会改变顺序
-    store.set(atoms.sessionsAtom, (sessions) => sessions.filter(s => keepSessionIds.includes(s.id)))
+        .map((s) => s.id) // 这里必须用 id，因为使用写入 sorted 版本会改变顺序
+    store.set(atoms.sessionsAtom, (sessions) => sessions.filter((s) => keepSessionIds.includes(s.id)))
 }
 
 /**
@@ -277,4 +277,20 @@ function genMessageContext(msgs: Message[], openaiMaxContextTokens: number) {
         prompts = [head, ...prompts]
     }
     return prompts
+}
+
+export function getEmptySession(name: string = 'Untitled'): Session {
+    const store = getDefaultStore()
+    const settings = store.get(atoms.settingsAtom)
+    return {
+        id: uuidv4(),
+        name: name,
+        messages: [
+            {
+                id: uuidv4(),
+                role: 'system',
+                content: settings.defaultPrompt || defaults.getDefaultPrompt(),
+            },
+        ],
+    }
 }

@@ -23,6 +23,6 @@ function migrate_0_to_1() {
     // 如果历史版本的用户开启了消息的token计数展示，那么也帮他们开启token消耗展示
     if (settings.showTokenCount) {
         settings.showTokenUsed = true
-        store.set(settingsAtom, {...settings})
+        store.set(settingsAtom, { ...settings })
     }
 }

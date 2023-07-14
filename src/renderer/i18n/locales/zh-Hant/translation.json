@@ -22,8 +22,8 @@
     "to default values.": "可以恢復預設值。",
     "cancel": "取消",
     "save": "儲存",
-    "chat": "聊天",
-    "new chat": "新聊天",
+    "chat": "對話",
+    "new chat": "新對話",
     "send": "傳送",
     "[Enter] send, [Shift+Enter] line break, [Ctrl+Enter] send without generating": "[Enter] 傳送、[Shift＋Enter] 換行、[Ctrl＋Enter] 傳送但不產生",
     "version": "版本",
@@ -114,5 +114,7 @@
     "network error tips": "網路錯誤。請檢查目前的網路狀態，以及與 {{host}} 的連接情況。",
     "api error tips": "遇到了來自 {{aiProvider}} 的錯誤，一般是由錯誤設定或帳戶問題引起的。請檢查 AI 設定和帳戶狀況，或者<0>點擊這裡查看常見問題文件</0>。",
     "Clear Conversation List": "清理對話列表",
-    "Keep only the Top N Conversations in List and Permanently Delete the Rest": "僅保留最前面的<0>{{n}}</0>條對話紀錄，永久刪除其他對話紀錄"
+    "Keep only the Top N Conversations in List and Permanently Delete the Rest": "僅保留最前面的<0>{{n}}</0>條對話紀錄，永久刪除其他對話紀錄",
+    "Reset to Default": "重置為預設值",
+    "Default Prompt for New Conversation": "新對話的預設提示"
 }

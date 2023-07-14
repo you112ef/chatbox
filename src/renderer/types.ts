@@ -35,21 +35,6 @@ export function createMessage(role: OpenAIRoleEnumType = OpenAIRoleEnum.User, co
     }
 }
 
-export function getEmptySession(name: string = 'Untitled'): Session {
-    return {
-        id: uuidv4(),
-        name: name,
-        messages: [
-            {
-                id: uuidv4(),
-                role: 'system',
-                content:
-                    'You are a helpful assistant. You can help me by answering my questions. You can also ask me questions.',
-            },
-        ],
-    }
-}
-
 export enum ModelProvider {
     ChatboxAI = 'chatbox-ai',
     OpenAI = 'openai',
@@ -100,6 +85,8 @@ export interface Settings {
     licenseInstances?: {
         [key: string]: string
     }
+
+    defaultPrompt?: string // 新会话的默认 prompt
 }
 
 export type Language = 'en' | 'zh-Hans' | 'zh-Hant'

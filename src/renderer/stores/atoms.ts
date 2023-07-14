@@ -1,8 +1,9 @@
-import { atom, useAtom, SetStateAction } from 'jotai'
-import { Session, getEmptySession, Toast, Settings, Config, CopilotDetail } from '../types'
-import { selectAtom, splitAtom, atomWithStorage } from 'jotai/utils'
+import { atom, SetStateAction } from 'jotai'
+import { Session, Toast, Settings, Config, CopilotDetail } from '../types'
+import { splitAtom, atomWithStorage } from 'jotai/utils'
 import { focusAtom } from 'jotai-optics'
 import * as defaults from './defaults'
+import { v4 as uuidv4 } from 'uuid'
 import storage from '../storage'
 
 // settings
@@ -48,7 +49,7 @@ export const sessionsAtom = atom(
     (get) => {
         let sessions = get(_sessionsAtom)
         if (sessions.length === 0) {
-            sessions = [getEmptySession()]
+            sessions = [{ id: uuidv4(), name: 'Untitled', messages: [] }]
         }
         return sessions
     },
@@ -56,7 +57,7 @@ export const sessionsAtom = atom(
         const sessions = get(_sessionsAtom)
         let newSessions = typeof update === 'function' ? update(sessions) : update
         if (newSessions.length === 0) {
-            newSessions = [getEmptySession()]
+            newSessions = [{ id: uuidv4(), name: 'Untitled', messages: [] }]
         }
         set(_sessionsAtom, newSessions)
     }
