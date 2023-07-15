@@ -9,8 +9,6 @@ import {
     DialogContent,
     DialogActions,
     DialogTitle,
-    DialogContentText,
-    TextField,
     Stack,
 } from '@mui/material'
 import iconPNG from './icon.png'
@@ -18,6 +16,9 @@ import { Trans, useTranslation } from 'react-i18next'
 import * as api from './api'
 import * as remote from './remote'
 import { SponsorAboutBanner } from './types'
+import * as i18n from './i18n'
+import md from './markdown'
+import useVersion from './hooks/useVersion'
 
 interface Props {
     open: boolean
@@ -28,6 +29,7 @@ interface Props {
 
 export default function AboutWindow(props: Props) {
     const { t } = useTranslation()
+    const versionHook = useVersion()
     const [sponsorBanners, setSponsorBanners] = useState<SponsorAboutBanner[]>([])
     useEffect(() => {
         if (props.open) {
@@ -41,23 +43,13 @@ export default function AboutWindow(props: Props) {
             <DialogTitle>{t('About Chatbox')}</DialogTitle>
             <DialogContent>
                 <Box sx={{ textAlign: 'center', padding: '0 20px' }}>
-                    <img src={iconPNG} style={{ width: '100px', margin: 0 }} />
+                    <img src={iconPNG} style={{ width: '100px', margin: 0, display: 'inline-block' }} />
                     <h3 style={{ margin: '4px 0 5px 0' }}>Chatbox(v{props.version})</h3>
-                    <span>
-                        <Trans
-                            i18nKey="About Message"
-                            values={{ Author: 'Benn Huang' }}
-                            components={[
-                                <a
-                                    href={`https://chatboxai.app/redirect_app/author/${props.lang}`}
-                                    target="_blank"
-                                ></a>,
-                            ]}
-                        />
-                    </span>
+                    <p className='p-0 m-0'>{t('about-slogan')}</p>
+                    <p className='p-0 m-0 opacity-60 text-xs'>{t('about-introduction')}</p>
                 </Box>
                 <Stack spacing={2} direction="row" sx={{ justifyContent: 'center', marginTop: '10px' }}>
-                    <Badge color="primary" variant="dot" invisible={false}>
+                    <Badge color="primary" variant="dot" invisible={!versionHook.needCheckUpdate}>
                         <Button
                             variant="outlined"
                             onClick={() =>
@@ -81,17 +73,24 @@ export default function AboutWindow(props: Props) {
                     </Button>
                     <Button
                         variant="outlined"
-                        onClick={() => api.openLink(`https://chatboxai.app/redirect_app/roadmap/${props.lang}`)}
+                        onClick={() => api.openLink(`https://chatboxai.app/redirect_app/faqs/${props.lang}`)}
                     >
-                        {t('Roadmap')}
+                        {t('FAQs')}
                     </Button>
                 </Stack>
+                <h4 className='text-center mb-1 mt-8'>
+                    <Trans i18nKey="about-author"
+                        components={[
+                            <a href={`https://chatboxai.app/redirect_app/author/${props.lang}`} target="_blank" rel="noreferrer" />,
+                        ]}
+                    />
+                </h4>
                 <Paper
                     elevation={3}
+                    className='font-light'
                     sx={{
                         padding: '10px 10px 5px 10px',
                         backgroundColor: 'paper',
-                        marginTop: '30px',
                     }}
                 >
                     <span>{t('Auther Message')}</span>
@@ -173,6 +172,12 @@ export default function AboutWindow(props: Props) {
                             </Paper>
                         )
                     })}
+                </Box>
+                <Box>
+                    <h4 className='text-center mb-1 mt-8'>
+                        {t('Changelog')}
+                    </h4>
+                    <Box className='px-6' dangerouslySetInnerHTML={{ __html: md.render(i18n.changelog()) }} />
                 </Box>
             </DialogContent>
             <DialogActions>

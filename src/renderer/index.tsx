@@ -4,7 +4,7 @@ import App from './App'
 import * as Sentry from '@sentry/react'
 import reportWebVitals from './reportWebVitals'
 import * as api from './api'
-import './i18n.js'
+import './i18n'
 import * as migration from './stores/migration'
 
 import './styles/index.css'
