@@ -1,4 +1,12 @@
 const changelog = `
+### v0.6.2
+
+- Added bulk cleaning feature for conversation lists
+- Support for displaying token usage of messages
+- Support for modifying the default prompt for new conversations
+- Support for setting smaller font sizes
+- Fixed a few other minor issues
+
 ### v0.6.1
 
 - Improved software stability and performance
