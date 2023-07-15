@@ -75,9 +75,6 @@ export default function SettingWindow(props: Props) {
 
     const onSave = () => {
         setSettings(settingsEdit)
-        if (settings.fontSize !== settingsEdit.fontSize) {
-            toastActions.add(t('font size changed, effective after next launch'))
-        }
         props.close()
     }
 
@@ -197,9 +194,9 @@ export default function SettingWindow(props: Props) {
                                     })
                                 }}
                             >
-                                {[12, 13, 14, 15, 16, 17, 18].map((size) => (
+                                {[10, 11, 12, 13, 14, 15, 16, 17, 18].map((size) => (
                                     <MenuItem key={size} value={size}>
-                                        {size}px
+                                        {size}
                                     </MenuItem>
                                 ))}
                             </Select>
