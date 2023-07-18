@@ -1,6 +1,6 @@
 import { MutableRefObject } from 'react'
 import { getDefaultStore } from 'jotai'
-import { createMessage, Message, Session, getMsgDisplayModelName } from '../types'
+import { Settings, createMessage, Message, Session, getMsgDisplayModelName } from '../types'
 import * as atoms from './atoms'
 import * as client from '../client'
 import * as promptFormat from '../prompts'
@@ -128,12 +128,13 @@ export async function generate(
     } | null>
 ) {
     const store = getDefaultStore()
-    const settings = store.get(atoms.settingsAtom)
+    const globalSettings = store.get(atoms.settingsAtom)
     const configs = store.get(atoms.configsAtom)
     const session = getSession(sessionId)
     if (!session) {
         return
     }
+    const settings = mergeSettings(globalSettings, session)
     const placeholder = '...'
     targetMsg = {
         ...targetMsg,
@@ -215,12 +216,13 @@ export async function refreshMessage(
 
 export async function generateName(sessionId: string) {
     const store = getDefaultStore()
-    const settings = store.get(atoms.settingsAtom)
+    const globalSettings = store.get(atoms.settingsAtom)
     const configs = store.get(atoms.configsAtom)
     const session = getSession(sessionId)
     if (!session) {
         return
     }
+    const settings = mergeSettings(globalSettings, session)
     try {
         await client.reply(
             settings,
@@ -293,4 +295,21 @@ export function getEmptySession(name: string = 'Untitled'): Session {
             },
         ],
     }
+}
+
+function mergeSettings(globalSettings: Settings, session: Session): Settings {
+    return {
+        ...globalSettings,
+        ...omit(session.settings || {}), // 需要 omit 来去除 undefined，否则会覆盖掉全局配置
+    }    // 会话配置优先级高于全局配置
+}
+
+function omit(obj: any) {
+    const ret = { ...obj }
+    for (const key of Object.keys(ret)) {
+        if (ret[key] === undefined) {
+            delete ret[key]
+        }
+    }
+    return ret
 }

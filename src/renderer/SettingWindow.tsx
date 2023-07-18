@@ -24,13 +24,8 @@ import {
     Typography,
     Box,
 } from '@mui/material'
-import { Settings, ModelProvider, ThemeMode, aiProviderNameHash } from './types'
+import { Settings, ModelProvider, ThemeMode, ModelSettings } from './types'
 import ThemeChangeButton from './theme/ThemeChangeIcon'
-import { styled } from '@mui/material/styles'
-import MuiAccordionDetails from '@mui/material/AccordionDetails'
-import MuiAccordion, { AccordionProps } from '@mui/material/Accordion'
-import MuiAccordionSummary, { AccordionSummaryProps } from '@mui/material/AccordionSummary'
-import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp'
 import { Trans, useTranslation } from 'react-i18next'
 import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle'
 import LightbulbCircleIcon from '@mui/icons-material/LightbulbCircle'
@@ -38,12 +33,12 @@ import * as env from './env'
 import * as defaults from './stores/defaults'
 import { useAtom } from 'jotai'
 import { settingsAtom } from './stores/atoms'
-import * as toastActions from './stores/toastActions'
 import { switchTheme } from './hooks/useThemeSwitcher'
 import * as api from './api'
 import { usePremium } from './hooks/usePremium'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
-import { models, languageNameMap, languages, modelConfigs } from './config'
+import { models, languageNameMap, languages, modelConfigs, aiModelProviderList } from './config'
+import { Accordion, AccordionSummary, AccordionDetails } from './components/Accordion'
 
 const { useEffect } = React
 
@@ -112,50 +107,9 @@ export default function SettingWindow(props: Props) {
 
                 {currentTab === 'ai' && (
                     <Box>
-                        <FormControl fullWidth variant="outlined" margin="dense">
-                            <InputLabel htmlFor="ai-provider-select">{t('AI Provider')}</InputLabel>
-                            <Select
-                                label="ai-provider"
-                                id="ai-provider-select"
-                                value={settingsEdit.aiProvider}
-                                onChange={(e) => {
-                                    setSettingsEdit(
-                                        wrapDefaultTokenConfigUpdate({
-                                            ...settingsEdit,
-                                            aiProvider: e.target.value as ModelProvider,
-                                        })
-                                    )
-                                }}
-                            >
-                                <MenuItem key="chatbox-ai" value={ModelProvider.ChatboxAI}>
-                                    {aiProviderNameHash[ModelProvider.ChatboxAI]}
-                                    <Chip
-                                        label={t('Easy Access')}
-                                        size="small"
-                                        color="success"
-                                        variant="outlined"
-                                        sx={{ marginLeft: '10px' }}
-                                    />
-                                </MenuItem>
-                                <MenuItem key="openai" value={ModelProvider.OpenAI}>
-                                    {aiProviderNameHash[ModelProvider.OpenAI]}
-                                </MenuItem>
-                                <MenuItem key="azure" value={ModelProvider.Azure}>
-                                    {aiProviderNameHash[ModelProvider.Azure]}
-                                </MenuItem>
-                                <MenuItem key="chatglm" value={ModelProvider.ChatGLM6B}>
-                                    {aiProviderNameHash[ModelProvider.ChatGLM6B]}
-                                </MenuItem>
-                                <MenuItem key="claude" value="claude" disabled>
-                                    Claude API ({t('Coming soon')})
-                                </MenuItem>
-                                <MenuItem key="hunyuan" value="hunyuan" disabled>
-                                    腾讯混元 ({t('Coming soon')})
-                                </MenuItem>
-                            </Select>
-                        </FormControl>
-
-                        <ModelConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                        <ModelConfig settingsEdit={settingsEdit} setSettingsEdit={(updated) => {
+                            setSettingsEdit({ ...settingsEdit, ...updated })
+                        }} />
                     </Box>
                 )}
 
@@ -307,57 +261,23 @@ export default function SettingWindow(props: Props) {
     )
 }
 
-const Accordion = styled((props: AccordionProps) => <MuiAccordion disableGutters elevation={0} square {...props} />)(
-    ({ theme }) => ({
-        border: `1px solid ${theme.palette.divider}`,
-        '&:not(:last-child)': {
-            // borderBottom: 0,
-        },
-        '&:before': {
-            display: 'none',
-        },
-    })
-)
+interface ModelConfigProps {
+    settingsEdit: ModelSettings
+    setSettingsEdit: (settings: ModelSettings) => void
+}
 
-const AccordionSummary = styled((props: AccordionSummaryProps) => (
-    <MuiAccordionSummary expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />} {...props} />
-))(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, .05)' : 'rgba(0, 0, 0, .03)',
-    flexDirection: 'row-reverse',
-    '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
-        transform: 'rotate(90deg)',
-    },
-    '& .MuiAccordionSummary-content': {
-        marginLeft: theme.spacing(1),
-    },
-}))
-
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-    padding: theme.spacing(2),
-    border: '1px solid rgba(0, 0, 0, .125)',
-}))
-
-function ModelConfig(props: { settingsEdit: Settings; setSettingsEdit: (settings: Settings) => void }) {
+export function ModelConfig(props: ModelConfigProps) {
     const { t } = useTranslation()
     const premium = usePremium()
 
     const { settingsEdit, setSettingsEdit } = props
 
-    const handleTemperatureChange = (event: Event, newValue: number | number[], activeThumb: number) => {
-        if (typeof newValue === 'number') {
-            setSettingsEdit({ ...settingsEdit, temperature: newValue })
-        } else {
-            setSettingsEdit({
-                ...settingsEdit,
-                temperature: newValue[activeThumb],
-            })
-        }
-    }
     const onlyShow = (provider: ModelProvider) => {
         return settingsEdit.aiProvider === provider ? 'block' : 'none'
     }
     return (
         <Box>
+            <AiProviderSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
             <Divider sx={{ margin: '12px 0' }} />
             <Box sx={{ display: onlyShow(ModelProvider.OpenAI) }}>
                 <TextField
@@ -447,77 +367,9 @@ function ModelConfig(props: { settingsEdit: Settings; setSettingsEdit: (settings
                             {t('to default values.')}
                         </Alert>
 
-                        <FormControl fullWidth variant="outlined" margin="dense">
-                            <InputLabel htmlFor="model-select">{t('model')}</InputLabel>
-                            <Select
-                                label="Model"
-                                id="model-select"
-                                value={settingsEdit.model}
-                                onChange={(e) =>
-                                    setSettingsEdit(
-                                        wrapDefaultTokenConfigUpdate({
-                                            ...settingsEdit,
-                                            model: e.target.value as any,
-                                        })
-                                    )
-                                }
-                            >
-                                {models.map((model) => (
-                                    <MenuItem key={model} value={model}>
-                                        {model}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
+                        <ModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
 
-                        <Box sx={{ marginTop: 3, marginBottom: 1 }}>
-                            <Typography id="discrete-slider" gutterBottom>
-                                {t('temperature')}
-                            </Typography>
-                        </Box>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                margin: '0 auto',
-                            }}
-                        >
-                            <Box sx={{ width: '100%' }}>
-                                <Slider
-                                    value={settingsEdit.temperature}
-                                    onChange={handleTemperatureChange}
-                                    aria-labelledby="discrete-slider"
-                                    valueLabelDisplay="auto"
-                                    defaultValue={settingsEdit.temperature}
-                                    step={0.1}
-                                    min={0}
-                                    max={1}
-                                    marks={[
-                                        {
-                                            value: 0.2,
-                                            label: (
-                                                <Chip
-                                                    size="small"
-                                                    icon={<PlaylistAddCheckCircleIcon />}
-                                                    label={t('meticulous')}
-                                                />
-                                            ),
-                                        },
-                                        {
-                                            value: 0.8,
-                                            label: (
-                                                <Chip
-                                                    size="small"
-                                                    icon={<LightbulbCircleIcon />}
-                                                    label={t('creative')}
-                                                />
-                                            ),
-                                        },
-                                    ]}
-                                />
-                            </Box>
-                        </Box>
+                        <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
 
                         <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                     </AccordionDetails>
@@ -597,55 +449,7 @@ function ModelConfig(props: { settingsEdit: Settings; setSettingsEdit: (settings
                             </Button>
                             {t('to default values.')}
                         </Alert>
-                        <Box sx={{ marginTop: 3, marginBottom: 1 }}>
-                            <Typography id="discrete-slider" gutterBottom>
-                                {t('temperature')}
-                            </Typography>
-                        </Box>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                margin: '0 auto',
-                            }}
-                        >
-                            <Box sx={{ width: '100%' }}>
-                                <Slider
-                                    value={settingsEdit.temperature}
-                                    onChange={handleTemperatureChange}
-                                    aria-labelledby="discrete-slider"
-                                    valueLabelDisplay="auto"
-                                    defaultValue={settingsEdit.temperature}
-                                    step={0.1}
-                                    min={0}
-                                    max={1}
-                                    marks={[
-                                        {
-                                            value: 0.2,
-                                            label: (
-                                                <Chip
-                                                    size="small"
-                                                    icon={<PlaylistAddCheckCircleIcon />}
-                                                    label={t('meticulous')}
-                                                />
-                                            ),
-                                        },
-                                        {
-                                            value: 0.8,
-                                            label: (
-                                                <Chip
-                                                    size="small"
-                                                    icon={<LightbulbCircleIcon />}
-                                                    label={t('creative')}
-                                                />
-                                            ),
-                                        },
-                                    ]}
-                                />
-                            </Box>
-                        </Box>
-
+                        <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                         <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                     </AccordionDetails>
                 </Accordion>
@@ -795,7 +599,7 @@ function ModelConfig(props: { settingsEdit: Settings; setSettingsEdit: (settings
     )
 }
 
-function TokenConfig(props: { settingsEdit: Settings; setSettingsEdit: (settings: Settings) => void }) {
+export function TokenConfig(props: ModelConfigProps) {
     const { t } = useTranslation()
 
     const { settingsEdit, setSettingsEdit } = props
@@ -927,8 +731,7 @@ function TokenConfig(props: { settingsEdit: Settings; setSettingsEdit: (settings
     )
 }
 
-function wrapDefaultTokenConfigUpdate(settings: Settings): Settings {
-    // 自动更新模型的token设置
+export function wrapDefaultTokenConfigUpdate(settings: ModelSettings): ModelSettings {
     if (settings.aiProvider === ModelProvider.OpenAI) {
         const limits = getTokenLimits(settings)
         settings.openaiMaxTokens = limits.minTokenLimit // 默认最小值
@@ -945,7 +748,7 @@ function wrapDefaultTokenConfigUpdate(settings: Settings): Settings {
  * @param settings
  * @returns
  */
-function getTokenLimits(settings: Settings) {
+function getTokenLimits(settings: ModelSettings) {
     const totalTokenLimit =
         settings.aiProvider === ModelProvider.OpenAI
             ? modelConfigs[settings.model]?.maxTokens || 4000 // 旧版本用户可能依然使用 modelConfigs 中弃用删除的模型，需要兼容 undefined 情况
@@ -961,4 +764,143 @@ function getTokenLimits(settings: Settings) {
         minContextTokenLimit,
         totalTokenLimit,
     }
+}
+
+export function AiProviderSelect(props: ModelConfigProps) {
+    const { settingsEdit, setSettingsEdit } = props
+    const { t } = useTranslation()
+    return (
+        <FormControl fullWidth variant="outlined" margin="dense">
+            <InputLabel htmlFor="ai-provider-select">{t('AI Provider')}</InputLabel>
+            <Select
+                label="ai-provider"
+                id="ai-provider-select"
+                value={settingsEdit.aiProvider}
+                onChange={(e) => {
+                    setSettingsEdit(
+                        wrapDefaultTokenConfigUpdate({
+                            ...settingsEdit,
+                            aiProvider: e.target.value as ModelProvider,
+                        })
+                    )
+                }}
+            >
+                {
+                    aiModelProviderList.map((provider) => (
+                        <MenuItem key={provider.value} value={provider.value} disabled={provider.disabled}>
+                            {provider.label}
+                            {provider.disabled ? ` (${t('Coming soon')})` : ''}
+                            {
+                                provider.featured && (
+                                    <Chip
+                                        label={t('Easy Access')}
+                                        size="small"
+                                        color="success"
+                                        variant="outlined"
+                                        sx={{ marginLeft: '10px' }}
+                                    />
+                                )
+                            }
+                        </MenuItem>
+                    ))
+                }
+            </Select>
+        </FormControl>
+    )
+}
+
+export function ModelSelect(props: ModelConfigProps) {
+    const { settingsEdit, setSettingsEdit } = props
+    const { t } = useTranslation()
+    return (
+        <FormControl fullWidth variant="outlined" margin="dense">
+            <InputLabel htmlFor="model-select">{t('model')}</InputLabel>
+            <Select
+                label="Model"
+                id="model-select"
+                value={settingsEdit.model}
+                onChange={(e) =>
+                    setSettingsEdit(
+                        wrapDefaultTokenConfigUpdate({
+                            ...settingsEdit,
+                            model: e.target.value as any,
+                        })
+                    )
+                }
+            >
+                {models.map((model) => (
+                    <MenuItem key={model} value={model}>
+                        {model}
+                    </MenuItem>
+                ))}
+            </Select>
+        </FormControl>
+    )
+}
+
+export function TemperatureSlider(props: ModelConfigProps) {
+    const { settingsEdit, setSettingsEdit } = props
+    const { t } = useTranslation()
+    const handleTemperatureChange = (event: Event, newValue: number | number[], activeThumb: number) => {
+        if (typeof newValue === 'number') {
+            setSettingsEdit({ ...settingsEdit, temperature: newValue })
+        } else {
+            setSettingsEdit({
+                ...settingsEdit,
+                temperature: newValue[activeThumb],
+            })
+        }
+    }
+    return (
+        <>
+            <Box sx={{ marginTop: 3, marginBottom: 1 }}>
+                <Typography id="discrete-slider" gutterBottom>
+                    {t('temperature')}
+                </Typography>
+            </Box>
+            <Box
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto',
+                }}
+            >
+                <Box sx={{ width: '100%' }}>
+                    <Slider
+                        value={settingsEdit.temperature}
+                        onChange={handleTemperatureChange}
+                        aria-labelledby="discrete-slider"
+                        valueLabelDisplay="auto"
+                        defaultValue={settingsEdit.temperature}
+                        step={0.1}
+                        min={0}
+                        max={1}
+                        marks={[
+                            {
+                                value: 0.2,
+                                label: (
+                                    <Chip
+                                        size="small"
+                                        icon={<PlaylistAddCheckCircleIcon />}
+                                        label={t('meticulous')}
+                                    />
+                                ),
+                            },
+                            {
+                                value: 0.8,
+                                label: (
+                                    <Chip
+                                        size="small"
+                                        icon={<LightbulbCircleIcon />}
+                                        label={t('creative')}
+                                    />
+                                ),
+                            },
+                        ]}
+                    />
+                </Box>
+            </Box>
+        </>
+    )
 }

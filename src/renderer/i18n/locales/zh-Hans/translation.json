@@ -120,5 +120,8 @@
     "Clear Conversation List": "对话列表清理",
     "Keep only the Top N Conversations in List and Permanently Delete the Rest": "仅保留对话列表中最前面的<0>{{n}}</0>条对话，永久删除其余对话",
     "Reset to Default": "重置为默认值",
-    "Default Prompt for New Conversation": "新对话的默认提示"
+    "Default Prompt for New Conversation": "新对话的默认提示",
+    "Specific model settings": "特定模型设置",
+    "Current conversation configured with specific model settings": "当前的对话配置了特定的模型设置",
+    "Conversation Settings": "对话设置"
 }

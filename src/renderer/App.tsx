@@ -20,8 +20,10 @@ import {
     useTheme,
     useMediaQuery,
     debounce,
+    Chip,
+    Tooltip,
 } from '@mui/material'
-import { RemoteConfig, Session, ModelProvider } from './types'
+import { RemoteConfig, Session, ModelProvider, getMsgDisplayModelName } from './types'
 import SettingWindow from './SettingWindow'
 import ChatConfigWindow from './ChatConfigWindow'
 import SettingsIcon from '@mui/icons-material/Settings'
@@ -59,6 +61,7 @@ import { usePremium } from './hooks/usePremium'
 import RemoteDialogWindow from './RemoteDialogWindow'
 import { useSystemLanguageWhenInit } from './hooks/useDefaultSystemLanguage'
 import ClearConversationListWindow from './ClearConversationListWindow'
+import TuneIcon from '@mui/icons-material/Tune';
 
 function Main() {
     const { t } = useTranslation()
@@ -78,13 +81,13 @@ function Main() {
     useEffect(() => {
         // 通过定时器延迟启动，防止处理状态底层存储的异步加载前错误的初始数据
         setTimeout(() => {
-            ;(async () => {
+            ; (async () => {
                 if (settingActions.needEditSetting()) {
                     const remoteConfig = await remote.getRemoteConfig('setting_chatboxai_first').catch(
                         () =>
-                            ({
-                                setting_chatboxai_first: false,
-                            } as RemoteConfig)
+                        ({
+                            setting_chatboxai_first: false,
+                        } as RemoteConfig)
                     )
                     if (remoteConfig.setting_chatboxai_first) {
                         settingActions.modify({
@@ -452,15 +455,24 @@ function Main() {
                                     overflow: 'hidden',
                                     textOverflow: 'ellipsis',
                                 }}
+                                className='flex items-center cursor-pointer'
+                                onClick={() => {
+                                    editCurrentSession()
+                                }}
                             >
-                                <span
-                                    onClick={() => {
-                                        editCurrentSession()
-                                    }}
-                                    style={{ cursor: 'pointer' }}
-                                >
-                                    {currentSession.name}
-                                </span>
+                                <span>{currentSession.name}</span>
+                                {
+                                    currentSession.settings && (
+                                        <Tooltip title={t('Current conversation configured with specific model settings')} className='cursor-pointer'>
+                                            <Chip className='ml-2 cursor-pointer' variant='outlined' color='warning' size='small'
+                                                icon={<TuneIcon className='cursor-pointer' />}
+                                                label={
+                                                    <span className='cursor-pointer'>{getMsgDisplayModelName(currentSession.settings)}</span>
+                                                }
+                                            />
+                                        </Tooltip>
+                                    )
+                                }
                             </Typography>
                             <SponsorChip sessionId={currentSession.id} />
                             <IconButton

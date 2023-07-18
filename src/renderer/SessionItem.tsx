@@ -14,11 +14,11 @@ import {
     ListItemIcon,
 } from '@mui/material'
 import { Session } from './types'
-import FileCopyIcon from '@mui/icons-material/FileCopy'
+import CopyIcon from '@mui/icons-material/CopyAll'
 import EditIcon from '@mui/icons-material/Edit'
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined'
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import DeleteIcon from '@mui/icons-material/Delete'
 import StyledMenu from './StyledMenu'
 import { useTranslation } from 'react-i18next'
 import StarIcon from '@mui/icons-material/Star'
@@ -105,8 +105,8 @@ export default function SessionItem(props: Props) {
                     }}
                     disableRipple
                 >
-                    <EditIcon />
-                    {t('rename')}
+                    <EditIcon fontSize="small" />
+                    {t('edit')}
                 </MenuItem>
 
                 <MenuItem
@@ -117,7 +117,7 @@ export default function SessionItem(props: Props) {
                     }}
                     disableRipple
                 >
-                    <FileCopyIcon fontSize="small" />
+                    <CopyIcon fontSize="small" />
                     {t('copy')}
                 </MenuItem>
                 <MenuItem
@@ -152,7 +152,7 @@ export default function SessionItem(props: Props) {
                     }}
                     disableRipple
                 >
-                    <DeleteForeverIcon />
+                    <DeleteIcon fontSize="small" />
                     {t('delete')}
                 </MenuItem>
             </StyledMenu>

@@ -120,5 +120,8 @@
     "Clear Conversation List": "Clear Conversation List",
     "Keep only the Top N Conversations in List and Permanently Delete the Rest": "Keep only the top <0>{{n}}</0> conversations in list and permanently delete the rest",
     "Reset to Default": "Reset to Default",
-    "Default Prompt for New Conversation": "Default Prompt for New Conversation"
+    "Default Prompt for New Conversation": "Default Prompt for New Conversation",
+    "Specific model settings": "Specific model settings",
+    "Specific model settings configured for this conversation": "Specific model settings configured for this conversation",
+    "Conversation Settings": "Conversation Settings"
 }

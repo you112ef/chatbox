@@ -25,6 +25,7 @@ export interface Session {
     messages: Message[]
     starred?: boolean
     copilotId?: string
+    settings?: ModelSettings
 }
 
 export function createMessage(role: OpenAIRoleEnumType = OpenAIRoleEnum.User, content: string = ''): Message {
@@ -42,19 +43,13 @@ export enum ModelProvider {
     ChatGLM6B = 'chatglm-6b',
 }
 
-export const aiProviderNameHash = {
-    [ModelProvider.OpenAI]: 'OpenAI API',
-    [ModelProvider.Azure]: 'Azure OpenAI API',
-    [ModelProvider.ChatGLM6B]: 'ChatGLM-6B',
-    [ModelProvider.ChatboxAI]: 'Chatbox-AI',
-}
-
-export interface Settings {
+export interface ModelSettings {
     aiProvider: ModelProvider
 
     // openai
     openaiKey: string
     apiHost: string
+    model: Model
 
     // azure
     azureEndpoint: string
@@ -64,13 +59,20 @@ export interface Settings {
     // chatglm-6b
     chatglm6bUrl: string
 
-    model: Model
+    // chatbox-ai
+    licenseKey?: string
+    licenseInstances?: {
+        [key: string]: string
+    }
+
     temperature: number
     openaiMaxTokens: number // 生成消息的最大限制，是传入 OpenAI 接口的参数
     openaiMaxContextTokens: number // 聊天消息上下文的tokens限制
     // maxContextSize: string 弃用，字段名永远不在使用，避免老版本报错
     // maxTokens: string 弃用，字段名永远不在使用，避免老版本报错
+}
 
+export interface Settings extends ModelSettings {
     showWordCount?: boolean
     showTokenCount?: boolean
     showTokenUsed?: boolean
@@ -81,17 +83,12 @@ export interface Settings {
     languageInited?: boolean
     fontSize: number
 
-    licenseKey?: string
-    licenseInstances?: {
-        [key: string]: string
-    }
-
     defaultPrompt?: string // 新会话的默认 prompt
 }
 
 export type Language = 'en' | 'zh-Hans' | 'zh-Hant'
 
-export function getMsgDisplayModelName(settings: Settings) {
+export function getMsgDisplayModelName(settings: ModelSettings) {
     switch (settings.aiProvider) {
         case ModelProvider.OpenAI:
             return settings.model

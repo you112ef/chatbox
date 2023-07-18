@@ -1,8 +1,13 @@
 import React from 'react'
-import { Button, Dialog, DialogContent, DialogActions, DialogTitle, DialogContentText, TextField } from '@mui/material'
-import { Session } from './types'
+import { FormControlLabel, Switch, Divider, FormControl, InputLabel, Select, MenuItem, Chip, Button, Dialog, DialogContent, DialogActions, DialogTitle, DialogContentText, TextField } from '@mui/material'
+import { Session, ModelProvider, ModelSettings } from './types'
 import { useTranslation } from 'react-i18next'
 import * as sessionActions from './stores/sessionActions'
+import { AiProviderSelect, ModelSelect, TemperatureSlider, TokenConfig, wrapDefaultTokenConfigUpdate } from './SettingWindow'
+import * as atoms from './stores/atoms'
+import { useAtomValue } from 'jotai'
+import { Accordion, AccordionSummary, AccordionDetails } from './components/Accordion'
+
 const { useEffect } = React
 
 interface Props {
@@ -13,6 +18,7 @@ interface Props {
 
 export default function ChatConfigWindow(props: Props) {
     const { t } = useTranslation()
+    const settings = useAtomValue(atoms.settingsAtom)
     const [dataEdit, setDataEdit] = React.useState<Session>(props.session)
 
     useEffect(() => {
@@ -33,9 +39,17 @@ export default function ChatConfigWindow(props: Props) {
         props.close()
     }
 
+    const settingsEdit = dataEdit.settings
+    const setSettingsEdit = (updated: ModelSettings) => {
+        if (settingsEdit?.aiProvider !== updated.aiProvider || settingsEdit?.model !== updated.model) {
+            updated = wrapDefaultTokenConfigUpdate(updated)
+        }
+        setDataEdit({ ...dataEdit, settings: updated })
+    }
+
     return (
-        <Dialog open={props.open} onClose={onCancel}>
-            <DialogTitle>{t('rename')}</DialogTitle>
+        <Dialog open={props.open} onClose={onCancel} fullWidth>
+            <DialogTitle>{t('Conversation Settings')}</DialogTitle>
             <DialogContent>
                 <DialogContentText></DialogContentText>
                 <TextField
@@ -48,6 +62,51 @@ export default function ChatConfigWindow(props: Props) {
                     value={dataEdit.name}
                     onChange={(e) => setDataEdit({ ...dataEdit, name: e.target.value })}
                 />
+                <FormControlLabel control={<Switch size='medium' />} label={t('Specific model settings')}
+                    checked={!!dataEdit.settings} onChange={(e, checked) => {
+                        if (checked) {
+                            dataEdit.settings = settings
+                        } else {
+                            dataEdit.settings = undefined
+                        }
+                        setDataEdit({ ...dataEdit })
+                    }}
+                    sx={{ margin: '12px 0' }}
+                />
+                {
+                    settingsEdit && (
+                        <>
+                            <AiProviderSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                            {
+                                settingsEdit.aiProvider === ModelProvider.ChatboxAI && (
+                                    <></>
+                                )
+                            }
+                            {
+                                (settingsEdit.aiProvider === ModelProvider.OpenAI || settingsEdit.aiProvider === ModelProvider.Azure) && (
+                                    <>
+                                        <Divider sx={{ margin: '12px 0' }} />
+                                        <ModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                        <Accordion>
+                                            <AccordionSummary aria-controls="panel1a-content">
+                                                {t('model')} & {t('token')}
+                                            </AccordionSummary>
+                                            <AccordionDetails>
+                                                <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                                <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                            </AccordionDetails>
+                                        </Accordion>
+                                    </>
+                                )
+                            }
+                            {
+                                settingsEdit.aiProvider === ModelProvider.ChatGLM6B && (
+                                    <></>
+                                )
+                            }
+                        </>
+                    )
+                }
             </DialogContent>
             <DialogActions>
                 <Button onClick={onCancel}>{t('cancel')}</Button>
