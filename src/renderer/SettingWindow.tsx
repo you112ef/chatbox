@@ -23,6 +23,8 @@ import {
     Slider,
     Typography,
     Box,
+    InputAdornment,
+    IconButton,
 } from '@mui/material'
 import { Settings, ModelProvider, ThemeMode, ModelSettings } from './types'
 import ThemeChangeButton from './theme/ThemeChangeIcon'
@@ -39,6 +41,8 @@ import { usePremium } from './hooks/usePremium'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import { models, languageNameMap, languages, modelConfigs, aiModelProviderList } from './config'
 import { Accordion, AccordionSummary, AccordionDetails } from './components/Accordion'
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const { useEffect } = React
 
@@ -280,21 +284,12 @@ export function ModelConfig(props: ModelConfigProps) {
             <AiProviderSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
             <Divider sx={{ margin: '12px 0' }} />
             <Box sx={{ display: onlyShow(ModelProvider.OpenAI) }}>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    label={t('openai api key')}
-                    type="password"
-                    fullWidth
-                    variant="outlined"
-                    placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx"
+                <PasswordTextField label={t('openai api key')}
                     value={settingsEdit.openaiKey}
-                    onChange={(e) =>
-                        setSettingsEdit({
-                            ...settingsEdit,
-                            openaiKey: e.target.value.trim(),
-                        })
-                    }
+                    setValue={(value) => {
+                        setSettingsEdit({ ...settingsEdit, openaiKey: value })
+                    }}
+                    placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx"
                 />
                 <>
                     <TextField
@@ -393,20 +388,11 @@ export function ModelConfig(props: ModelConfigProps) {
                         })
                     }
                 />
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    label={t('Azure API Key')}
-                    type="password"
-                    fullWidth
-                    variant="outlined"
+                <PasswordTextField label={t('Azure API Key')}
                     value={settingsEdit.azureApikey}
-                    onChange={(e) =>
-                        setSettingsEdit({
-                            ...settingsEdit,
-                            azureApikey: e.target.value.trim(),
-                        })
-                    }
+                    setValue={(value) => {
+                        setSettingsEdit({ ...settingsEdit, azureApikey: value })
+                    }}
                 />
                 <TextField
                     autoFocus
@@ -495,26 +481,17 @@ export function ModelConfig(props: ModelConfigProps) {
             </Box>
             <Box sx={{ display: onlyShow(ModelProvider.ChatboxAI) }}>
                 <Box>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        label={t('Chatbox AI License')}
-                        type="password"
-                        fullWidth
-                        variant="outlined"
-                        placeholder="xxxxxxxxxxxxxxxxxxxxxxxx"
+                    <PasswordTextField label={t('Chatbox AI License')}
                         value={settingsEdit.licenseKey || ''}
+                        setValue={(value) => {
+                            setSettingsEdit({ ...settingsEdit, licenseKey: value })
+                        }}
+                        placeholder="xxxxxxxxxxxxxxxxxxxxxxxx"
                         disabled={premium.premiumActivated || premium.premiumIsLoading}
                         helperText={
                             <span style={{ color: 'green' }}>
                                 {premium.premiumActivated ? t('License Activated') : ''}
                             </span>
-                        }
-                        onChange={(e) =>
-                            setSettingsEdit({
-                                ...settingsEdit,
-                                licenseKey: e.target.value.trim(),
-                            })
                         }
                     />
                     {!premium.premiumActivated && (
@@ -902,5 +879,48 @@ export function TemperatureSlider(props: ModelConfigProps) {
                 </Box>
             </Box>
         </>
+    )
+}
+
+function PasswordTextField(props: {
+    label: string
+    value: string
+    setValue: (value: string) => void
+    placeholder?: string
+    disabled?: boolean
+    helperText?: React.ReactNode
+}) {
+    const [showPassword, setShowPassword] = React.useState(false);
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
+    return (
+        <TextField
+            type={showPassword ? 'text' : 'password'}
+            autoFocus
+            margin="dense"
+            label={props.label}
+            fullWidth
+            variant="outlined"
+            placeholder={props.placeholder}
+            disabled={props.disabled}
+            value={props.value}
+            onChange={(e) => props.setValue(e.target.value.trim())}
+            InputProps={{
+                endAdornment: (
+                    <InputAdornment position="end">
+                        <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                        >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                    </InputAdornment>
+                ),
+            }}
+            helperText={props.helperText}
+        />
     )
 }
