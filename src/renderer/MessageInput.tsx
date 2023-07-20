@@ -7,6 +7,7 @@ import SendIcon from '@mui/icons-material/Send'
 import * as atoms from './stores/atoms'
 import { useAtom } from 'jotai'
 import * as sessionActions from './stores/sessionActions'
+import * as dom from './hooks/dom'
 
 export interface Props {
     currentSessionId: string
@@ -14,7 +15,6 @@ export interface Props {
         msgId: string
         smooth?: boolean | undefined
     } | null>
-    textareaRef: MutableRefObject<HTMLTextAreaElement | null>
 }
 
 export default function MessageInput(props: Props) {
@@ -25,7 +25,7 @@ export default function MessageInput(props: Props) {
         if (quote !== '') {
             setMessageInput(quote)
             setQuote('')
-            props.textareaRef?.current?.focus()
+            dom.focusMessageInput()
         }
     }, [quote])
 
@@ -58,7 +58,7 @@ export default function MessageInput(props: Props) {
     useEffect(() => {
         function keyboardShortcut(e: KeyboardEvent) {
             if (e.key === 'i' && (e.metaKey || e.ctrlKey)) {
-                props.textareaRef?.current?.focus()
+                dom.focusMessageInput()
             }
         }
         window.addEventListener('keydown', keyboardShortcut)
@@ -78,7 +78,6 @@ export default function MessageInput(props: Props) {
                 <Grid container spacing={1}>
                     <Grid item xs>
                         <TextField
-                            inputRef={props.textareaRef}
                             multiline
                             label="Prompt"
                             value={messageInput}
@@ -86,7 +85,7 @@ export default function MessageInput(props: Props) {
                             fullWidth
                             maxRows={12}
                             autoFocus
-                            id="message-input"
+                            id={dom.messageInputID}
                             onKeyDown={(event) => {
                                 if (
                                     event.keyCode === 13 &&

@@ -17,10 +17,10 @@ import {
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { SortableItem } from './SortableItem'
+import * as dom from './hooks/dom'
 
 export interface Props {
     setConfigureChatConfig(session: Session): void
-    textareaRef: MutableRefObject<HTMLTextAreaElement | null>
 }
 
 export default function SessionList(props: Props) {
@@ -75,7 +75,7 @@ export default function SessionList(props: Props) {
                             session={session}
                             switchMe={() => {
                                 setCurrentSession(session)
-                                props.textareaRef?.current?.focus()
+                                dom.focusMessageInput()
                             }}
                             deleteMe={() => sessionActions.remove(session)}
                             copyMe={() => {

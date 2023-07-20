@@ -263,8 +263,6 @@ function Main() {
         }
     }
 
-    const textareaRef = useRef<HTMLTextAreaElement>(null)
-
     return (
         <Box className="App">
             <Grid container sx={{ height: '100%', paddingTop: '18px' }}>
@@ -334,7 +332,6 @@ function Main() {
                             >
                                 <SessionList
                                     setConfigureChatConfig={setConfigureChatConfig}
-                                    textareaRef={textareaRef}
                                 />
                             </MenuList>
 
@@ -539,7 +536,6 @@ function Main() {
                             <MessageInput
                                 currentSessionId={currentSession.id}
                                 messageScrollRef={messageScrollRef}
-                                textareaRef={textareaRef}
                             />
                         </Box>
                     </Stack>
