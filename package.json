@@ -154,6 +154,7 @@
         "react-ga4": "^2.1.0",
         "react-i18next": "^12.2.0",
         "react-router-dom": "^6.11.2",
+        "react-virtuoso": "^4.4.1",
         "store": "^2.0.12",
         "swr": "^2.1.5",
         "uuid": "^9.0.0",

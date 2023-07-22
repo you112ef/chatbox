@@ -1,18 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
-import {
-    ListItemText,
-    ListItemAvatar,
-    MenuItem,
-    Divider,
-    Avatar,
-    IconButton,
-    Button,
-    TextField,
-    Popper,
-    Fade,
-    Typography,
-    ListItemIcon,
-} from '@mui/material'
+import React, { useState, useMemo } from 'react'
+import { ListItemText, MenuItem, Divider, Avatar, IconButton, Typography, ListItemIcon } from '@mui/material'
 import { Session } from './types'
 import CopyIcon from '@mui/icons-material/CopyAll'
 import EditIcon from '@mui/icons-material/Edit'
@@ -23,20 +10,17 @@ import StyledMenu from './StyledMenu'
 import { useTranslation } from 'react-i18next'
 import StarIcon from '@mui/icons-material/Star'
 import StarOutlineIcon from '@mui/icons-material/StarOutline'
+import * as sessionActions from './stores/sessionActions'
 
 export interface Props {
     session: Session
     selected: boolean
-    switchMe: () => void
-    deleteMe: () => void
-    copyMe: () => void
-    switchStarred: () => void
-    editMe: () => void
+    setConfigureChatConfig: (session: Session) => void
 }
 
-export default function SessionItem(props: Props) {
+function _SessionItem(props: Props) {
+    const { session, selected, setConfigureChatConfig } = props
     const { t } = useTranslation()
-    const { session, selected, switchMe, deleteMe, copyMe, switchStarred, editMe } = props
     const [hovering, setHovering] = useState(false)
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
@@ -48,13 +32,14 @@ export default function SessionItem(props: Props) {
     const handleClose = () => {
         setAnchorEl(null)
     }
-
     return (
         <>
             <MenuItem
                 key={session.id}
                 selected={selected}
-                onClick={() => switchMe()}
+                onClick={() => {
+                    sessionActions.switchCurrentSession(session.id)
+                }}
                 onMouseEnter={() => {
                     setHovering(true)
                 }}
@@ -100,7 +85,7 @@ export default function SessionItem(props: Props) {
                 <MenuItem
                     key={session.id + 'edit'}
                     onClick={() => {
-                        editMe()
+                        setConfigureChatConfig(session)
                         handleClose()
                     }}
                     disableRipple
@@ -112,7 +97,7 @@ export default function SessionItem(props: Props) {
                 <MenuItem
                     key={session.id + 'copy'}
                     onClick={() => {
-                        copyMe()
+                        sessionActions.copy(session)
                         handleClose()
                     }}
                     disableRipple
@@ -123,7 +108,10 @@ export default function SessionItem(props: Props) {
                 <MenuItem
                     key={session.id + 'star'}
                     onClick={() => {
-                        switchStarred()
+                        sessionActions.modify({
+                            ...session,
+                            starred: !session.starred,
+                        })
                         handleClose()
                     }}
                     disableRipple
@@ -148,7 +136,7 @@ export default function SessionItem(props: Props) {
                     onClick={() => {
                         setAnchorEl(null)
                         handleClose()
-                        deleteMe()
+                        sessionActions.remove(session)
                     }}
                     disableRipple
                 >
@@ -158,4 +146,10 @@ export default function SessionItem(props: Props) {
             </StyledMenu>
         </>
     )
+}
+
+export default function Session(props: Props) {
+    return useMemo(() => {
+        return <_SessionItem {...props} />
+    }, [props.session, props.selected, props.setConfigureChatConfig])
 }

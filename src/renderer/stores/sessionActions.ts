@@ -1,4 +1,3 @@
-import { MutableRefObject } from 'react'
 import { getDefaultStore } from 'jotai'
 import { Settings, createMessage, Message, Session, getMsgDisplayModelName } from '../types'
 import * as atoms from './atoms'
@@ -8,6 +7,13 @@ import * as Sentry from '@sentry/react'
 import * as utils from '../utils'
 import { v4 as uuidv4 } from 'uuid'
 import * as defaults from './defaults'
+import * as scrollActions from './scrollActions'
+
+export function create(newSession: Session) {
+    const store = getDefaultStore()
+    store.set(atoms.sessionsAtom, (sessions) => [...sessions, newSession])
+    switchCurrentSession(newSession.id)
+}
 
 export function modify(update: Session) {
     const store = getDefaultStore()
@@ -33,15 +39,32 @@ export function modifyName(sessionId: string, name: string) {
     )
 }
 
-export function createEmptyThenSwitch() {
+export function createEmpty() {
+    create(getEmptySession())
+}
+
+export function switchCurrentSession(sessionId: string) {
     const store = getDefaultStore()
-    const session = getEmptySession()
-    store.set(atoms.currentSessionAtom, session)
+    store.set(atoms.currentSessionIdAtom, sessionId)
+    scrollActions.scrollToBottom() // 切换会话时自动滚动到底部
+    scrollActions.clearAutoScroll() // 切换会话时清楚自动滚动
 }
 
 export function remove(session: Session) {
     const store = getDefaultStore()
     store.set(atoms.sessionsAtom, (sessions) => sessions.filter((s) => s.id !== session.id))
+}
+
+export function clear(sessionId: string) {
+    const store = getDefaultStore()
+    const session = getSession(sessionId)
+    if (!session) {
+        return
+    }
+    modify({
+        ...session,
+        messages: session.messages.filter((m) => m.role === 'system'),
+    })
 }
 
 export function copy(source: Session) {
@@ -119,14 +142,7 @@ export function removeMessage(sessionId: string, messageId: string) {
     )
 }
 
-export async function generate(
-    sessionId: string,
-    targetMsg: Message,
-    messageScrollRef: MutableRefObject<{
-        msgId: string
-        smooth?: boolean | undefined
-    } | null>
-) {
+export async function generate(sessionId: string, targetMsg: Message) {
     const store = getDefaultStore()
     const globalSettings = store.get(atoms.settingsAtom)
     const configs = store.get(atoms.configsAtom)
@@ -148,13 +164,13 @@ export async function generate(
     }
     modifyMessage(sessionId, targetMsg)
 
-    const msgIx = session.messages.findIndex((m) => m.id === targetMsg.id)
-    if (msgIx < 0) {
+    const targetMsgIx = session.messages.findIndex((m) => m.id === targetMsg.id)
+    if (targetMsgIx < 0) {
         return
     }
-    const promptMsgs = genMessageContext(session.messages.slice(0, msgIx), settings.openaiMaxContextTokens)
+    const promptMsgs = genMessageContext(session.messages.slice(0, targetMsgIx), settings.openaiMaxContextTokens)
 
-    messageScrollRef.current = { msgId: targetMsg.id, smooth: false }
+    const autoScrollId = scrollActions.startAutoScroll(targetMsgIx, 'start')
 
     try {
         await client.reply(settings, configs, promptMsgs, ({ text, cancel }) => {
@@ -164,6 +180,7 @@ export async function generate(
                 cancel,
             }
             modifyMessage(sessionId, targetMsg)
+            scrollActions.tickAutoScroll(autoScrollId, targetMsgIx, 'end')
         })
     } catch (err: any) {
         if (!(err instanceof Error)) {
@@ -191,26 +208,18 @@ export async function generate(
     }
     modifyMessage(sessionId, targetMsg, true)
 
-    messageScrollRef.current = null
+    scrollActions.tickAutoScroll(autoScrollId, targetMsgIx, 'end')
 }
 
-export async function refreshMessage(
-    sessionId: string,
-    msg: Message,
-    messageScrollRef: MutableRefObject<{
-        msgId: string
-        smooth?: boolean | undefined
-    } | null>
-) {
+export async function refreshMessage(sessionId: string, msg: Message) {
     if (msg.role === 'assistant') {
-        await generate(sessionId, msg, messageScrollRef)
+        await generate(sessionId, msg)
     } else {
         const session = getSession(sessionId)
         const ix = session?.messages.findIndex((m) => m.id === msg.id) ?? -1
         const newAssistantMsg = createMessage('assistant', '...')
         insertMessage(sessionId, newAssistantMsg, ix + 1)
-        messageScrollRef.current = { msgId: newAssistantMsg.id, smooth: true }
-        await generate(sessionId, newAssistantMsg, messageScrollRef)
+        await generate(sessionId, newAssistantMsg)
     }
 }
 
@@ -301,7 +310,7 @@ function mergeSettings(globalSettings: Settings, session: Session): Settings {
     return {
         ...globalSettings,
         ...omit(session.settings || {}), // 需要 omit 来去除 undefined，否则会覆盖掉全局配置
-    }    // 会话配置优先级高于全局配置
+    } // 会话配置优先级高于全局配置
 }
 
 function omit(obj: any) {

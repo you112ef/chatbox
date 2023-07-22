@@ -37,7 +37,6 @@ export const languageNameMap = {
 }
 export const languages = Array.from(Object.keys(languageNameMap)) as Language[]
 
-
 export const aiProviderNameHash = {
     [ModelProvider.OpenAI]: 'OpenAI API',
     [ModelProvider.Azure]: 'Azure OpenAI API',

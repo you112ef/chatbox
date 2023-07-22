@@ -7,14 +7,11 @@ import SendIcon from '@mui/icons-material/Send'
 import * as atoms from './stores/atoms'
 import { useAtom } from 'jotai'
 import * as sessionActions from './stores/sessionActions'
+import * as scrollActions from './stores/scrollActions'
 import * as dom from './hooks/dom'
 
 export interface Props {
     currentSessionId: string
-    messageScrollRef: MutableRefObject<{
-        msgId: string
-        smooth?: boolean | undefined
-    } | null>
 }
 
 export default function MessageInput(props: Props) {
@@ -28,24 +25,20 @@ export default function MessageInput(props: Props) {
             dom.focusMessageInput()
         }
     }, [quote])
+    useEffect(() => {
+        dom.focusMessageInput()
+    }, [props.currentSessionId])
 
     const submit = async (newUserMsg: Message, needGenerating = true) => {
         if (needGenerating) {
             sessionActions.insertMessage(props.currentSessionId, newUserMsg)
             const newAssistantMsg = createMessage('assistant', '....')
             sessionActions.insertMessage(props.currentSessionId, newAssistantMsg)
-            sessionActions.generate(props.currentSessionId, newAssistantMsg, props.messageScrollRef)
-            props.messageScrollRef.current = {
-                msgId: newAssistantMsg.id,
-                smooth: true,
-            }
+            sessionActions.generate(props.currentSessionId, newAssistantMsg)
         } else {
             sessionActions.insertMessage(props.currentSessionId, newUserMsg)
-            props.messageScrollRef.current = {
-                msgId: newUserMsg.id,
-                smooth: true,
-            }
         }
+        scrollActions.scrollToBottom()
     }
     const handleSubmit = (needGenerating = true) => {
         if (messageInput.trim() === '') {

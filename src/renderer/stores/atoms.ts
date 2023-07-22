@@ -1,10 +1,12 @@
+import { RefObject } from 'react'
 import { atom, SetStateAction } from 'jotai'
 import { Session, Toast, Settings, Config, CopilotDetail } from '../types'
-import { splitAtom, atomWithStorage } from 'jotai/utils'
+import { selectAtom, atomWithStorage } from 'jotai/utils'
 import { focusAtom } from 'jotai-optics'
 import * as defaults from './defaults'
 import { v4 as uuidv4 } from 'uuid'
 import storage from '../storage'
+import { VirtuosoHandle } from 'react-virtuoso'
 
 // settings
 
@@ -81,35 +83,34 @@ export function sortSessions(sessions: Session[]): Session[] {
 
 // current session and messages
 
-const currentSessionMarkAtom = atom<string | null>(null) // 不对外暴露，属于内部状态
-export const currentSessionAtom = atom(
+const _currentSessionIdCachedAtom = atom<string | null>(null) // 不对外暴露，属于内部状态
+export const currentSessionIdAtom = atom(
     (get) => {
-        const sessionMark = get(currentSessionMarkAtom)
+        const idCached = get(_currentSessionIdCachedAtom)
         const sessions = get(sessionsAtom)
-        let current = sessions.find((session) => session.id === sessionMark)
-        if (!current) {
-            return sessions[sessions.length - 1] // 当前会话不存在时，返回最后一个会话
+        if (sessions.some((session) => session.id === idCached)) {
+            return idCached
         }
-        return current
+        return sessions[sessions.length - 1].id // 当前会话不存在时，返回最后一个会话
     },
-    (_get, set, update: Session) => {
-        set(sessionsAtom, (sessions) => {
-            const index = sessions.findIndex((session) => session.id === update.id)
-            if (index === -1) {
-                return [...sessions, update]
-            }
-            const newSessions = [...sessions]
-            newSessions[index] = update
-            return newSessions
-        })
-        set(currentSessionMarkAtom, update.id)
+    (_get, set, update: string) => {
+        set(_currentSessionIdCachedAtom, update)
     }
 )
-export const currentSessionNameAtom = focusAtom(currentSessionAtom, (optic) => optic.prop('name'))
-export const currentMessagesAtom = focusAtom(currentSessionAtom, (optic) => optic.prop('messages').valueOr([]))
-export const currentMessageAtomsAtom = splitAtom(currentMessagesAtom)
 
-export const currsentSessionPicUrlAtom = focusAtom(currentSessionAtom, (optic) => optic.prop('picUrl'))
+export const currentSessionAtom = atom((get) => {
+    const id = get(currentSessionIdAtom)
+    const sessions = get(sessionsAtom)
+    let current = sessions.find((session) => session.id === id)
+    if (!current) {
+        return sessions[sessions.length - 1] // 当前会话不存在时，返回最后一个会话
+    }
+    return current
+})
+
+export const currentSessionNameAtom = selectAtom(currentSessionAtom, (s) => s.name)
+export const currentMessagesAtom = selectAtom(currentSessionAtom, (s) => s.messages || [])
+export const currsentSessionPicUrlAtom = selectAtom(currentSessionAtom, (s) => s.picUrl)
 
 // toasts
 
@@ -125,3 +126,10 @@ export const realThemeAtom = atom<'light' | 'dark'>('light')
 
 // configVersion 配置版本，用于判断是否需要升级迁移配置（migration）
 export const configVersionAtom = atomWithStorage<number>('configVersion', 0, storage)
+
+// message scrolling
+
+export const messageScrollingAtom = atom<null | RefObject<VirtuosoHandle>>(null)
+export const messageScrollingAtTopAtom = atom(false)
+export const messageScrollingAtBottomAtom = atom(false)
+export const messageScrollingAutoMarkAtom = atom('') // 判断是否允许自动滚动，值为自动滚动任务随机ID

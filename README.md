@@ -138,6 +138,6 @@ Windows
 
 因为各种原因，Electron 很难直接运行 react-developer-tools 这个浏览器插件，因此需要在浏览器中排查性能问题。
 
-[react-developer-tools插件安装](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi/related)
+[react-developer-tools 插件安装](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi/related)
 
 `npm start ` 后访问 `http://localhost:1212` 进入网页开发模式，`F12` 可查看到 React 开发工具。

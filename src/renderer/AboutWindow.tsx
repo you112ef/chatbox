@@ -19,16 +19,17 @@ import { SponsorAboutBanner } from './types'
 import * as i18n from './i18n'
 import md from './markdown'
 import useVersion from './hooks/useVersion'
+import * as atoms from './stores/atoms'
+import { useAtomValue } from 'jotai'
 
 interface Props {
     open: boolean
-    version: string
-    lang: string
     close(): void
 }
 
 export default function AboutWindow(props: Props) {
     const { t } = useTranslation()
+    const language = useAtomValue(atoms.languageAtom)
     const versionHook = useVersion()
     const [sponsorBanners, setSponsorBanners] = useState<SponsorAboutBanner[]>([])
     useEffect(() => {
@@ -44,50 +45,53 @@ export default function AboutWindow(props: Props) {
             <DialogContent>
                 <Box sx={{ textAlign: 'center', padding: '0 20px' }}>
                     <img src={iconPNG} style={{ width: '100px', margin: 0, display: 'inline-block' }} />
-                    <h3 style={{ margin: '4px 0 5px 0' }}>Chatbox(v{props.version})</h3>
-                    <p className='p-0 m-0'>{t('about-slogan')}</p>
-                    <p className='p-0 m-0 opacity-60 text-xs'>{t('about-introduction')}</p>
+                    <h3 style={{ margin: '4px 0 5px 0' }}>Chatbox(v{versionHook.version})</h3>
+                    <p className="p-0 m-0">{t('about-slogan')}</p>
+                    <p className="p-0 m-0 opacity-60 text-xs">{t('about-introduction')}</p>
                 </Box>
                 <Stack spacing={2} direction="row" sx={{ justifyContent: 'center', marginTop: '10px' }}>
                     <Badge color="primary" variant="dot" invisible={!versionHook.needCheckUpdate}>
                         <Button
                             variant="outlined"
-                            onClick={() =>
-                                api.openLink(`https://chatboxai.app/redirect_app/check_update/${props.lang}`)
-                            }
+                            onClick={() => api.openLink(`https://chatboxai.app/redirect_app/check_update/${language}`)}
                         >
                             {t('Check Update')}
                         </Button>
                     </Badge>
                     <Button
                         variant="outlined"
-                        onClick={() => api.openLink(`https://chatboxai.app/redirect_app/homepage/${props.lang}`)}
+                        onClick={() => api.openLink(`https://chatboxai.app/redirect_app/homepage/${language}`)}
                     >
                         {t('Homepage')}
                     </Button>
                     <Button
                         variant="outlined"
-                        onClick={() => api.openLink(`https://chatboxai.app/redirect_app/feedback/${props.lang}`)}
+                        onClick={() => api.openLink(`https://chatboxai.app/redirect_app/feedback/${language}`)}
                     >
                         {t('Feedback')}
                     </Button>
                     <Button
                         variant="outlined"
-                        onClick={() => api.openLink(`https://chatboxai.app/redirect_app/faqs/${props.lang}`)}
+                        onClick={() => api.openLink(`https://chatboxai.app/redirect_app/faqs/${language}`)}
                     >
                         {t('FAQs')}
                     </Button>
                 </Stack>
-                <h4 className='text-center mb-1 mt-8'>
-                    <Trans i18nKey="about-author"
+                <h4 className="text-center mb-1 mt-8">
+                    <Trans
+                        i18nKey="about-author"
                         components={[
-                            <a href={`https://chatboxai.app/redirect_app/author/${props.lang}`} target="_blank" rel="noreferrer" />,
+                            <a
+                                href={`https://chatboxai.app/redirect_app/author/${language}`}
+                                target="_blank"
+                                rel="noreferrer"
+                            />,
                         ]}
                     />
                 </h4>
                 <Paper
                     elevation={3}
-                    className='font-light'
+                    className="font-light"
                     sx={{
                         padding: '10px 10px 5px 10px',
                         backgroundColor: 'paper',
@@ -97,14 +101,14 @@ export default function AboutWindow(props: Props) {
                     <Stack spacing={2} direction="row">
                         <Button
                             variant="text"
-                            onClick={() => api.openLink(`https://chatboxai.app/redirect_app/donate/${props.lang}`)}
+                            onClick={() => api.openLink(`https://chatboxai.app/redirect_app/donate/${language}`)}
                         >
                             {t('Donate')}
                         </Button>
                         <Button
                             variant="text"
                             onClick={() =>
-                                api.openLink(`https://chatboxai.app/redirect_app/become_sponsor/${props.lang}`)
+                                api.openLink(`https://chatboxai.app/redirect_app/become_sponsor/${language}`)
                             }
                         >
                             {t('Or become a sponsor')}
@@ -174,10 +178,8 @@ export default function AboutWindow(props: Props) {
                     })}
                 </Box>
                 <Box>
-                    <h4 className='text-center mb-1 mt-8'>
-                        {t('Changelog')}
-                    </h4>
-                    <Box className='px-6' dangerouslySetInnerHTML={{ __html: md.render(i18n.changelog()) }} />
+                    <h4 className="text-center mb-1 mt-8">{t('Changelog')}</h4>
+                    <Box className="px-6" dangerouslySetInnerHTML={{ __html: md.render(i18n.changelog()) }} />
                 </Box>
             </DialogContent>
             <DialogActions>

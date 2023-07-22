@@ -33,7 +33,8 @@ import * as remote from './remote'
 import { v4 as uuidv4 } from 'uuid'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import * as atoms from './stores/atoms'
-import { useAtomValue, useSetAtom } from 'jotai'
+import * as sessionActions from './stores/sessionActions'
+import { useAtomValue } from 'jotai'
 
 interface Props {
     open: boolean
@@ -44,7 +45,6 @@ interface Props {
 
 export default function CopilotWindow(props: Props) {
     const language = useAtomValue(atoms.languageAtom)
-    const setCurrentSession = useSetAtom(atoms.currentSessionAtom)
     const configs = useAtomValue(atoms.configsAtom)
 
     const { t } = useTranslation()
@@ -69,7 +69,7 @@ export default function CopilotWindow(props: Props) {
                 content: copilot.demoAnswer,
             })
         }
-        setCurrentSession({
+        sessionActions.create({
             id: uuidv4(),
             name: copilot.name,
             picUrl: copilot.picUrl,

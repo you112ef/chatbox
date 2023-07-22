@@ -41,8 +41,8 @@ import { usePremium } from './hooks/usePremium'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import { models, languageNameMap, languages, modelConfigs, aiModelProviderList } from './config'
 import { Accordion, AccordionSummary, AccordionDetails } from './components/Accordion'
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
 
 const { useEffect } = React
 
@@ -111,9 +111,12 @@ export default function SettingWindow(props: Props) {
 
                 {currentTab === 'ai' && (
                     <Box>
-                        <ModelConfig settingsEdit={settingsEdit} setSettingsEdit={(updated) => {
-                            setSettingsEdit({ ...settingsEdit, ...updated })
-                        }} />
+                        <ModelConfig
+                            settingsEdit={settingsEdit}
+                            setSettingsEdit={(updated) => {
+                                setSettingsEdit({ ...settingsEdit, ...updated })
+                            }}
+                        />
                     </Box>
                 )}
 
@@ -284,7 +287,8 @@ export function ModelConfig(props: ModelConfigProps) {
             <AiProviderSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
             <Divider sx={{ margin: '12px 0' }} />
             <Box sx={{ display: onlyShow(ModelProvider.OpenAI) }}>
-                <PasswordTextField label={t('openai api key')}
+                <PasswordTextField
+                    label={t('openai api key')}
                     value={settingsEdit.openaiKey}
                     setValue={(value) => {
                         setSettingsEdit({ ...settingsEdit, openaiKey: value })
@@ -388,7 +392,8 @@ export function ModelConfig(props: ModelConfigProps) {
                         })
                     }
                 />
-                <PasswordTextField label={t('Azure API Key')}
+                <PasswordTextField
+                    label={t('Azure API Key')}
                     value={settingsEdit.azureApikey}
                     setValue={(value) => {
                         setSettingsEdit({ ...settingsEdit, azureApikey: value })
@@ -481,7 +486,8 @@ export function ModelConfig(props: ModelConfigProps) {
             </Box>
             <Box sx={{ display: onlyShow(ModelProvider.ChatboxAI) }}>
                 <Box>
-                    <PasswordTextField label={t('Chatbox AI License')}
+                    <PasswordTextField
+                        label={t('Chatbox AI License')}
                         value={settingsEdit.licenseKey || ''}
                         setValue={(value) => {
                             setSettingsEdit({ ...settingsEdit, licenseKey: value })
@@ -762,25 +768,21 @@ export function AiProviderSelect(props: ModelConfigProps) {
                     )
                 }}
             >
-                {
-                    aiModelProviderList.map((provider) => (
-                        <MenuItem key={provider.value} value={provider.value} disabled={provider.disabled}>
-                            {provider.label}
-                            {provider.disabled ? ` (${t('Coming soon')})` : ''}
-                            {
-                                provider.featured && (
-                                    <Chip
-                                        label={t('Easy Access')}
-                                        size="small"
-                                        color="success"
-                                        variant="outlined"
-                                        sx={{ marginLeft: '10px' }}
-                                    />
-                                )
-                            }
-                        </MenuItem>
-                    ))
-                }
+                {aiModelProviderList.map((provider) => (
+                    <MenuItem key={provider.value} value={provider.value} disabled={provider.disabled}>
+                        {provider.label}
+                        {provider.disabled ? ` (${t('Coming soon')})` : ''}
+                        {provider.featured && (
+                            <Chip
+                                label={t('Easy Access')}
+                                size="small"
+                                color="success"
+                                variant="outlined"
+                                sx={{ marginLeft: '10px' }}
+                            />
+                        )}
+                    </MenuItem>
+                ))}
             </Select>
         </FormControl>
     )
@@ -857,22 +859,12 @@ export function TemperatureSlider(props: ModelConfigProps) {
                             {
                                 value: 0.2,
                                 label: (
-                                    <Chip
-                                        size="small"
-                                        icon={<PlaylistAddCheckCircleIcon />}
-                                        label={t('meticulous')}
-                                    />
+                                    <Chip size="small" icon={<PlaylistAddCheckCircleIcon />} label={t('meticulous')} />
                                 ),
                             },
                             {
                                 value: 0.8,
-                                label: (
-                                    <Chip
-                                        size="small"
-                                        icon={<LightbulbCircleIcon />}
-                                        label={t('creative')}
-                                    />
-                                ),
+                                label: <Chip size="small" icon={<LightbulbCircleIcon />} label={t('creative')} />,
                             },
                         ]}
                     />
@@ -890,11 +882,11 @@ function PasswordTextField(props: {
     disabled?: boolean
     helperText?: React.ReactNode
 }) {
-    const [showPassword, setShowPassword] = React.useState(false);
-    const handleClickShowPassword = () => setShowPassword((show) => !show);
+    const [showPassword, setShowPassword] = React.useState(false)
+    const handleClickShowPassword = () => setShowPassword((show) => !show)
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-    };
+        event.preventDefault()
+    }
     return (
         <TextField
             type={showPassword ? 'text' : 'password'}

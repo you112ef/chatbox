@@ -1,8 +1,8 @@
 import { Button, Dialog, DialogContent, DialogActions, DialogTitle, DialogContentText } from '@mui/material'
-import { Session } from './types'
 import { useTranslation } from 'react-i18next'
 import * as atoms from './stores/atoms'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import * as sessionActions from './stores/sessionActions'
 
 interface Props {
     open: boolean
@@ -10,14 +10,13 @@ interface Props {
 }
 
 export default function CleanWindow(props: Props) {
-    const [currentMessages, setCurrentMessages] = useAtom(atoms.currentMessagesAtom)
-    const currentSessionName = useAtomValue(atoms.currentSessionNameAtom)
+    const currentSession = useAtomValue(atoms.currentSessionAtom)
     const { t } = useTranslation()
     const clean = () => {
-        currentMessages.forEach((msg) => {
+        currentSession.messages.forEach((msg) => {
             msg?.cancel?.()
         })
-        setCurrentMessages((msgs) => msgs.filter((msg) => msg.role === 'system'))
+        sessionActions.clear(currentSession.id)
         props.close()
     }
     return (
@@ -26,7 +25,7 @@ export default function CleanWindow(props: Props) {
             <DialogContent>
                 <DialogContentText>
                     {t('delete confirmation', {
-                        sessionName: currentSessionName,
+                        sessionName: currentSession.name,
                     })}
                 </DialogContentText>
             </DialogContent>

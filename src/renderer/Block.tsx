@@ -46,10 +46,6 @@ export interface Props {
     id?: string
     sessionId: string
     msg: Message
-    messageScrollRef: MutableRefObject<{
-        msgId: string
-        smooth?: boolean | undefined
-    } | null>
 }
 
 function _Block(props: Props) {
@@ -95,7 +91,7 @@ function _Block(props: Props) {
 
     const onRefresh = useCallback(() => {
         onStop()
-        sessionActions.refreshMessage(props.sessionId, msg, props.messageScrollRef)
+        sessionActions.refreshMessage(props.sessionId, msg)
     }, [onStop])
 
     const onCopyMsg = () => {
