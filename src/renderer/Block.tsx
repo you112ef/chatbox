@@ -14,6 +14,7 @@ import {
     Tooltip,
     ButtonGroup,
     Alert,
+    useTheme,
 } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import PersonIcon from '@mui/icons-material/Person'
@@ -50,6 +51,8 @@ export interface Props {
 
 function _Block(props: Props) {
     const { t } = useTranslation()
+    const theme = useTheme()
+
     const showModelName = useAtomValue(showModelNameAtom)
     const showTokenCount = useAtomValue(showTokenCountAtom)
     const showWordCount = useAtomValue(showWordCountAtom)
@@ -140,9 +143,6 @@ function _Block(props: Props) {
             onMouseLeave={() => {
                 setIsHovering(false)
             }}
-            sx={{
-                padding: '10px',
-            }}
             className={[
                 'msg-block',
                 msg.generating ? 'rendering' : 'render-done',
@@ -152,6 +152,15 @@ function _Block(props: Props) {
                     assistant: 'assistant-msg',
                 }[msg?.role || 'user'],
             ].join(' ')}
+            sx={{
+                margin: '0',
+                paddingTop: '0.5rem',
+                paddingBottom: '0.2rem',
+                paddingX: '1rem',
+                [theme.breakpoints.down('sm')]: {
+                    paddingX: '0.3rem',
+                },
+            }}
         >
             <Grid container wrap="nowrap" spacing={2}>
                 <Grid item>

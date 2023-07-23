@@ -101,7 +101,9 @@ export default function SessionList(props: Props) {
 function Subheader(props: { openClearWindow: () => void }) {
     const { t } = useTranslation()
     return (
-        <ListSubheader className="px-4 flex justify-between items-center">
+        <ListSubheader className="flex justify-between items-center"
+            sx={{ padding: '0.1rem 0.2rem', margin: '0.1rem 0.1rem 0.1rem 0.2rem' }}
+        >
             <span className="text-xs opacity-80">{t('chat')}</span>
             <IconButton onClick={props.openClearWindow}>
                 <svg

@@ -24,13 +24,15 @@ import AddIcon from '@mui/icons-material/AddCircleOutline'
 import useVersion from './hooks/useVersion'
 import SessionList from './SessionList'
 import * as sessionActions from './stores/sessionActions'
+import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 
 interface Props {
+    showMenu: boolean
+    setShowMenu(showMenu: boolean): void
     setConfigureChatConfig(session: Session | null): void
     openClearConversationListWindow(): void
     openCopilotWindow(): void
     openAboutWindow(): void
-    setShowMenu(show: boolean): void
     setOpenSettingWindow(name: 'ai' | 'display' | null): void
 }
 
@@ -50,12 +52,13 @@ export default function Sidebar(props: Props) {
     return (
         <Grid
             item
+            className='pl-1'
             sx={{
                 height: '100%',
                 [theme.breakpoints.down('sm')]: {
                     position: 'absolute',
                     zIndex: 100,
-                    left: '20px',
+                    left: 0,
                     right: 0,
                     bottom: 0,
                     top: 0,
@@ -70,13 +73,22 @@ export default function Sidebar(props: Props) {
                     [theme.breakpoints.down('sm')]: {
                         position: 'absolute',
                         zIndex: 1,
+                        paddingTop: '1rem',
+                        paddingLeft: '1rem',
                     },
                 }}
             >
-                <Toolbar variant="dense" className="flex align-center mb-4">
-                    <img src={icon} className="w-8 h-8 mr-2 align-middle inline-block" />
-                    <span className="text-2xl align-middle inline-block">Chatbox</span>
-                </Toolbar>
+                <Box className="flex justify-between items-center p-0 m-0 mx-2 mb-4" >
+                    <Box>
+                        <img src={icon} className="w-8 h-8 mr-2 align-middle inline-block" />
+                        <span className="text-2xl align-middle inline-block">Chatbox</span>
+                    </Box>
+                    <Box>
+                        <IconButton onClick={() => props.setShowMenu(false)}>
+                            <MenuOpenIcon className='text-xl' />
+                        </IconButton>
+                    </Box>
+                </Box>
 
                 <SessionList
                     setConfigureChatConfig={props.setConfigureChatConfig}
@@ -87,7 +99,9 @@ export default function Sidebar(props: Props) {
                 <Divider />
 
                 <MenuList>
-                    <MenuItem onClick={handleCreateNewSession}>
+                    <MenuItem onClick={handleCreateNewSession}
+                        sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}
+                    >
                         <ListItemIcon>
                             <IconButton>
                                 <AddIcon fontSize="small" />
@@ -99,7 +113,9 @@ export default function Sidebar(props: Props) {
                         </Typography>
                     </MenuItem>
 
-                    <MenuItem onClick={props.openCopilotWindow}>
+                    <MenuItem onClick={props.openCopilotWindow}
+                        sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}
+                    >
                         <ListItemIcon>
                             <IconButton>
                                 <SmartToyIcon fontSize="small" />
@@ -114,6 +130,7 @@ export default function Sidebar(props: Props) {
                         onClick={() => {
                             props.setOpenSettingWindow('ai')
                         }}
+                        sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}
                     >
                         <ListItemIcon>
                             <IconButton>
@@ -126,7 +143,9 @@ export default function Sidebar(props: Props) {
                         </Typography>
                     </MenuItem>
 
-                    <MenuItem onClick={props.openAboutWindow}>
+                    <MenuItem onClick={props.openAboutWindow}
+                        sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}
+                    >
                         <ListItemIcon>
                             <IconButton>
                                 <InfoOutlinedIcon fontSize="small" />

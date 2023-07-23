@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { Toolbar, Box, IconButton, ButtonGroup, Stack, Grid, Typography, debounce, Chip, Tooltip } from '@mui/material'
+import { Box, IconButton, ButtonGroup, Stack, Grid, Typography, debounce, Chip, Tooltip } from '@mui/material'
 import { Session, getMsgDisplayModelName } from './types'
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices'
 import Save from '@mui/icons-material/Save'
@@ -8,8 +8,6 @@ import icon from './icon.png'
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp'
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown'
 import SponsorChip from './SponsorChip'
-import './styles/App.css'
-import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 import * as api from './api'
 import * as atoms from './stores/atoms'
 import { useAtomValue } from 'jotai'
@@ -19,6 +17,7 @@ import * as toastActions from './stores/toastActions'
 import * as sessionActions from './stores/sessionActions'
 import * as scrollActions from './stores/scrollActions'
 import TuneIcon from '@mui/icons-material/Tune'
+import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 
 interface Props {
     showMenu: boolean
@@ -85,34 +84,16 @@ export default function MainPane(props: Props) {
     }
 
     return (
-        <Grid
-            item
-            xs
-            sx={{
-                width: '0px',
-                height: '100%',
-            }}
-        >
-            <Stack
-                sx={{
-                    height: '100%',
-                    position: 'relative',
-                }}
-            >
-                <Toolbar variant="dense" style={{ padding: '0 10px' }}>
-                    <IconButton onClick={() => props.setShowMenu(!props.showMenu)}>
-                        {!props.showMenu ? (
-                            <img
-                                src={icon}
-                                style={{
-                                    width: '30px',
-                                    height: '30px',
-                                }}
-                            />
-                        ) : (
-                            <MenuOpenIcon style={{ fontSize: '26px' }} />
-                        )}
-                    </IconButton>
+        <Grid item xs className="h-full" >
+            <Stack className="h-full relative" >
+                <Box className='flex flex-row'>
+                    {!props.showMenu && (
+                        <Box className='mr-1'>
+                            <IconButton onClick={() => props.setShowMenu(!props.showMenu)} >
+                                <MenuOpenIcon className='text-xl' sx={{transform: 'rotate(180deg)'}} />
+                            </IconButton>
+                        </Box>
+                    )}
                     <Typography
                         variant="h6"
                         color="inherit"
@@ -128,6 +109,9 @@ export default function MainPane(props: Props) {
                             editCurrentSession()
                         }}
                     >
+                        {!props.showMenu && (
+                            <img className='w-7 h-7' src={icon} />
+                        )}
                         <span>{currentSession.name}</span>
                         {currentSession.settings && (
                             <Tooltip
@@ -150,27 +134,29 @@ export default function MainPane(props: Props) {
                         )}
                     </Typography>
                     <SponsorChip sessionId={currentSession.id} />
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={{ mr: 2 }}
-                        onClick={() => props.setSessionClean(currentSession)}
-                    >
-                        <CleaningServicesIcon />
-                    </IconButton>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={{}}
-                        onClick={() => exportSession(currentSession)}
-                    >
-                        <Save />
-                    </IconButton>
-                </Toolbar>
+                    <Box>
+                        <IconButton
+                            edge="start"
+                            color="inherit"
+                            aria-label="menu"
+                            sx={{ mr: 2 }}
+                            onClick={() => props.setSessionClean(currentSession)}
+                        >
+                            <CleaningServicesIcon />
+                        </IconButton>
+                        <IconButton
+                            edge="start"
+                            color="inherit"
+                            aria-label="menu"
+                            sx={{}}
+                            onClick={() => exportSession(currentSession)}
+                        >
+                            <Save />
+                        </IconButton>
+                    </Box>
+                </Box>
                 <MessageList />
-                <Box sx={{ padding: '20px 0', position: 'relative' }}>
+                <Box className='relative py-5'>
                     <ButtonGroup
                         sx={{
                             position: 'absolute',

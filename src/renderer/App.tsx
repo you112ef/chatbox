@@ -8,7 +8,6 @@ import ChatConfigWindow from './ChatConfigWindow'
 import CleanWidnow from './CleanWindow'
 import AboutWindow from './AboutWindow'
 import useThemeSwicher from './hooks/useThemeSwitcher'
-import './styles/App.css'
 import * as remote from './remote'
 import CopilotWindow from './CopilotWindow'
 import useAnalytics from './hooks/useAnalytics'
@@ -66,14 +65,22 @@ function Main() {
     const [sessionClean, setSessionClean] = React.useState<Session | null>(null)
 
     return (
-        <Box className="App">
-            <Grid container sx={{ height: '100%', paddingTop: '18px' }}>
+        <Box className="box-border w-screen h-screen"
+            sx={{
+                paddingX: '1rem',
+                [theme.breakpoints.down('sm')]: {
+                    paddingX: '0.4rem',
+                },
+            }}
+        >
+            <Grid container className='h-full pt-4'>
                 {showMenu && (
                     <Sidebar
                         setConfigureChatConfig={setConfigureChatConfig}
                         openClearConversationListWindow={() => setOpenClearConversationListWindow(true)}
                         openCopilotWindow={() => setOpenCopilotWindow(true)}
                         openAboutWindow={() => setOpenAboutWindow(true)}
+                        showMenu={showMenu}
                         setShowMenu={setShowMenu}
                         setOpenSettingWindow={setOpenSettingWindow}
                     />

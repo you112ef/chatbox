@@ -49,6 +49,7 @@ function _SessionItem(props: Props) {
                 onMouseLeave={() => {
                     setHovering(false)
                 }}
+                sx={{ padding: '0.1rem', margin: '0.1rem' }}
             >
                 <ListItemIcon>
                     <IconButton>

@@ -23,7 +23,7 @@ export function settings(): Settings {
         showModelName: true,
         theme: ThemeMode.System,
         language: 'en',
-        fontSize: 13,
+        fontSize: 12,
 
         defaultPrompt: getDefaultPrompt(),
     }

@@ -23,6 +23,10 @@ html > body {
 }
 
 html[data-theme='dark'] {
+    .ToolBar {
+        background-color: rgb(40, 40, 40);
+    }
+
     /* // ------------ 滚动条 --------------- */
 
     /* 设置滚动条的宽度, 背景色与边框 */
@@ -73,6 +77,10 @@ html[data-theme='dark'] {
 }
 
 html[data-theme='light'] {
+    .ToolBar {
+        background-color: #fff;
+    }
+
     /* // ------------ 滚动条 --------------- */
 
     /* 设置滚动条的宽度, 背景色与边框 */
