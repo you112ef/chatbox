@@ -1,7 +1,7 @@
 {
     "name": "xyz.chatboxapp.app",
     "productName": "xyz.chatboxapp.app",
-    "version": "0.6.2",
+    "version": "0.6.3",
     "description": "A cross-platform desktop client for ChatGPT API (OpenAI API)",
     "author": {
         "name": "Benn Huang",

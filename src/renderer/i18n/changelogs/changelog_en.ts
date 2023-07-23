@@ -1,4 +1,11 @@
 const changelog = `
+### v0.6.3
+
+- Added support for modifying model settings for each conversation (this allows different sessions to use different models)
+- Optimized performance when handling large amounts of data
+- Made the UI more compact
+- Fixed several minor issues
+
 ### v0.6.2
 
 - Added bulk cleaning feature for conversation lists
