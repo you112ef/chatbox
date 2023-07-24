@@ -77,11 +77,12 @@ export default function AboutWindow(props: Props) {
                         {t('FAQs')}
                     </Button>
                 </Stack>
-                <h4 className="text-center mb-1 mt-8">
+                <h4 className="text-center mb-1 mt-8 font-medium">
                     <Trans
                         i18nKey="about-author"
                         components={[
                             <a
+                                className='font-bold'
                                 href={`https://chatboxai.app/redirect_app/author/${language}`}
                                 target="_blank"
                                 rel="noreferrer"
@@ -90,8 +91,8 @@ export default function AboutWindow(props: Props) {
                     />
                 </h4>
                 <Paper
-                    elevation={3}
-                    className="font-light"
+                    elevation={2}
+                    className="font-light text-sm"
                     sx={{
                         padding: '10px 10px 5px 10px',
                         backgroundColor: 'paper',
