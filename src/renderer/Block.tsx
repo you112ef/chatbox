@@ -251,9 +251,7 @@ function _Block(props: Props) {
                                                     ? msg.content
                                                     : JSON.stringify(msg.content)
                                             ) +
-                                            (msg.generating && msg.content !== '...'
-                                                ? '<span class="loading"></span>'
-                                                : ''),
+                                            (msg.generating && msg.content !== '...' ? '...' : ''),
                                     }}
                                 />
                                 {msg.error && (
