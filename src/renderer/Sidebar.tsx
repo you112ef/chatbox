@@ -96,7 +96,7 @@ export default function Sidebar(props: Props) {
                     sessionListRef={sessionListRef}
                 />
 
-                <Divider />
+                <Divider sx={{margin: '0.5rem 0.3rem'}} />
 
                 <MenuList>
                     <MenuItem onClick={handleCreateNewSession}
