@@ -121,11 +121,11 @@ function _Block(props: Props) {
     if (showTokenCount && !msg.generating) {
         // 兼容旧版本没有提前计算的消息
         tips.push(
-            `token count: ~${msg.tokenCount !== undefined ? msg.tokenCount : utils.estimateTokensFromMessages([msg])}`
+            `token count: ${msg.tokenCount !== undefined ? msg.tokenCount : utils.estimateTokensFromMessages([msg])}`
         )
     }
     if (showTokenUsed && msg.role === 'assistant' && !msg.generating) {
-        tips.push(`tokens used: ~${msg.tokensUsed || 'unknown'}`)
+        tips.push(`tokens used: ${msg.tokensUsed || 'unknown'}`)
     }
     if (showModelName && props.msg.role === 'assistant') {
         tips.push(`model: ${props.msg.model || 'unknown'}`)
