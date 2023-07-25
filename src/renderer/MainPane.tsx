@@ -90,7 +90,7 @@ export default function MainPane(props: Props) {
                     {!props.showMenu && (
                         <Box className='mr-1'>
                             <IconButton onClick={() => props.setShowMenu(!props.showMenu)} >
-                                <MenuOpenIcon className='text-xl' sx={{transform: 'rotate(180deg)'}} />
+                                <MenuOpenIcon className='text-xl' sx={{ transform: 'rotate(180deg)' }} />
                             </IconButton>
                         </Box>
                     )}
@@ -109,10 +109,16 @@ export default function MainPane(props: Props) {
                             editCurrentSession()
                         }}
                     >
-                        {!props.showMenu && (
-                            <img className='w-7 h-7' src={icon} />
-                        )}
-                        <span>{currentSession.name}</span>
+                        {
+                            !props.showMenu ? (
+                                <>
+                                    <img className='w-7 h-7' src={icon} />
+                                    <span className='ml-1'>{currentSession.name}</span>
+                                </>
+                            ) : (
+                                <span className='ml-3'>{currentSession.name}</span>
+                            )
+                        }
                         {currentSession.settings && (
                             <Tooltip
                                 title={t('Current conversation configured with specific model settings')}
