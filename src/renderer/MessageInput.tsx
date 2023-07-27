@@ -37,7 +37,7 @@ export default function MessageInput(props: Props) {
         } else {
             sessionActions.insertMessage(props.currentSessionId, newUserMsg)
         }
-        scrollActions.scrollToBottom()
+        setTimeout(scrollActions.scrollToBottom, 100) // wait for message rendering
     }
     const handleSubmit = (needGenerating = true) => {
         if (messageInput.trim() === '') {
