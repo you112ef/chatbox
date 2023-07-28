@@ -26,9 +26,21 @@ export const modelConfigs = {
     'gpt-4-32k-0613': {
         maxTokens: 32768,
     },
+
+    // 以下模型延长到了 2024 年 6 月
+    // https://platform.openai.com/docs/models/continuous-model-upgrades
+    'gpt-3.5-turbo-0301': {
+        maxTokens: 4096,
+    },
+    'gpt-4-0314': {
+        maxTokens: 8192,
+    },
+    'gpt-4-32k-0314': {
+        maxTokens: 8192,
+    },
 }
 export type Model = keyof typeof modelConfigs
-export const models = Array.from(Object.keys(modelConfigs)) as Model[]
+export const models = Array.from(Object.keys(modelConfigs)).sort() as Model[]
 
 export const languageNameMap = {
     en: 'English',
