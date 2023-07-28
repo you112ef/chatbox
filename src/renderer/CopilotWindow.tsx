@@ -447,6 +447,8 @@ function CopilotForm(props: CopilotFormProps) {
                 placeholder={t('Copilot Prompt Demo') as any}
                 fullWidth
                 variant="outlined"
+                multiline
+                maxRows={4}
                 value={copilotEdit.prompt}
                 onChange={inputHandler('prompt', false)}
                 helperText={helperTexts['prompt']}
