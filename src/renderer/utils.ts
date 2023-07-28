@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react'
 import GPT3Tokenizer from 'gpt3-tokenizer'
-import { Message } from './types'
+import { Message } from '../shared/types'
 
 /**
  * Word Count

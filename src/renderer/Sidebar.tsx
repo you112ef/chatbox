@@ -14,7 +14,7 @@ import {
     Divider,
     useTheme,
 } from '@mui/material'
-import { Session } from './types'
+import { Session } from '../shared/types'
 import SettingsIcon from '@mui/icons-material/Settings'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import { useTranslation } from 'react-i18next'

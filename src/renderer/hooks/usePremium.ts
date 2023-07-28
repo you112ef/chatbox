@@ -6,7 +6,7 @@ import { settingsAtom } from '../stores/atoms'
 import { activateLicense, deactivateLicense, validateLicense } from '../lemonsqueezy'
 import * as api from '../api'
 import { FetchError } from 'ofetch'
-import { ModelProvider } from '../types'
+import { ModelProvider } from '../../shared/types'
 
 export function usePremium() {
     const [settings, setSettings] = useAtom(settingsAtom)

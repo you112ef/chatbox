@@ -16,7 +16,7 @@ import {
     DialogContentText,
     TextField,
 } from '@mui/material'
-import { Session, ModelProvider, ModelSettings } from './types'
+import { Session, ModelProvider, ModelSettings } from '../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as sessionActions from './stores/sessionActions'
 import {

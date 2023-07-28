@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-import { Model } from './config'
+import { Model } from '../renderer/config'
 
 export type Message = OpenAIMessage & {
     id: string
@@ -82,6 +82,8 @@ export interface Settings extends ModelSettings {
     language: Language
     languageInited?: boolean
     fontSize: number
+
+    disableQuickToggleShortcut?: boolean    // 是否关闭快捷键切换窗口显隐
 
     defaultPrompt?: string // 新会话的默认 prompt
 }

@@ -29,6 +29,10 @@ const electronHandler = {
         ipcRenderer.on('native-theme-updated', callback)
         return () => ipcRenderer.off('native-theme-updated', callback)
     },
+    onWindowShow: (callback: () => void) => {
+        ipcRenderer.on('window-show', callback)
+        return () => ipcRenderer.off('window-show', callback)
+    },
 }
 
 contextBridge.exposeInMainWorld('electronAPI', electronHandler)

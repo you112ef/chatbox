@@ -20,7 +20,7 @@ import {
     Box,
     ButtonGroup,
 } from '@mui/material'
-import { Config, CopilotDetail, Message } from './types'
+import { Config, CopilotDetail, Message } from '../shared/types'
 import { useTranslation } from 'react-i18next'
 import EditIcon from '@mui/icons-material/Edit'
 import StyledMenu from './StyledMenu'

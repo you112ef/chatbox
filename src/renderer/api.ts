@@ -55,6 +55,16 @@ export async function onSystemThemeChange(callback: () => void) {
     return electronAPI.onSystemThemeChange(callback)
 }
 
+export async function onWindowShow(callback: () => void) {
+    if (isWeb) {
+        return () => null
+    }
+    if (!electronAPI) {
+        return () => null
+    }
+    return electronAPI.onWindowShow(callback)
+}
+
 export const getVersion = async () => {
     if (isWeb) {
         return 'Web'

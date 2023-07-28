@@ -1,6 +1,6 @@
-import React, { useEffect, useState, MutableRefObject } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Stack, Button, Grid, Typography, TextField } from '@mui/material'
-import { Message, createMessage } from './types'
+import { Message, createMessage } from '../shared/types'
 import { useTranslation } from 'react-i18next'
 import SendIcon from '@mui/icons-material/Send'
 import * as atoms from './stores/atoms'
@@ -46,18 +46,6 @@ export default function MessageInput(props: Props) {
         submit(createMessage('user', messageInput), needGenerating)
         setMessageInput('')
     }
-
-    useEffect(() => {
-        function keyboardShortcut(e: KeyboardEvent) {
-            if (e.key === 'i' && (e.metaKey || e.ctrlKey)) {
-                dom.focusMessageInput()
-            }
-        }
-        window.addEventListener('keydown', keyboardShortcut)
-        return () => {
-            window.removeEventListener('keydown', keyboardShortcut)
-        }
-    }, [])
 
     return (
         <form

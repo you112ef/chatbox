@@ -1,5 +1,5 @@
 import { getDefaultStore } from 'jotai'
-import { Settings, createMessage, Message, Session, getMsgDisplayModelName } from '../types'
+import { Settings, createMessage, Message, Session, getMsgDisplayModelName } from '../../shared/types'
 import * as atoms from './atoms'
 import * as client from '../client'
 import * as promptFormat from '../prompts'
@@ -48,6 +48,36 @@ export function switchCurrentSession(sessionId: string) {
     store.set(atoms.currentSessionIdAtom, sessionId)
     scrollActions.scrollToBottom() // 切换会话时自动滚动到底部
     scrollActions.clearAutoScroll() // 切换会话时清楚自动滚动
+}
+
+export function switchToIndex(index: number) {
+    const store = getDefaultStore()
+    const sessions = store.get(atoms.sortedSessionsAtom)
+    const target = sessions[index]
+    if (!target) {
+        return
+    }
+    switchCurrentSession(target.id)
+}
+
+export function switchToNext(reversed?: boolean) {
+    const store = getDefaultStore()
+    const sessions = store.get(atoms.sortedSessionsAtom)
+    const currentSessionId = store.get(atoms.currentSessionIdAtom)
+    const currentIndex = sessions.findIndex((s) => s.id === currentSessionId)
+    if (currentIndex < 0) {
+        switchCurrentSession(sessions[0].id)
+        return
+    }
+    let targetIndex = reversed ? currentIndex - 1 : currentIndex + 1
+    if (targetIndex >= sessions.length) {
+        targetIndex = 0
+    }
+    if (targetIndex < 0) {
+        targetIndex = sessions.length - 1
+    }
+    const target = sessions[targetIndex]
+    switchCurrentSession(target.id)
 }
 
 export function remove(session: Session) {

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { Box, IconButton, ButtonGroup, Stack, Grid, Typography, debounce, Chip, Tooltip } from '@mui/material'
-import { Session, getMsgDisplayModelName } from './types'
+import { Session, getMsgDisplayModelName } from '../shared/types'
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices'
 import Save from '@mui/icons-material/Save'
 import { useTranslation } from 'react-i18next'

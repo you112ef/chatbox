@@ -1,5 +1,12 @@
 import React from 'react'
 import {
+    TableContainer,
+    Table,
+    TableHead,
+    TableRow,
+    TableCell,
+    TableBody,
+    Paper,
     Button,
     Alert,
     Chip,
@@ -26,7 +33,7 @@ import {
     InputAdornment,
     IconButton,
 } from '@mui/material'
-import { Settings, ModelProvider, ThemeMode, ModelSettings } from './types'
+import { Settings, ModelProvider, ThemeMode, ModelSettings } from '../shared/types'
 import ThemeChangeButton from './theme/ThemeChangeIcon'
 import { Trans, useTranslation } from 'react-i18next'
 import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle'
@@ -43,10 +50,11 @@ import { models, languageNameMap, languages, modelConfigs, aiModelProviderList }
 import { Accordion, AccordionSummary, AccordionDetails } from './components/Accordion'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import { Shortcut } from './components/Shortcut'
 
 const { useEffect } = React
 
-type Tab = 'ai' | 'display' | 'chat'
+type Tab = 'ai' | 'display' | 'chat' | 'shortcut'
 
 interface Props {
     open: boolean
@@ -105,6 +113,7 @@ export default function SettingWindow(props: Props) {
                         <Tab label={t('ai')} value="ai" />
                         <Tab label={t('display')} value="display" />
                         <Tab label={t('chat')} value="chat" />
+                        <Tab label={t('Shortcuts')} value="shortcut" />
                         {/* <Tab label={t('premium')} value='premium' /> */}
                     </Tabs>
                 </Box>
@@ -259,6 +268,15 @@ export default function SettingWindow(props: Props) {
                         </Button>
                     </Box>
                 )}
+
+                {currentTab === 'shortcut' && (
+                    <ShortcutTab
+                        settingsEdit={settingsEdit}
+                        setSettingsEdit={(updated) => {
+                            setSettingsEdit({ ...settingsEdit, ...updated })
+                        }}
+                    />
+                )}
             </DialogContent>
             <DialogActions>
                 <Button onClick={onCancel}>{t('cancel')}</Button>
@@ -266,6 +284,11 @@ export default function SettingWindow(props: Props) {
             </DialogActions>
         </Dialog>
     )
+}
+
+interface ConfigProps {
+    settingsEdit: Settings
+    setSettingsEdit: (settings: Settings) => void
 }
 
 interface ModelConfigProps {
@@ -914,5 +937,71 @@ function PasswordTextField(props: {
             }}
             helperText={props.helperText}
         />
+    )
+}
+
+function ShortcutTab(props: ConfigProps) {
+    const { t } = useTranslation()
+    const [alt, setAlt] = React.useState('Alt')
+    useEffect(() => {
+        (async () => {
+            const platform = await api.getPlatform()
+            if (platform === 'darwin') {
+                setAlt('Option')
+            }
+        })()
+    }, [])
+    return (
+        <Box>
+            <TableContainer component={Paper}>
+                <Table size="small">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>{t('Description')}</TableCell>
+                            <TableCell align='center'>{t('Key Combination')}</TableCell>
+                            <TableCell align='center'>{t('Toggle')}</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        <TableRow>
+                            <TableCell component="th" scope="row">
+                                {t('Show/Hide Application Window')}
+                            </TableCell>
+                            <TableCell align='center'>
+                                <Shortcut keys={[alt, '`']} />
+                            </TableCell>
+                            <TableCell align='center'>
+                                <Switch size='small'
+                                    checked={!props.settingsEdit.disableQuickToggleShortcut}
+                                    onChange={(e) => props.setSettingsEdit({ ...props.settingsEdit, disableQuickToggleShortcut: !e.target.checked })}
+                                />
+                            </TableCell>
+                        </TableRow>
+                        {
+                            [
+                                { description: t('Navigate to Next Conversation'), keys: ['Ctrl', 'Tab'] },
+                                { description: t('Navigate to Previous Conversation'), keys: ['Ctrl', 'Shift', 'Tab'] },
+                                { description: t('Navigate to Specific Conversation'), keys: ['Ctrl', t('any number key')] },
+                                { description: t('Create New Conversation'), keys: ['Ctrl', 'N'] },
+                                { description: t('Focus on Input Box'), keys: ['Ctrl', 'I'] },
+                                { description: t('Send'), keys: [t('Enter')] },
+                                { description: t('Insert New Line in Input Box'), keys: ['Shift', t('Enter')] },
+                                { description: t('Send Without Generating Response'), keys: ['Ctrl', t('Enter')] },
+                            ].map((item, ix) => (
+                                <TableRow key={ix}>
+                                    <TableCell component="th" scope="row">
+                                        {item.description}
+                                    </TableCell>
+                                    <TableCell align='center'>
+                                        <Shortcut keys={item.keys} />
+                                    </TableCell>
+                                    <TableCell align='center'><Switch size='small' checked disabled /></TableCell>
+                                </TableRow>
+                            ))
+                        }
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Box>
     )
 }

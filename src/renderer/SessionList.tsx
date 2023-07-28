@@ -1,6 +1,6 @@
 import React, { MutableRefObject } from 'react'
 import SessionItem from './SessionItem'
-import { Session } from './types'
+import { Session } from '../shared/types'
 import * as atoms from './stores/atoms'
 import { useAtomValue, useSetAtom } from 'jotai'
 import type { DragEndEvent } from '@dnd-kit/core'

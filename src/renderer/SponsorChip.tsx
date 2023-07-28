@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Chip } from '@mui/material'
-import { SponsorAd } from './types'
+import { SponsorAd } from '../shared/types'
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined'
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'
 import * as remote from './remote'

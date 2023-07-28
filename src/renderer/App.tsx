@@ -2,12 +2,13 @@ import React, { useEffect } from 'react'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { Box, Grid, useTheme, useMediaQuery } from '@mui/material'
-import { RemoteConfig, Session, ModelProvider } from './types'
+import { RemoteConfig, Session, ModelProvider } from '../shared/types'
 import SettingWindow from './SettingWindow'
 import ChatConfigWindow from './ChatConfigWindow'
 import CleanWidnow from './CleanWindow'
 import AboutWindow from './AboutWindow'
 import useThemeSwicher from './hooks/useThemeSwitcher'
+import useShortcut from './hooks/useShortcut'
 import * as remote from './remote'
 import CopilotWindow from './CopilotWindow'
 import useAnalytics from './hooks/useAnalytics'
@@ -132,6 +133,7 @@ export default function App() {
     useAnalytics()
     usePremium() // 每次启动都执行usePremium，防止用户在其他地方取消订阅
     useSystemLanguageWhenInit()
+    useShortcut()
     const theme = useThemeSwicher()
     return (
         <ThemeProvider theme={theme}>

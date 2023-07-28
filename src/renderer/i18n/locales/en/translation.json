@@ -123,5 +123,20 @@
     "Default Prompt for New Conversation": "Default Prompt for New Conversation",
     "Specific model settings": "Specific model settings",
     "Specific model settings configured for this conversation": "Specific model settings configured for this conversation",
-    "Conversation Settings": "Conversation Settings"
+    "Conversation Settings": "Conversation Settings",
+    "Description": "Description",
+    "Key Combination": "Key Combination",
+    "Toggle": "Toggle",
+    "Show/Hide Application Window": "Show/Hide Application Window",
+    "Navigate to Next Conversation": "Navigate to Next Conversation",
+    "Navigate to Previous Conversation": "Navigate to Previous Conversation",
+    "Navigate to Specific Conversation": "Navigate to Specific Conversation",
+    "any number key": "any number key",
+    "Create New Conversation": "Create New Conversation",
+    "Focus on Input Box": "Focus on Input Box",
+    "Send": "Send",
+    "Insert New Line in Input Box": "Insert New Line in Input Box",
+    "Send Without Generating Response": "Send Without Generating Response",
+    "Enter": "Enter",
+    "Shortcuts": "Shortcuts"
 }

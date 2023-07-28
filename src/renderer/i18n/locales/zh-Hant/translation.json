@@ -123,5 +123,20 @@
     "Default Prompt for New Conversation": "新對話的預設提示",
     "Specific model settings": "具體模型設置",
     "Current conversation configured with specific model settings": "當前的對話配置了特定模型設置",
-    "Conversation Settings": "對話設定"
+    "Conversation Settings": "對話設定",
+    "Description": "描述",
+    "Key Combination": "按鍵",
+    "Toggle": "開關",
+    "Show/Hide Application Window": "顯示/隱藏應用視窗",
+    "Navigate to Next Conversation": "跳轉到下一個聊天對話",
+    "Navigate to Previous Conversation": "跳轉到上一個聊天對話",
+    "Navigate to Specific Conversation": "跳轉到第N個聊天對話",
+    "any number key": "任一數字鍵",
+    "Create New Conversation": "創建新的聊天對話",
+    "Focus on Input Box": "聚焦輸入框",
+    "Send": "發送",
+    "Insert New Line in Input Box": "輸入框換行",
+    "Send Without Generating Response": "發送但不產生回答",
+    "Enter": "回車",
+    "Shortcuts": "快速鍵"
 }

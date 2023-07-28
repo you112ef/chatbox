@@ -3,7 +3,7 @@ import { getDefaultStore, useAtomValue } from 'jotai'
 import { realThemeAtom, themeAtom, fontSizeAtom } from '../stores/atoms'
 import { createTheme } from '@mui/material/styles'
 import { ThemeOptions } from '@mui/material/styles'
-import { ThemeMode } from '../types'
+import { ThemeMode } from '../../shared/types'
 import * as api from '../api'
 
 export const switchTheme = async (theme: ThemeMode) => {

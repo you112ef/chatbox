@@ -1,5 +1,5 @@
 import { Button, ButtonGroup } from '@mui/material'
-import { ThemeMode } from '../types'
+import { ThemeMode } from '../../shared/types'
 import BrightnessMediumIcon from '@mui/icons-material/BrightnessMedium'
 import DarkModeIcon from '@mui/icons-material/DarkMode'
 import WbSunnyIcon from '@mui/icons-material/WbSunny'

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import { ListItemText, MenuItem, Divider, Avatar, IconButton, Typography, ListItemIcon } from '@mui/material'
-import { Session } from './types'
+import { Session } from '../shared/types'
 import CopyIcon from '@mui/icons-material/CopyAll'
 import EditIcon from '@mui/icons-material/Edit'
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined'

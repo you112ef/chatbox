@@ -1,5 +1,5 @@
-import { Config, Settings, ModelProvider } from '../types'
-import { ThemeMode } from '../types'
+import { Config, Settings, ModelProvider } from '../../shared/types'
+import { ThemeMode } from '../../shared/types'
 import { v4 as uuidv4 } from 'uuid'
 
 export function settings(): Settings {

@@ -1,4 +1,4 @@
-import { Language, ModelProvider } from './types'
+import { Language, ModelProvider } from '../shared/types'
 
 // Ref: https://platform.openai.com/docs/models/gpt-4
 export const modelConfigs = {

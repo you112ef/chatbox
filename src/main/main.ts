@@ -9,13 +9,14 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path'
-import { app, BrowserWindow, shell, ipcMain, nativeTheme, session, dialog } from 'electron'
+import { app, globalShortcut, BrowserWindow, shell, ipcMain, nativeTheme, session, dialog } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
 import MenuBuilder from './menu'
 import { resolveHtmlPath } from './util'
 import Locale from './locales'
-import Store from 'electron-store'
+import { store } from './store'
+import * as shortcuts from './shortcut'
 
 // 这行代码是解决 Windows 通知的标题和图标不正确的问题，标题会错误显示成 electron.app.Chatbox
 // 参考：https://stackoverflow.com/questions/65859634/notification-from-electron-shows-electron-app-electron
@@ -164,23 +165,7 @@ app.on('window-all-closed', () => {
     }
 })
 
-app.whenReady()
-    .then(() => {
-        createWindow()
-        app.on('activate', () => {
-            // On macOS it's common to re-create a window in the app when the
-            // dock icon is clicked and there are no other windows open.
-            if (mainWindow === null) createWindow()
-        })
-    })
-    .catch(console.log)
-
 // IPC
-
-const store = new Store({
-    clearInvalidConfig: true, // 当配置JSON不合法时，清空配置
-})
-log.info('store path:', store.path)
 
 ipcMain.handle('getStoreValue', (event, key) => {
     return store.get(key)
@@ -212,3 +197,16 @@ ipcMain.handle('openLink', (event, link) => {
 })
 
 ipcMain.handle('shouldUseDarkColors', () => nativeTheme.shouldUseDarkColors)
+
+app.whenReady()
+    .then(() => {
+        createWindow()
+        app.on('activate', () => {
+            // On macOS it's common to re-create a window in the app when the
+            // dock icon is clicked and there are no other windows open.
+            if (mainWindow === null) createWindow()
+        })
+        globalShortcut.register('Alt+`', () => shortcuts.quickToggle(mainWindow))
+        globalShortcut.register('Option+`', () => shortcuts.quickToggle(mainWindow))
+    })
+    .catch(console.log)

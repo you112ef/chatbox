@@ -1,4 +1,4 @@
-import { Config, CopilotDetail, SponsorAboutBanner, SponsorAd, RemoteConfig } from './types'
+import { Config, CopilotDetail, SponsorAboutBanner, SponsorAd, RemoteConfig } from '../shared/types'
 
 const releaseHost = 'https://releases.chatboxai.app'
 
