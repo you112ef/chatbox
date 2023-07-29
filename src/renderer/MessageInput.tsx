@@ -59,11 +59,11 @@ export default function MessageInput(props: Props) {
                     <Grid item xs>
                         <TextField
                             multiline
+                            maxRows={12}
                             label="Prompt"
                             value={messageInput}
                             onChange={(event) => setMessageInput(event.target.value)}
                             fullWidth
-                            maxRows={12}
                             autoFocus
                             id={dom.messageInputID}
                             onKeyDown={(event) => {

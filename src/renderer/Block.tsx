@@ -225,7 +225,8 @@ function _Block(props: Props) {
                                 style={{
                                     width: '100%',
                                 }}
-                                multiline
+                                multiline  // multiline 需要和 maxRows 一起使用，否则长文本可能会导致退出编辑？
+                                maxRows={15}
                                 placeholder="prompt"
                                 value={msgEdit.content}
                                 onChange={(e) => {
