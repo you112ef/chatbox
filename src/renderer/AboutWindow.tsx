@@ -82,7 +82,7 @@ export default function AboutWindow(props: Props) {
                         i18nKey="about-author"
                         components={[
                             <a
-                                className='font-bold'
+                                className="font-bold"
                                 href={`https://chatboxai.app/redirect_app/author/${language}`}
                                 target="_blank"
                                 rel="noreferrer"

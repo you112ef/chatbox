@@ -11,7 +11,7 @@ export function quickToggle(mainWindow: BrowserWindow | null) {
     }
     if (mainWindow.isMinimized()) {
         mainWindow.restore()
-        mainWindow.focus();
+        mainWindow.focus()
         mainWindow.webContents.send('window-show')
     } else if (mainWindow?.isFocused()) {
         mainWindow.minimize()

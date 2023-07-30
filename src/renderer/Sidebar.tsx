@@ -52,7 +52,7 @@ export default function Sidebar(props: Props) {
     return (
         <Grid
             item
-            className='pl-1'
+            className="pl-1"
             sx={{
                 height: '100%',
                 [theme.breakpoints.down('sm')]: {
@@ -78,14 +78,14 @@ export default function Sidebar(props: Props) {
                     },
                 }}
             >
-                <Box className="flex justify-between items-center p-0 m-0 mx-2 mb-4" >
+                <Box className="flex justify-between items-center p-0 m-0 mx-2 mb-4">
                     <Box>
                         <img src={icon} className="w-8 h-8 mr-2 align-middle inline-block" />
                         <span className="text-2xl align-middle inline-block">Chatbox</span>
                     </Box>
                     <Box>
                         <IconButton onClick={() => props.setShowMenu(false)}>
-                            <MenuOpenIcon className='text-xl' />
+                            <MenuOpenIcon className="text-xl" />
                         </IconButton>
                     </Box>
                 </Box>
@@ -96,12 +96,10 @@ export default function Sidebar(props: Props) {
                     sessionListRef={sessionListRef}
                 />
 
-                <Divider sx={{margin: '0.5rem 0.3rem'}} />
+                <Divider sx={{ margin: '0.5rem 0.3rem' }} />
 
                 <MenuList>
-                    <MenuItem onClick={handleCreateNewSession}
-                        sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}
-                    >
+                    <MenuItem onClick={handleCreateNewSession} sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}>
                         <ListItemIcon>
                             <IconButton>
                                 <AddIcon fontSize="small" />
@@ -113,9 +111,7 @@ export default function Sidebar(props: Props) {
                         </Typography>
                     </MenuItem>
 
-                    <MenuItem onClick={props.openCopilotWindow}
-                        sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}
-                    >
+                    <MenuItem onClick={props.openCopilotWindow} sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}>
                         <ListItemIcon>
                             <IconButton>
                                 <SmartToyIcon fontSize="small" />
@@ -143,9 +139,7 @@ export default function Sidebar(props: Props) {
                         </Typography>
                     </MenuItem>
 
-                    <MenuItem onClick={props.openAboutWindow}
-                        sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}
-                    >
+                    <MenuItem onClick={props.openAboutWindow} sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}>
                         <ListItemIcon>
                             <IconButton>
                                 <InfoOutlinedIcon fontSize="small" />

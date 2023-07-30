@@ -138,5 +138,7 @@
     "Insert New Line in Input Box": "Insert New Line in Input Box",
     "Send Without Generating Response": "Send Without Generating Response",
     "Enter": "Enter",
-    "Shortcuts": "Shortcuts"
+    "Shortcuts": "Shortcuts",
+    "Max Message Count in Context": "Max Message Count in Context",
+    "No Limit": "No Limit"
 }

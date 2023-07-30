@@ -198,7 +198,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
     if (targetMsgIx < 0) {
         return
     }
-    const promptMsgs = genMessageContext(session.messages.slice(0, targetMsgIx), settings.openaiMaxContextTokens)
+    const promptMsgs = genMessageContext(settings, session.messages.slice(0, targetMsgIx))
 
     const autoScrollId = scrollActions.startAutoScroll(targetMsgIx, 'start')
 
@@ -295,7 +295,8 @@ export function clearConversationList(keepNum: number) {
 /**
  * 从历史消息中生成 prompt 上下文
  */
-function genMessageContext(msgs: Message[], openaiMaxContextTokens: number) {
+function genMessageContext(settings: Settings, msgs: Message[]) {
+    const { openaiMaxContextTokens, openaiMaxContextMessageCount } = settings
     if (msgs.length === 0) {
         throw new Error('No messages to replay')
     }
@@ -309,6 +310,12 @@ function genMessageContext(msgs: Message[], openaiMaxContextTokens: number) {
         const msg = msgs[i]
         const size = utils.estimateTokensFromMessages([msg]) + 20 // 20 作为预估的误差补偿
         if (size + totalLen > openaiMaxContextTokens) {
+            break
+        }
+        if (
+            openaiMaxContextMessageCount <= 20 &&   // 超过20表示不再限制
+            prompts.length >= openaiMaxContextMessageCount + 1 // +1是为了保留用户最后一条输入消息
+        ) {
             break
         }
         prompts = [msg, ...prompts]

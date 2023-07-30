@@ -138,5 +138,7 @@
     "Insert New Line in Input Box": "输入框换行",
     "Send Without Generating Response": "发送但不生成回答",
     "Enter": "回车键",
-    "Shortcuts": "快捷键"
+    "Shortcuts": "快捷键",
+    "Max Message Count in Context": "上下文的消息数量上限",
+    "No Limit": "不限制"
 }

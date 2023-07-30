@@ -24,6 +24,7 @@ import {
     ModelSelect,
     TemperatureSlider,
     TokenConfig,
+    MaxContextMessageCountSlider,
     wrapDefaultTokenConfigUpdate,
 } from './SettingWindow'
 import * as atoms from './stores/atoms'
@@ -101,27 +102,44 @@ export default function ChatConfigWindow(props: Props) {
                 {settingsEdit && (
                     <>
                         <AiProviderSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                        {settingsEdit.aiProvider === ModelProvider.ChatboxAI && <></>}
+                        <Divider sx={{ margin: '16px 0' }} />
+                        {settingsEdit.aiProvider === ModelProvider.ChatboxAI && (
+                            <>
+                                <MaxContextMessageCountSlider
+                                    settingsEdit={settingsEdit}
+                                    setSettingsEdit={setSettingsEdit}
+                                />
+                                <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                            </>
+                        )}
                         {(settingsEdit.aiProvider === ModelProvider.OpenAI ||
                             settingsEdit.aiProvider === ModelProvider.Azure) && (
                             <>
-                                <Divider sx={{ margin: '12px 0' }} />
                                 <ModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                <MaxContextMessageCountSlider
+                                    settingsEdit={settingsEdit}
+                                    setSettingsEdit={setSettingsEdit}
+                                />
+                                <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                                 <Accordion>
                                     <AccordionSummary aria-controls="panel1a-content">
                                         {t('model')} & {t('token')}
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <TemperatureSlider
-                                            settingsEdit={settingsEdit}
-                                            setSettingsEdit={setSettingsEdit}
-                                        />
                                         <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                                     </AccordionDetails>
                                 </Accordion>
                             </>
                         )}
-                        {settingsEdit.aiProvider === ModelProvider.ChatGLM6B && <></>}
+                        {settingsEdit.aiProvider === ModelProvider.ChatGLM6B && (
+                            <>
+                                <MaxContextMessageCountSlider
+                                    settingsEdit={settingsEdit}
+                                    setSettingsEdit={setSettingsEdit}
+                                />
+                                <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                            </>
+                        )}
                     </>
                 )}
             </DialogContent>

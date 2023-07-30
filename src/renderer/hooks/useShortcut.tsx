@@ -13,7 +13,6 @@ export default function useShortcut() {
         return () => {
             window.removeEventListener('keydown', keyboardShortcut)
         }
-
     }, [])
 }
 
@@ -32,7 +31,7 @@ function keyboardShortcut(e: KeyboardEvent) {
     if (e.key === 'Tab' && ctrlOrCmd && shift) {
         sessionActions.switchToNext(true)
     }
-    for (let i = 1; i <= 9; i ++) {
+    for (let i = 1; i <= 9; i++) {
         if (e.key === i.toString() && ctrlOrCmd) {
             sessionActions.switchToIndex(i - 1)
         }

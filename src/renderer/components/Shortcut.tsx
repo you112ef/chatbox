@@ -7,26 +7,24 @@ export function Shortcut(props: { keys: string[] }) {
             Keys.push(<span>+</span>)
         }
     }
-    return (
-        <span style={{ display: 'inline-block', padding: '0 4px' }}>
-            {Keys}
-        </span>
-    )
+    return <span style={{ display: 'inline-block', padding: '0 4px' }}>{Keys}</span>
 }
 
 export function Code(props: { children: React.ReactNode }) {
     return (
-        <code style={{
-            display: 'inline-block',
-            padding: '0 4px',
-            color: 'primary',
-            border: '1px solid',
-            borderColor: 'var(--muidocs-palette-grey-200, #DAE2ED)',
-            borderRadius: '5px',
-            fontSize: '0.8125rem',
-            direction: 'ltr',
-        }}>
+        <code
+            style={{
+                display: 'inline-block',
+                padding: '0 4px',
+                color: 'primary',
+                border: '1px solid',
+                borderColor: 'var(--muidocs-palette-grey-200, #DAE2ED)',
+                borderRadius: '5px',
+                fontSize: '0.8125rem',
+                direction: 'ltr',
+            }}
+        >
             {props.children}
-        </code >
+        </code>
     )
 }

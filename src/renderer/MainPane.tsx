@@ -17,7 +17,7 @@ import * as toastActions from './stores/toastActions'
 import * as sessionActions from './stores/sessionActions'
 import * as scrollActions from './stores/scrollActions'
 import TuneIcon from '@mui/icons-material/Tune'
-import MenuOpenIcon from '@mui/icons-material/MenuOpen';
+import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 
 interface Props {
     showMenu: boolean
@@ -84,13 +84,13 @@ export default function MainPane(props: Props) {
     }
 
     return (
-        <Grid item xs className="h-full" >
-            <Stack className="h-full relative" >
-                <Box className='flex flex-row'>
+        <Grid item xs className="h-full">
+            <Stack className="h-full relative">
+                <Box className="flex flex-row">
                     {!props.showMenu && (
-                        <Box className='mr-1'>
-                            <IconButton onClick={() => props.setShowMenu(!props.showMenu)} >
-                                <MenuOpenIcon className='text-xl' sx={{ transform: 'rotate(180deg)' }} />
+                        <Box className="mr-1">
+                            <IconButton onClick={() => props.setShowMenu(!props.showMenu)}>
+                                <MenuOpenIcon className="text-xl" sx={{ transform: 'rotate(180deg)' }} />
                             </IconButton>
                         </Box>
                     )}
@@ -109,16 +109,14 @@ export default function MainPane(props: Props) {
                             editCurrentSession()
                         }}
                     >
-                        {
-                            !props.showMenu ? (
-                                <>
-                                    <img className='w-7 h-7' src={icon} />
-                                    <span className='ml-1'>{currentSession.name}</span>
-                                </>
-                            ) : (
-                                <span className='ml-3'>{currentSession.name}</span>
-                            )
-                        }
+                        {!props.showMenu ? (
+                            <>
+                                <img className="w-7 h-7" src={icon} />
+                                <span className="ml-1">{currentSession.name}</span>
+                            </>
+                        ) : (
+                            <span className="ml-3">{currentSession.name}</span>
+                        )}
                         {currentSession.settings && (
                             <Tooltip
                                 title={t('Current conversation configured with specific model settings')}
@@ -162,7 +160,7 @@ export default function MainPane(props: Props) {
                     </Box>
                 </Box>
                 <MessageList />
-                <Box className='relative py-5'>
+                <Box className="relative py-5">
                     <ButtonGroup
                         sx={{
                             position: 'absolute',

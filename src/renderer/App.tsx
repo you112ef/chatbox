@@ -66,7 +66,8 @@ function Main() {
     const [sessionClean, setSessionClean] = React.useState<Session | null>(null)
 
     return (
-        <Box className="box-border w-screen h-screen"
+        <Box
+            className="box-border w-screen h-screen"
             sx={{
                 paddingX: '1rem',
                 [theme.breakpoints.down('sm')]: {
@@ -74,7 +75,7 @@ function Main() {
                 },
             }}
         >
-            <Grid container className='h-full pt-4'>
+            <Grid container className="h-full pt-4">
                 {showMenu && (
                     <Sidebar
                         setConfigureChatConfig={setConfigureChatConfig}

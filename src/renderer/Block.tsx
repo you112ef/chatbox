@@ -225,7 +225,7 @@ function _Block(props: Props) {
                                 style={{
                                     width: '100%',
                                 }}
-                                multiline  // multiline 需要和 maxRows 一起使用，否则长文本可能会导致退出编辑？
+                                multiline // multiline 需要和 maxRows 一起使用，否则长文本可能会导致退出编辑？
                                 maxRows={15}
                                 placeholder="prompt"
                                 value={msgEdit.content}
@@ -251,8 +251,7 @@ function _Block(props: Props) {
                                                 typeof msg.content === 'string'
                                                     ? msg.content
                                                     : JSON.stringify(msg.content)
-                                            ) +
-                                            (msg.generating && msg.content !== '...' ? '...' : ''),
+                                            ) + (msg.generating && msg.content !== '...' ? '...' : ''),
                                     }}
                                 />
                                 {msg.error && (

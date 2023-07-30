@@ -66,8 +66,9 @@ export interface ModelSettings {
     }
 
     temperature: number
-    openaiMaxTokens: number // 生成消息的最大限制，是传入 OpenAI 接口的参数
-    openaiMaxContextTokens: number // 聊天消息上下文的tokens限制
+    openaiMaxTokens: number // 生成消息的最大限制，是传入 OpenAI 接口的参数。0 代表不限制（不传递）
+    openaiMaxContextTokens: number // 聊天消息上下文的tokens限制。
+    openaiMaxContextMessageCount: number // 聊天消息上下文的消息数量限制。超过20表示不限制
     // maxContextSize: string 弃用，字段名永远不在使用，避免老版本报错
     // maxTokens: string 弃用，字段名永远不在使用，避免老版本报错
 }
@@ -83,7 +84,7 @@ export interface Settings extends ModelSettings {
     languageInited?: boolean
     fontSize: number
 
-    disableQuickToggleShortcut?: boolean    // 是否关闭快捷键切换窗口显隐
+    disableQuickToggleShortcut?: boolean // 是否关闭快捷键切换窗口显隐
 
     defaultPrompt?: string // 新会话的默认 prompt
 }

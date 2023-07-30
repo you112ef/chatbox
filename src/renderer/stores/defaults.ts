@@ -15,6 +15,7 @@ export function settings(): Settings {
         temperature: 0.7,
         openaiMaxTokens: 0,
         openaiMaxContextTokens: 4000,
+        openaiMaxContextMessageCount: 10,
         // maxContextSize: "4000",
         // maxTokens: "2048",
         showWordCount: true,

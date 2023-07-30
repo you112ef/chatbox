@@ -393,6 +393,8 @@ export function ModelConfig(props: ModelConfigProps) {
 
                         <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
 
+                        <MaxContextMessageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+
                         <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                     </AccordionDetails>
                 </Accordion>
@@ -605,6 +607,75 @@ export function ModelConfig(props: ModelConfigProps) {
     )
 }
 
+export function MaxContextMessageCountSlider(props: ModelConfigProps) {
+    const { t } = useTranslation()
+    const { settingsEdit, setSettingsEdit } = props
+    return (
+        <Box sx={{ margin: '10px' }}>
+            <Box>
+                <Typography id="discrete-slider" gutterBottom>
+                    {t('Max Message Count in Context')}
+                </Typography>
+            </Box>
+            <Box
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto',
+                }}
+            >
+                <Box sx={{ width: '92%' }}>
+                    <Slider
+                        value={settingsEdit.openaiMaxContextMessageCount}
+                        onChange={(_event, value) => {
+                            const v = Array.isArray(value) ? value[0] : value
+                            setSettingsEdit({
+                                ...settingsEdit,
+                                openaiMaxContextMessageCount: v,
+                            })
+                        }}
+                        aria-labelledby="discrete-slider"
+                        valueLabelDisplay="auto"
+                        step={2}
+                        min={0}
+                        max={22}
+                        marks
+                        valueLabelFormat={(value) => {
+                            if (value === 22) {
+                                return t('No Limit')
+                            }
+                            return value
+                        }}
+                    />
+                </Box>
+                <TextField
+                    sx={{ marginLeft: 2, width: '100px' }}
+                    value={
+                        settingsEdit.openaiMaxContextMessageCount > 20
+                            ? t('No Limit')
+                            : settingsEdit.openaiMaxContextMessageCount
+                    }
+                    onChange={(event) => {
+                        const s = event.target.value.trim()
+                        const v = parseInt(s)
+                        if (isNaN(v)) {
+                            return
+                        }
+                        setSettingsEdit({
+                            ...settingsEdit,
+                            openaiMaxContextMessageCount: v,
+                        })
+                    }}
+                    type="text"
+                    size="small"
+                    variant="outlined"
+                />
+            </Box>
+        </Box>
+    )
+}
+
 export function TokenConfig(props: ModelConfigProps) {
     const { t } = useTranslation()
 
@@ -656,8 +727,8 @@ export function TokenConfig(props: ModelConfigProps) {
         }
     }
     return (
-        <Box>
-            <Box sx={{ marginTop: 3, marginBottom: -1 }}>
+        <Box sx={{ margin: '10px' }}>
+            <Box>
                 <Typography id="discrete-slider" gutterBottom>
                     {t('max tokens in context')}
                 </Typography>
@@ -738,13 +809,34 @@ export function TokenConfig(props: ModelConfigProps) {
 }
 
 export function wrapDefaultTokenConfigUpdate(settings: ModelSettings): ModelSettings {
-    if (settings.aiProvider === ModelProvider.OpenAI) {
-        const limits = getTokenLimits(settings)
-        settings.openaiMaxTokens = limits.minTokenLimit // 默认最小值
-        settings.openaiMaxContextTokens = limits.maxContextTokenLimit // 默认最大值
-    } else if (settings.aiProvider === ModelProvider.Azure) {
-        settings.openaiMaxTokens = defaults.settings().openaiMaxTokens
-        settings.openaiMaxContextTokens = defaults.settings().openaiMaxContextTokens
+    switch (settings.aiProvider) {
+        case ModelProvider.OpenAI:
+            const limits = getTokenLimits(settings)
+            settings.openaiMaxTokens = limits.minTokenLimit // 默认最小值
+            settings.openaiMaxContextTokens = limits.maxContextTokenLimit // 默认最大值
+            if (settings.model.startsWith('gpt-4')) {
+                settings.openaiMaxContextMessageCount = 6
+            } else {
+                settings.openaiMaxContextMessageCount = 999
+            }
+            break
+        case ModelProvider.Azure:
+            settings.openaiMaxTokens = defaults.settings().openaiMaxTokens
+            settings.openaiMaxContextTokens = defaults.settings().openaiMaxContextTokens
+            settings.openaiMaxContextMessageCount = 8
+            break
+        case ModelProvider.ChatboxAI:
+            settings.openaiMaxTokens = 0
+            settings.openaiMaxContextTokens = 8000
+            settings.openaiMaxContextMessageCount = 8
+            break
+        case ModelProvider.ChatGLM6B:
+            settings.openaiMaxTokens = 0
+            settings.openaiMaxContextTokens = 2000
+            settings.openaiMaxContextMessageCount = 4
+            break
+        default:
+            break
     }
     return { ...settings }
 }
@@ -854,8 +946,8 @@ export function TemperatureSlider(props: ModelConfigProps) {
         }
     }
     return (
-        <>
-            <Box sx={{ marginTop: 3, marginBottom: 1 }}>
+        <Box sx={{ margin: '10px' }}>
+            <Box>
                 <Typography id="discrete-slider" gutterBottom>
                     {t('temperature')}
                 </Typography>
@@ -868,7 +960,7 @@ export function TemperatureSlider(props: ModelConfigProps) {
                     margin: '0 auto',
                 }}
             >
-                <Box sx={{ width: '100%' }}>
+                <Box sx={{ width: '92%' }}>
                     <Slider
                         value={settingsEdit.temperature}
                         onChange={handleTemperatureChange}
@@ -882,18 +974,38 @@ export function TemperatureSlider(props: ModelConfigProps) {
                             {
                                 value: 0.2,
                                 label: (
-                                    <Chip size="small" icon={<PlaylistAddCheckCircleIcon />} label={t('meticulous')} />
+                                    <Chip
+                                        size="small"
+                                        icon={<PlaylistAddCheckCircleIcon />}
+                                        label={t('meticulous')}
+                                        className="opacity-50"
+                                    />
                                 ),
                             },
                             {
                                 value: 0.8,
-                                label: <Chip size="small" icon={<LightbulbCircleIcon />} label={t('creative')} />,
+                                label: (
+                                    <Chip
+                                        size="small"
+                                        icon={<LightbulbCircleIcon />}
+                                        label={t('creative')}
+                                        className="opacity-50"
+                                    />
+                                ),
                             },
                         ]}
                     />
                 </Box>
+                <TextField
+                    sx={{ marginLeft: 2, width: '100px' }}
+                    value={settingsEdit.temperature}
+                    disabled
+                    type="text"
+                    size="small"
+                    variant="outlined"
+                />
             </Box>
-        </>
+        </Box>
     )
 }
 
@@ -944,7 +1056,7 @@ function ShortcutTab(props: ConfigProps) {
     const { t } = useTranslation()
     const [alt, setAlt] = React.useState('Alt')
     useEffect(() => {
-        (async () => {
+        ;(async () => {
             const platform = await api.getPlatform()
             if (platform === 'darwin') {
                 setAlt('Option')
@@ -958,8 +1070,8 @@ function ShortcutTab(props: ConfigProps) {
                     <TableHead>
                         <TableRow>
                             <TableCell>{t('Description')}</TableCell>
-                            <TableCell align='center'>{t('Key Combination')}</TableCell>
-                            <TableCell align='center'>{t('Toggle')}</TableCell>
+                            <TableCell align="center">{t('Key Combination')}</TableCell>
+                            <TableCell align="center">{t('Toggle')}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -967,38 +1079,47 @@ function ShortcutTab(props: ConfigProps) {
                             <TableCell component="th" scope="row">
                                 {t('Show/Hide Application Window')}
                             </TableCell>
-                            <TableCell align='center'>
+                            <TableCell align="center">
                                 <Shortcut keys={[alt, '`']} />
                             </TableCell>
-                            <TableCell align='center'>
-                                <Switch size='small'
+                            <TableCell align="center">
+                                <Switch
+                                    size="small"
                                     checked={!props.settingsEdit.disableQuickToggleShortcut}
-                                    onChange={(e) => props.setSettingsEdit({ ...props.settingsEdit, disableQuickToggleShortcut: !e.target.checked })}
+                                    onChange={(e) =>
+                                        props.setSettingsEdit({
+                                            ...props.settingsEdit,
+                                            disableQuickToggleShortcut: !e.target.checked,
+                                        })
+                                    }
                                 />
                             </TableCell>
                         </TableRow>
-                        {
-                            [
-                                { description: t('Navigate to Next Conversation'), keys: ['Ctrl', 'Tab'] },
-                                { description: t('Navigate to Previous Conversation'), keys: ['Ctrl', 'Shift', 'Tab'] },
-                                { description: t('Navigate to Specific Conversation'), keys: ['Ctrl', t('any number key')] },
-                                { description: t('Create New Conversation'), keys: ['Ctrl', 'N'] },
-                                { description: t('Focus on Input Box'), keys: ['Ctrl', 'I'] },
-                                { description: t('Send'), keys: [t('Enter')] },
-                                { description: t('Insert New Line in Input Box'), keys: ['Shift', t('Enter')] },
-                                { description: t('Send Without Generating Response'), keys: ['Ctrl', t('Enter')] },
-                            ].map((item, ix) => (
-                                <TableRow key={ix}>
-                                    <TableCell component="th" scope="row">
-                                        {item.description}
-                                    </TableCell>
-                                    <TableCell align='center'>
-                                        <Shortcut keys={item.keys} />
-                                    </TableCell>
-                                    <TableCell align='center'><Switch size='small' checked disabled /></TableCell>
-                                </TableRow>
-                            ))
-                        }
+                        {[
+                            { description: t('Navigate to Next Conversation'), keys: ['Ctrl', 'Tab'] },
+                            { description: t('Navigate to Previous Conversation'), keys: ['Ctrl', 'Shift', 'Tab'] },
+                            {
+                                description: t('Navigate to Specific Conversation'),
+                                keys: ['Ctrl', t('any number key')],
+                            },
+                            { description: t('Create New Conversation'), keys: ['Ctrl', 'N'] },
+                            { description: t('Focus on Input Box'), keys: ['Ctrl', 'I'] },
+                            { description: t('Send'), keys: [t('Enter')] },
+                            { description: t('Insert New Line in Input Box'), keys: ['Shift', t('Enter')] },
+                            { description: t('Send Without Generating Response'), keys: ['Ctrl', t('Enter')] },
+                        ].map((item, ix) => (
+                            <TableRow key={ix}>
+                                <TableCell component="th" scope="row">
+                                    {item.description}
+                                </TableCell>
+                                <TableCell align="center">
+                                    <Shortcut keys={item.keys} />
+                                </TableCell>
+                                <TableCell align="center">
+                                    <Switch size="small" checked disabled />
+                                </TableCell>
+                            </TableRow>
+                        ))}
                     </TableBody>
                 </Table>
             </TableContainer>
