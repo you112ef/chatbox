@@ -4,7 +4,7 @@ const changelog = `
 - Added application shortcuts for quickly showing/hiding windows, switching conversations, etc. See the settings page for details.
 - Introduced a new setting for the maximum amount of context messages, allowing more flexible control of the context message count and saving token usage.
 - Added support for OpenAI 0301 and 0314 model series.
-- Added a temperature setting in the dialogue settings.
+- Added a temperature setting in the conversation special settings.
 - Fixed some minor issues.
 
 ### v0.6.3
