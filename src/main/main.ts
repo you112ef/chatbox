@@ -165,6 +165,19 @@ app.on('window-all-closed', () => {
     }
 })
 
+app.whenReady()
+    .then(() => {
+        createWindow()
+        app.on('activate', () => {
+            // On macOS it's common to re-create a window in the app when the
+            // dock icon is clicked and there are no other windows open.
+            if (mainWindow === null) createWindow()
+        })
+        globalShortcut.register('Alt+`', () => shortcuts.quickToggle(mainWindow))
+        globalShortcut.register('Option+`', () => shortcuts.quickToggle(mainWindow))
+    })
+    .catch(console.log)
+
 // IPC
 
 ipcMain.handle('getStoreValue', (event, key) => {
@@ -197,16 +210,3 @@ ipcMain.handle('openLink', (event, link) => {
 })
 
 ipcMain.handle('shouldUseDarkColors', () => nativeTheme.shouldUseDarkColors)
-
-app.whenReady()
-    .then(() => {
-        createWindow()
-        app.on('activate', () => {
-            // On macOS it's common to re-create a window in the app when the
-            // dock icon is clicked and there are no other windows open.
-            if (mainWindow === null) createWindow()
-        })
-        globalShortcut.register('Alt+`', () => shortcuts.quickToggle(mainWindow))
-        globalShortcut.register('Option+`', () => shortcuts.quickToggle(mainWindow))
-    })
-    .catch(console.log)
