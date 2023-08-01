@@ -571,7 +571,7 @@ export function ModelConfig(props: ModelConfigProps) {
                                 <Button
                                     variant="outlined"
                                     onClick={() => {
-                                        api.openLink('https://app.lemonsqueezy.com/my-orders')
+                                        api.openLink('https://chatboxai.app/redirect_app/manage_license')
                                     }}
                                 >
                                     {t('Manage License and Devices')}
@@ -582,7 +582,7 @@ export function ModelConfig(props: ModelConfigProps) {
                                         variant="outlined"
                                         onClick={() => {
                                             api.openLink(
-                                                'https://benn.lemonsqueezy.com/checkout/buy/4ef6934d-ad7d-4dcc-86a2-4c09ff3e7132?logo=0&discount=0'
+                                                'https://chatboxai.app/redirect_app/get_license'
                                             )
                                         }}
                                     >
@@ -592,7 +592,7 @@ export function ModelConfig(props: ModelConfigProps) {
                                         variant="text"
                                         sx={{ marginLeft: '10px' }}
                                         onClick={() => {
-                                            api.openLink('https://app.lemonsqueezy.com/my-orders')
+                                            api.openLink('https://chatboxai.app/redirect_app/manage_license')
                                         }}
                                     >
                                         {t('Retrieve License')}
