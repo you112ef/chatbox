@@ -3,7 +3,7 @@
     "productName": "xyz.chatboxapp.app",
     "version": "0.0.1",
     "private": true,
-    "description": "a cross-platform desktop client for ChatGPT API (OpenAI API)",
+    "description": "A desktop client for multiple cutting-edge AI models",
     "main": "./src/main/main.ts",
     "scripts": {
         "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",

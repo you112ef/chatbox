@@ -34,7 +34,6 @@ const changelog = `
 
 ### v0.5.6
 
-- Support for the latest GPT-3.5 16K and GPT-4 32K models
 - Improved window selection strategy for message contexts
 - Enhanced settings for message context and generated message max tokens
 - Fixed some minor issues
