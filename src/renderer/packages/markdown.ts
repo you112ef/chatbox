@@ -2,7 +2,6 @@ import MarkdownIt from 'markdown-it'
 import mdKatex from '@traptitech/markdown-it-katex'
 import hljs from 'highlight.js'
 import 'katex/dist/katex.min.css'
-import 'github-markdown-css/github-markdown-light.css'
 import mila from 'markdown-it-link-attributes'
 import { getI18n } from 'react-i18next'
 
