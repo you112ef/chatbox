@@ -395,7 +395,6 @@ function _Message(props: Props) {
                             )}
                         </Box>
                     </Grid>
-                    <Grid item xs={1}></Grid>
                 </Grid>
             </Grid>
         </ListItem>
