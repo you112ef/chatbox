@@ -13,7 +13,8 @@ import { useTranslation } from 'react-i18next'
 import * as remote from './remote'
 import { getDefaultStore } from 'jotai'
 import * as api from './api'
-import { configsAtom, settingsAtom } from './stores/atoms'
+import { settingsAtom } from './stores/atoms'
+import { getConfig } from './storage'
 import md from './markdown'
 
 const { useEffect, useState } = React
@@ -26,7 +27,7 @@ export default function RemoteDialogWindow() {
     const store = getDefaultStore()
     useEffect(() => {
         ;(async () => {
-            const config = store.get(configsAtom)
+            const config = await getConfig()
             const settings = store.get(settingsAtom)
             const version = await api.getVersion()
             try {

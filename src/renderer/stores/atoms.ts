@@ -35,10 +35,6 @@ export const showModelNameAtom = focusAtom(settingsAtom, (optic) => optic.prop('
 export const themeAtom = focusAtom(settingsAtom, (optic) => optic.prop('theme'))
 export const fontSizeAtom = focusAtom(settingsAtom, (optic) => optic.prop('fontSize'))
 
-// configs
-
-export const configsAtom = atomWithStorage<Config>('configs', defaults.configs(), storage)
-
 // myCopilots
 export const myCopilotsAtom = atomWithStorage<CopilotDetail[]>('myCopilots', [], storage)
 

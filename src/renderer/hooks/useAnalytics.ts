@@ -1,16 +1,15 @@
 import { useEffect } from 'react'
 import * as api from '../api'
-import { useAtomValue } from 'jotai'
-import { configsAtom } from '../stores/atoms'
+import { getConfig } from '../storage'
 import ReactGA from 'react-ga4'
 
 function useAnalytics() {
-    const conf = useAtomValue(configsAtom)
     // GA4
     useEffect(() => {
         ;(async () => {
             const GAID = 'G-B365F44W6E'
             try {
+                const conf = await getConfig()
                 const version = await api.getVersion()
                 const platfrom = await api.getPlatform()
                 ReactGA.initialize([

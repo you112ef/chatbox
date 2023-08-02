@@ -8,6 +8,7 @@ import * as utils from '../utils'
 import { v4 as uuidv4 } from 'uuid'
 import * as defaults from './defaults'
 import * as scrollActions from './scrollActions'
+import * as storage from '../storage'
 
 export function create(newSession: Session) {
     const store = getDefaultStore()
@@ -175,7 +176,6 @@ export function removeMessage(sessionId: string, messageId: string) {
 export async function generate(sessionId: string, targetMsg: Message) {
     const store = getDefaultStore()
     const globalSettings = store.get(atoms.settingsAtom)
-    const configs = store.get(atoms.configsAtom)
     const session = getSession(sessionId)
     if (!session) {
         return
@@ -202,6 +202,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
 
     const autoScrollId = scrollActions.startAutoScroll(targetMsgIx, 'start')
 
+    const configs = await storage.getConfig()
     try {
         await client.reply(settings, configs, promptMsgs, ({ text, cancel }) => {
             targetMsg = {
@@ -256,12 +257,12 @@ export async function refreshMessage(sessionId: string, msg: Message) {
 export async function generateName(sessionId: string) {
     const store = getDefaultStore()
     const globalSettings = store.get(atoms.settingsAtom)
-    const configs = store.get(atoms.configsAtom)
     const session = getSession(sessionId)
     if (!session) {
         return
     }
     const settings = mergeSettings(globalSettings, session)
+    const configs = await storage.getConfig()
     try {
         await client.reply(
             settings,

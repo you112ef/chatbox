@@ -35,6 +35,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import * as atoms from './stores/atoms'
 import * as sessionActions from './stores/sessionActions'
 import { useAtomValue } from 'jotai'
+import * as storage from './storage'
 
 interface Props {
     open: boolean
@@ -45,7 +46,6 @@ interface Props {
 
 export default function CopilotWindow(props: Props) {
     const language = useAtomValue(atoms.languageAtom)
-    const configs = useAtomValue(atoms.configsAtom)
 
     const { t } = useTranslation()
 
@@ -123,7 +123,7 @@ export default function CopilotWindow(props: Props) {
                         variant="outlined"
                         startIcon={<AddCircleOutlineIcon />}
                         onClick={() => {
-                            getEmptyCopilot(configs).then(setCopilotEdit)
+                            getEmptyCopilot().then(setCopilotEdit)
                         }}
                     >
                         {t('Create New Copilot')}
@@ -492,7 +492,8 @@ function CopilotForm(props: CopilotFormProps) {
     )
 }
 
-export async function getEmptyCopilot(conf: Config): Promise<CopilotDetail> {
+export async function getEmptyCopilot(): Promise<CopilotDetail> {
+    const conf = await storage.getConfig()
     return {
         id: `${conf.uuid}:${uuidv4()}`,
         name: '',
