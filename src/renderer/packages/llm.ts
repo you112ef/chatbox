@@ -1,4 +1,4 @@
-import { Config, Message, ModelProvider, OpenAIMessage, Settings } from '../shared/types'
+import { Config, Message, ModelProvider, OpenAIMessage, Settings } from '../../shared/types'
 import * as utils from './utils'
 import { createParser } from 'eventsource-parser'
 

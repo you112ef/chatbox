@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import { Input, Button, Dialog, DialogContent, DialogActions, DialogTitle, DialogContentText } from '@mui/material'
 import { useTranslation, Trans } from 'react-i18next'
-import * as sessionActions from './stores/sessionActions'
+import * as sessionActions from '../stores/sessionActions'
 
 interface Props {
     open: boolean

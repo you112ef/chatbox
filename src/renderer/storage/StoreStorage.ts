@@ -1,8 +1,8 @@
 import FsStorage from './FsStorage'
 import WebStorage from './WebStorage'
-import { isWeb } from '../env'
+import { isWeb } from '../packages/env'
 import BaseStorage from './BaseStorage'
-import { sessions as defaultSessions } from '../defaults'
+import { sessions as defaultSessions } from '../packages/defaults'
 
 export const Storage: new () => BaseStorage = isWeb ? WebStorage : FsStorage
 

@@ -20,22 +20,22 @@ import {
     Box,
     ButtonGroup,
 } from '@mui/material'
-import { Config, CopilotDetail, Message } from '../shared/types'
+import { Config, CopilotDetail, Message } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import EditIcon from '@mui/icons-material/Edit'
-import StyledMenu from './StyledMenu'
+import StyledMenu from '../components/StyledMenu'
 import StarIcon from '@mui/icons-material/Star'
 import StarOutlineIcon from '@mui/icons-material/StarOutline'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined'
-import { useMyCopilots, useRemoteCopilots } from './hooks/useCopilots'
-import * as remote from './remote'
+import { useMyCopilots, useRemoteCopilots } from '../hooks/useCopilots'
+import * as remote from '../packages/remote'
 import { v4 as uuidv4 } from 'uuid'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
-import * as atoms from './stores/atoms'
-import * as sessionActions from './stores/sessionActions'
+import * as atoms from '../stores/atoms'
+import * as sessionActions from '../stores/sessionActions'
 import { useAtomValue } from 'jotai'
-import * as storage from './storage'
+import * as storage from '../storage'
 
 interface Props {
     open: boolean

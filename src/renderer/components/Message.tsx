@@ -26,22 +26,22 @@ import EditIcon from '@mui/icons-material/Edit'
 import { styled, alpha } from '@mui/material/styles'
 import StopIcon from '@mui/icons-material/Stop'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import * as utils from './utils'
+import * as utils from '../packages/utils'
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote'
 import { Trans, useTranslation } from 'react-i18next'
-import { Message, OpenAIRoleEnum, OpenAIRoleEnumType } from '../shared/types'
-import { aiProviderNameHash } from './config'
+import { Message, OpenAIRoleEnum, OpenAIRoleEnumType } from '../../shared/types'
+import { aiProviderNameHash } from '../config'
 import ReplayIcon from '@mui/icons-material/Replay'
 import CopyAllIcon from '@mui/icons-material/CopyAll'
-import './styles/block.css'
+import '../static/block.css'
 import { useAtomValue, useSetAtom } from 'jotai'
-import { quoteAtom, showModelNameAtom, showTokenCountAtom, showWordCountAtom } from './stores/atoms'
-import { currsentSessionPicUrlAtom, showTokenUsedAtom } from './stores/atoms'
-import * as sessionActions from './stores/sessionActions'
-import * as toastActions from './stores/toastActions'
-import * as settingActions from './stores/settingActions'
-import md from './markdown'
-import '../../node_modules/highlight.js/styles/github-dark.css'
+import { quoteAtom, showModelNameAtom, showTokenCountAtom, showWordCountAtom } from '../stores/atoms'
+import { currsentSessionPicUrlAtom, showTokenUsedAtom } from '../stores/atoms'
+import * as sessionActions from '../stores/sessionActions'
+import * as toastActions from '../stores/toastActions'
+import * as settingActions from '../stores/settingActions'
+import md from '../packages/markdown'
+import '../../../node_modules/highlight.js/styles/github-dark.css'
 
 export interface Props {
     id?: string
@@ -49,7 +49,7 @@ export interface Props {
     msg: Message
 }
 
-function _Block(props: Props) {
+function _Message(props: Props) {
     const { t } = useTranslation()
     const theme = useTheme()
 
@@ -440,8 +440,8 @@ const StyledMenu = styled((props: MenuProps) => (
     },
 }))
 
-export default function Block(props: Props) {
+export default function Message(props: Props) {
     return useMemo(() => {
-        return <_Block {...props} />
+        return <_Message {...props} />
     }, [props.msg])
 }

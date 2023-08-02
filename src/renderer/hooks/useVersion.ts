@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { getConfig } from '../storage'
-import * as api from '../api'
-import * as remote from '../remote'
+import * as api from '../packages/runtime'
+import * as remote from '../packages/remote'
 
 export default function useVersion() {
     const [version, _setVersion] = useState('unknown')

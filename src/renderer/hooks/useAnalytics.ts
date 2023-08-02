@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import * as api from '../api'
+import * as api from '../packages/runtime'
 import { getConfig } from '../storage'
 import ReactGA from 'react-ga4'
 

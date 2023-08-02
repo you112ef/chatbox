@@ -4,7 +4,7 @@ import { realThemeAtom, themeAtom, fontSizeAtom } from '../stores/atoms'
 import { createTheme } from '@mui/material/styles'
 import { ThemeOptions } from '@mui/material/styles'
 import { ThemeMode } from '../../shared/types'
-import * as api from '../api'
+import * as api from '../packages/runtime'
 
 export const switchTheme = async (theme: ThemeMode) => {
     const store = getDefaultStore()

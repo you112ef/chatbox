@@ -1,5 +1,5 @@
 import BaseStorage from './BaseStorage'
-import * as api from '../api'
+import * as api from '../packages/runtime'
 
 export default class FsStorage extends BaseStorage {
     constructor(filepath = 'config.json') {

@@ -1,5 +1,6 @@
 import { getOS, getBrowser } from './navigator'
-import { isWeb } from './env'
+
+export const isWeb: boolean = !window.electronAPI
 
 const electronAPI = window.electronAPI
 

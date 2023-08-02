@@ -1,4 +1,4 @@
-import { Message } from '../shared/types'
+import { Message } from '../../shared/types'
 
 export function nameConversation(msgs: Message[]): Message[] {
     const format = (msgs: string[]) => msgs.map((msg) => msg).join('\n\n---------\n\n')

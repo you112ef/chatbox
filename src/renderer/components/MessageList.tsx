@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
-import Block from './Block'
-import * as atoms from './stores/atoms'
+import Message from './Message'
+import * as atoms from '../stores/atoms'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { Virtuoso } from 'react-virtuoso'
 import { List } from '@mui/material'
 import { VirtuosoHandle } from 'react-virtuoso'
-import * as scrollActions from './stores/scrollActions'
+import * as scrollActions from '../stores/scrollActions'
 
 interface Props {}
 
@@ -55,7 +55,7 @@ export default function MessageList(props: Props) {
                 }}
                 ref={virtuoso}
                 itemContent={(index, msg) => {
-                    return <Block id={msg.id} key={msg.id} msg={msg} sessionId={currentSession.id} />
+                    return <Message id={msg.id} key={msg.id} msg={msg} sessionId={currentSession.id} />
                 }}
             />
         </List>

@@ -4,15 +4,15 @@ import { Session, getMsgDisplayModelName } from '../shared/types'
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices'
 import Save from '@mui/icons-material/Save'
 import { useTranslation } from 'react-i18next'
-import icon from './icon.png'
+import icon from './static/icon.png'
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp'
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown'
-import SponsorChip from './SponsorChip'
-import * as api from './api'
+import SponsorChip from './components/SponsorChip'
+import * as api from './packages/runtime'
 import * as atoms from './stores/atoms'
 import { useAtomValue } from 'jotai'
-import MessageInput from './MessageInput'
-import MessageList from './MessageList'
+import InputBox from './components/InputBox'
+import MessageList from './components/MessageList'
 import * as toastActions from './stores/toastActions'
 import * as sessionActions from './stores/sessionActions'
 import * as scrollActions from './stores/scrollActions'
@@ -187,7 +187,7 @@ export default function MainPane(props: Props) {
                             <ArrowCircleDownIcon />
                         </IconButton>
                     </ButtonGroup>
-                    <MessageInput currentSessionId={currentSession.id} />
+                    <InputBox currentSessionId={currentSession.id} />
                 </Box>
             </Stack>
         </Grid>

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
-import * as remote from '../remote'
+import * as remote from '../packages/remote'
 import useSWR from 'swr'
 import { useAtom } from 'jotai'
 import { settingsAtom } from '../stores/atoms'
-import { activateLicense, deactivateLicense, validateLicense } from '../lemonsqueezy'
-import * as api from '../api'
+import { activateLicense, deactivateLicense, validateLicense } from '../packages/lemonsqueezy'
+import * as api from '../packages/runtime'
 import { FetchError } from 'ofetch'
 import { ModelProvider } from '../../shared/types'
 

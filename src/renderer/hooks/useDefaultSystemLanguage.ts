@@ -1,7 +1,7 @@
 import { getDefaultStore } from 'jotai'
 import { useEffect } from 'react'
 import { settingsAtom } from '../stores/atoms'
-import * as api from '../api'
+import * as api from '../packages/runtime'
 
 export function useSystemLanguageWhenInit() {
     useEffect(() => {

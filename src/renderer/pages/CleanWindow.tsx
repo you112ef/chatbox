@@ -1,8 +1,8 @@
 import { Button, Dialog, DialogContent, DialogActions, DialogTitle, DialogContentText } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import * as atoms from './stores/atoms'
+import * as atoms from '../stores/atoms'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import * as sessionActions from './stores/sessionActions'
+import * as sessionActions from '../stores/sessionActions'
 
 interface Props {
     open: boolean

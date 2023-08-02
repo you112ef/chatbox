@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import * as Sentry from '@sentry/react'
 import reportWebVitals from './reportWebVitals'
-import * as api from './api'
+import * as api from './packages/runtime'
 import './i18n'
 import * as migration from './stores/migration'
+import './static/index.css'
 
-import './styles/index.css'
 ;(async () => {
     const version = await api.getVersion().catch(() => 'unknown')
     Sentry.init({

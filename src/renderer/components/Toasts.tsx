@@ -1,7 +1,7 @@
 import {} from 'react'
-import * as toastActions from './stores/toastActions'
+import * as toastActions from '../stores/toastActions'
 import { Snackbar } from '@mui/material'
-import * as atoms from './stores/atoms'
+import * as atoms from '../stores/atoms'
 import { useAtomValue } from 'jotai'
 
 function Toasts() {

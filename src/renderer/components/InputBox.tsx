@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { Stack, Button, Grid, Typography, TextField } from '@mui/material'
-import { Message, createMessage } from '../shared/types'
+import { Message, createMessage } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import SendIcon from '@mui/icons-material/Send'
-import * as atoms from './stores/atoms'
+import * as atoms from '../stores/atoms'
 import { useAtom } from 'jotai'
-import * as sessionActions from './stores/sessionActions'
-import * as scrollActions from './stores/scrollActions'
-import * as dom from './hooks/dom'
+import * as sessionActions from '../stores/sessionActions'
+import * as scrollActions from '../stores/scrollActions'
+import * as dom from '../hooks/dom'
 
 export interface Props {
     currentSessionId: string
 }
 
-export default function MessageInput(props: Props) {
+export default function InputBox(props: Props) {
     const [quote, setQuote] = useAtom(atoms.quoteAtom)
     const { t } = useTranslation()
     const [messageInput, setMessageInput] = useState('')

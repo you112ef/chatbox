@@ -10,12 +10,12 @@ import {
     TextField,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import * as remote from './remote'
+import * as remote from '../packages/remote'
 import { getDefaultStore } from 'jotai'
-import * as api from './api'
-import { settingsAtom } from './stores/atoms'
-import { getConfig } from './storage'
-import md from './markdown'
+import * as api from '../packages/runtime'
+import { settingsAtom } from '../stores/atoms'
+import { getConfig } from '../storage'
+import md from '../packages/markdown'
 
 const { useEffect, useState } = React
 

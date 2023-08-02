@@ -16,9 +16,9 @@ import {
     DialogContentText,
     TextField,
 } from '@mui/material'
-import { Session, ModelProvider, ModelSettings } from '../shared/types'
+import { Session, ModelProvider, ModelSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
-import * as sessionActions from './stores/sessionActions'
+import * as sessionActions from '../stores/sessionActions'
 import {
     AiProviderSelect,
     ModelSelect,
@@ -27,9 +27,9 @@ import {
     MaxContextMessageCountSlider,
     wrapDefaultTokenConfigUpdate,
 } from './SettingWindow'
-import * as atoms from './stores/atoms'
+import * as atoms from '../stores/atoms'
 import { useAtomValue } from 'jotai'
-import { Accordion, AccordionSummary, AccordionDetails } from './components/Accordion'
+import { Accordion, AccordionSummary, AccordionDetails } from '../components/Accordion'
 
 const { useEffect } = React
 

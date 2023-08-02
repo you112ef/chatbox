@@ -1,4 +1,4 @@
-import { Session } from '../shared/types'
+import { Session } from '../../shared/types'
 
 export const sessions: Session[] = [
     {

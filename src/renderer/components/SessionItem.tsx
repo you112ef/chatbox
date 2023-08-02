@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import { ListItemText, MenuItem, Divider, Avatar, IconButton, Typography, ListItemIcon } from '@mui/material'
-import { Session } from '../shared/types'
+import { Session } from '../../shared/types'
 import CopyIcon from '@mui/icons-material/CopyAll'
 import EditIcon from '@mui/icons-material/Edit'
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined'
@@ -10,7 +10,7 @@ import StyledMenu from './StyledMenu'
 import { useTranslation } from 'react-i18next'
 import StarIcon from '@mui/icons-material/Star'
 import StarOutlineIcon from '@mui/icons-material/StarOutline'
-import * as sessionActions from './stores/sessionActions'
+import * as sessionActions from '../stores/sessionActions'
 
 export interface Props {
     session: Session

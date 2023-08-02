@@ -11,15 +11,15 @@ import {
     DialogTitle,
     Stack,
 } from '@mui/material'
-import iconPNG from './icon.png'
+import iconPNG from '../static/icon.png'
 import { Trans, useTranslation } from 'react-i18next'
-import * as api from './api'
-import * as remote from './remote'
-import { SponsorAboutBanner } from '../shared/types'
-import * as i18n from './i18n'
-import md from './markdown'
-import useVersion from './hooks/useVersion'
-import * as atoms from './stores/atoms'
+import * as api from '../packages/runtime'
+import * as remote from '../packages/remote'
+import { SponsorAboutBanner } from '../../shared/types'
+import * as i18n from '../i18n'
+import md from '../packages/markdown'
+import useVersion from '../hooks/useVersion'
+import * as atoms from '../stores/atoms'
 import { useAtomValue } from 'jotai'
 
 interface Props {
