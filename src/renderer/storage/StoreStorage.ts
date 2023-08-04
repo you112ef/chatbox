@@ -1,6 +1,6 @@
 import FsStorage from './FsStorage'
 import WebStorage from './WebStorage'
-import { isWeb } from '../packages/env'
+import { isWeb } from '../packages/runtime'
 import BaseStorage from './BaseStorage'
 import { sessions as defaultSessions } from '../packages/defaults'
 
