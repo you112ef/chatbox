@@ -38,6 +38,7 @@
     "devDependencies": {
         "@electron/notarize": "^2.0.0",
         "@electron/rebuild": "^3.2.13",
+        "@faker-js/faker": "^8.0.2",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
         "@svgr/webpack": "^8.0.1",
         "@teamsupercell/typings-for-css-modules-loader": "^2.5.2",
