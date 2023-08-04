@@ -38,12 +38,11 @@ import ThemeChangeButton from '../theme/ThemeChangeIcon'
 import { Trans, useTranslation } from 'react-i18next'
 import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle'
 import LightbulbCircleIcon from '@mui/icons-material/LightbulbCircle'
-import * as env from '../packages/env'
 import * as defaults from '../stores/defaults'
 import { useAtom } from 'jotai'
 import { settingsAtom } from '../stores/atoms'
 import { switchTheme } from '../hooks/useThemeSwitcher'
-import * as api from '../packages/runtime'
+import * as runtime from '../packages/runtime'
 import { usePremium } from '../hooks/usePremium'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import { models, languageNameMap, languages, modelConfigs, aiModelProviderList } from '../config'
@@ -499,7 +498,7 @@ export function ModelConfig(props: ModelConfigProps) {
                                     <a href={'https://github.com/THUDM/ChatGLM-6B'} target="_blank"></a>,
                                 ]}
                             />
-                            {env.isWeb && (
+                            {runtime.isWeb && (
                                 <>
                                     <br />
                                     <Trans i18nKey="ChatGLM-6B Warnning for Chatbox-Web" />
@@ -571,7 +570,7 @@ export function ModelConfig(props: ModelConfigProps) {
                                 <Button
                                     variant="outlined"
                                     onClick={() => {
-                                        api.openLink('https://chatboxai.app/redirect_app/manage_license')
+                                        runtime.openLink('https://chatboxai.app/redirect_app/manage_license')
                                     }}
                                 >
                                     {t('Manage License and Devices')}
@@ -581,7 +580,7 @@ export function ModelConfig(props: ModelConfigProps) {
                                     <Button
                                         variant="outlined"
                                         onClick={() => {
-                                            api.openLink(
+                                            runtime.openLink(
                                                 'https://chatboxai.app/redirect_app/get_license'
                                             )
                                         }}
@@ -592,7 +591,7 @@ export function ModelConfig(props: ModelConfigProps) {
                                         variant="text"
                                         sx={{ marginLeft: '10px' }}
                                         onClick={() => {
-                                            api.openLink('https://chatboxai.app/redirect_app/manage_license')
+                                            runtime.openLink('https://chatboxai.app/redirect_app/manage_license')
                                         }}
                                     >
                                         {t('Retrieve License')}
@@ -1057,7 +1056,7 @@ function ShortcutTab(props: ConfigProps) {
     const [alt, setAlt] = React.useState('Alt')
     useEffect(() => {
         ;(async () => {
-            const platform = await api.getPlatform()
+            const platform = await runtime.getPlatform()
             if (platform === 'darwin') {
                 setAlt('Option')
             }
