@@ -6,5 +6,5 @@
     encode gzip
 
     # 设置缓存控制头
-    header Cache-Control "public, max-age=3600"
+    header Cache-Control "public, max-age=1"
 }
