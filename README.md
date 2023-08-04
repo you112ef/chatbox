@@ -19,9 +19,12 @@ npm install
 npm start
 ```
 
-### 代码风格与测试
+### 开发常用命令
 
 ```shell
+# 语法检查
+npm run check
+
 # 代码格式化
 npm run prettier
 
