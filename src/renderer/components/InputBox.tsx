@@ -4,7 +4,7 @@ import { Message, createMessage } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import SendIcon from '@mui/icons-material/Send'
 import * as atoms from '../stores/atoms'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import * as sessionActions from '../stores/sessionActions'
 import * as scrollActions from '../stores/scrollActions'
 import * as dom from '../hooks/dom'
@@ -15,6 +15,7 @@ export interface Props {
 
 export default function InputBox(props: Props) {
     const [quote, setQuote] = useAtom(atoms.quoteAtom)
+    const isSmallScreen = useAtomValue(atoms.isSmallScreenAtom)
     const { t } = useTranslation()
     const [messageInput, setMessageInput] = useState('')
     useEffect(() => {
@@ -92,9 +93,11 @@ export default function InputBox(props: Props) {
                         </Button>
                     </Grid>
                 </Grid>
-                <Typography variant="caption" style={{ opacity: 0.3 }}>
-                    {t('[Enter] send, [Shift+Enter] line break, [Ctrl+Enter] send without generating')}
-                </Typography>
+                {!isSmallScreen && (
+                    <Typography variant="caption" style={{ opacity: 0.3 }}>
+                        {t('[Enter] send, [Shift+Enter] line break, [Ctrl+Enter] send without generating')}
+                    </Typography>
+                )}
             </Stack>
         </form>
     )

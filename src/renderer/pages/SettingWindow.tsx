@@ -580,9 +580,7 @@ export function ModelConfig(props: ModelConfigProps) {
                                     <Button
                                         variant="outlined"
                                         onClick={() => {
-                                            runtime.openLink(
-                                                'https://chatboxai.app/redirect_app/get_license'
-                                            )
+                                            runtime.openLink('https://chatboxai.app/redirect_app/get_license')
                                         }}
                                     >
                                         {t('Get License')}

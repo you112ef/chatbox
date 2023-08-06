@@ -49,6 +49,12 @@ export function switchCurrentSession(sessionId: string) {
     store.set(atoms.currentSessionIdAtom, sessionId)
     scrollActions.scrollToBottom() // 切换会话时自动滚动到底部
     scrollActions.clearAutoScroll() // 切换会话时清楚自动滚动
+
+    // 小屏幕切换会话时隐藏侧边栏
+    const isSmallScreen = store.get(atoms.isSmallScreenAtom)
+    if (isSmallScreen) {
+        store.set(atoms.showSidebarAtom, false)
+    }
 }
 
 export function switchToIndex(index: number) {
@@ -314,7 +320,7 @@ function genMessageContext(settings: Settings, msgs: Message[]) {
             break
         }
         if (
-            openaiMaxContextMessageCount <= 20 &&   // 超过20表示不再限制
+            openaiMaxContextMessageCount <= 20 && // 超过20表示不再限制
             prompts.length >= openaiMaxContextMessageCount + 1 // +1是为了保留用户最后一条输入消息
         ) {
             break

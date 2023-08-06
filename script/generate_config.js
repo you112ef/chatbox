@@ -20,7 +20,7 @@ function main() {
         for (let j = 0; j < messageNum; j++) {
             messages.push({
                 id: faker.string.uuid(),
-                content: faker.lorem.lines({min: 1, max: 5}),
+                content: faker.lorem.lines({ min: 1, max: 5 }),
                 role: faker.helpers.arrayElement(['user', 'assistant']),
             })
             config['chat-sessions'].push({

@@ -9,6 +9,7 @@ import CleanWidnow from './pages/CleanWindow'
 import AboutWindow from './pages/AboutWindow'
 import useThemeSwicher from './hooks/useThemeSwitcher'
 import useShortcut from './hooks/useShortcut'
+import useScreenChange from './hooks/useScreenChange'
 import * as remote from './packages/remote'
 import CopilotWindow from './pages/CopilotWindow'
 import useAnalytics from './hooks/useAnalytics'
@@ -21,12 +22,13 @@ import { useSystemLanguageWhenInit } from './hooks/useDefaultSystemLanguage'
 import ClearConversationListWindow from './pages/ClearConversationListWindow'
 import Sidebar from './Sidebar'
 import MainPane from './MainPane'
+import { useAtomValue } from 'jotai'
+import * as atoms from './stores/atoms'
 
 function Main() {
     // 是否展示菜单栏
     const theme = useTheme()
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
-    const [showMenu, setShowMenu] = React.useState(!isSmallScreen)
+    const showSidebar = useAtomValue(atoms.showSidebarAtom)
 
     // 是否展示设置窗口
     const [openSettingWindow, setOpenSettingWindow] = React.useState<'ai' | 'display' | null>(null)
@@ -67,7 +69,7 @@ function Main() {
 
     return (
         <Box
-            className="box-border w-screen h-screen"
+            className="box-border App"
             sx={{
                 paddingX: '1rem',
                 [theme.breakpoints.down('sm')]: {
@@ -76,23 +78,16 @@ function Main() {
             }}
         >
             <Grid container className="h-full pt-4">
-                {showMenu && (
+                {showSidebar && (
                     <Sidebar
                         setConfigureChatConfig={setConfigureChatConfig}
                         openClearConversationListWindow={() => setOpenClearConversationListWindow(true)}
                         openCopilotWindow={() => setOpenCopilotWindow(true)}
                         openAboutWindow={() => setOpenAboutWindow(true)}
-                        showMenu={showMenu}
-                        setShowMenu={setShowMenu}
                         setOpenSettingWindow={setOpenSettingWindow}
                     />
                 )}
-                <MainPane
-                    showMenu={showMenu}
-                    setShowMenu={setShowMenu}
-                    setConfigureChatConfig={setConfigureChatConfig}
-                    setSessionClean={setSessionClean}
-                />
+                <MainPane setConfigureChatConfig={setConfigureChatConfig} setSessionClean={setSessionClean} />
 
                 <SettingWindow
                     open={!!openSettingWindow}
@@ -135,6 +130,7 @@ export default function App() {
     usePremium() // 每次启动都执行usePremium，防止用户在其他地方取消订阅
     useSystemLanguageWhenInit()
     useShortcut()
+    useScreenChange()
     const theme = useThemeSwicher()
     return (
         <ThemeProvider theme={theme}>

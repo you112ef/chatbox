@@ -25,10 +25,10 @@ import useVersion from './hooks/useVersion'
 import SessionList from './components/SessionList'
 import * as sessionActions from './stores/sessionActions'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen'
+import { useSetAtom } from 'jotai'
+import * as atoms from './stores/atoms'
 
 interface Props {
-    showMenu: boolean
-    setShowMenu(showMenu: boolean): void
     setConfigureChatConfig(session: Session | null): void
     openClearConversationListWindow(): void
     openCopilotWindow(): void
@@ -40,6 +40,7 @@ export default function Sidebar(props: Props) {
     const { t } = useTranslation()
     const theme = useTheme()
     const versionHook = useVersion()
+    const setShowSidebar = useSetAtom(atoms.showSidebarAtom)
 
     const sessionListRef = useRef<HTMLDivElement>(null)
     const handleCreateNewSession = () => {
@@ -52,7 +53,6 @@ export default function Sidebar(props: Props) {
     return (
         <Grid
             item
-            className="pl-1"
             sx={{
                 height: '100%',
                 [theme.breakpoints.down('sm')]: {
@@ -84,7 +84,7 @@ export default function Sidebar(props: Props) {
                         <span className="text-2xl align-middle inline-block">Chatbox</span>
                     </Box>
                     <Box>
-                        <IconButton onClick={() => props.setShowMenu(false)}>
+                        <IconButton onClick={() => setShowSidebar(false)}>
                             <MenuOpenIcon className="text-xl" />
                         </IconButton>
                     </Box>
@@ -161,7 +161,7 @@ export default function Sidebar(props: Props) {
                 </MenuList>
             </Stack>
             <Box
-                onClick={() => props.setShowMenu(false)}
+                onClick={() => setShowSidebar(false)}
                 sx={{
                     position: 'absolute',
                     top: 0,

@@ -129,3 +129,8 @@ export const messageScrollingAtom = atom<null | RefObject<VirtuosoHandle>>(null)
 export const messageScrollingAtTopAtom = atom(false)
 export const messageScrollingAtBottomAtom = atom(false)
 export const messageScrollingAutoMarkAtom = atom('') // 判断是否允许自动滚动，值为自动滚动任务随机ID
+
+// 是否当前为小屏幕
+export const isSmallScreenAtom = atom(false)
+// 是否展示侧边栏
+export const showSidebarAtom = atom(true)

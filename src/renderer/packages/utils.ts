@@ -1,6 +1,20 @@
 import * as Sentry from '@sentry/react'
 import GPT3Tokenizer from 'gpt3-tokenizer'
 import { Message } from '../../shared/types'
+import copyToClipboardFallback from 'copy-to-clipboard'
+
+export function copyToClipboard(text: string) {
+    try {
+        navigator?.clipboard?.writeText(text)
+    } catch (e) {
+        Sentry.captureException(e)
+    }
+    try {
+        copyToClipboardFallback(text)
+    } catch (e) {
+        Sentry.captureException(e)
+    }
+}
 
 /**
  * Word Count

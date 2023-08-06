@@ -98,7 +98,7 @@ function _Message(props: Props) {
     }, [onStop])
 
     const onCopyMsg = () => {
-        navigator.clipboard.writeText(msg.content)
+        utils.copyToClipboard(msg.content)
         toastActions.add(t('copied to clipboard'))
         setAnchorEl(null)
     }

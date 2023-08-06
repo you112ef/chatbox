@@ -49,7 +49,15 @@ export default function AboutWindow(props: Props) {
                     <p className="p-0 m-0">{t('about-slogan')}</p>
                     <p className="p-0 m-0 opacity-60 text-xs">{t('about-introduction')}</p>
                 </Box>
-                <Stack spacing={2} direction="row" sx={{ justifyContent: 'center', marginTop: '10px' }}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        flexWrap: 'wrap',
+                        marginTop: '10px',
+                    }}
+                >
                     <Badge color="primary" variant="dot" invisible={!versionHook.needCheckUpdate}>
                         <Button
                             variant="outlined"
@@ -76,7 +84,7 @@ export default function AboutWindow(props: Props) {
                     >
                         {t('FAQs')}
                     </Button>
-                </Stack>
+                </Box>
                 <h4 className="text-center mb-1 mt-8 font-medium">
                     <Trans
                         i18nKey="about-author"

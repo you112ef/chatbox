@@ -10,7 +10,7 @@ import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown'
 import SponsorChip from './components/SponsorChip'
 import * as api from './packages/runtime'
 import * as atoms from './stores/atoms'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import InputBox from './components/InputBox'
 import MessageList from './components/MessageList'
 import * as toastActions from './stores/toastActions'
@@ -18,10 +18,9 @@ import * as sessionActions from './stores/sessionActions'
 import * as scrollActions from './stores/scrollActions'
 import TuneIcon from '@mui/icons-material/Tune'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen'
+import * as utils from './packages/utils'
 
 interface Props {
-    showMenu: boolean
-    setShowMenu(showMenu: boolean): void
     setConfigureChatConfig(session: Session | null): void
     setSessionClean(session: Session | null): void
 }
@@ -29,6 +28,7 @@ interface Props {
 export default function MainPane(props: Props) {
     const { t } = useTranslation()
     const currentSession = useAtomValue(atoms.currentSessionAtom)
+    const [showSidebar, setShowSidebar] = useAtom(atoms.showSidebarAtom)
 
     const atScrollTop = useAtomValue(atoms.messageScrollingAtTopAtom)
     const atScrollBottom = useAtomValue(atoms.messageScrollingAtBottomAtom)
@@ -59,7 +59,7 @@ export default function MainPane(props: Props) {
 
         // do copy
         // * thats lines copy from copy block content action
-        navigator.clipboard.writeText(content)
+        utils.copyToClipboard(content)
         toastActions.add(t('copied to clipboard'))
     })
 
@@ -87,9 +87,9 @@ export default function MainPane(props: Props) {
         <Grid item xs className="h-full">
             <Stack className="h-full relative">
                 <Box className="flex flex-row">
-                    {!props.showMenu && (
+                    {!showSidebar && (
                         <Box className="mr-1">
-                            <IconButton onClick={() => props.setShowMenu(!props.showMenu)}>
+                            <IconButton onClick={() => setShowSidebar(!showSidebar)}>
                                 <MenuOpenIcon className="text-xl" sx={{ transform: 'rotate(180deg)' }} />
                             </IconButton>
                         </Box>
@@ -109,7 +109,7 @@ export default function MainPane(props: Props) {
                             editCurrentSession()
                         }}
                     >
-                        {!props.showMenu ? (
+                        {!showSidebar ? (
                             <>
                                 <img className="w-7 h-7" src={icon} />
                                 <span className="ml-1">{currentSession.name}</span>

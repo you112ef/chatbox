@@ -7,7 +7,6 @@ import * as api from './packages/runtime'
 import './i18n'
 import * as migration from './stores/migration'
 import './static/index.css'
-
 ;(async () => {
     const version = await api.getVersion().catch(() => 'unknown')
     Sentry.init({
@@ -41,3 +40,12 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals()
+
+// 解决移动端浏览器地址栏占用问题
+// https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+function setViewportHeight() {
+    let vh = window.innerHeight * 0.01
+    document.documentElement.style.setProperty('--vh', `${vh}px`)
+}
+setViewportHeight()
+window.addEventListener('resize', setViewportHeight)
