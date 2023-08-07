@@ -112,10 +112,14 @@ export default function MainPane(props: Props) {
                         {!showSidebar ? (
                             <>
                                 <img className="w-7 h-7" src={icon} />
-                                <span className="ml-1">{currentSession.name}</span>
+                                <Typography variant="h6" noWrap className="ml-1 w-56">
+                                    {currentSession.name}
+                                </Typography>
                             </>
                         ) : (
-                            <span className="ml-3">{currentSession.name}</span>
+                            <Typography variant="h6" noWrap className="ml-3 w-56">
+                                {currentSession.name}
+                            </Typography>
                         )}
                         {currentSession.settings && (
                             <Tooltip
