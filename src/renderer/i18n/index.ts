@@ -4,6 +4,7 @@ import { initReactI18next } from 'react-i18next'
 import en from './locales/en/translation.json'
 import zhHans from './locales/zh-Hans/translation.json'
 import zhHant from './locales/zh-Hant/translation.json'
+import ja from './locales/ja/translation.json'
 
 import changelogZhHans from './changelogs/changelog_zh_Hans'
 import changelogZhHant from './changelogs/changelog_zh_Hant'
@@ -19,6 +20,9 @@ i18n.use(initReactI18next).init({
         },
         en: {
             translation: en,
+        },
+        ja: {
+            translation: ja,
         },
     },
     fallbackLng: 'en',

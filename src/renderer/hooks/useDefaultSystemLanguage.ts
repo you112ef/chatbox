@@ -2,6 +2,7 @@ import { getDefaultStore } from 'jotai'
 import { useEffect } from 'react'
 import { settingsAtom } from '../stores/atoms'
 import * as api from '../packages/runtime'
+import { Language } from '../../shared/types'
 
 export function useSystemLanguageWhenInit() {
     useEffect(() => {
@@ -12,24 +13,38 @@ export function useSystemLanguageWhenInit() {
                 const settings = store.get(settingsAtom)
                 if (!settings.languageInited) {
                     const locale = await api.getLocale()
-                    switch (locale) {
-                        case 'zh':
-                        case 'zh_CN':
-                        case 'zh-CN':
-                            settings.language = 'zh-Hans'
-                            break
-                        case 'zh_TW':
-                        case 'zh-TW':
-                            settings.language = 'zh-Hant'
-                            break
-                        default:
-                            settings.language = 'en'
-                            break
-                    }
+                    settings.language = parseLocale(locale)
                 }
                 settings.languageInited = true
                 store.set(settingsAtom, { ...settings })
             })()
         }, 600)
     }, [])
+}
+
+// 将 electron getLocale、浏览器的 navigator.language 返回的语言信息，转换为应用的 locale
+function parseLocale(locale: string): Language {
+    if (
+        locale === 'zh' ||
+        locale.startsWith('zh_CN') ||
+        locale.startsWith('zh-CN') ||
+        locale.startsWith('zh_Hans') ||
+        locale.startsWith('zh-Hans')
+    ) {
+        return 'zh-Hans'
+    }
+    if (
+        locale.startsWith('zh_HK') ||
+        locale.startsWith('zh-HK') ||
+        locale.startsWith('zh_TW') ||
+        locale.startsWith('zh-TW') ||
+        locale.startsWith('zh_Hant') ||
+        locale.startsWith('zh-Hant')
+    ) {
+        return 'zh-Hant'
+    }
+    if (locale.startsWith('ja')) {
+        return 'ja'
+    }
+    return 'en'
 }
