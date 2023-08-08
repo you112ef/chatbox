@@ -89,7 +89,7 @@ export interface Settings extends ModelSettings {
     defaultPrompt?: string // 新会话的默认 prompt
 }
 
-export type Language = 'en' | 'zh-Hans' | 'zh-Hant' | 'ja'
+export type Language = 'en' | 'zh-Hans' | 'zh-Hant' | 'ja' | 'ko' | 'ru' | 'de' | 'fr'
 
 export function getMsgDisplayModelName(settings: ModelSettings) {
     switch (settings.aiProvider) {

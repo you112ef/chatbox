@@ -46,5 +46,17 @@ function parseLocale(locale: string): Language {
     if (locale.startsWith('ja')) {
         return 'ja'
     }
+    if (locale.startsWith('ko')) {
+        return 'ko'
+    }
+    if (locale.startsWith('ru')) {
+        return 'ru'
+    }
+    if (locale.startsWith('de')) {
+        return 'de'
+    }
+    if (locale.startsWith('fr')) {
+        return 'fr'
+    }
     return 'en'
 }
