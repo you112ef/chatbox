@@ -139,10 +139,18 @@ function exportTextFileFromWebPage(filename: string, content: string) {
 
 export const getLocale = async () => {
     if (isWeb) {
-        return '' // 网页版暂时不自动更改语言，防止网址封禁
+        let lang = window.navigator.language
+        if (lang === 'zh-CN') {
+            return '' // 网页版暂时不自动更改语言，防止网址封禁
+        }
+        return lang
     }
     if (!electronAPI) {
-        return ''
+        let lang = window.navigator.language
+        if (lang === 'zh-CN') {
+            return '' // 网页版暂时不自动更改语言，防止网址封禁
+        }
+        return lang
     }
     return electronAPI.invoke('getLocale')
 }
