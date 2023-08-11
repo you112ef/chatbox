@@ -7,6 +7,7 @@ import { activateLicense, deactivateLicense, validateLicense } from '../packages
 import * as api from '../packages/runtime'
 import { FetchError } from 'ofetch'
 import { ModelProvider } from '../../shared/types'
+import omit from 'lodash/omit'
 
 export function usePremium() {
     const [settings, setSettings] = useAtom(settingsAtom)
@@ -38,11 +39,11 @@ export function usePremium() {
             dedupingInterval: 10 * 60 * 1000,
             onError(err) {
                 if (err instanceof FetchError) {
-                    if (err.status === 404) {
+                    if (err.status && err.status >= 400 && err.status < 500) {
                         setSettings((settings) => ({
                             ...settings,
                             licenseKey: '',
-                            licenseInstances: {},
+                            licenseInstances: omit(settings.licenseInstances, settings.licenseKey || ''),
                         }))
                     }
                 }
@@ -58,10 +59,24 @@ export function usePremium() {
         }))
     }
 
+    const deactivate = async () => {
+        const licenseKey = settings.licenseKey || ''
+        const licenseInstances = settings.licenseInstances || {}
+        if (licenseKey && licenseInstances[licenseKey]) {
+            await deactivateLicense(licenseKey, licenseInstances[licenseKey])
+        }
+        setSettings((settings) => ({
+            ...settings,
+            licenseKey: '',
+            licenseInstances: omit(settings.licenseInstances, settings.licenseKey || ''),
+        }))
+    }
+
     return {
         premiumActivated: activateQuery.data?.valid || false,
         premiumIsLoading: activateQuery.isLoading,
         activate,
+        deactivate,
     }
 }
 
