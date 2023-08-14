@@ -50,11 +50,11 @@ import { Accordion, AccordionSummary, AccordionDetails } from '../components/Acc
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import { Shortcut } from '../components/Shortcut'
-import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
-import SettingsBrightnessIcon from '@mui/icons-material/SettingsBrightness';
-import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
-import TranslateIcon from '@mui/icons-material/Translate';
-import KeyboardAltOutlinedIcon from '@mui/icons-material/KeyboardAltOutlined';
+import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined'
+import SettingsBrightnessIcon from '@mui/icons-material/SettingsBrightness'
+import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined'
+import TranslateIcon from '@mui/icons-material/Translate'
+import KeyboardAltOutlinedIcon from '@mui/icons-material/KeyboardAltOutlined'
 
 const { useEffect } = React
 
@@ -113,33 +113,50 @@ export default function SettingWindow(props: Props) {
                         marginBottom: '20px',
                     }}
                 >
-                    <Tabs value={currentTab} onChange={(_, value) => setCurrentTab(value)}
-                        centered variant="scrollable" scrollButtons allowScrollButtonsMobile
+                    <Tabs
+                        value={currentTab}
+                        onChange={(_, value) => setCurrentTab(value)}
+                        centered
+                        variant="scrollable"
+                        scrollButtons
+                        allowScrollButtonsMobile
                     >
-                        <Tab value="ai" label={
-                            <span className='inline-flex justify-center items-center'>
-                                <SmartToyOutlinedIcon fontSize='small' style={{ marginRight: 5 }} />
-                                <span>{t('ai')}</span>
-                            </span>
-                        } />
-                        <Tab value="display" label={
-                            <span className='inline-flex justify-center items-center'>
-                                <SettingsBrightnessIcon fontSize='small' style={{ marginRight: 5 }} />
-                                <span>{t('display')}</span>
-                            </span>
-                        } />
-                        <Tab value="chat" label={
-                            <span className='inline-flex justify-center items-center'>
-                                <ChatOutlinedIcon fontSize='small' style={{ marginRight: 5 }} />
-                                <span>{t('chat')}</span>
-                            </span>
-                        } />
-                        <Tab value="shortcut" label={
-                            <span className='inline-flex justify-center items-center'>
-                                <KeyboardAltOutlinedIcon fontSize='small' style={{ marginRight: 5 }} />
-                                <span>{t('Shortcuts')}</span>
-                            </span>
-                        } />
+                        <Tab
+                            value="ai"
+                            label={
+                                <span className="inline-flex justify-center items-center">
+                                    <SmartToyOutlinedIcon fontSize="small" style={{ marginRight: 5 }} />
+                                    <span>{t('ai')}</span>
+                                </span>
+                            }
+                        />
+                        <Tab
+                            value="display"
+                            label={
+                                <span className="inline-flex justify-center items-center">
+                                    <SettingsBrightnessIcon fontSize="small" style={{ marginRight: 5 }} />
+                                    <span>{t('display')}</span>
+                                </span>
+                            }
+                        />
+                        <Tab
+                            value="chat"
+                            label={
+                                <span className="inline-flex justify-center items-center">
+                                    <ChatOutlinedIcon fontSize="small" style={{ marginRight: 5 }} />
+                                    <span>{t('chat')}</span>
+                                </span>
+                            }
+                        />
+                        <Tab
+                            value="shortcut"
+                            label={
+                                <span className="inline-flex justify-center items-center">
+                                    <KeyboardAltOutlinedIcon fontSize="small" style={{ marginRight: 5 }} />
+                                    <span>{t('Shortcuts')}</span>
+                                </span>
+                            }
+                        />
                         {/* <Tab label={t('premium')} value='premium' /> */}
                     </Tabs>
                 </Box>
@@ -160,7 +177,7 @@ export default function SettingWindow(props: Props) {
                         <FormControl fullWidth variant="outlined" margin="dense">
                             <InputLabel htmlFor="language-select">
                                 {t('language')}
-                                <TranslateIcon fontSize='small' />
+                                <TranslateIcon fontSize="small" />
                             </InputLabel>
                             <Select
                                 label="language"
@@ -597,14 +614,25 @@ export function ModelConfig(props: ModelConfigProps) {
                         </Box>
                         <Box sx={{ marginTop: '10px' }}>
                             {premium.premiumActivated ? (
-                                <Button
-                                    variant="outlined"
-                                    onClick={() => {
-                                        runtime.openLink('https://chatboxai.app/redirect_app/manage_license')
-                                    }}
-                                >
-                                    {t('Manage License and Devices')}
-                                </Button>
+                                <>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={() => {
+                                            runtime.openLink('https://chatboxai.app/redirect_app/manage_license')
+                                        }}
+                                    >
+                                        {t('Manage License and Devices')}
+                                    </Button>
+                                    <Button
+                                        variant="text"
+                                        sx={{ marginLeft: '10px' }}
+                                        onClick={() => {
+                                            premium.deactivate()
+                                        }}
+                                    >
+                                        {t('Deactivate')}
+                                    </Button>
+                                </>
                             ) : (
                                 <>
                                     <Button
