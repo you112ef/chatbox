@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
     TableContainer,
     Table,
@@ -30,14 +30,10 @@ import {
     Slider,
     Typography,
     Box,
-    InputAdornment,
-    IconButton,
 } from '@mui/material'
 import { Settings, ModelProvider, ThemeMode, ModelSettings } from '../../shared/types'
 import ThemeChangeButton from '../theme/ThemeChangeIcon'
 import { Trans, useTranslation } from 'react-i18next'
-import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle'
-import LightbulbCircleIcon from '@mui/icons-material/LightbulbCircle'
 import * as defaults from '../stores/defaults'
 import { useAtom } from 'jotai'
 import { settingsAtom } from '../stores/atoms'
@@ -47,16 +43,16 @@ import { usePremium } from '../hooks/usePremium'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import { models, languageNameMap, languages, modelConfigs, aiModelProviderList } from '../config'
 import { Accordion, AccordionSummary, AccordionDetails } from '../components/Accordion'
-import Visibility from '@mui/icons-material/Visibility'
-import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import TemperatureSlider from '../components/TemperatureSlider'
+import PasswordTextField from '../components/PasswordTextField'
+import MaxContextMessageCountSlider from '../components/MaxContextMessageCountSlider'
 import { Shortcut } from '../components/Shortcut'
 import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined'
 import SettingsBrightnessIcon from '@mui/icons-material/SettingsBrightness'
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined'
 import TranslateIcon from '@mui/icons-material/Translate'
 import KeyboardAltOutlinedIcon from '@mui/icons-material/KeyboardAltOutlined'
-
-const { useEffect } = React
+import ClaudeModelSelect from '../components/ClaudeModelSelect'
 
 type Tab = 'ai' | 'display' | 'chat' | 'shortcut'
 
@@ -658,74 +654,18 @@ export function ModelConfig(props: ModelConfigProps) {
                     </Card>
                 </Box>
             </Box>
-        </Box>
-    )
-}
 
-export function MaxContextMessageCountSlider(props: ModelConfigProps) {
-    const { t } = useTranslation()
-    const { settingsEdit, setSettingsEdit } = props
-    return (
-        <Box sx={{ margin: '10px' }}>
-            <Box>
-                <Typography id="discrete-slider" gutterBottom>
-                    {t('Max Message Count in Context')}
-                </Typography>
-            </Box>
-            <Box
-                sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    margin: '0 auto',
-                }}
-            >
-                <Box sx={{ width: '92%' }}>
-                    <Slider
-                        value={settingsEdit.openaiMaxContextMessageCount}
-                        onChange={(_event, value) => {
-                            const v = Array.isArray(value) ? value[0] : value
-                            setSettingsEdit({
-                                ...settingsEdit,
-                                openaiMaxContextMessageCount: v,
-                            })
-                        }}
-                        aria-labelledby="discrete-slider"
-                        valueLabelDisplay="auto"
-                        step={2}
-                        min={0}
-                        max={22}
-                        marks
-                        valueLabelFormat={(value) => {
-                            if (value === 22) {
-                                return t('No Limit')
-                            }
-                            return value
-                        }}
-                    />
-                </Box>
-                <TextField
-                    sx={{ marginLeft: 2, width: '100px' }}
-                    value={
-                        settingsEdit.openaiMaxContextMessageCount > 20
-                            ? t('No Limit')
-                            : settingsEdit.openaiMaxContextMessageCount
-                    }
-                    onChange={(event) => {
-                        const s = event.target.value.trim()
-                        const v = parseInt(s)
-                        if (isNaN(v)) {
-                            return
-                        }
-                        setSettingsEdit({
-                            ...settingsEdit,
-                            openaiMaxContextMessageCount: v,
-                        })
+            <Box sx={{ display: onlyShow(ModelProvider.Claude) }}>
+                <PasswordTextField
+                    label={t('api key')}
+                    value={settingsEdit.claudeApiKey}
+                    setValue={(value) => {
+                        setSettingsEdit({ ...settingsEdit, claudeApiKey: value })
                     }}
-                    type="text"
-                    size="small"
-                    variant="outlined"
                 />
+                <ClaudeModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                <MaxContextMessageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
             </Box>
         </Box>
     )
@@ -890,6 +830,9 @@ export function wrapDefaultTokenConfigUpdate(settings: ModelSettings): ModelSett
             settings.openaiMaxContextTokens = 2000
             settings.openaiMaxContextMessageCount = 4
             break
+        case ModelProvider.Claude:
+            settings.openaiMaxContextMessageCount = 10
+            break
         default:
             break
     }
@@ -984,126 +927,6 @@ export function ModelSelect(props: ModelConfigProps) {
                 ))}
             </Select>
         </FormControl>
-    )
-}
-
-export function TemperatureSlider(props: ModelConfigProps) {
-    const { settingsEdit, setSettingsEdit } = props
-    const { t } = useTranslation()
-    const handleTemperatureChange = (event: Event, newValue: number | number[], activeThumb: number) => {
-        if (typeof newValue === 'number') {
-            setSettingsEdit({ ...settingsEdit, temperature: newValue })
-        } else {
-            setSettingsEdit({
-                ...settingsEdit,
-                temperature: newValue[activeThumb],
-            })
-        }
-    }
-    return (
-        <Box sx={{ margin: '10px' }}>
-            <Box>
-                <Typography id="discrete-slider" gutterBottom>
-                    {t('temperature')}
-                </Typography>
-            </Box>
-            <Box
-                sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    margin: '0 auto',
-                }}
-            >
-                <Box sx={{ width: '92%' }}>
-                    <Slider
-                        value={settingsEdit.temperature}
-                        onChange={handleTemperatureChange}
-                        aria-labelledby="discrete-slider"
-                        valueLabelDisplay="auto"
-                        defaultValue={settingsEdit.temperature}
-                        step={0.1}
-                        min={0}
-                        max={1}
-                        marks={[
-                            {
-                                value: 0.2,
-                                label: (
-                                    <Chip
-                                        size="small"
-                                        icon={<PlaylistAddCheckCircleIcon />}
-                                        label={t('meticulous')}
-                                        className="opacity-50"
-                                    />
-                                ),
-                            },
-                            {
-                                value: 0.8,
-                                label: (
-                                    <Chip
-                                        size="small"
-                                        icon={<LightbulbCircleIcon />}
-                                        label={t('creative')}
-                                        className="opacity-50"
-                                    />
-                                ),
-                            },
-                        ]}
-                    />
-                </Box>
-                <TextField
-                    sx={{ marginLeft: 2, width: '100px' }}
-                    value={settingsEdit.temperature}
-                    disabled
-                    type="text"
-                    size="small"
-                    variant="outlined"
-                />
-            </Box>
-        </Box>
-    )
-}
-
-function PasswordTextField(props: {
-    label: string
-    value: string
-    setValue: (value: string) => void
-    placeholder?: string
-    disabled?: boolean
-    helperText?: React.ReactNode
-}) {
-    const [showPassword, setShowPassword] = React.useState(false)
-    const handleClickShowPassword = () => setShowPassword((show) => !show)
-    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault()
-    }
-    return (
-        <TextField
-            type={showPassword ? 'text' : 'password'}
-            autoFocus
-            margin="dense"
-            label={props.label}
-            fullWidth
-            variant="outlined"
-            placeholder={props.placeholder}
-            disabled={props.disabled}
-            value={props.value}
-            onChange={(e) => props.setValue(e.target.value.trim())}
-            InputProps={{
-                endAdornment: (
-                    <InputAdornment position="end">
-                        <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                        >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                    </InputAdornment>
-                ),
-            }}
-            helperText={props.helperText}
-        />
     )
 }
 

@@ -149,6 +149,29 @@ export async function reply(
                     }
                 )
                 break
+            case ModelProvider.Claude:
+                await requestClaude(
+                    {
+                        claudeApiKey: setting.claudeApiKey,
+                        claudeModel: setting.claudeModel,
+                        temperature: setting.temperature,
+                        messages,
+                        signal: controller.signal,
+                    },
+                    (message) => {
+                        const data = JSON.parse(message)
+                        if (data.error) {
+                            throw new ApiError(`Error from Claude: ${JSON.stringify(data)}`)
+                        }
+                        let text: string = data.completion
+                        if (text !== undefined) {
+                            fullText += text
+                            if (onText) {
+                                onText({ text: fullText, cancel })
+                            }
+                        }
+                    }
+                )
             default:
                 throw new Error('unsupported ai provider: ' + setting.aiProvider)
         }
@@ -374,4 +397,52 @@ async function requestChatboxAI(
         throw new NetworkError(err.message, 'https://chatboxai.app')
     })
     return handleSSE(response, sseHandler)
+}
+
+async function requestClaude(
+    options: {
+        claudeApiKey: string
+        claudeModel: string
+        temperature: number
+        messages: OpenAIMessage[]
+        signal: AbortSignal
+    },
+    sseHandler: (message: string) => void
+) {
+    // "\n\nHuman: Hello, world!\n\nAssistant:"
+    const prompt = options.messages
+        .map((m) => (m.role !== 'assistant' ? `Human: ${m.content}` : `Assistant: ${m.content}`))
+        .join('\n\n')
+    const response = await request(
+        'https://api.anthropic.com/v1/complete',
+        {
+            'Content-Type': 'application/json',
+            'anthropic-version': '2023-06-01',
+            'x-api-key': options.claudeApiKey,
+        },
+        {
+            model: options.claudeModel,
+            prompt: prompt,
+            max_tokens_to_sample: 100_000,
+            stream: true,
+        },
+        options.signal
+    )
+    return handleSSE(response, sseHandler)
+}
+
+async function request(url: string, headers: Record<string, string>, body: Record<string, any>, signal: AbortSignal) {
+    try {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(body),
+            signal,
+        })
+        return res
+    } catch (e) {
+        const err = e as Error
+        const origin = new URL(url).origin
+        throw new NetworkError(err.message, origin)
+    }
 }

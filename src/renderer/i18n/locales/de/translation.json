@@ -13,6 +13,7 @@
     "protocol error": "Der Proxy muss <strong>HTTP</strong> oder <strong>HTTPS</strong> verwenden.",
     "api host": "API-Host",
     "model": "Modell",
+    "api key": "API-Schlüssel",
     "token": "Token",
     "max tokens in context": "Maximale Token im Kontext",
     "max tokens to generate": "Maximale Token zur Generierung",

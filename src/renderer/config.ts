@@ -42,6 +42,16 @@ export const modelConfigs = {
 export type Model = keyof typeof modelConfigs
 export const models = Array.from(Object.keys(modelConfigs)).sort() as Model[]
 
+export type ClaudeModel = 'claude-instant-1' | 'claude-1' | 'claude-instant-1-100k' | 'claude-1-100k' | 'claude-2'
+
+export const claudeModels: ClaudeModel[] = [
+    'claude-instant-1',
+    'claude-1',
+    'claude-instant-1-100k',
+    'claude-1-100k',
+    'claude-2',
+]
+
 export const languageNameMap = {
     en: 'English',
     'zh-Hans': '简体中文',
@@ -59,6 +69,7 @@ export const aiProviderNameHash = {
     [ModelProvider.Azure]: 'Azure OpenAI API',
     [ModelProvider.ChatGLM6B]: 'ChatGLM-6B',
     [ModelProvider.ChatboxAI]: 'Chatbox-AI',
+    [ModelProvider.Claude]: 'Claude',
 }
 
 export const aiModelProviderList = [
@@ -80,9 +91,8 @@ export const aiModelProviderList = [
         label: aiProviderNameHash[ModelProvider.ChatGLM6B],
     },
     {
-        value: 'claude',
-        label: 'Claude API',
-        disabled: true,
+        value: ModelProvider.Claude,
+        label: aiProviderNameHash[ModelProvider.Claude],
     },
     {
         value: 'hunyuan',

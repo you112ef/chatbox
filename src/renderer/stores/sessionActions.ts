@@ -316,8 +316,11 @@ function genMessageContext(settings: Settings, msgs: Message[]) {
     for (let i = msgs.length - 1; i >= 0; i--) {
         const msg = msgs[i]
         const size = utils.estimateTokensFromMessages([msg]) + 20 // 20 作为预估的误差补偿
-        if (size + totalLen > openaiMaxContextTokens) {
-            break
+        // 只有 OpenAI 才支持上下文 tokens 数量限制
+        if (settings.aiProvider === 'openai') {
+            if (size + totalLen > openaiMaxContextTokens) {
+                break
+            }
         }
         if (
             openaiMaxContextMessageCount <= 20 && // 超过20表示不再限制

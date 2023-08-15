@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-import { Model } from '../renderer/config'
+import { ClaudeModel, Model } from '../renderer/config'
 
 export type Message = OpenAIMessage & {
     id: string
@@ -41,6 +41,7 @@ export enum ModelProvider {
     OpenAI = 'openai',
     Azure = 'azure',
     ChatGLM6B = 'chatglm-6b',
+    Claude = 'claude',
 }
 
 export interface ModelSettings {
@@ -64,6 +65,9 @@ export interface ModelSettings {
     licenseInstances?: {
         [key: string]: string
     }
+
+    claudeApiKey: string
+    claudeModel: ClaudeModel
 
     temperature: number
     openaiMaxTokens: number // 生成消息的最大限制，是传入 OpenAI 接口的参数。0 代表不限制（不传递）
@@ -101,6 +105,8 @@ export function getMsgDisplayModelName(settings: ModelSettings) {
             return 'ChatGLM-6B'
         case ModelProvider.ChatboxAI:
             return 'Chatbox-AI'
+        case ModelProvider.Claude:
+            return settings.claudeModel
         default:
             return 'unknown'
     }

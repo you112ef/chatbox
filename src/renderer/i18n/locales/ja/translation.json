@@ -13,6 +13,7 @@
     "protocol error": "プロキシは<strong>HTTP</strong>または<strong>HTTPS</strong>を使用する必要があります。",
     "api host": "APIホスト",
     "model": "モデル",
+    "api key": "APIキー",
     "token": "トークン",
     "max tokens in context": "コンテキスト内の最大トークン数",
     "max tokens to generate": "生成する最大トークン数",

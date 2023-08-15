@@ -13,6 +13,7 @@
     "protocol error": "Прокси должен использовать протоколы <strong>HTTP</strong> или <strong>HTTPS</strong>.",
     "api host": "Хост API",
     "model": "Модель",
+    "api key": "Ключ API",
     "token": "Токен",
     "max tokens in context": "Максимальное количество токенов в контексте",
     "max tokens to generate": "Максимальное количество токенов для генерации",

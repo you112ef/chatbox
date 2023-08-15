@@ -13,6 +13,7 @@
     "protocol error": "프록시는 <strong>HTTP</strong> 또는 <strong>HTTPS</strong>를 사용해야 합니다.",
     "api host": "API 호스트",
     "model": "모델",
+    "api key": "API 키",
     "token": "토큰",
     "max tokens in context": "컨텍스트 내 최대 토큰 수",
     "max tokens to generate": "생성할 최대 토큰 수",

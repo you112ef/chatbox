@@ -13,6 +13,7 @@
     "protocol error": "代理必須使用 <strong>HTTP</strong> 或 <strong>HTTPS</strong> 協定。",
     "api host": "API 域名",
     "model": "模型",
+    "api key": "API 金鑰",
     "token": "Token",
     "max tokens in context": "上下文的Token上限",
     "max tokens to generate": "產生答案的Token上限",

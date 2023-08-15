@@ -18,6 +18,10 @@ export function settings(): Settings {
         openaiMaxContextMessageCount: 10,
         // maxContextSize: "4000",
         // maxTokens: "2048",
+
+        claudeApiKey: '',
+        claudeModel: 'claude-1',
+
         showWordCount: true,
         showTokenCount: false,
         showTokenUsed: true,

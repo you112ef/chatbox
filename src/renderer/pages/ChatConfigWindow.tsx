@@ -1,13 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
     FormControlLabel,
     Switch,
     Divider,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    Chip,
     Button,
     Dialog,
     DialogContent,
@@ -19,19 +14,13 @@ import {
 import { Session, ModelProvider, ModelSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as sessionActions from '../stores/sessionActions'
-import {
-    AiProviderSelect,
-    ModelSelect,
-    TemperatureSlider,
-    TokenConfig,
-    MaxContextMessageCountSlider,
-    wrapDefaultTokenConfigUpdate,
-} from './SettingWindow'
+import { AiProviderSelect, ModelSelect, TokenConfig, wrapDefaultTokenConfigUpdate } from './SettingWindow'
+import TemperatureSlider from '../components/TemperatureSlider'
+import MaxContextMessageCountSlider from '../components/MaxContextMessageCountSlider'
 import * as atoms from '../stores/atoms'
 import { useAtomValue } from 'jotai'
 import { Accordion, AccordionSummary, AccordionDetails } from '../components/Accordion'
-
-const { useEffect } = React
+import ClaudeModelSelect from '../components/ClaudeModelSelect'
 
 interface Props {
     open: boolean
@@ -133,6 +122,16 @@ export default function ChatConfigWindow(props: Props) {
                         )}
                         {settingsEdit.aiProvider === ModelProvider.ChatGLM6B && (
                             <>
+                                <MaxContextMessageCountSlider
+                                    settingsEdit={settingsEdit}
+                                    setSettingsEdit={setSettingsEdit}
+                                />
+                                <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                            </>
+                        )}
+                        {settingsEdit.aiProvider === ModelProvider.Claude && (
+                            <>
+                                <ClaudeModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                                 <MaxContextMessageCountSlider
                                     settingsEdit={settingsEdit}
                                     setSettingsEdit={setSettingsEdit}
