@@ -112,12 +112,12 @@ export default function MainPane(props: Props) {
                         {!showSidebar ? (
                             <>
                                 <img className="w-7 h-7" src={icon} />
-                                <Typography variant="h6" noWrap className="ml-1 w-56">
+                                <Typography variant="h6" noWrap className="ml-1 max-w-56">
                                     {currentSession.name}
                                 </Typography>
                             </>
                         ) : (
-                            <Typography variant="h6" noWrap className="ml-3 w-56">
+                            <Typography variant="h6" noWrap className="ml-3 max-w-56">
                                 {currentSession.name}
                             </Typography>
                         )}
