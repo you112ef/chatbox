@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import Message from './Message'
 import * as atoms from '../stores/atoms'
 import { useAtomValue, useSetAtom } from 'jotai'
@@ -7,7 +7,7 @@ import { List } from '@mui/material'
 import { VirtuosoHandle } from 'react-virtuoso'
 import * as scrollActions from '../stores/scrollActions'
 
-interface Props {}
+interface Props { }
 
 export default function MessageList(props: Props) {
     const currentSession = useAtomValue(atoms.currentSessionAtom)
@@ -18,20 +18,11 @@ export default function MessageList(props: Props) {
     const setMessageScrollingAtom = useSetAtom(atoms.messageScrollingAtom)
     const setAtTop = useSetAtom(atoms.messageScrollingAtTopAtom)
     const setAtBottom = useSetAtom(atoms.messageScrollingAtBottomAtom)
+    const setMessageScrollingScrollPosition = useSetAtom(atoms.messageScrollingScrollPositionAtom)
 
     useEffect(() => {
         setMessageScrollingAtom(virtuoso)
     }, [virtuoso])
-
-    // stop auto-scroll when user scroll
-    useEffect(() => {
-        if (!messageListRef.current) {
-            return
-        }
-        messageListRef.current.addEventListener('wheel', function (e: any) {
-            scrollActions.clearAutoScroll()
-        })
-    }, [])
 
     return (
         <List
@@ -55,7 +46,28 @@ export default function MessageList(props: Props) {
                 }}
                 ref={virtuoso}
                 itemContent={(index, msg) => {
-                    return <Message id={msg.id} key={msg.id} msg={msg} sessionId={currentSession.id} />
+                    return (
+                        <Message id={msg.id} key={msg.id} msg={msg} sessionId={currentSession.id} />
+                    )
+                }}
+                onWheel={(e) => {
+                    scrollActions.clearAutoScroll()
+                    if (virtuoso.current) {
+                        virtuoso.current.getState(state => {
+                            if (messageListRef.current) {
+                                setMessageScrollingScrollPosition(state.scrollTop + messageListRef.current.clientHeight)
+                            }
+                        })
+                    }
+                }}
+                totalListHeightChanged={() => {
+                    if (virtuoso.current) {
+                        virtuoso.current.getState(state => {
+                            if (messageListRef.current) {
+                                setMessageScrollingScrollPosition(state.scrollTop + messageListRef.current.clientHeight)
+                            }
+                        })
+                    }
                 }}
             />
         </List>

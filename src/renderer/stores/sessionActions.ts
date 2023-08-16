@@ -206,7 +206,8 @@ export async function generate(sessionId: string, targetMsg: Message) {
     }
     const promptMsgs = genMessageContext(settings, session.messages.slice(0, targetMsgIx))
 
-    const autoScrollId = scrollActions.startAutoScroll(targetMsgIx, 'start')
+    scrollActions.scrollToMessage(targetMsg.id, 'end')
+    const autoScrollId = scrollActions.startAutoScroll(targetMsg.id, 'end')
 
     const configs = await storage.getConfig()
     try {
@@ -217,7 +218,6 @@ export async function generate(sessionId: string, targetMsg: Message) {
                 cancel,
             }
             modifyMessage(sessionId, targetMsg)
-            scrollActions.tickAutoScroll(autoScrollId, targetMsgIx, 'end')
         })
     } catch (err: any) {
         if (!(err instanceof Error)) {
@@ -245,7 +245,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
     }
     modifyMessage(sessionId, targetMsg, true)
 
-    scrollActions.tickAutoScroll(autoScrollId, targetMsgIx, 'end')
+    scrollActions.clearAutoScroll(autoScrollId)
 }
 
 export async function refreshMessage(sessionId: string, msg: Message) {

@@ -35,7 +35,13 @@ import ReplayIcon from '@mui/icons-material/Replay'
 import CopyAllIcon from '@mui/icons-material/CopyAll'
 import '../static/block.css'
 import { useAtomValue, useSetAtom } from 'jotai'
-import { quoteAtom, showModelNameAtom, showTokenCountAtom, showWordCountAtom } from '../stores/atoms'
+import {
+    messageScrollingScrollPositionAtom,
+    quoteAtom,
+    showModelNameAtom,
+    showTokenCountAtom,
+    showWordCountAtom,
+} from '../stores/atoms'
 import { currsentSessionPicUrlAtom, showTokenUsedAtom } from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
 import * as toastActions from '../stores/toastActions'
@@ -58,6 +64,7 @@ function _Message(props: Props) {
     const showWordCount = useAtomValue(showWordCountAtom)
     const showTokenUsed = useAtomValue(showTokenUsedAtom)
     const currentSessionPicUrl = useAtomValue(currsentSessionPicUrlAtom)
+    const messageScrollingScrollPosition = useAtomValue(messageScrollingScrollPositionAtom)
 
     const { msg } = props
 
@@ -66,6 +73,7 @@ function _Message(props: Props) {
     useEffect(() => {
         setMsgEdit(null)
     }, [msg])
+    const ref = useRef<HTMLDivElement>(null)
 
     const setQuote = useSetAtom(quoteAtom)
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -130,13 +138,30 @@ function _Message(props: Props) {
     if (showModelName && props.msg.role === 'assistant') {
         tips.push(`model: ${props.msg.model || 'unknown'}`)
     }
+
+    let displayButtonGroup = false
+    if (isHovering && !msgEdit) {
+        displayButtonGroup = true   // 鼠标悬停时，显示按钮组
+    }
+    if (msg.generating) {
+        displayButtonGroup = true   // 消息生成中，显示按钮组
+    }
+
+    let fixedButtonGroup = false
+    if (ref.current) {
+        if (
+            ref.current.offsetTop + ref.current.offsetHeight - 10 > messageScrollingScrollPosition // 元素的后半部分不在可视范围内
+            && ref.current.offsetTop + 50 < messageScrollingScrollPosition // 元素的前半部分在可视范围内，且露出至少50px
+        ) {
+            fixedButtonGroup = true
+        }
+    }
+
     return (
-        <ListItem
+        <Box
+            ref={ref}
             id={props.id}
             key={msg.id}
-            onMouseEnter={() => {
-                setIsHovering(true)
-            }}
             onMouseOver={() => {
                 setIsHovering(true)
             }}
@@ -303,101 +328,116 @@ function _Message(props: Props) {
                             {tips.join(', ')}
                         </Typography>
                         <Box sx={{ height: '35px' }}>
-                            {msgEdit ? (
-                                <ButtonGroup
-                                    sx={{ height: '35px' }}
-                                    variant="contained"
-                                    aria-label="outlined primary button group"
-                                >
-                                    <IconButton
-                                        onClick={() => {
+                            <ButtonGroup
+                                sx={{
+                                    display: msgEdit ? 'inline-flex' : 'none',
+                                    height: '35px',
+                                }}
+                                variant="contained"
+                                aria-label="outlined primary button group"
+                            >
+                                <IconButton
+                                    onClick={() => {
+                                        if (msgEdit) {
                                             setMsg(msgEdit)
-                                            setMsgEdit(null)
-                                        }}
-                                        size="large"
-                                        color="primary"
-                                    >
-                                        <CheckIcon />
-                                    </IconButton>
-                                </ButtonGroup>
-                            ) : (
-                                ((isHovering && !msgEdit) || msg.generating) && (
-                                    <ButtonGroup
-                                        sx={{ height: '35px' }}
-                                        variant="contained"
-                                        aria-label="outlined primary button group"
-                                    >
-                                        {msg.generating ? (
-                                            <Tooltip title={t('stop generating')} placement="top">
-                                                <IconButton aria-label="edit" color="warning" onClick={onStop}>
-                                                    <StopIcon fontSize="small" />
-                                                </IconButton>
-                                            </Tooltip>
-                                        ) : (
-                                            <Tooltip title={t('regenerate')} placement="top">
-                                                <IconButton aria-label="edit" color="primary" onClick={onRefresh}>
-                                                    <ReplayIcon fontSize="small" />
-                                                </IconButton>
-                                            </Tooltip>
-                                        )}
-                                        {!(msg.model === 'Chatbox-AI') && (
-                                            <Tooltip title={t('edit')} placement="top">
-                                                <IconButton
-                                                    aria-label="edit"
-                                                    color="primary"
-                                                    onClick={() => {
-                                                        setIsHovering(false)
-                                                        setAnchorEl(null)
-                                                        setMsgEdit(msg)
-                                                    }}
-                                                >
-                                                    <EditIcon fontSize="small" />
-                                                </IconButton>
-                                            </Tooltip>
-                                        )}
-                                        <Tooltip title={t('copy')} placement="top">
-                                            <IconButton aria-label="copy" color="primary" onClick={onCopyMsg}>
-                                                <CopyAllIcon fontSize="small" />
-                                            </IconButton>
-                                        </Tooltip>
-                                        <IconButton onClick={handleClick} color="primary">
-                                            <MoreVertIcon fontSize="small" />
+                                        }
+                                        setMsgEdit(null)
+                                    }}
+                                    size="large"
+                                    color="primary"
+                                >
+                                    <CheckIcon />
+                                </IconButton>
+                            </ButtonGroup>
+
+                            <ButtonGroup
+                                sx={{
+                                    display: displayButtonGroup ? 'inline-flex' : 'none',
+                                    height: '35px',
+                                    opacity: 1,
+                                    ...(fixedButtonGroup ? {
+                                        position: 'fixed',
+                                        bottom: '100px',
+                                        zIndex: 100,
+                                    }
+                                        : {}),
+                                    backgroundColor:
+                                        theme.palette.mode === 'dark'
+                                            ? theme.palette.grey[800]
+                                            : theme.palette.background.paper,
+                                }}
+                                variant="contained"
+                                aria-label="outlined primary button group"
+                            >
+                                {msg.generating ? (
+                                    <Tooltip title={t('stop generating')} placement="top">
+                                        <IconButton aria-label="edit" color="warning" onClick={onStop}>
+                                            <StopIcon fontSize="small" />
                                         </IconButton>
-                                        <StyledMenu
-                                            MenuListProps={{
-                                                'aria-labelledby': 'demo-customized-button',
+                                    </Tooltip>
+                                ) : (
+                                    <Tooltip title={t('regenerate')} placement="top">
+                                        <IconButton aria-label="edit" color="primary" onClick={onRefresh}>
+                                            <ReplayIcon fontSize="small" />
+                                        </IconButton>
+                                    </Tooltip>
+                                )}
+                                {!(msg.model === 'Chatbox-AI') && (
+                                    <Tooltip title={t('edit')} placement="top">
+                                        <IconButton
+                                            aria-label="edit"
+                                            color="primary"
+                                            onClick={() => {
+                                                setIsHovering(false)
+                                                setAnchorEl(null)
+                                                setMsgEdit(msg)
                                             }}
-                                            anchorEl={anchorEl}
-                                            open={open}
-                                            onClose={handleClose}
-                                            key={msg.id + 'menu'}
                                         >
-                                            <MenuItem
-                                                key={msg.id + 'quote'}
-                                                onClick={() => {
-                                                    setIsHovering(false)
-                                                    setAnchorEl(null)
-                                                    quoteMsg()
-                                                }}
-                                                disableRipple
-                                            >
-                                                <FormatQuoteIcon fontSize="small" />
-                                                {t('quote')}
-                                            </MenuItem>
-                                            <Divider sx={{ my: 0.5 }} />
-                                            <MenuItem key={msg.id + 'del'} onClick={onDelMsg} disableRipple>
-                                                <DeleteForeverIcon fontSize="small" />
-                                                {t('delete')}
-                                            </MenuItem>
-                                        </StyledMenu>
-                                    </ButtonGroup>
-                                )
-                            )}
+                                            <EditIcon fontSize="small" />
+                                        </IconButton>
+                                    </Tooltip>
+                                )}
+                                <Tooltip title={t('copy')} placement="top">
+                                    <IconButton aria-label="copy" color="primary" onClick={onCopyMsg}>
+                                        <CopyAllIcon fontSize="small" />
+                                    </IconButton>
+                                </Tooltip>
+                                <IconButton onClick={handleClick} color="primary">
+                                    <MoreVertIcon fontSize="small" />
+                                </IconButton>
+                                <StyledMenu
+                                    MenuListProps={{
+                                        'aria-labelledby': 'demo-customized-button',
+                                    }}
+                                    anchorEl={anchorEl}
+                                    open={open}
+                                    onClose={handleClose}
+                                    key={msg.id + 'menu'}
+                                >
+                                    <MenuItem
+                                        key={msg.id + 'quote'}
+                                        onClick={() => {
+                                            setIsHovering(false)
+                                            setAnchorEl(null)
+                                            quoteMsg()
+                                        }}
+                                        disableRipple
+                                    >
+                                        <FormatQuoteIcon fontSize="small" />
+                                        {t('quote')}
+                                    </MenuItem>
+                                    <Divider sx={{ my: 0.5 }} />
+                                    <MenuItem key={msg.id + 'del'} onClick={onDelMsg} disableRipple>
+                                        <DeleteForeverIcon fontSize="small" />
+                                        {t('delete')}
+                                    </MenuItem>
+                                </StyledMenu>
+                            </ButtonGroup>
                         </Box>
                     </Grid>
                 </Grid>
             </Grid>
-        </ListItem>
+        </Box>
     )
 }
 
