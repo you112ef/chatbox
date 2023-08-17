@@ -26,7 +26,9 @@ export default function InputBox(props: Props) {
         }
     }, [quote])
     useEffect(() => {
-        dom.focusMessageInput()
+        if (!isSmallScreen) {
+            dom.focusMessageInput() // 大屏幕切换会话时自动聚焦
+        }
     }, [props.currentSessionId])
 
     const submit = async (newUserMsg: Message, needGenerating = true) => {
