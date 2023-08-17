@@ -1,4 +1,11 @@
 const changelog = `
+### v0.6.7
+
+- Action buttons on messages now remain visible during list scrolling
+- Added support for the Claude series models (beta)
+- Language support expanded to include more countries
+- Fixed some minor issues
+
 ### v0.6.5
 
 - Added application shortcuts for quickly showing/hiding windows, switching conversations, etc. See the settings page for details.
