@@ -172,11 +172,18 @@ export default function SettingWindow(props: Props) {
                     <Box>
                         <FormControl fullWidth variant="outlined" margin="dense">
                             <InputLabel htmlFor="language-select">
-                                {t('language')}
-                                <TranslateIcon fontSize="small" />
+                                <span className='inline-flex items-center justify-center'>
+                                    <TranslateIcon fontSize="small" />
+                                    {t('language')}
+                                </span>
                             </InputLabel>
                             <Select
-                                label="language"
+                                label={
+                                    <span className='inline-flex items-center justify-center'>
+                                        <TranslateIcon fontSize="small" />
+                                        {t('language')}
+                                    </span>
+                                }
                                 id="language-select"
                                 value={settingsEdit.language}
                                 onChange={(e) => {
@@ -934,7 +941,7 @@ function ShortcutTab(props: ConfigProps) {
     const { t } = useTranslation()
     const [alt, setAlt] = React.useState('Alt')
     useEffect(() => {
-        ;(async () => {
+        ; (async () => {
             const platform = await runtime.getPlatform()
             if (platform === 'darwin') {
                 setAlt('Option')
