@@ -52,6 +52,10 @@ export default function MessageList(props: Props) {
                 }}
                 onWheel={(e) => {
                     scrollActions.clearAutoScroll()
+                }}
+                onScroll={(e) => {
+                    // 为什么不合并到 onWheel 中？
+                    // 实践中发现 onScroll 处理时效果会更加丝滑一些
                     if (virtuoso.current) {
                         virtuoso.current.getState(state => {
                             if (messageListRef.current) {
