@@ -206,7 +206,7 @@ export default function SettingWindow(props: Props) {
                             <Select
                                 labelId="select-font-size"
                                 value={settingsEdit.fontSize}
-                                label="FontSize"
+                                label={t('Font Size')}
                                 onChange={(event) => {
                                     setSettingsEdit({
                                         ...settingsEdit,
@@ -922,7 +922,7 @@ export function ModelSelect(props: ModelConfigProps) {
         <FormControl fullWidth variant="outlined" margin="dense">
             <InputLabel htmlFor="model-select">{t('model')}</InputLabel>
             <Select
-                label="Model"
+                label={t('model')}
                 id="model-select"
                 value={settingsEdit.model}
                 onChange={(e) =>
