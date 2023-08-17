@@ -636,6 +636,15 @@ export function ModelConfig(props: ModelConfigProps) {
                                     >
                                         {t('Deactivate')}
                                     </Button>
+                                    <Button
+                                        variant="text"
+                                        sx={{ marginLeft: '10px' }}
+                                        onClick={() => {
+                                            runtime.openLink('https://chatboxai.app/redirect_app/view_more_plans')
+                                        }}
+                                    >
+                                        {t('View More Plans')}
+                                    </Button>
                                 </>
                             ) : (
                                 <>
