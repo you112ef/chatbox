@@ -30,6 +30,7 @@ import {
     Slider,
     Typography,
     Box,
+    useTheme,
 } from '@mui/material'
 import { Settings, ModelProvider, ThemeMode, ModelSettings } from '../../shared/types'
 import ThemeChangeButton from '../theme/ThemeChangeIcon'
@@ -122,7 +123,7 @@ export default function SettingWindow(props: Props) {
                             label={
                                 <span className="inline-flex justify-center items-center">
                                     <SmartToyOutlinedIcon fontSize="small" style={{ marginRight: 5 }} />
-                                    <span>{t('ai')}</span>
+                                    <span>{t('model')}</span>
                                 </span>
                             }
                         />
@@ -872,13 +873,19 @@ function getTokenLimits(settings: ModelSettings) {
 export function AiProviderSelect(props: ModelConfigProps) {
     const { settingsEdit, setSettingsEdit } = props
     const { t } = useTranslation()
+    const theme = useTheme()
     return (
         <FormControl fullWidth variant="outlined" margin="dense">
-            <InputLabel htmlFor="ai-provider-select">{t('AI Provider')}</InputLabel>
+            <InputLabel htmlFor="ai-provider-select">{t('AI Model Provider')}</InputLabel>
             <Select
-                label="ai-provider"
+                label={t('AI Model Provider')}
                 id="ai-provider-select"
                 value={settingsEdit.aiProvider}
+                sx={{
+                    backgroundColor: theme.palette.mode === 'dark'
+                        ? theme.palette.grey[700]
+                        : theme.palette.grey[100]
+                }}
                 onChange={(e) => {
                     setSettingsEdit(
                         wrapDefaultTokenConfigUpdate({

@@ -30,6 +30,9 @@ export default function RemoteDialogWindow() {
             const config = await getConfig()
             const settings = store.get(settingsAtom)
             const version = await api.getVersion()
+            if (version === '0.0.1') {
+                return  // 本地开发环境不显示远程弹窗
+            }
             try {
                 const dialog = await remote.getDialogConfig({
                     uuid: config.uuid,

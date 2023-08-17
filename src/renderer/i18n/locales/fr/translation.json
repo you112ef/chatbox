@@ -73,7 +73,7 @@
     "Azure Deployment Name": "Nom du déploiement Azure",
     "Azure Endpoint": "Point de terminaison Azure",
     "Font Size": "Taille de la police",
-    "AI Provider": "Fournisseur d'IA",
+    "AI Model Provider": "Fournisseur de modèle IA",
     "ChatGLM-6B URL Helper": "Prend en charge l'<0>interface API</0> pour le modèle open-source, <1>ChatGLM-6B</1>",
     "ChatGLM-6B Warnning for Chatbox-Web": "Il semble que vous utilisiez la version Web de Chatbox, qui peut rencontrer des problèmes de domaine croisé ou d'autres problèmes de réseau avec ChatGLM-6B. Téléchargez et utilisez le client Chatbox pour éviter les problèmes potentiels.",
     "premium": "premium",
