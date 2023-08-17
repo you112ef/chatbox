@@ -7,6 +7,7 @@ import * as defaults from './defaults'
 import { v4 as uuidv4 } from 'uuid'
 import storage from '../storage'
 import { VirtuosoHandle } from 'react-virtuoso'
+import * as runtime from '../packages/runtime'
 
 // settings
 
@@ -22,6 +23,12 @@ export const settingsAtom = atom(
         // 考虑关键配置的缺省情况
         if (!newSettings.apiHost) {
             newSettings.apiHost = defaults.settings().apiHost
+        }
+        // 如果快捷键配置发生变化，需要重新注册快捷键
+        if (!!newSettings.disableQuickToggleShortcut !== !!settings.disableQuickToggleShortcut) {
+            runtime.ensureShortcutConfig({
+                disableQuickToggleShortcut: !!newSettings.disableQuickToggleShortcut,
+            })
         }
         set(_settingsAtom, newSettings)
     }

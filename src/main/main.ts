@@ -173,8 +173,10 @@ app.whenReady()
             // dock icon is clicked and there are no other windows open.
             if (mainWindow === null) createWindow()
         })
-        globalShortcut.register('Alt+`', () => shortcuts.quickToggle(mainWindow))
-        globalShortcut.register('Option+`', () => shortcuts.quickToggle(mainWindow))
+        shortcuts.init(() => mainWindow)
+        app.on('will-quit', () => {
+            shortcuts.unregister()
+        })
     })
     .catch(console.log)
 
@@ -207,6 +209,14 @@ ipcMain.handle('getLocale', () => {
 })
 ipcMain.handle('openLink', (event, link) => {
     return shell.openExternal(link)
+})
+ipcMain.handle('ensureShortcutConfig', (event, json) => {
+    const config: { disableQuickToggleShortcut: boolean } = JSON.parse(json)
+    if (config.disableQuickToggleShortcut) {
+        shortcuts.unregister()
+    } else {
+        shortcuts.register(() => mainWindow)
+    }
 })
 
 ipcMain.handle('shouldUseDarkColors', () => nativeTheme.shouldUseDarkColors)

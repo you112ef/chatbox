@@ -154,3 +154,13 @@ export const getLocale = async () => {
     }
     return electronAPI.invoke('getLocale')
 }
+
+export async function ensureShortcutConfig(config: { disableQuickToggleShortcut: boolean }) {
+    if (isWeb) {
+        return
+    }
+    if (!electronAPI) {
+        return
+    }
+    return electronAPI.invoke('ensureShortcutConfig', JSON.stringify(config))
+}
