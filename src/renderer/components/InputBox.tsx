@@ -67,7 +67,6 @@ export default function InputBox(props: Props) {
                             value={messageInput}
                             onChange={(event) => setMessageInput(event.target.value)}
                             fullWidth
-                            autoFocus
                             id={dom.messageInputID}
                             onKeyDown={(event) => {
                                 if (
