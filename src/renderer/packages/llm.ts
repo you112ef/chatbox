@@ -167,7 +167,7 @@ export async function reply(
                         if (text !== undefined) {
                             fullText += text
                             if (onText) {
-                                onText({ text: fullText, cancel })
+                                onText({ text: fullText.trimStart(), cancel })
                             }
                         }
                     }
@@ -410,9 +410,10 @@ async function requestClaude(
     sseHandler: (message: string) => void
 ) {
     // "\n\nHuman: Hello, world!\n\nAssistant:"
-    const prompt = options.messages
+    let prompt = options.messages
         .map((m) => (m.role !== 'assistant' ? `Human: ${m.content}` : `Assistant: ${m.content}`))
         .join('\n\n')
+    prompt += '\n\nAssistant:'
     const response = await request(
         'https://api.anthropic.com/v1/complete',
         {
