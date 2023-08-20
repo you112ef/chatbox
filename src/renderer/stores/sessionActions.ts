@@ -48,7 +48,7 @@ export function switchCurrentSession(sessionId: string) {
     const store = getDefaultStore()
     store.set(atoms.currentSessionIdAtom, sessionId)
     scrollActions.scrollToBottom() // 切换会话时自动滚动到底部
-    scrollActions.clearAutoScroll() // 切换会话时清楚自动滚动
+    scrollActions.clearAutoScroll() // 切换会话时清除自动滚动
 
     // 小屏幕切换会话时隐藏侧边栏
     const isSmallScreen = store.get(atoms.isSmallScreenAtom)

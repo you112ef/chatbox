@@ -40,7 +40,6 @@ export default function InputBox(props: Props) {
         } else {
             sessionActions.insertMessage(props.currentSessionId, newUserMsg)
         }
-        setTimeout(scrollActions.scrollToBottom, 100) // wait for message rendering
     }
     const handleSubmit = (needGenerating = true) => {
         if (messageInput.trim() === '') {
