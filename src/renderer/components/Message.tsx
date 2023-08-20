@@ -141,17 +141,17 @@ function _Message(props: Props) {
 
     let displayButtonGroup = false
     if (isHovering && !msgEdit) {
-        displayButtonGroup = true   // 鼠标悬停时，显示按钮组
+        displayButtonGroup = true // 鼠标悬停时，显示按钮组
     }
     if (msg.generating) {
-        displayButtonGroup = true   // 消息生成中，显示按钮组
+        displayButtonGroup = true // 消息生成中，显示按钮组
     }
 
     let fixedButtonGroup = false
     if (ref.current) {
         if (
-            ref.current.offsetTop + ref.current.offsetHeight - 10 > messageScrollingScrollPosition // 元素的后半部分不在可视范围内
-            && ref.current.offsetTop + 50 < messageScrollingScrollPosition // 元素的前半部分在可视范围内，且露出至少50px
+            ref.current.offsetTop + ref.current.offsetHeight - 10 > messageScrollingScrollPosition && // 元素的后半部分不在可视范围内
+            ref.current.offsetTop + 50 < messageScrollingScrollPosition // 元素的前半部分在可视范围内，且露出至少50px
         ) {
             fixedButtonGroup = true
         }
@@ -355,11 +355,12 @@ function _Message(props: Props) {
                                     display: displayButtonGroup ? 'inline-flex' : 'none',
                                     height: '35px',
                                     opacity: 1,
-                                    ...(fixedButtonGroup ? {
-                                        position: 'fixed',
-                                        bottom: '100px',
-                                        zIndex: 100,
-                                    }
+                                    ...(fixedButtonGroup
+                                        ? {
+                                              position: 'fixed',
+                                              bottom: '100px',
+                                              zIndex: 100,
+                                          }
                                         : {}),
                                     backgroundColor:
                                         theme.palette.mode === 'dark'

@@ -21,16 +21,31 @@ export function usePremium() {
                 return { valid: false }
             }
             let instanceId = (settings.licenseInstances || {})[licenseKey]
+            // 如果 license 第一次在当前设备激活，则记录 instanceId 设备ID，并且根据 license 类型初始化默认的 AI 模型
             if (!instanceId) {
                 instanceId = await activateLicense(licenseKey, await api.getInstanceName())
-                setSettings((settings) => ({
-                    ...settings,
-                    licenseInstances: {
-                        ...(settings.licenseInstances || {}),
-                        [licenseKey]: instanceId,
-                    },
-                }))
+                const licenseDetail = await remote.getLicenseDetail({ licenseKey }).catch((e) => {
+                    console.log(e)
+                    return null
+                })
+                setSettings((settings) => {
+                    const newSettings = {
+                        ...settings,
+                        licenseInstances: {
+                            ...(settings.licenseInstances || {}),
+                            [licenseKey]: instanceId,
+                        },
+                    }
+                    if (licenseDetail) {
+                        newSettings.licenseDetail = licenseDetail
+                        if (!newSettings.chatboxAIModel) {
+                            newSettings.chatboxAIModel = licenseDetail.defaultModel
+                        }
+                    }
+                    return newSettings
+                })
             }
+            // 不管是否第一次在该设备激活，最后都要验证 license 在当前设备是否有效
             return validateLicense(licenseKey, instanceId)
         },
         {

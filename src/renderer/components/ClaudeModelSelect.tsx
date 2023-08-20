@@ -15,7 +15,7 @@ export default function ClaudeModelSelect(props: Props) {
         <SimpleSelect
             label={t('model')}
             value={settingsEdit.claudeModel}
-            options={claudeModels}
+            options={claudeModels.map((value) => ({ value, label: value }))}
             onChange={(value) => {
                 setSettingsEdit({ ...settingsEdit, claudeModel: value })
             }}

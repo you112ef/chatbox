@@ -7,7 +7,7 @@ import { List } from '@mui/material'
 import { VirtuosoHandle } from 'react-virtuoso'
 import * as scrollActions from '../stores/scrollActions'
 
-interface Props { }
+interface Props {}
 
 export default function MessageList(props: Props) {
     const currentSession = useAtomValue(atoms.currentSessionAtom)
@@ -46,9 +46,7 @@ export default function MessageList(props: Props) {
                 }}
                 ref={virtuoso}
                 itemContent={(index, msg) => {
-                    return (
-                        <Message id={msg.id} key={msg.id} msg={msg} sessionId={currentSession.id} />
-                    )
+                    return <Message id={msg.id} key={msg.id} msg={msg} sessionId={currentSession.id} />
                 }}
                 onWheel={(e) => {
                     scrollActions.clearAutoScroll()
@@ -57,7 +55,7 @@ export default function MessageList(props: Props) {
                     // 为什么不合并到 onWheel 中？
                     // 实践中发现 onScroll 处理时效果会更加丝滑一些
                     if (virtuoso.current) {
-                        virtuoso.current.getState(state => {
+                        virtuoso.current.getState((state) => {
                             if (messageListRef.current) {
                                 setMessageScrollingScrollPosition(state.scrollTop + messageListRef.current.clientHeight)
                             }
@@ -66,7 +64,7 @@ export default function MessageList(props: Props) {
                 }}
                 totalListHeightChanged={() => {
                     if (virtuoso.current) {
-                        virtuoso.current.getState(state => {
+                        virtuoso.current.getState((state) => {
                             if (messageListRef.current) {
                                 setMessageScrollingScrollPosition(state.scrollTop + messageListRef.current.clientHeight)
                             }

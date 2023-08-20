@@ -11,7 +11,7 @@ export default function useShortcut() {
             const store = getDefaultStore()
             const isSmallScreen = store.get(atoms.isSmallScreenAtom)
             // 大屏幕下，窗口显示时自动聚焦输入框
-            if (! isSmallScreen) {
+            if (!isSmallScreen) {
                 dom.focusMessageInput()
             }
         })

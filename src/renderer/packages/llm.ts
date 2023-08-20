@@ -1,5 +1,4 @@
-import { Config, Message, ModelProvider, OpenAIMessage, Settings } from '../../shared/types'
-import * as utils from './utils'
+import { Config, Message, ModelProvider, OpenAIMessage, Settings, ChatboxAIModel } from '../../shared/types'
 import { createParser } from 'eventsource-parser'
 
 export interface OnTextCallbackResult {
@@ -46,14 +45,17 @@ export async function reply(
             case ModelProvider.ChatboxAI:
                 const license = setting.licenseKey || ''
                 const instanceId = (setting.licenseInstances ? setting.licenseInstances[license] : '') || ''
+                const model: ChatboxAIModel = setting.chatboxAIModel || 'chatboxai-3.5'
                 await requestChatboxAI(
                     {
                         license: license,
                         instanceId: instanceId,
                         uuid: config.uuid,
                         // maxTokensNumber: maxTokensNumber,
+                        model,
                         temperature: setting.temperature,
                         messages,
+                        language: setting.language,
                         signal: controller.signal,
                     },
                     (message) => {
@@ -370,14 +372,16 @@ async function requestChatboxAI(
         license: string
         instanceId: string
         uuid: string
+        model: ChatboxAIModel
         // maxTokensNumber: number
         temperature: number
         messages: OpenAIMessage[]
+        language: string
         signal: AbortSignal
     },
     sseHandler: (message: string) => void
 ) {
-    const { license, instanceId, uuid, temperature, messages, signal } = options
+    const { license, instanceId, uuid, model, temperature, messages, signal, language } = options
     const response = await fetch(`https://chatboxai.app/api/ai/chat`, {
         method: 'POST',
         headers: {
@@ -387,9 +391,11 @@ async function requestChatboxAI(
         },
         body: JSON.stringify({
             uuid: uuid,
+            model,
             messages,
             // max_tokens: maxTokensNumber,
             temperature,
+            language,
             stream: true,
         }),
         signal: signal,

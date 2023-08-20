@@ -135,7 +135,7 @@ export const configVersionAtom = atomWithStorage<number>('configVersion', 0, sto
 export const messageScrollingAtom = atom<null | RefObject<VirtuosoHandle>>(null)
 export const messageScrollingAtTopAtom = atom(false)
 export const messageScrollingAtBottomAtom = atom(false)
-export const messageScrollingScrollPositionAtom = atom<number>(0)    // 当前视图高度位置（包含了视图的高度+视图距离顶部的偏移）
+export const messageScrollingScrollPositionAtom = atom<number>(0) // 当前视图高度位置（包含了视图的高度+视图距离顶部的偏移）
 
 // 是否当前为小屏幕
 export const isSmallScreenAtom = atom(false)

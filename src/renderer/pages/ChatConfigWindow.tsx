@@ -21,6 +21,7 @@ import * as atoms from '../stores/atoms'
 import { useAtomValue } from 'jotai'
 import { Accordion, AccordionSummary, AccordionDetails } from '../components/Accordion'
 import ClaudeModelSelect from '../components/ClaudeModelSelect'
+import ChatboxAIModelSelect from '../components/ChatboxAIModelSelect'
 
 interface Props {
     open: boolean
@@ -94,6 +95,12 @@ export default function ChatConfigWindow(props: Props) {
                         <Divider sx={{ margin: '16px 0' }} />
                         {settingsEdit.aiProvider === ModelProvider.ChatboxAI && (
                             <>
+                                {settingsEdit.licenseDetail && (
+                                    <ChatboxAIModelSelect
+                                        settingsEdit={settingsEdit}
+                                        setSettingsEdit={setSettingsEdit}
+                                    />
+                                )}
                                 <MaxContextMessageCountSlider
                                     settingsEdit={settingsEdit}
                                     setSettingsEdit={setSettingsEdit}

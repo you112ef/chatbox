@@ -1,11 +1,17 @@
-import { Config, CopilotDetail, SponsorAboutBanner, SponsorAd, RemoteConfig } from '../../shared/types'
+import {
+    Config,
+    CopilotDetail,
+    SponsorAboutBanner,
+    SponsorAd,
+    RemoteConfig,
+    ChatboxAILicenseDetail,
+} from '../../shared/types'
 
-const releaseHost = 'https://releases.chatboxai.app'
-
-const apiHost = 'https://chatboxai.app'
+const RELEASE_ORIGIN = 'https://releases.chatboxai.app'
+const API_ORIGIN = 'https://chatboxai.app'
 
 export async function checkNeedUpdate(version: string, os: string, config: Config): Promise<boolean> {
-    const res = await fetch(`${releaseHost}/chatbox_need_update/${version}`, {
+    const res = await fetch(`${RELEASE_ORIGIN}/chatbox_need_update/${version}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -20,19 +26,19 @@ export async function checkNeedUpdate(version: string, os: string, config: Confi
 }
 
 export async function getSponsorAd(): Promise<null | SponsorAd> {
-    const res = await fetch(`${releaseHost}/sponsor_ad`)
+    const res = await fetch(`${RELEASE_ORIGIN}/sponsor_ad`)
     const json = await res.json()
     return json['data'] || null
 }
 
 export async function listSponsorAboutBanner(): Promise<SponsorAboutBanner[]> {
-    const res = await fetch(`${releaseHost}/sponsor_about_banner`)
+    const res = await fetch(`${RELEASE_ORIGIN}/sponsor_about_banner`)
     const json = await res.json()
     return json['data']
 }
 
 export async function listCopilots(lang: string): Promise<CopilotDetail[]> {
-    const res = await fetch(`${apiHost}/api/copilots/list`, {
+    const res = await fetch(`${API_ORIGIN}/api/copilots/list`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -44,7 +50,7 @@ export async function listCopilots(lang: string): Promise<CopilotDetail[]> {
 }
 
 export async function recordCopilotShare(detail: CopilotDetail): Promise<void> {
-    await fetch(`${apiHost}/api/copilots/share-record`, {
+    await fetch(`${API_ORIGIN}/api/copilots/share-record`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -60,7 +66,7 @@ export async function getPremiumPrice(): Promise<{
     discount: number
     discountLabel: string
 }> {
-    const res = await fetch(`${apiHost}/api/premium/price`, {
+    const res = await fetch(`${API_ORIGIN}/api/premium/price`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -71,7 +77,7 @@ export async function getPremiumPrice(): Promise<{
 }
 
 export async function getRemoteConfig(config: keyof RemoteConfig): Promise<Pick<RemoteConfig, typeof config>> {
-    const res = await fetch(`${apiHost}/api/remote_config/${config}`, {
+    const res = await fetch(`${API_ORIGIN}/api/remote_config/${config}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -91,12 +97,24 @@ export async function getDialogConfig(params: {
     language: string
     version: string
 }): Promise<null | DialogConfig> {
-    const res = await fetch(`${apiHost}/api/dialog_config`, {
+    const res = await fetch(`${API_ORIGIN}/api/dialog_config`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(params),
+    })
+    const json = await res.json()
+    return json['data'] || null
+}
+
+export async function getLicenseDetail(params: { licenseKey: string }): Promise<ChatboxAILicenseDetail | null> {
+    const res = await fetch(`${API_ORIGIN}/api/license/detail`, {
+        method: 'GET',
+        headers: {
+            Authorization: params.licenseKey,
+            // 'Content-Type': 'application/json',
+        },
     })
     const json = await res.json()
     return json['data'] || null

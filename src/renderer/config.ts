@@ -1,4 +1,4 @@
-import { Language, ModelProvider } from '../shared/types'
+import { Language, ModelProvider, ChatboxAIModel } from '../shared/types'
 
 // Ref: https://platform.openai.com/docs/models/gpt-4
 export const modelConfigs = {
@@ -51,6 +51,8 @@ export const claudeModels: ClaudeModel[] = [
     'claude-1-100k',
     'claude-2',
 ]
+
+export const chatboxAIModels: ChatboxAIModel[] = ['chatboxai-3.5', 'chatboxai-4']
 
 export const languageNameMap = {
     en: 'English',

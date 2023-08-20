@@ -54,6 +54,7 @@ import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined'
 import TranslateIcon from '@mui/icons-material/Translate'
 import KeyboardAltOutlinedIcon from '@mui/icons-material/KeyboardAltOutlined'
 import ClaudeModelSelect from '../components/ClaudeModelSelect'
+import ChatboxAIModelSelect from '../components/ChatboxAIModelSelect'
 
 type Tab = 'ai' | 'display' | 'chat' | 'shortcut'
 
@@ -173,14 +174,14 @@ export default function SettingWindow(props: Props) {
                     <Box>
                         <FormControl fullWidth variant="outlined" margin="dense">
                             <InputLabel htmlFor="language-select">
-                                <span className='inline-flex items-center justify-center'>
+                                <span className="inline-flex items-center justify-center">
                                     <TranslateIcon fontSize="small" />
                                     {t('language')}
                                 </span>
                             </InputLabel>
                             <Select
                                 label={
-                                    <span className='inline-flex items-center justify-center'>
+                                    <span className="inline-flex items-center justify-center">
                                         <TranslateIcon fontSize="small" />
                                         {t('language')}
                                     </span>
@@ -588,6 +589,9 @@ export function ModelConfig(props: ModelConfigProps) {
                             </ButtonGroup>
                         </Box>
                     )}
+                    {settingsEdit.licenseDetail && (
+                        <ChatboxAIModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                    )}
                     <Card sx={{ marginTop: '20px', padding: '14px' }} elevation={3}>
                         {premium.premiumActivated && (
                             <span
@@ -891,9 +895,7 @@ export function AiProviderSelect(props: ModelConfigProps) {
                 id="ai-provider-select"
                 value={settingsEdit.aiProvider}
                 sx={{
-                    backgroundColor: theme.palette.mode === 'dark'
-                        ? theme.palette.grey[700]
-                        : theme.palette.grey[100]
+                    backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[700] : theme.palette.grey[100],
                 }}
                 onChange={(e) => {
                     setSettingsEdit(
@@ -957,7 +959,7 @@ function ShortcutTab(props: ConfigProps) {
     const { t } = useTranslation()
     const [alt, setAlt] = React.useState('Alt')
     useEffect(() => {
-        ; (async () => {
+        ;(async () => {
             const platform = await runtime.getPlatform()
             if (platform === 'darwin') {
                 setAlt('Option')
