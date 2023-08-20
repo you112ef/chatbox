@@ -207,7 +207,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
     const promptMsgs = genMessageContext(settings, session.messages.slice(0, targetMsgIx))
 
     scrollActions.scrollToMessage(targetMsg.id, 'end')
-    const autoScrollId = scrollActions.startAutoScroll(targetMsg.id, 'end')
+    const autoScrollId = scrollActions.startAutoScroll(targetMsg.id, 'end', 'smooth')
 
     const configs = await storage.getConfig()
     try {
