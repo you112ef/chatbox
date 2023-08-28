@@ -108,10 +108,40 @@ export default function ChatConfigWindow(props: Props) {
                                 <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                             </>
                         )}
-                        {(settingsEdit.aiProvider === ModelProvider.OpenAI ||
-                            settingsEdit.aiProvider === ModelProvider.Azure) && (
+                        {settingsEdit.aiProvider === ModelProvider.OpenAI && (
                             <>
                                 <ModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                <MaxContextMessageCountSlider
+                                    settingsEdit={settingsEdit}
+                                    setSettingsEdit={setSettingsEdit}
+                                />
+                                <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                <Accordion>
+                                    <AccordionSummary aria-controls="panel1a-content">
+                                        {t('model')} & {t('token')}
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                    </AccordionDetails>
+                                </Accordion>
+                            </>
+                        )}
+                        {settingsEdit.aiProvider === ModelProvider.Azure && (
+                            <>
+                                <TextField
+                                    margin="dense"
+                                    label={t('Azure Deployment Name')}
+                                    type="text"
+                                    fullWidth
+                                    variant="outlined"
+                                    value={settingsEdit.azureDeploymentName}
+                                    onChange={(e) =>
+                                        setSettingsEdit({
+                                            ...settingsEdit,
+                                            azureDeploymentName: e.target.value.trim(),
+                                        })
+                                    }
+                                />
                                 <MaxContextMessageCountSlider
                                     settingsEdit={settingsEdit}
                                     setSettingsEdit={setSettingsEdit}
