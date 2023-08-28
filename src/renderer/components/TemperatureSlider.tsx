@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Chip, TextField, Slider, Typography, Box } from '@mui/material'
 import { ModelSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
@@ -12,6 +13,10 @@ export interface Props {
 export default function TemperatureSlider(props: Props) {
     const { settingsEdit, setSettingsEdit } = props
     const { t } = useTranslation()
+    const [input, setInput] = useState('0.7')
+    useEffect(() => {
+        setInput(`${settingsEdit.temperature}`)
+    }, [settingsEdit.temperature])
     const handleTemperatureChange = (event: Event, newValue: number | number[], activeThumb: number) => {
         if (typeof newValue === 'number') {
             setSettingsEdit({ ...settingsEdit, temperature: newValue })
@@ -21,6 +26,26 @@ export default function TemperatureSlider(props: Props) {
                 temperature: newValue[activeThumb],
             })
         }
+    }
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value
+        if (value === '' || value.endsWith('.')) {
+            setInput(value)
+            return
+        }
+        let num = parseFloat(value)
+        if (isNaN(num)) {
+            setInput(`${settingsEdit.temperature}`)
+            return
+        }
+        if (num < 0 || num > 1) {
+            setInput(`${settingsEdit.temperature}`)
+            return
+        }
+        // 保留一位小数
+        num = Math.round(num * 10) / 10
+        setInput(num.toString())
+        setSettingsEdit({ ...settingsEdit, temperature: num })
     }
     return (
         <Box sx={{ margin: '10px' }}>
@@ -32,7 +57,6 @@ export default function TemperatureSlider(props: Props) {
             <Box
                 sx={{
                     display: 'flex',
-                    alignItems: 'center',
                     justifyContent: 'center',
                     margin: '0 auto',
                 }}
@@ -75,8 +99,8 @@ export default function TemperatureSlider(props: Props) {
                 </Box>
                 <TextField
                     sx={{ marginLeft: 2, width: '100px' }}
-                    value={settingsEdit.temperature}
-                    disabled
+                    value={input}
+                    onChange={handleInputChange}
                     type="text"
                     size="small"
                     variant="outlined"

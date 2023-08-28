@@ -20,7 +20,6 @@ export default function MaxContextMessageCountSlider(props: Props) {
             <Box
                 sx={{
                     display: 'flex',
-                    alignItems: 'center',
                     justifyContent: 'center',
                     margin: '0 auto',
                 }}
