@@ -625,6 +625,7 @@ export function ModelConfig(props: ModelConfigProps) {
                                 <>
                                     <Button
                                         variant="outlined"
+                                        sx={{ marginRight: '10px' }}
                                         onClick={() => {
                                             runtime.openLink('https://chatboxai.app/redirect_app/manage_license')
                                         }}
@@ -633,7 +634,7 @@ export function ModelConfig(props: ModelConfigProps) {
                                     </Button>
                                     <Button
                                         variant="text"
-                                        sx={{ marginLeft: '10px' }}
+                                        sx={{ marginRight: '10px' }}
                                         onClick={() => {
                                             premium.deactivate()
                                         }}
@@ -642,7 +643,7 @@ export function ModelConfig(props: ModelConfigProps) {
                                     </Button>
                                     <Button
                                         variant="text"
-                                        sx={{ marginLeft: '10px' }}
+                                        sx={{ marginRight: '10px' }}
                                         onClick={() => {
                                             runtime.openLink('https://chatboxai.app/redirect_app/view_more_plans')
                                         }}
@@ -654,6 +655,7 @@ export function ModelConfig(props: ModelConfigProps) {
                                 <>
                                     <Button
                                         variant="outlined"
+                                        sx={{ marginRight: '10px' }}
                                         onClick={() => {
                                             runtime.openLink('https://chatboxai.app/redirect_app/get_license')
                                         }}
@@ -662,7 +664,7 @@ export function ModelConfig(props: ModelConfigProps) {
                                     </Button>
                                     <Button
                                         variant="text"
-                                        sx={{ marginLeft: '10px' }}
+                                        sx={{ marginRight: '10px' }}
                                         onClick={() => {
                                             runtime.openLink('https://chatboxai.app/redirect_app/manage_license')
                                         }}
