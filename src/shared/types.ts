@@ -106,7 +106,8 @@ export function getMsgDisplayModelName(settings: ModelSettings) {
         case ModelProvider.ChatGLM6B:
             return 'ChatGLM-6B'
         case ModelProvider.ChatboxAI:
-            return 'Chatbox-AI'
+            const model = settings.chatboxAIModel || 'chatboxai-3.5'
+            return model.replace('chatboxai-', 'Chatbox-AI ')
         case ModelProvider.Claude:
             return settings.claudeModel
         default:
