@@ -251,7 +251,7 @@ function _Message(props: Props) {
                                     width: '100%',
                                 }}
                                 multiline // multiline 需要和 maxRows 一起使用，否则长文本可能会导致退出编辑？
-                                maxRows={15}
+                                // maxRows={15} // 不限制行数。防止点击编辑后，因为高度变化导致滚动条跳走
                                 placeholder="prompt"
                                 value={msgEdit.content}
                                 onChange={(e) => {
