@@ -1,4 +1,12 @@
 const changelog = `
+### v0.6.9
+
+- Added x64 and arm64 architecture versions to Windows and Linux installation packages.
+- Fixed issue in session settings of Azure OpenAI where the model deployment name could not be modified (#927).
+- Fixed issue with inability to enter spaces and line breaks when modifying default prompt (#942).
+- Fixed scrolling issue after editing long messages.
+- Fixed various other minor issues.
+
 ### v0.6.7
 
 - Action buttons on messages now remain visible during list scrolling
