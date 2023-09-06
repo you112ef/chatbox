@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8" />
     <!-- TODO: -->
     <!-- <meta
@@ -28,8 +29,18 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Chatbox</title>
-  </head>
-  <body>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B365F44W6E"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        // gtag('config', 'G-B365F44W6E');
+    </script>
+</head>
+
+<body>
     <div id="root"></div>
     <!--
       This HTML file is a template.
@@ -41,5 +52,6 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-  </body>
+</body>
+
 </html>

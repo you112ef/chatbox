@@ -47,6 +47,7 @@ export default function InputBox(props: Props) {
         }
         submit(createMessage('user', messageInput), needGenerating)
         setMessageInput('')
+        window.gtag('event', 'send_message', { event_category: 'user' })
     }
 
     return (

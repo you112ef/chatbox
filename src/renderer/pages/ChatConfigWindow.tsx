@@ -37,6 +37,11 @@ export default function ChatConfigWindow(props: Props) {
     useEffect(() => {
         setDataEdit(props.session)
     }, [props.session])
+    useEffect(() => {
+        if (props.open) {
+            window.gtag('event', 'screen_view', { screen_name: 'chat_config_window' })
+        }
+    }, [props.open])
 
     const onCancel = () => {
         props.close()

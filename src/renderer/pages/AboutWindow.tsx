@@ -35,6 +35,7 @@ export default function AboutWindow(props: Props) {
     useEffect(() => {
         if (props.open) {
             remote.listSponsorAboutBanner().then(setSponsorBanners)
+            window.gtag('event', 'screen_view', { screen_name: 'about_window' })
         } else {
             setSponsorBanners([])
         }

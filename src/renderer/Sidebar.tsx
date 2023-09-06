@@ -48,6 +48,7 @@ export default function Sidebar(props: Props) {
         if (sessionListRef.current) {
             sessionListRef.current.scrollTo(0, 0)
         }
+        window.gtag('event', 'create_new_conversation', { event_category: 'user' })
     }
 
     return (

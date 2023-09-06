@@ -20,10 +20,14 @@ export default function ClearConversationListWindow(props: Props) {
     }
     useEffect(() => {
         setValue(100)
+        if (props.open) {
+            window.gtag('event', 'screen_view', { screen_name: 'clear_conversation_list_window' })
+        }
     }, [props.open])
 
     const clean = () => {
         sessionActions.clearConversationList(value)
+        window.gtag('event', 'clear_conversation_list', { event_category: 'user' })
         props.close()
     }
     return (

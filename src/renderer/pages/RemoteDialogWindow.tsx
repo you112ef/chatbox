@@ -48,6 +48,11 @@ export default function RemoteDialogWindow() {
             }
         })()
     }, [])
+    useEffect(() => {
+        if (open) {
+            window.gtag('event', 'screen_view', { screen_name: 'remote_dialog_window' })
+        }
+    }, [open])
 
     const onClose = (event?: any, reason?: 'backdropClick' | 'escapeKeyDown') => {
         if (reason === 'backdropClick') {

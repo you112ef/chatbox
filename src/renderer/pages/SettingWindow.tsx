@@ -75,6 +75,11 @@ export default function SettingWindow(props: Props) {
             setCurrentTab(props.targetTab)
         }
     }, [props.targetTab, props.open])
+    useEffect(() => {
+        if (props.open) {
+            window.gtag('event', 'screen_view', { screen_name: 'setting_window' })
+        }
+    }, [props.open])
 
     const [settingsEdit, setSettingsEdit] = React.useState<Settings>(settings)
 

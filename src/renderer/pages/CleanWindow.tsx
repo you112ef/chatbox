@@ -9,6 +9,7 @@ interface Props {
     close(): void
 }
 
+// 清空会话窗口
 export default function CleanWindow(props: Props) {
     const currentSession = useAtomValue(atoms.currentSessionAtom)
     const { t } = useTranslation()
@@ -17,6 +18,7 @@ export default function CleanWindow(props: Props) {
             msg?.cancel?.()
         })
         sessionActions.clear(currentSession.id)
+        window.gtag('event', 'clear_conversation', { event_category: 'user' })
         props.close()
     }
     return (

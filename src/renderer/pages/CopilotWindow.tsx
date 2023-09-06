@@ -93,6 +93,8 @@ export default function CopilotWindow(props: Props) {
     useEffect(() => {
         if (!props.open) {
             setCopilotEdit(null)
+        } else {
+            window.gtag('event', 'screen_view', { screen_name: 'copilot_window' })
         }
     }, [props.open])
 
