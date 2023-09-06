@@ -299,7 +299,7 @@ export default function SettingWindow(props: Props) {
                             onChange={(e) =>
                                 setSettingsEdit({
                                     ...settingsEdit,
-                                    defaultPrompt: e.target.value.trim(),
+                                    defaultPrompt: e.target.value,
                                 })
                             }
                         />
