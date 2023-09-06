@@ -633,6 +633,7 @@ export function ModelConfig(props: ModelConfigProps) {
                                         sx={{ marginRight: '10px' }}
                                         onClick={() => {
                                             runtime.openLink('https://chatboxai.app/redirect_app/manage_license')
+                                            window.gtag('event', 'click_manage_license_button', { event_category: 'user' })
                                         }}
                                     >
                                         {t('Manage License and Devices')}
@@ -642,6 +643,7 @@ export function ModelConfig(props: ModelConfigProps) {
                                         sx={{ marginRight: '10px' }}
                                         onClick={() => {
                                             premium.deactivate()
+                                            window.gtag('event', 'click_deactivate_license_button', { event_category: 'user' })
                                         }}
                                     >
                                         {t('Deactivate')}
@@ -651,6 +653,7 @@ export function ModelConfig(props: ModelConfigProps) {
                                         sx={{ marginRight: '10px' }}
                                         onClick={() => {
                                             runtime.openLink('https://chatboxai.app/redirect_app/view_more_plans')
+                                            window.gtag('event', 'click_view_more_plans_button', { event_category: 'user' })
                                         }}
                                     >
                                         {t('View More Plans')}
@@ -663,6 +666,7 @@ export function ModelConfig(props: ModelConfigProps) {
                                         sx={{ marginRight: '10px' }}
                                         onClick={() => {
                                             runtime.openLink('https://chatboxai.app/redirect_app/get_license')
+                                            window.gtag('event', 'click_get_license_button', { event_category: 'user' })
                                         }}
                                     >
                                         {t('Get License')}
@@ -672,6 +676,7 @@ export function ModelConfig(props: ModelConfigProps) {
                                         sx={{ marginRight: '10px' }}
                                         onClick={() => {
                                             runtime.openLink('https://chatboxai.app/redirect_app/manage_license')
+                                            window.gtag('event', 'click_retrieve_license_button', { event_category: 'user' })
                                         }}
                                     >
                                         {t('Retrieve License')}
