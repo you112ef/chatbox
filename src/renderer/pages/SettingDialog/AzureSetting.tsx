@@ -70,7 +70,6 @@ export default function AzureSetting(props: ModelConfigProps) {
                             onClick={() =>
                                 setSettingsEdit({
                                     ...settingsEdit,
-                                    model: defaults.settings().model,
                                     temperature: defaults.settings().temperature,
                                 })
                             }

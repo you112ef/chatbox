@@ -111,7 +111,6 @@ export async function reply(
                         endpoint: setting.azureEndpoint,
                         deploymentName: setting.azureDeploymentName,
                         apikey: setting.azureApikey,
-                        modelName: setting.model,
                         messages,
                         maxTokensNumber: setting.openaiMaxTokens === 0 ? undefined : setting.openaiMaxTokens,
                         temperature: setting.temperature,
@@ -265,7 +264,6 @@ async function requestAzure(
         endpoint: string
         deploymentName: string
         apikey: string
-        modelName: string
         messages: OpenAIMessage[]
         maxTokensNumber?: number
         temperature: number
@@ -273,7 +271,7 @@ async function requestAzure(
     },
     sseHandler: (message: string) => void
 ) {
-    let { endpoint, deploymentName, apikey, modelName, messages, maxTokensNumber, temperature, signal } = options
+    let { endpoint, deploymentName, apikey, messages, maxTokensNumber, temperature, signal } = options
     if (!endpoint.endsWith('/')) {
         endpoint += '/'
     }
@@ -288,7 +286,7 @@ async function requestAzure(
         },
         {
             messages,
-            model: modelName,
+            model: deploymentName,
             max_tokens: maxTokensNumber,
             temperature,
             stream: true,
