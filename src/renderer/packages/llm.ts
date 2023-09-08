@@ -245,20 +245,18 @@ async function requestOpenAI(
     if (host.includes('openrouter.ai')) {
         headers['HTTP-Referer'] = 'https://localhost:3000/' // 支持 OpenRouter，需要设置这个表头才能正常工作
     }
-    const response = await fetch(`${host}/v1/chat/completions`, {
-        method: 'POST',
+    const response = await post(
+        `${host}/v1/chat/completions`,
         headers,
-        body: JSON.stringify({
+        {
             messages,
             model: modelName,
             max_tokens: maxTokensNumber,
             temperature,
             stream: true,
-        }),
-        signal: signal,
-    }).catch((err) => {
-        throw new NetworkError(err.message, host)
-    })
+        },
+        signal
+    )
     return handleSSE(response, sseHandler)
 }
 
@@ -282,23 +280,21 @@ async function requestAzure(
     endpoint = endpoint.replace(/^https?:\/\//, '')
     endpoint = 'https://' + endpoint
     const url = `${endpoint}openai/deployments/${deploymentName}/chat/completions?api-version=2023-03-15-preview`
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
+    const response = await post(
+        url,
+        {
             'api-key': apikey,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
+        {
             messages,
             model: modelName,
             max_tokens: maxTokensNumber,
             temperature,
             stream: true,
-        }),
-        signal: signal,
-    }).catch((err) => {
-        throw new NetworkError(err.message, endpoint)
-    })
+        },
+        signal
+    )
     return handleSSE(response, sseHandler)
 }
 
@@ -349,19 +345,17 @@ async function requestChatGLM6B(
         history.push([userTmp, assistantTmp])
     }
 
-    const res = await fetch(url, {
-        method: 'POST',
-        headers: {
+    const res = await post(
+        url,
+        {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
+        {
             prompt,
             history,
             // temperature,
-        }),
-    }).catch((err) => {
-        throw new NetworkError(err.message, url)
-    })
+        }
+    )
     const json = await res.json()
 
     if (json.status !== 200) {
@@ -386,14 +380,14 @@ async function requestChatboxAI(
     sseHandler: (message: string) => void
 ) {
     const { license, instanceId, uuid, model, temperature, messages, signal, language } = options
-    const response = await fetch(`https://chatboxai.app/api/ai/chat`, {
-        method: 'POST',
-        headers: {
+    const response = await post(
+        `https://chatboxai.app/api/ai/chat`,
+        {
             Authorization: license,
             'Instance-Id': instanceId,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
+        {
             uuid: uuid,
             model,
             messages,
@@ -401,11 +395,9 @@ async function requestChatboxAI(
             temperature,
             language,
             stream: true,
-        }),
-        signal: signal,
-    }).catch((err) => {
-        throw new NetworkError(err.message, 'https://chatboxai.app')
-    })
+        },
+        signal
+    )
     return handleSSE(response, sseHandler)
 }
 
@@ -424,7 +416,7 @@ async function requestClaude(
         .map((m) => (m.role !== 'assistant' ? `Human: ${m.content}` : `Assistant: ${m.content}`))
         .join('\n\n')
     prompt += '\n\nAssistant:'
-    const response = await request(
+    const response = await post(
         'https://api.anthropic.com/v1/complete',
         {
             'Content-Type': 'application/json',
@@ -442,7 +434,7 @@ async function requestClaude(
     return handleSSE(response, sseHandler)
 }
 
-async function request(url: string, headers: Record<string, string>, body: Record<string, any>, signal: AbortSignal) {
+async function post(url: string, headers: Record<string, string>, body: Record<string, any>, signal?: AbortSignal) {
     try {
         const res = await fetch(url, {
             method: 'POST',
