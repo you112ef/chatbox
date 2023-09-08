@@ -77,6 +77,7 @@ export default function CopilotWindow(props: Props) {
             starred: false,
             copilotId: copilot.id,
         })
+        window.gtag('event', 'create_copilot_conversation', { event_category: 'user' })
     }
 
     const useCopilot = (detail: CopilotDetail) => {
@@ -429,6 +430,7 @@ function CopilotForm(props: CopilotFormProps) {
             return
         }
         props.save(copilotEdit)
+        window.gtag('event', 'create_copilot', { event_category: 'user' })
     }
     return (
         <Box sx={{ marginBottom: '20px' }}>
