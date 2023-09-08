@@ -383,7 +383,7 @@ function _Message(props: Props) {
                                         </IconButton>
                                     </Tooltip>
                                 )}
-                                {!(msg.model?.startsWith('Chatbox-AI')) && (
+                                {!msg.model?.startsWith('Chatbox-AI') && (
                                     <Tooltip title={t('edit')} placement="top">
                                         <IconButton
                                             aria-label="edit"

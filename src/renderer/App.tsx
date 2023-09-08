@@ -3,7 +3,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { Box, Grid, useTheme, useMediaQuery } from '@mui/material'
 import { RemoteConfig, Session, ModelProvider } from '../shared/types'
-import SettingWindow from './pages/SettingWindow'
+import SettingDialog from './pages/SettingDialog'
 import ChatConfigWindow from './pages/ChatConfigWindow'
 import CleanWidnow from './pages/CleanWindow'
 import AboutWindow from './pages/AboutWindow'
@@ -89,7 +89,7 @@ function Main() {
                 )}
                 <MainPane setConfigureChatConfig={setConfigureChatConfig} setSessionClean={setSessionClean} />
 
-                <SettingWindow
+                <SettingDialog
                     open={!!openSettingWindow}
                     targetTab={openSettingWindow || undefined}
                     close={() => setOpenSettingWindow(null)}

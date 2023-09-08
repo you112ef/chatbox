@@ -1,6 +1,6 @@
 import { RefObject } from 'react'
 import { atom, SetStateAction } from 'jotai'
-import { Session, Toast, Settings, Config, CopilotDetail } from '../../shared/types'
+import { Session, Toast, Settings, CopilotDetail } from '../../shared/types'
 import { selectAtom, atomWithStorage } from 'jotai/utils'
 import { focusAtom } from 'jotai-optics'
 import * as defaults from './defaults'
@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 import storage from '../storage'
 import { VirtuosoHandle } from 'react-virtuoso'
 import * as runtime from '../packages/runtime'
+import { resetTokenConfig } from '../packages/token_config'
 
 // settings
 
@@ -19,10 +20,14 @@ export const settingsAtom = atom(
     },
     (get, set, update: SetStateAction<Settings>) => {
         const settings = get(_settingsAtom)
-        const newSettings = typeof update === 'function' ? update(settings) : update
+        let newSettings = typeof update === 'function' ? update(settings) : update
         // 考虑关键配置的缺省情况
         if (!newSettings.apiHost) {
             newSettings.apiHost = defaults.settings().apiHost
+        }
+        // 切换模型提供方或模型版本时，需重设 token 配置为默认值
+        if (newSettings.aiProvider !== settings.aiProvider || newSettings.model !== settings.model) {
+            newSettings = { ...newSettings, ...resetTokenConfig(newSettings) }
         }
         // 如果快捷键配置发生变化，需要重新注册快捷键
         if (!!newSettings.disableQuickToggleShortcut !== !!settings.disableQuickToggleShortcut) {

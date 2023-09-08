@@ -14,7 +14,6 @@ import {
 import { Session, ModelProvider, ModelSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as sessionActions from '../stores/sessionActions'
-import { AiProviderSelect, ModelSelect, TokenConfig, wrapDefaultTokenConfigUpdate } from './SettingWindow'
 import TemperatureSlider from '../components/TemperatureSlider'
 import MaxContextMessageCountSlider from '../components/MaxContextMessageCountSlider'
 import * as atoms from '../stores/atoms'
@@ -22,6 +21,10 @@ import { useAtomValue } from 'jotai'
 import { Accordion, AccordionSummary, AccordionDetails } from '../components/Accordion'
 import ClaudeModelSelect from '../components/ClaudeModelSelect'
 import ChatboxAIModelSelect from '../components/ChatboxAIModelSelect'
+import { resetTokenConfig } from '../packages/token_config'
+import AIProviderSelect from '../components/AIProviderSelect'
+import OpenAIModelSelect from '../components/OpenAIModelSelect'
+import TokenConfig from './SettingDialog/TokenConfig'
 
 interface Props {
     open: boolean
@@ -60,7 +63,7 @@ export default function ChatConfigWindow(props: Props) {
     const settingsEdit = dataEdit.settings
     const setSettingsEdit = (updated: ModelSettings) => {
         if (settingsEdit?.aiProvider !== updated.aiProvider || settingsEdit?.model !== updated.model) {
-            updated = wrapDefaultTokenConfigUpdate(updated)
+            updated = resetTokenConfig(updated)
         }
         setDataEdit({ ...dataEdit, settings: updated })
     }
@@ -96,7 +99,7 @@ export default function ChatConfigWindow(props: Props) {
                 />
                 {settingsEdit && (
                     <>
-                        <AiProviderSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                        <AIProviderSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                         <Divider sx={{ margin: '16px 0' }} />
                         {settingsEdit.aiProvider === ModelProvider.ChatboxAI && (
                             <>
@@ -115,7 +118,7 @@ export default function ChatConfigWindow(props: Props) {
                         )}
                         {settingsEdit.aiProvider === ModelProvider.OpenAI && (
                             <>
-                                <ModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                <OpenAIModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                                 <MaxContextMessageCountSlider
                                     settingsEdit={settingsEdit}
                                     setSettingsEdit={setSettingsEdit}
