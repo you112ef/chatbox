@@ -47,10 +47,10 @@ export function resetTokenConfig(settings: ModelSettings): ModelSettings {
  * @returns
  */
 export function getTokenLimits(settings: ModelSettings) {
-    const totalTokenLimit =
-        settings.aiProvider === ModelProvider.OpenAI
-            ? modelConfigs[settings.model]?.maxTokens || 4000 // 旧版本用户可能依然使用 modelConfigs 中弃用删除的模型，需要兼容 undefined 情况
-            : 32 * 1000
+    let totalTokenLimit = 32 * 1000
+    if (settings.aiProvider === ModelProvider.OpenAI && settings.model !== 'custom-model') {
+        totalTokenLimit = modelConfigs[settings.model]?.maxTokens || 4000 // 旧版本用户可能依然使用 modelConfigs 中弃用删除的模型，需要兼容 undefined 情况
+    }
     const maxContextTokenLimit = Math.floor(totalTokenLimit / 1000) * 1000
     const minContextTokenLimit = 256
     const maxTokenLimit = totalTokenLimit - minContextTokenLimit

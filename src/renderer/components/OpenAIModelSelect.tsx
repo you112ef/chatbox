@@ -1,4 +1,4 @@
-import { Select, MenuItem, FormControl, InputLabel } from '@mui/material'
+import { Select, MenuItem, FormControl, InputLabel, TextField } from '@mui/material'
 import { ModelSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import { models } from '../config'
@@ -30,7 +30,27 @@ export default function OpenAIModelSelect(props: Props) {
                         {model}
                     </MenuItem>
                 ))}
+                <MenuItem key="custom-model" value={'custom-model'}>
+                    {t('Custom Model')}
+                </MenuItem>
             </Select>
+            {settingsEdit.model === 'custom-model' && (
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    label={t('Custom Model Name')}
+                    type="text"
+                    fullWidth
+                    variant="outlined"
+                    value={settingsEdit.openaiCustomModel || ''}
+                    onChange={(e) =>
+                        setSettingsEdit({
+                            ...settingsEdit,
+                            openaiCustomModel: e.target.value.trim(),
+                        })
+                    }
+                />
+            )}
         </FormControl>
     )
 }

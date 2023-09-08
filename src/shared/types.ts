@@ -50,7 +50,8 @@ export interface ModelSettings {
     // openai
     openaiKey: string
     apiHost: string
-    model: Model
+    model: Model | 'custom-model'
+    openaiCustomModel?: string // OpenAI 自定义模型的 ID
 
     // azure
     azureEndpoint: string
@@ -100,6 +101,13 @@ export type Language = 'en' | 'zh-Hans' | 'zh-Hant' | 'ja' | 'ko' | 'ru' | 'de' 
 export function getMsgDisplayModelName(settings: ModelSettings) {
     switch (settings.aiProvider) {
         case ModelProvider.OpenAI:
+            if (settings.model === 'custom-model') {
+                let name = settings.openaiCustomModel || ''
+                if (name.length >= 10) {
+                    name = name.slice(0, 10) + '...'
+                }
+                return `OpenAI Custom Model (${name})`
+            }
             return settings.model
         case ModelProvider.Azure:
             return `Azure OpenAI (${settings.azureDeploymentName})`

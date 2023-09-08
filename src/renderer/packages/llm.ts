@@ -81,7 +81,7 @@ export async function reply(
                     {
                         host: setting.apiHost,
                         apiKey: setting.openaiKey,
-                        modelName: setting.model,
+                        modelName: setting.model === 'custom-model' ? setting.openaiCustomModel || '' : setting.model,
                         maxTokensNumber: setting.openaiMaxTokens === 0 ? undefined : setting.openaiMaxTokens,
                         temperature: setting.temperature,
                         messages,
@@ -238,12 +238,16 @@ async function requestOpenAI(
     sseHandler: (message: string) => void
 ) {
     const { host, apiKey, modelName, maxTokensNumber, temperature, messages, signal } = options
+    const headers: Record<string, string> = {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+    }
+    if (host.includes('openrouter.ai')) {
+        headers['HTTP-Referer'] = 'https://localhost:3000/' // 支持 OpenRouter，需要设置这个表头才能正常工作
+    }
     const response = await fetch(`${host}/v1/chat/completions`, {
         method: 'POST',
-        headers: {
-            Authorization: `Bearer ${apiKey}`,
-            'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify({
             messages,
             model: modelName,

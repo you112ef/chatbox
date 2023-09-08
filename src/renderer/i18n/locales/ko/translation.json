@@ -143,5 +143,7 @@
     "Shortcuts": "단축키",
     "Max Message Count in Context": "컨텍스트 내 최대 메시지 수",
     "No Limit": "제한 없음",
-    "View More Plans": "더 많은 플랜 보기"
+    "View More Plans": "더 많은 플랜 보기",
+    "Custom Model": "사용자 정의 모델",
+    "Custom Model Name": "사용자 정의 모델 이름"
 }

@@ -143,5 +143,7 @@
     "Shortcuts": "Raccourcis",
     "Max Message Count in Context": "Nombre maximal de messages dans le contexte",
     "No Limit": "Pas de limite",
-    "View More Plans": "Voir plus de plans"
+    "View More Plans": "Voir plus de plans",
+    "Custom Model": "Modèle personnalisé",
+    "Custom Model Name": "Nom du Modèle Personnalisé"
 }

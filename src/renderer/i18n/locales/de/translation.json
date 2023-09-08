@@ -143,5 +143,7 @@
     "Shortcuts": "Verknüpfungen",
     "Max Message Count in Context": "Maximale Anzahl von Nachrichten im Kontext",
     "No Limit": "Keine Begrenzung",
-    "View More Plans": "Mehr Pläne ansehen"
+    "View More Plans": "Mehr Pläne ansehen",
+    "Custom Model": "Benutzerdefiniertes Modell",
+    "Custom Model Name": "Benutzerdefinierter Modellname"
 }
