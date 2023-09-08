@@ -104,7 +104,7 @@ export default function CopilotWindow(props: Props) {
     ]
 
     return (
-        <Dialog open={props.open} onClose={props.close} fullWidth maxWidth="md">
+        <Dialog open={props.open} onClose={props.close} fullWidth maxWidth="md" classes={{ paper: 'h-4/5' }}>
             <DialogTitle>{t('My Copilots')}</DialogTitle>
             <DialogContent style={{ width: '100%' }}>
                 {copilotEdit ? (
