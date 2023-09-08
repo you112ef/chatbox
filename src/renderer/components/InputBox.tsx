@@ -18,6 +18,7 @@ export default function InputBox(props: Props) {
     const isSmallScreen = useAtomValue(atoms.isSmallScreenAtom)
     const { t } = useTranslation()
     const [messageInput, setMessageInput] = useState('')
+    const [previousMessageInput, setPreviousMessageInput] = useState('')
     useEffect(() => {
         if (quote !== '') {
             setMessageInput(quote)
@@ -46,6 +47,7 @@ export default function InputBox(props: Props) {
             return
         }
         submit(createMessage('user', messageInput), needGenerating)
+        setPreviousMessageInput(messageInput)
         setMessageInput('')
         window.gtag('event', 'send_message', { event_category: 'user' })
     }
@@ -69,6 +71,7 @@ export default function InputBox(props: Props) {
                             fullWidth
                             id={dom.messageInputID}
                             onKeyDown={(event) => {
+                                // 发送
                                 if (
                                     event.keyCode === 13 &&
                                     !event.shiftKey &&
@@ -80,9 +83,16 @@ export default function InputBox(props: Props) {
                                     handleSubmit()
                                     return
                                 }
+                                // 发送但不生成
                                 if (event.keyCode === 13 && event.ctrlKey) {
                                     event.preventDefault()
                                     handleSubmit(false)
+                                    return
+                                }
+                                // 向上键翻阅历史消息
+                                if (event.keyCode === 38 && messageInput === '') {
+                                    event.preventDefault()
+                                    setMessageInput(previousMessageInput)
                                     return
                                 }
                             }}
