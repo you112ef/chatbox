@@ -1,6 +1,8 @@
 const changelog = `
-### v0.6.9
+### v1.0.0
 
+- Support OpenAI custom models (#28)
+- The up arrow key can quickly input the previously sent message.
 - Added x64 and arm64 architecture versions to Windows and Linux installation packages.
 - Fixed issue in session settings of Azure OpenAI where the model deployment name could not be modified (#927).
 - Fixed issue with inability to enter spaces and line breaks when modifying default prompt (#942).
