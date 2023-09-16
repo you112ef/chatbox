@@ -64,7 +64,7 @@ export default function SettingWindow(props: Props) {
     }
 
     return (
-        <Dialog open={props.open} onClose={onCancel} fullWidth classes={{ paper: 'h-4/5' }} >
+        <Dialog open={props.open} onClose={onCancel} fullWidth classes={{ paper: 'h-4/5' }}>
             <DialogTitle>{t('settings')}</DialogTitle>
             <DialogContent>
                 <Box

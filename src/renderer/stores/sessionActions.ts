@@ -354,7 +354,7 @@ export function getEmptySession(name: string = 'Untitled'): Session {
 }
 
 function mergeSettings(globalSettings: Settings, session: Session): Settings {
-    // FIXME: 
+    // FIXME:
     return {
         ...globalSettings,
         ...omit(session.settings || {}), // 需要 omit 来去除 undefined，否则会覆盖掉全局配置

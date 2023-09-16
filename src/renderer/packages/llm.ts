@@ -271,13 +271,9 @@ async function requestAzure(
     },
     sseHandler: (message: string) => void
 ) {
-    let { endpoint, deploymentName, apikey, messages, maxTokensNumber, temperature, signal } = options
-    if (!endpoint.endsWith('/')) {
-        endpoint += '/'
-    }
-    endpoint = endpoint.replace(/^https?:\/\//, '')
-    endpoint = 'https://' + endpoint
-    const url = `${endpoint}openai/deployments/${deploymentName}/chat/completions?api-version=2023-03-15-preview`
+    const { endpoint, deploymentName, apikey, messages, maxTokensNumber, temperature, signal } = options
+    const origin = new URL((endpoint || '').trim()).origin
+    const url = `${origin}/openai/deployments/${deploymentName}/chat/completions?api-version=2023-03-15-preview`
     const response = await post(
         url,
         {

@@ -19,8 +19,8 @@ import './static/index.css'
             new Sentry.Replay(),
         ],
         // Performance Monitoring
-        sampleRate: 0.10,
-        tracesSampleRate: 0.10, // Capture 100% of the transactions, reduce in production!
+        sampleRate: 0.1,
+        tracesSampleRate: 0.1, // Capture 100% of the transactions, reduce in production!
         // Session Replay
         replaysSessionSampleRate: 0.05, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
         replaysOnErrorSampleRate: 0.05, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
