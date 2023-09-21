@@ -5,3 +5,15 @@ export const messageInputID = 'message-input'
 export const focusMessageInput = () => {
     document.getElementById(messageInputID)?.focus()
 }
+
+// 将光标位置设置为文本末尾
+export function setMessageInputCursorToEnd() {
+    const dom = document.getElementById(messageInputID) as HTMLInputElement
+    if (!dom) {
+        return
+    }
+    dom.selectionStart = dom.selectionEnd = dom.value.length
+    setTimeout(() => {
+        dom.scrollTop = dom.scrollHeight;
+    }, 20); // 等待 React 状态更新
+}

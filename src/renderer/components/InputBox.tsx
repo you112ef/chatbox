@@ -24,6 +24,7 @@ export default function InputBox(props: Props) {
             setMessageInput(quote)
             setQuote('')
             dom.focusMessageInput()
+            dom.setMessageInputCursorToEnd()
         }
     }, [quote])
     useEffect(() => {
