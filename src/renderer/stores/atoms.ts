@@ -25,10 +25,6 @@ export const settingsAtom = atom(
         if (!newSettings.apiHost) {
             newSettings.apiHost = defaults.settings().apiHost
         }
-        // 切换模型提供方或模型版本时，需重设 token 配置为默认值
-        if (newSettings.aiProvider !== settings.aiProvider || newSettings.model !== settings.model) {
-            newSettings = { ...newSettings, ...resetTokenConfig(newSettings) }
-        }
         // 如果快捷键配置发生变化，需要重新注册快捷键
         if (!!newSettings.disableQuickToggleShortcut !== !!settings.disableQuickToggleShortcut) {
             runtime.ensureShortcutConfig({

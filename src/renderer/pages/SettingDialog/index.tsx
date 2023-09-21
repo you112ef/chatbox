@@ -13,6 +13,7 @@ import ShortcutTab from './ShortcutTab'
 import ChatSettingTab from './ChatSettingTab'
 import DisplaySettingTab from './DisplaySettingTab'
 import ModelSettingTab from './ModelSettingTab'
+import { resetTokenConfig } from '../../packages/token_config'
 
 type Tab = 'ai' | 'display' | 'chat' | 'shortcut'
 
@@ -39,7 +40,14 @@ export default function SettingWindow(props: Props) {
         }
     }, [props.open])
 
-    const [settingsEdit, setSettingsEdit] = React.useState<Settings>(settings)
+    const [settingsEdit, _setSettingsEdit] = React.useState<Settings>(settings)
+    const setSettingsEdit = (updated: Settings) => {
+        // 切换模型提供方或模型版本时，需重设 token 配置为默认值
+        if (settingsEdit?.aiProvider !== updated.aiProvider || settingsEdit?.model !== updated.model) {
+            updated = { ...updated, ...resetTokenConfig(updated) }
+        }
+        _setSettingsEdit(updated)
+    }
 
     useEffect(() => {
         setSettingsEdit(settings)
