@@ -14,6 +14,6 @@ export function setMessageInputCursorToEnd() {
     }
     dom.selectionStart = dom.selectionEnd = dom.value.length
     setTimeout(() => {
-        dom.scrollTop = dom.scrollHeight;
-    }, 20); // 等待 React 状态更新
+        dom.scrollTop = dom.scrollHeight
+    }, 20) // 等待 React 状态更新
 }

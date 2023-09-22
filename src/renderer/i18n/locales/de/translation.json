@@ -118,6 +118,7 @@
     "Auto": "Auto",
     "unknown error tips": "Unbekannter Fehler. Überprüfen Sie Ihre KI-Einstellungen und den Kontostatus oder <0>klicken Sie hier, um das FAQ-Dokument anzuzeigen</0>.",
     "network error tips": "Es ist ein Netzwerkfehler aufgetreten. Überprüfen Sie Ihren aktuellen Netzwerkstatus und die Verbindung mit {{host}}.",
+    "network proxy error tips": "Da du eine Proxy-Adresse {{proxy}} eingerichtet hast, überprüfe bitte, ob der Proxy-Server ordnungsgemäß funktioniert, oder erwäge, die Proxy-Adresse in den Einstellungen zu entfernen.",
     "api error tips": "Es ist ein Fehler mit {{aiProvider}} aufgetreten, der in der Regel durch falsche Einstellungen oder Kontoprobleme verursacht wird. Überprüfen Sie Ihre KI-Einstellungen und den Kontostatus oder <0>klicken Sie hier, um das FAQ-Dokument anzuzeigen</0>.",
     "Clear Conversation List": "Chatverlauf leeren",
     "Keep only the Top N Conversations in List and Permanently Delete the Rest": "Nur die obersten <0>{{n}}</0> Konversationen in der Liste behalten und den Rest dauerhaft löschen",
@@ -145,5 +146,9 @@
     "No Limit": "Keine Begrenzung",
     "View More Plans": "Mehr Pläne ansehen",
     "Custom Model": "Benutzerdefiniertes Modell",
-    "Custom Model Name": "Benutzerdefinierter Modellname"
+    "Custom Model Name": "Benutzerdefinierter Modellname",
+    "advanced": "Erweitert",
+    "Network Proxy": "Netzwerkproxy",
+    "Proxy Address": "Proxy-Adresse",
+    "not available in browser": "Diese Funktion ist im Browser nicht verfügbar. Laden Sie die Desktop-Anwendung herunter, um den vollen Funktionsumfang zu erhalten."
 }

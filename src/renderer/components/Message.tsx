@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo, useCallback, MutableRefObject } from 'react'
+import React, { useEffect, useState, useRef, useMemo, useCallback, MutableRefObject } from 'react'
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import MenuItem from '@mui/material/MenuItem'
@@ -157,6 +157,51 @@ function _Message(props: Props) {
         }
     }
 
+    const ErrTips: React.ReactElement[] = []
+    if (msg.error) {
+        if (msg.error.startsWith('API Error')) {
+            ErrTips.push(
+                <Trans
+                    i18nKey="api error tips"
+                    values={{
+                        aiProvider: msg.aiProvider ? aiProviderNameHash[msg.aiProvider] : 'AI Provider',
+                    }}
+                    components={[
+                        <a
+                            href={`https://chatboxai.app/redirect_app/faqs/${settingActions.getLanguage()}`}
+                            target="_blank"
+                        ></a>,
+                    ]}
+                />
+            )
+        } else if (msg.error.startsWith('Network Error')) {
+            ErrTips.push(
+                <Trans
+                    i18nKey="network error tips"
+                    values={{
+                        host: msg.errorExtra?.['host'] || 'AI Provider',
+                    }}
+                />
+            )
+            const proxy = settingActions.getProxy()
+            if (proxy) {
+                ErrTips.push(<Trans i18nKey="network proxy error tips" values={{ proxy }} />)
+            }
+        } else {
+            ErrTips.push(
+                <Trans
+                    i18nKey="unknown error tips"
+                    components={[
+                        <a
+                            href={`https://chatboxai.app/redirect_app/faqs/${settingActions.getLanguage()}`}
+                            target="_blank"
+                        ></a>,
+                    ]}
+                />
+            )
+        }
+    }
+
     return (
         <Box
             ref={ref}
@@ -284,42 +329,7 @@ function _Message(props: Props) {
                                         {msg.error}
                                         <br />
                                         <br />
-                                        {msg.error.startsWith('API Error') && (
-                                            <Trans
-                                                i18nKey="api error tips"
-                                                values={{
-                                                    aiProvider: msg.aiProvider
-                                                        ? aiProviderNameHash[msg.aiProvider]
-                                                        : 'AI Provider',
-                                                }}
-                                                components={[
-                                                    <a
-                                                        href={`https://chatboxai.app/redirect_app/faqs/${settingActions.getLanguage()}`}
-                                                        target="_blank"
-                                                    ></a>,
-                                                ]}
-                                            />
-                                        )}
-                                        {msg.error.startsWith('Network Error') && (
-                                            <Trans
-                                                i18nKey="network error tips"
-                                                values={{
-                                                    host: msg.errorExtra?.['host'] || 'AI Provider',
-                                                }}
-                                            />
-                                        )}
-                                        {!msg.error.startsWith('API Error') &&
-                                            !msg.error.startsWith('Network Error') && (
-                                                <Trans
-                                                    i18nKey="unknown error tips"
-                                                    components={[
-                                                        <a
-                                                            href={`https://chatboxai.app/redirect_app/faqs/${settingActions.getLanguage()}`}
-                                                            target="_blank"
-                                                        ></a>,
-                                                    ]}
-                                                />
-                                            )}
+                                        {ErrTips}
                                     </Alert>
                                 )}
                             </>

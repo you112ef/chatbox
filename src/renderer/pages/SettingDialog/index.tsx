@@ -8,14 +8,14 @@ import { switchTheme } from '../../hooks/useThemeSwitcher'
 import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined'
 import SettingsBrightnessIcon from '@mui/icons-material/SettingsBrightness'
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined'
-import KeyboardAltOutlinedIcon from '@mui/icons-material/KeyboardAltOutlined'
-import ShortcutTab from './ShortcutTab'
 import ChatSettingTab from './ChatSettingTab'
 import DisplaySettingTab from './DisplaySettingTab'
 import ModelSettingTab from './ModelSettingTab'
+import AdvancedSettingTab from './AdvancedSettingTab'
 import { resetTokenConfig } from '../../packages/token_config'
+import SettingsIcon from '@mui/icons-material/Settings'
 
-type Tab = 'ai' | 'display' | 'chat' | 'shortcut'
+type Tab = 'ai' | 'display' | 'chat' | 'advanced'
 
 interface Props {
     open: boolean
@@ -118,11 +118,11 @@ export default function SettingWindow(props: Props) {
                             }
                         />
                         <Tab
-                            value="shortcut"
+                            value="advanced"
                             label={
                                 <span className="inline-flex justify-center items-center">
-                                    <KeyboardAltOutlinedIcon fontSize="small" style={{ marginRight: 5 }} />
-                                    <span>{t('Shortcuts')}</span>
+                                    <SettingsIcon fontSize="small" style={{ marginRight: 5 }} />
+                                    <span>{t('advanced')}</span>
                                 </span>
                             }
                         />
@@ -158,8 +158,8 @@ export default function SettingWindow(props: Props) {
                     />
                 )}
 
-                {currentTab === 'shortcut' && (
-                    <ShortcutTab
+                {currentTab === 'advanced' && (
+                    <AdvancedSettingTab
                         settingsEdit={settingsEdit}
                         setSettingsEdit={(updated) => {
                             setSettingsEdit({ ...settingsEdit, ...updated })

@@ -41,3 +41,9 @@ export function getLanguage() {
     const settings = store.get(atoms.settingsAtom)
     return settings.language
 }
+
+export function getProxy() {
+    const store = getDefaultStore()
+    const settings = store.get(atoms.settingsAtom)
+    return settings.proxy
+}

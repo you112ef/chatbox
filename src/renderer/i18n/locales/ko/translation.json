@@ -118,6 +118,7 @@
     "Auto": "자동",
     "unknown error tips": "알 수 없는 오류입니다. AI 설정과 계정 상태를 확인하거나 <0>여기를 클릭하여 FAQ 문서를 확인</0>하십시오.",
     "network error tips": "네트워크 오류가 발생했습니다. 현재 네트워크 상태와 {{host}}와의 연결을 확인하십시오.",
+    "network proxy error tips": "프록시 주소를 설정하여 {{proxy}}로 설정하셨기 때문에 프록시 서버가 정상적으로 작동하는지 확인하거나 설정에서 프록시 주소를 삭제하는 것을 고려해 주세요.",
     "api error tips": "{{aiProvider}}에서 오류가 발생했습니다. 이는 일반적으로 잘못된 설정이나 계정 문제로 인한 것입니다. AI 설정과 계정 상태를 확인하거나 <0>여기를 클릭하여 FAQ 문서를 확인</0>하십시오.",
     "Clear Conversation List": "대화 목록 지우기",
     "Keep only the Top N Conversations in List and Permanently Delete the Rest": "목록에서 상위 <0>{{n}}</0>개의 대화만 유지하고 나머지는 영구적으로 삭제",
@@ -145,5 +146,9 @@
     "No Limit": "제한 없음",
     "View More Plans": "더 많은 플랜 보기",
     "Custom Model": "사용자 정의 모델",
-    "Custom Model Name": "사용자 정의 모델 이름"
+    "Custom Model Name": "사용자 정의 모델 이름",
+    "advanced": "고급",
+    "Network Proxy": "네트워크 프록시",
+    "Proxy Address": "프록시 주소",
+    "not available in browser": "이 기능은 웹 브라우저에서는 사용할 수 없으며, 모든 기능을 얻으려면 데스크톱 앱을 다운로드하십시오."
 }

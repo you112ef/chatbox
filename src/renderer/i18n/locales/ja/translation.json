@@ -118,6 +118,7 @@
     "Auto": "自動",
     "unknown error tips": "不明なエラーが発生しました。AI設定とアカウントステータスを確認するか、<0>ここをクリックしてFAQドキュメントを表示</0>してください。",
     "network error tips": "ネットワークエラーが発生しました。現在のネットワークステータスと{{host}}との接続を確認してください。",
+    "network proxy error tips": "プロキシアドレスが設定されています {{proxy}}。プロキシサーバーが正常に機能しているか確認するか、設定からプロキシアドレスを削除することを検討してください。",
     "api error tips": "{{aiProvider}}でエラーが発生しました。通常、設定の誤りやアカウントの問題によって引き起こされます。AI設定とアカウントステータスを確認するか、<0>ここをクリックしてFAQドキュメントを表示</0>してください。",
     "Clear Conversation List": "会話リストをクリア",
     "Keep only the Top N Conversations in List and Permanently Delete the Rest": "リストの上位<0>{{n}}</0>の会話だけを保持し、残りを永久に削除",
@@ -145,5 +146,9 @@
     "No Limit": "無制限",
     "View More Plans": "プランをもっと見る",
     "Custom Model": "カスタムモデル",
-    "Custom Model Name": "カスタムモデル名"
+    "Custom Model Name": "カスタムモデル名",
+    "advanced": "高度",
+    "Network Proxy": "ネットワークプロキシ",
+    "Proxy Address": "プロキシアドレス",
+    "not available in browser": "この機能はブラウザでは使用できません。すべての機能を利用するためには、デスクトップアプリをダウンロードしてください。"
 }

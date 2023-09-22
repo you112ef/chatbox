@@ -118,6 +118,7 @@
     "Auto": "自动",
     "unknown error tips": "未知错误。请检查 AI 设置和账户情况，或者<0>点击这里查看常见问题文档</0>。",
     "network error tips": "网络错误。请检查当前的网络状态，以及与 {{host}} 的连接情况。",
+    "network proxy error tips": "因为你设置了代理地址 {{proxy}}，请检查代理服务器是否正常工作，或者考虑在设置中删除代理地址。",
     "api error tips": "遇到了来自 {{aiProvider}} 的错误，一般是由错误设置或账户问题引起的。请检查 AI 设置和账户情况，或者<0>点击这里查看常见问题文档</0>。",
     "Clear Conversation List": "对话列表清理",
     "Keep only the Top N Conversations in List and Permanently Delete the Rest": "仅保留对话列表中最前面的<0>{{n}}</0>条对话，永久删除其余对话",
@@ -145,5 +146,9 @@
     "No Limit": "不限制",
     "View More Plans": "查看更多方案",
     "Custom Model": "自定义模型",
-    "Custom Model Name": "自定义模型名"
+    "Custom Model Name": "自定义模型名",
+    "advanced": "其他",
+    "Network Proxy": "Network Proxy",
+    "Proxy Address": "Proxy Address",
+    "not available in browser": "此功能在浏览器中无法使用，请下载桌面应用"
 }

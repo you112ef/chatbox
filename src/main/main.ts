@@ -9,7 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path'
-import { app, globalShortcut, BrowserWindow, shell, ipcMain, nativeTheme, session, dialog } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, nativeTheme, session, dialog } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
 import MenuBuilder from './menu'
@@ -17,6 +17,7 @@ import { resolveHtmlPath } from './util'
 import Locale from './locales'
 import { store } from './store'
 import * as shortcuts from './shortcut'
+import * as proxy from './proxy'
 
 // 这行代码是解决 Windows 通知的标题和图标不正确的问题，标题会错误显示成 electron.app.Chatbox
 // 参考：https://stackoverflow.com/questions/65859634/notification-from-electron-shows-electron-app-electron
@@ -174,6 +175,7 @@ app.whenReady()
             if (mainWindow === null) createWindow()
         })
         shortcuts.init(() => mainWindow)
+        proxy.init()
         app.on('will-quit', () => {
             shortcuts.unregister()
         })
@@ -220,3 +222,8 @@ ipcMain.handle('ensureShortcutConfig', (event, json) => {
 })
 
 ipcMain.handle('shouldUseDarkColors', () => nativeTheme.shouldUseDarkColors)
+
+ipcMain.handle('ensureProxy', (event, json) => {
+    const config: { proxy?: string } = JSON.parse(json)
+    proxy.ensure(config.proxy)
+})

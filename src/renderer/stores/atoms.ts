@@ -31,6 +31,10 @@ export const settingsAtom = atom(
                 disableQuickToggleShortcut: !!newSettings.disableQuickToggleShortcut,
             })
         }
+        // 如果代理配置发生变化，需要重新注册代理
+        if (newSettings.proxy !== settings.proxy) {
+            runtime.ensureProxyConfig({ proxy: newSettings.proxy })
+        }
         set(_settingsAtom, newSettings)
     }
 )

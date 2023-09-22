@@ -164,3 +164,13 @@ export async function ensureShortcutConfig(config: { disableQuickToggleShortcut:
     }
     return electronAPI.invoke('ensureShortcutConfig', JSON.stringify(config))
 }
+
+export async function ensureProxyConfig(config: { proxy?: string }) {
+    if (isWeb) {
+        return
+    }
+    if (!electronAPI) {
+        return
+    }
+    return electronAPI.invoke('ensureProxy', JSON.stringify(config))
+}

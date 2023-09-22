@@ -118,6 +118,7 @@
     "Auto": "Automatique",
     "unknown error tips": "Erreur inconnue. Veuillez vérifier vos paramètres d'IA et l'état de votre compte, ou <0>cliquez ici pour consulter le document FAQ</0>.",
     "network error tips": "Une erreur réseau s'est produite. Veuillez vérifier l'état de votre réseau actuel et la connexion avec {{host}}.",
+    "network proxy error tips": "Étant donné que vous avez configuré une adresse de proxy {{proxy}}, veuillez vérifier si le serveur proxy fonctionne correctement ou envisagez de supprimer l'adresse du proxy dans les paramètres.",
     "api error tips": "Une erreur s'est produite avec {{aiProvider}}, qui est généralement causée par des paramètres incorrects ou des problèmes de compte. Veuillez vérifier vos paramètres d'IA et l'état de votre compte, ou <0>cliquez ici pour consulter le document FAQ</0>.",
     "Clear Conversation List": "Effacer la liste des conversations",
     "Keep only the Top N Conversations in List and Permanently Delete the Rest": "Ne conserver que les <0>N</0> meilleures conversations dans la liste et supprimer définitivement les autres",
@@ -145,5 +146,9 @@
     "No Limit": "Pas de limite",
     "View More Plans": "Voir plus de plans",
     "Custom Model": "Modèle personnalisé",
-    "Custom Model Name": "Nom du Modèle Personnalisé"
+    "Custom Model Name": "Nom du Modèle Personnalisé",
+    "advanced": "Avancé",
+    "Network Proxy": "Proxy réseau",
+    "Proxy Address": "Adresse du proxy",
+    "not available in browser": "Cette fonctionnalité n'est pas disponible dans votre navigateur. Veuillez télécharger l'application de bureau pour accéder à toutes les fonctionnalités."
 }

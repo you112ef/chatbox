@@ -118,6 +118,7 @@
     "Auto": "自動化",
     "unknown error tips": "不明錯誤。請檢查 AI 設定和帳戶狀況，或者<0>點擊這裡查看常見問題文件</0>。",
     "network error tips": "網路錯誤。請檢查目前的網路狀態，以及與 {{host}} 的連接情況。",
+    "network proxy error tips": "因为你設置了代理位址{{proxy}}，請檢查代理伺服器是否正常運作，或者考慮在設定中刪除代理位址。",
     "api error tips": "遇到了來自 {{aiProvider}} 的錯誤，一般是由錯誤設定或帳戶問題引起的。請檢查 AI 設定和帳戶狀況，或者<0>點擊這裡查看常見問題文件</0>。",
     "Clear Conversation List": "清理對話列表",
     "Keep only the Top N Conversations in List and Permanently Delete the Rest": "僅保留最前面的<0>{{n}}</0>條對話紀錄，永久刪除其他對話紀錄",
@@ -145,5 +146,9 @@
     "No Limit": "無限制",
     "View More Plans": "瀏覽更多方案",
     "Custom Model": "自訂模型",
-    "Custom Model Name": "自訂模型名"
+    "Custom Model Name": "自訂模型名",
+    "advanced": "其他",
+    "Network Proxy": "網路代理",
+    "Proxy Address": "代理位址",
+    "not available in browser": "此功能在瀏覽器中無法使用，請下載桌面應用程式以獲取全部功能。"
 }

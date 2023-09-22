@@ -94,6 +94,8 @@ export interface Settings extends ModelSettings {
     disableQuickToggleShortcut?: boolean // 是否关闭快捷键切换窗口显隐
 
     defaultPrompt?: string // 新会话的默认 prompt
+
+    proxy?: string // 代理地址
 }
 
 export type Language = 'en' | 'zh-Hans' | 'zh-Hant' | 'ja' | 'ko' | 'ru' | 'de' | 'fr'
