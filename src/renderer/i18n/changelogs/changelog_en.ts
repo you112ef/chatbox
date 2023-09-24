@@ -1,5 +1,5 @@
 const changelog = `
-### v1.0.1
+### v1.0.2
 
 - Automatically move cursor to the bottom of the input box when quoting a message.
 - Fixed the issue of resetting context length setting when switching models (#956).
