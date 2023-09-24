@@ -1,4 +1,10 @@
 const changelog = `
+### v1.0.1
+
+- Automatically move cursor to the bottom of the input box when quoting a message.
+- Fixed the issue of resetting context length setting when switching models (#956).
+- Automatically compatible with various Azure Endpoint configurations (#952).
+
 ### v1.0.0
 
 - Support OpenAI custom models (#28)
