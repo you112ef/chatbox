@@ -3,7 +3,9 @@ import * as store from './store'
 
 export function init() {
     const { proxy } = store.getSettings()
-    ensure(proxy)
+    if (proxy) {
+        ensure(proxy)
+    }
 }
 
 export function ensure(proxy?: string) {
