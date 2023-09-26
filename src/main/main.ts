@@ -133,6 +133,10 @@ const createWindow = async () => {
         return { action: 'deny' }
     })
 
+    // 隐藏 Windows, Linux 应用顶部的菜单栏
+    https://www.computerhope.com/jargon/m/menubar.htm
+    mainWindow.setMenuBarVisibility(false)
+
     // Remove this if your app does not use auto updates
     // eslint-disable-next-line
     new AppUpdater()
