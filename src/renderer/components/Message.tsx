@@ -487,6 +487,9 @@ const StyledMenu = styled((props: MenuProps) => (
                 backgroundColor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
             },
         },
+        '& hr': {
+            margin: '4px 0',
+        },
     },
 }))
 
