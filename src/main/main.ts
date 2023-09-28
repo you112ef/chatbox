@@ -18,6 +18,7 @@ import Locale from './locales'
 import { store } from './store'
 import * as shortcuts from './shortcut'
 import * as proxy from './proxy'
+import * as windowState from './window_state'
 
 // 这行代码是解决 Windows 通知的标题和图标不正确的问题，标题会错误显示成 electron.app.Chatbox
 // 参考：https://stackoverflow.com/questions/65859634/notification-from-electron-shows-electron-app-electron
@@ -93,10 +94,16 @@ const createWindow = async () => {
         return path.join(RESOURCES_PATH, ...paths)
     }
 
+    const [state] = windowState.getState()
+
     mainWindow = new BrowserWindow({
         show: false,
-        width: 1024,
-        height: 728,
+        width: state.width,
+        height: state.height,
+        x: state.x,
+        y: state.y,
+        minWidth: windowState.minWidth,
+        minHeight: windowState.minHeight,
         icon: getAssetPath('icon.png'),
         webPreferences: {
             webSecurity: false,
@@ -120,6 +127,13 @@ const createWindow = async () => {
         }
     })
 
+    // 窗口关闭时保存窗口大小与位置
+    mainWindow.on('close', () => {
+        if (mainWindow) {
+            windowState.saveState(mainWindow)
+        }
+    })
+
     mainWindow.on('closed', () => {
         mainWindow = null
     })
@@ -134,7 +148,7 @@ const createWindow = async () => {
     })
 
     // 隐藏 Windows, Linux 应用顶部的菜单栏
-    https://www.computerhope.com/jargon/m/menubar.htm
+    // https://www.computerhope.com/jargon/m/menubar.htm
     mainWindow.setMenuBarVisibility(false)
 
     // Remove this if your app does not use auto updates
@@ -177,6 +191,15 @@ app.whenReady()
             // On macOS it's common to re-create a window in the app when the
             // dock icon is clicked and there are no other windows open.
             if (mainWindow === null) createWindow()
+        })
+        // 监听窗口大小位置变化的代码，很大程度参考了 VSCODE 的实现 /Users/benn/Documents/w/vscode/src/vs/platform/windows/electron-main/windowsStateHandler.ts
+        // When a window looses focus, save all windows state. This allows to
+        // prevent loss of window-state data when OS is restarted without properly
+        // shutting down the application (https://github.com/microsoft/vscode/issues/87171)
+        app.on('browser-window-blur', () => {
+            if (mainWindow) {
+                windowState.saveState(mainWindow)
+            }
         })
         shortcuts.init(() => mainWindow)
         proxy.init()
