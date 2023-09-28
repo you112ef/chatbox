@@ -57,7 +57,7 @@ export default function AdvancedSettingTab(props: ModelConfigProps) {
             </Accordion>
             <Accordion>
                 <AccordionSummary aria-controls="panel1a-content">
-                    <Typography>{t('Shortcuts')}</Typography>
+                    <Typography>{t('Keyboard Shortcuts')}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <TableContainer component={Paper}>
