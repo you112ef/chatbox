@@ -1,11 +1,11 @@
 import { Select, MenuItem, FormControl, InputLabel, TextField } from '@mui/material'
-import { ModelSettings } from '../../shared/types'
+import { SessionSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import { models } from '../config'
 
 export interface Props {
-    settingsEdit: ModelSettings
-    setSettingsEdit: (settings: ModelSettings) => void
+    settingsEdit: SessionSettings
+    setSettingsEdit: (settings: SessionSettings) => void
 }
 
 export default function OpenAIModelSelect(props: Props) {

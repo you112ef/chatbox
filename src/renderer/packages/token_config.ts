@@ -1,11 +1,11 @@
-import { ModelProvider, ModelSettings } from '../../shared/types'
+import { ModelProvider, SessionSettings } from '../../shared/types'
 import { modelConfigs } from '../config'
 import * as defaults from '../stores/defaults'
 
 /**
  * 根据模型提供方、模型版本的设置，重置模型的 maxTokens、maxContextTokens
  */
-export function resetTokenConfig(settings: ModelSettings): ModelSettings {
+export function resetTokenConfig(settings: SessionSettings): SessionSettings {
     switch (settings.aiProvider) {
         case ModelProvider.OpenAI:
             const limits = getTokenLimits(settings)
@@ -46,7 +46,7 @@ export function resetTokenConfig(settings: ModelSettings): ModelSettings {
  * @param settings
  * @returns
  */
-export function getTokenLimits(settings: ModelSettings) {
+export function getTokenLimits(settings: SessionSettings) {
     let totalTokenLimit = 32 * 1000
     if (settings.aiProvider === ModelProvider.OpenAI && settings.model !== 'custom-model') {
         totalTokenLimit = modelConfigs[settings.model]?.maxTokens || 4000 // 旧版本用户可能依然使用 modelConfigs 中弃用删除的模型，需要兼容 undefined 情况

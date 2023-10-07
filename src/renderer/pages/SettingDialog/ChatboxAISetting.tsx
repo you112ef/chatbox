@@ -45,7 +45,8 @@ export default function ChatboxAISetting(props: ModelConfigProps) {
                     </Box>
                 )}
                 {settingsEdit.licenseDetail && (
-                    <ChatboxAIModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                    <ChatboxAIModelSelect settingsEdit={settingsEdit}
+                        setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })} />
                 )}
                 <Card sx={{ marginTop: '20px', padding: '14px' }} elevation={3}>
                     {premium.premiumActivated && (

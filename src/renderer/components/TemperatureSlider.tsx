@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Chip, TextField, Slider, Typography, Box } from '@mui/material'
-import { ModelSettings } from '../../shared/types'
+import { SessionSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle'
 import LightbulbCircleIcon from '@mui/icons-material/LightbulbCircle'
 
 export interface Props {
-    settingsEdit: ModelSettings
-    setSettingsEdit: (settings: ModelSettings) => void
+    settingsEdit: SessionSettings
+    setSettingsEdit: (settings: SessionSettings) => void
 }
 
 export default function TemperatureSlider(props: Props) {

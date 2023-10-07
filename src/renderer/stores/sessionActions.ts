@@ -1,5 +1,5 @@
 import { getDefaultStore } from 'jotai'
-import { Settings, createMessage, Message, Session, getMsgDisplayModelName } from '../../shared/types'
+import { Settings, createMessage, Message, Session, getMsgDisplayModelName, settings2SessionSettings } from '../../shared/types'
 import * as atoms from './atoms'
 import * as client from '../packages/llm'
 import * as promptFormat from '../packages/prompts'
@@ -354,11 +354,16 @@ export function getEmptySession(name: string = 'Untitled'): Session {
 }
 
 function mergeSettings(globalSettings: Settings, session: Session): Settings {
-    // FIXME:
+    if (! session.settings) {
+        return globalSettings
+    }
+    let specialSettings = session.settings
+    specialSettings = settings2SessionSettings(specialSettings as Settings) // 过滤掉会话专属设置中不应该存在的设置项，为了兼容旧版本数据和防止疏漏
+    specialSettings = omit(specialSettings) // 需要 omit 来去除 undefined，否则会覆盖掉全局配置
     return {
         ...globalSettings,
-        ...omit(session.settings || {}), // 需要 omit 来去除 undefined，否则会覆盖掉全局配置
-    } // 会话配置优先级高于全局配置
+        ...specialSettings, // 会话配置优先级高于全局配置
+    }
 }
 
 function omit(obj: any) {

@@ -1,3 +1,4 @@
+import pick from 'lodash/pick'
 import { v4 as uuidv4 } from 'uuid'
 import { ClaudeModel, Model } from '../renderer/config'
 
@@ -25,8 +26,30 @@ export interface Session {
     messages: Message[]
     starred?: boolean
     copilotId?: string
-    settings?: ModelSettings
+    settings?: SessionSettings
 }
+
+export type SessionSettings = ReturnType<typeof settings2SessionSettings>
+
+export function settings2SessionSettings(settings: ModelSettings) {
+    return pick(settings, [
+        'aiProvider',
+
+        'chatboxAIModel',
+        'openaiMaxContextMessageCount',
+        'temperature',
+
+        'model',
+        'openaiCustomModel',
+        'openaiMaxContextTokens',
+        'openaiMaxTokens',
+
+        'azureDeploymentName',
+
+        'claudeModel',
+    ])
+}
+
 
 export function createMessage(role: OpenAIRoleEnumType = OpenAIRoleEnum.User, content: string = ''): Message {
     return {
@@ -100,7 +123,7 @@ export interface Settings extends ModelSettings {
 
 export type Language = 'en' | 'zh-Hans' | 'zh-Hant' | 'ja' | 'ko' | 'ru' | 'de' | 'fr'
 
-export function getMsgDisplayModelName(settings: ModelSettings) {
+export function getMsgDisplayModelName(settings: SessionSettings) {
     switch (settings.aiProvider) {
         case ModelProvider.OpenAI:
             if (settings.model === 'custom-model') {

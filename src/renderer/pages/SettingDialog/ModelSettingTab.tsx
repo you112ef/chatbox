@@ -1,6 +1,5 @@
 import { Divider, Box } from '@mui/material'
 import { ModelProvider, ModelSettings } from '../../../shared/types'
-import { useTranslation } from 'react-i18next'
 import OpenAISetting from './OpenAISetting'
 import AzureSetting from './AzureSetting'
 import ChatboxAISetting from './ChatboxAISetting'
@@ -15,10 +14,10 @@ interface ModelConfigProps {
 
 export default function ModelSettingTab(props: ModelConfigProps) {
     const { settingsEdit, setSettingsEdit } = props
-    const { t } = useTranslation()
     return (
         <Box>
-            <AIProviderSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+            <AIProviderSelect settingsEdit={settingsEdit}
+                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })} />
             <Divider sx={{ margin: '12px 0' }} />
             {settingsEdit.aiProvider === ModelProvider.OpenAI && (
                 <OpenAISetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />

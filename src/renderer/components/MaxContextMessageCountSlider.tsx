@@ -1,10 +1,10 @@
 import { TextField, Slider, Typography, Box } from '@mui/material'
-import { ModelSettings } from '../../shared/types'
+import { SessionSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 
 export interface Props {
-    settingsEdit: ModelSettings
-    setSettingsEdit: (settings: ModelSettings) => void
+    settingsEdit: SessionSettings
+    setSettingsEdit: (settings: SessionSettings) => void
 }
 
 export default function MaxContextMessageCountSlider(props: Props) {

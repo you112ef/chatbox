@@ -11,7 +11,7 @@ import {
     DialogContentText,
     TextField,
 } from '@mui/material'
-import { Session, ModelProvider, ModelSettings } from '../../shared/types'
+import { Session, ModelProvider, SessionSettings, settings2SessionSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as sessionActions from '../stores/sessionActions'
 import TemperatureSlider from '../components/TemperatureSlider'
@@ -35,6 +35,7 @@ interface Props {
 export default function ChatConfigWindow(props: Props) {
     const { t } = useTranslation()
     const settings = useAtomValue(atoms.settingsAtom)
+    const licenseDetail = useAtomValue(atoms.licenseDetailAtom)
     const [dataEdit, setDataEdit] = React.useState<Session>(props.session)
 
     useEffect(() => {
@@ -61,7 +62,7 @@ export default function ChatConfigWindow(props: Props) {
     }
 
     const settingsEdit = dataEdit.settings
-    const setSettingsEdit = (updated: ModelSettings) => {
+    const setSettingsEdit = (updated: SessionSettings) => {
         if (settingsEdit?.aiProvider !== updated.aiProvider || settingsEdit?.model !== updated.model) {
             updated = resetTokenConfig(updated)
         }
@@ -89,7 +90,7 @@ export default function ChatConfigWindow(props: Props) {
                     checked={!!dataEdit.settings}
                     onChange={(e, checked) => {
                         if (checked) {
-                            dataEdit.settings = settings
+                            dataEdit.settings = settings2SessionSettings(settings)
                         } else {
                             dataEdit.settings = undefined
                         }
@@ -103,7 +104,7 @@ export default function ChatConfigWindow(props: Props) {
                         <Divider sx={{ margin: '16px 0' }} />
                         {settingsEdit.aiProvider === ModelProvider.ChatboxAI && (
                             <>
-                                {settingsEdit.licenseDetail && (
+                                {licenseDetail && (
                                     <ChatboxAIModelSelect
                                         settingsEdit={settingsEdit}
                                         setSettingsEdit={setSettingsEdit}

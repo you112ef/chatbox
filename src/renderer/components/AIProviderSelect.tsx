@@ -1,11 +1,11 @@
 import { Chip, Select, MenuItem, FormControl, InputLabel, useTheme } from '@mui/material'
-import { ModelProvider, ModelSettings } from '../../shared/types'
+import { ModelProvider, SessionSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import { aiModelProviderList } from '../config'
 
 interface ModelConfigProps {
-    settingsEdit: ModelSettings
-    setSettingsEdit: (settings: ModelSettings) => void
+    settingsEdit: SessionSettings
+    setSettingsEdit: (settings: SessionSettings) => void
 }
 
 export default function AIProviderSelect(props: ModelConfigProps) {

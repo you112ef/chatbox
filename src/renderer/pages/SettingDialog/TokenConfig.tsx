@@ -2,11 +2,11 @@ import React from 'react'
 import { TextField, Slider, Typography, Box } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { getTokenLimits } from '../../packages/token_config'
-import { ModelSettings } from '../../../shared/types'
+import { SessionSettings } from '../../../shared/types'
 
 interface ModelConfigProps {
-    settingsEdit: ModelSettings
-    setSettingsEdit: (settings: ModelSettings) => void
+    settingsEdit: SessionSettings
+    setSettingsEdit: (settings: SessionSettings) => void
 }
 
 export default function TokenConfig(props: ModelConfigProps) {

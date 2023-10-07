@@ -150,6 +150,7 @@
         "i18next": "^22.4.13",
         "jotai": "^2.1.0",
         "jotai-optics": "^0.3.0",
+        "lodash": "^4.17.21",
         "markdown-it": "^13.0.1",
         "markdown-it-link-attributes": "^4.0.1",
         "material-ui-popup-state": "^5.0.4",

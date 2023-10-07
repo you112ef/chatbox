@@ -78,8 +78,10 @@ export default function AzureSetting(props: ModelConfigProps) {
                         </Button>
                         {t('to default values.')}
                     </Alert>
-                    <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                    <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                    <TemperatureSlider settingsEdit={settingsEdit}
+                        setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })} />
+                    <TokenConfig settingsEdit={settingsEdit}
+                        setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })} />
                 </AccordionDetails>
             </Accordion>
         </Box>

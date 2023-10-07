@@ -96,13 +96,17 @@ export default function OpenAISetting(props: ModelConfigProps) {
                         {t('to default values.')}
                     </Alert>
 
-                    <OpenAIModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                    <OpenAIModelSelect settingsEdit={settingsEdit}
+                        setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })} />
 
-                    <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                    <TemperatureSlider settingsEdit={settingsEdit}
+                        setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })} />
 
-                    <MaxContextMessageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                    <MaxContextMessageCountSlider settingsEdit={settingsEdit}
+                        setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })} />
 
-                    <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                    <TokenConfig settingsEdit={settingsEdit}
+                        setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })} />
                 </AccordionDetails>
             </Accordion>
         </Box>
