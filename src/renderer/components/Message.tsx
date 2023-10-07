@@ -33,7 +33,6 @@ import { Message, OpenAIRoleEnum, OpenAIRoleEnumType } from '../../shared/types'
 import { aiProviderNameHash } from '../config'
 import ReplayIcon from '@mui/icons-material/Replay'
 import CopyAllIcon from '@mui/icons-material/CopyAll'
-import '../static/block.css'
 import { useAtomValue, useSetAtom } from 'jotai'
 import {
     messageScrollingScrollPositionAtom,
@@ -47,6 +46,7 @@ import * as sessionActions from '../stores/sessionActions'
 import * as toastActions from '../stores/toastActions'
 import * as settingActions from '../stores/settingActions'
 import md from '../packages/markdown'
+import '../static/Block.css'
 import '../../../node_modules/highlight.js/styles/github-dark.css'
 
 export interface Props {
