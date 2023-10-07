@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import {
     Button,
     Avatar,
-    Paper,
+    useTheme,
     IconButton,
     Tabs,
     Tab,
@@ -143,7 +143,6 @@ export default function CopilotWindow(props: Props) {
                         flexDirection: 'row',
                         flexWrap: 'wrap',
                         width: '100%',
-                        maxHeight: '300px',
                         overflowY: 'auto',
                     }}
                 >
@@ -184,7 +183,6 @@ export default function CopilotWindow(props: Props) {
                         flexDirection: 'row',
                         flexWrap: 'wrap',
                         width: '100%',
-                        maxHeight: '200px',
                         overflowY: 'auto',
                     }}
                 >
@@ -364,7 +362,7 @@ interface TabsProps {
 }
 function ScrollableTabsButtonAuto(props: TabsProps) {
     return (
-        <Box sx={{ bgcolor: 'background.paper', marginTop: '14px' }}>
+        <Box sx={{ marginTop: '14px' }}>
             <Tabs
                 component="a"
                 value={props.currentValue}
@@ -373,7 +371,6 @@ function ScrollableTabsButtonAuto(props: TabsProps) {
                 }}
                 variant="scrollable"
                 scrollButtons={false}
-                aria-label="scrollable prevent tabs example"
             >
                 {props.values.map((item) => (
                     <Tab key={item.value} label={item.label} value={item.value} />
@@ -393,6 +390,7 @@ interface CopilotFormProps {
 
 function CopilotForm(props: CopilotFormProps) {
     const { t } = useTranslation()
+    const theme = useTheme()
     const [copilotEdit, setCopilotEdit] = useState<CopilotDetail>(props.copilotDetail)
     useEffect(() => {
         setCopilotEdit(props.copilotDetail)
@@ -433,7 +431,11 @@ function CopilotForm(props: CopilotFormProps) {
         window.gtag('event', 'create_copilot', { event_category: 'user' })
     }
     return (
-        <Box sx={{ marginBottom: '20px' }}>
+        <Box sx={{
+            marginBottom: '20px',
+            backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[700] : theme.palette.grey[50],
+            padding: '8px',
+         }}>
             <TextField
                 autoFocus
                 margin="dense"
