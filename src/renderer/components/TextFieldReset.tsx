@@ -9,6 +9,7 @@ export default function TextFieldReset(props: {
     placeholder?: string
     disabled?: boolean
     autoFocus?: boolean
+    className?: string
     helperText?: React.ReactNode
 }) {
     const handleReset = () => props.setValue('')
@@ -27,6 +28,9 @@ export default function TextFieldReset(props: {
             disabled={props.disabled}
             value={props.value}
             onChange={(e) => props.setValue(e.target.value.trim())}
+            inputProps={{
+                className: props.className
+            }}
             InputProps={{
                 endAdornment:
                     props.value === '' ? null : (

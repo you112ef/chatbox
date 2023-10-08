@@ -51,7 +51,12 @@ export default function AdvancedSettingTab(props: ModelConfigProps) {
                         placeholder="socks5://127.0.0.1:6153"
                         autoFocus
                         disabled={runtime.isWeb}
-                        helperText={runtime.isWeb ? t('not available in browser') : null}
+                        className='cursor-not-allowed'
+                        helperText={
+                            runtime.isWeb
+                            ? <span className='text-red-600'>{t('not available in browser')}</span>
+                            : null
+                        }
                     />
                 </AccordionDetails>
             </Accordion>
