@@ -1,4 +1,11 @@
 const changelog = `
+### v1.0.4
+
+- Keep the previous window size and position upon startup (#30)
+- Hide the system menu bar (for Windows, Linux)
+- Fixed an issue with session-specific settings causing license and other settings abnormalities (#31)
+- Adjusted some UI details
+
 ### v1.0.2
 
 - Automatically move cursor to the bottom of the input box when quoting a message.
