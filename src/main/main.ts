@@ -222,6 +222,13 @@ ipcMain.handle('setStoreValue', (event, key, dataJson) => {
 ipcMain.handle('delStoreValue', (event, key) => {
     return store.delete(key)
 })
+ipcMain.handle('getAllStoreValues', (event) => {
+    return JSON.stringify(store.store)
+})
+ipcMain.handle('setAllStoreValues', (event, dataJson) => {
+    const data = JSON.parse(dataJson)
+    store.store = data
+})
 
 ipcMain.handle('getVersion', () => {
     return app.getVersion()
@@ -253,4 +260,9 @@ ipcMain.handle('shouldUseDarkColors', () => nativeTheme.shouldUseDarkColors)
 ipcMain.handle('ensureProxy', (event, json) => {
     const config: { proxy?: string } = JSON.parse(json)
     proxy.ensure(config.proxy)
+})
+
+ipcMain.handle('relaunch', () => {
+    app.relaunch()
+    app.quit()
 })

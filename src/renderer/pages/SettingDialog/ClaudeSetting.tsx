@@ -23,12 +23,18 @@ export default function ClaudeSetting(props: ModelConfigProps) {
                     setSettingsEdit({ ...settingsEdit, claudeApiKey: value })
                 }}
             />
-            <ClaudeModelSelect settingsEdit={settingsEdit}
-                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })} />
-            <MaxContextMessageCountSlider settingsEdit={settingsEdit}
-                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })} />
-            <TemperatureSlider settingsEdit={settingsEdit}
-                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })} />
+            <ClaudeModelSelect
+                settingsEdit={settingsEdit}
+                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+            />
+            <MaxContextMessageCountSlider
+                settingsEdit={settingsEdit}
+                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+            />
+            <TemperatureSlider
+                settingsEdit={settingsEdit}
+                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+            />
         </Box>
     )
 }

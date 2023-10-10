@@ -20,7 +20,7 @@ import {
     Box,
     ButtonGroup,
 } from '@mui/material'
-import { Config, CopilotDetail, Message } from '../../shared/types'
+import { CopilotDetail, Message } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import EditIcon from '@mui/icons-material/Edit'
 import StyledMenu from '../components/StyledMenu'
@@ -35,7 +35,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import * as atoms from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
 import { useAtomValue } from 'jotai'
-import * as storage from '../storage'
+import storage from '../storage'
 
 interface Props {
     open: boolean
@@ -431,11 +431,13 @@ function CopilotForm(props: CopilotFormProps) {
         window.gtag('event', 'create_copilot', { event_category: 'user' })
     }
     return (
-        <Box sx={{
-            marginBottom: '20px',
-            backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[700] : theme.palette.grey[50],
-            padding: '8px',
-         }}>
+        <Box
+            sx={{
+                marginBottom: '20px',
+                backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[700] : theme.palette.grey[50],
+                padding: '8px',
+            }}
+        >
             <TextField
                 autoFocus
                 margin="dense"

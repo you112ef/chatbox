@@ -29,7 +29,7 @@ export default function TextFieldReset(props: {
             value={props.value}
             onChange={(e) => props.setValue(e.target.value.trim())}
             inputProps={{
-                className: props.className
+                className: props.className,
             }}
             InputProps={{
                 endAdornment:

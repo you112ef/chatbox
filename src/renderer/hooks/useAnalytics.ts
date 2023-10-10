@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import * as api from '../packages/runtime'
-import { getConfig } from '../storage'
+import storage from '../storage'
 
 function useAnalytics() {
     // GA4
@@ -8,7 +8,7 @@ function useAnalytics() {
         const GAID = 'G-B365F44W6E'
         ;(async () => {
             try {
-                const conf = await getConfig()
+                const conf = await storage.getConfig()
                 window.gtag('config', GAID, {
                     app_name: 'chatbox',
                     user_id: conf.uuid,

@@ -150,5 +150,14 @@
     "advanced": "Avancé",
     "Network Proxy": "Proxy réseau",
     "Proxy Address": "Adresse du proxy",
-    "not available in browser": "Cette fonctionnalité n'est pas disponible dans votre navigateur. Veuillez télécharger l'application de bureau pour accéder à toutes les fonctionnalités."
+    "not available in browser": "Cette fonctionnalité n'est pas disponible dans votre navigateur. Veuillez télécharger l'application de bureau pour accéder à toutes les fonctionnalités.",
+    "Data Backup and Restore": "Sauvegarde et restauration des données",
+    "Chat History": "Historique de chat",
+    "API KEY & License": "API KEY & Licence",
+    "Data Backup": "Sauvegarde de données",
+    "Data Restore": "Restauration de données",
+    "Export Selected Data": "Exporter les données sélectionnées",
+    "Import and Restore": "Importer et restaurer",
+    "Upon import, changes will take effect immediately and existing data will be overwritten": "A l'importation, les modifications prendront effet immédiatement et les données existantes seront remplacées",
+    "Import failed, unsupported data format": "Échec de l'importation, format de données non supporté"
 }

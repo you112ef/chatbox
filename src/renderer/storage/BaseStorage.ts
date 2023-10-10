@@ -18,5 +18,13 @@ export default class BaseStorage {
         throw new Error('not implemented')
     }
 
+    public async getAll(): Promise<{ [key: string]: any }> {
+        throw new Error('not implemented')
+    }
+
+    public async setAll(data: { [key: string]: any }) {
+        throw new Error('not implemented')
+    }
+
     // subscribe(key: string, callback: any, initialValue: any): Promise<void>
 }

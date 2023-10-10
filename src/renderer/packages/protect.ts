@@ -1,16 +1,12 @@
 // 处理前端代码被剽窃的情况
 
 import * as runtime from './runtime'
-
 ;(function () {
     setInterval(() => {
         if (runtime.isWeb && Math.random() < 0.1) {
             // 如果当前地址不正确，就跳转到正确地址
             const hostname = window.location.hostname
-            if (
-                hostname !== simpleDecrypt(lh) &&
-                !hostname.endsWith(simpleDecrypt(ca))
-            ) {
+            if (hostname !== simpleDecrypt(lh) && !hostname.endsWith(simpleDecrypt(ca))) {
                 setTimeout(toHomePage, 300)
             }
         }

@@ -9,7 +9,6 @@ import * as migration from './stores/migration'
 import './static/index.css'
 
 import './packages/protect' // 引入保护代码
-
 ;(async () => {
     const version = await api.getVersion().catch(() => 'unknown')
     Sentry.init({

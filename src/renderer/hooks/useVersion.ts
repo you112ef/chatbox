@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { getConfig } from '../storage'
+import storage from '../storage'
 import * as api from '../packages/runtime'
 import * as remote from '../packages/remote'
 
@@ -9,7 +9,7 @@ export default function useVersion() {
     const updateCheckTimer = useRef<NodeJS.Timeout>()
     useEffect(() => {
         const handler = async () => {
-            const config = await getConfig()
+            const config = await storage.getConfig()
             const version = await api.getVersion()
             _setVersion(version)
             try {

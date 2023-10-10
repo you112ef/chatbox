@@ -1,20 +1,11 @@
 import React from 'react'
-import {
-    Box,
-    Button,
-    Dialog,
-    DialogContent,
-    DialogActions,
-    DialogTitle,
-    DialogContentText,
-    TextField,
-} from '@mui/material'
+import { Box, Button, Dialog, DialogContent, DialogActions, DialogContentText } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import * as remote from '../packages/remote'
 import { getDefaultStore } from 'jotai'
 import * as api from '../packages/runtime'
 import { settingsAtom } from '../stores/atoms'
-import { getConfig } from '../storage'
+import storage from '../storage'
 import md from '../packages/markdown'
 
 const { useEffect, useState } = React
@@ -27,7 +18,7 @@ export default function RemoteDialogWindow() {
     const store = getDefaultStore()
     useEffect(() => {
         ;(async () => {
-            const config = await getConfig()
+            const config = await storage.getConfig()
             const settings = store.get(settingsAtom)
             const version = await api.getVersion()
             if (version === '0.0.1') {

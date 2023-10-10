@@ -1,5 +1,5 @@
 import BaseStorage from './BaseStorage'
-import * as api from '../packages/runtime'
+import * as runtime from '../packages/runtime'
 
 export default class FsStorage extends BaseStorage {
     constructor(filepath = 'config.json') {
@@ -7,11 +7,11 @@ export default class FsStorage extends BaseStorage {
     }
 
     public async setItem<T>(key: string, value: T) {
-        await api.setStore(key, value)
+        await runtime.setStore(key, value)
     }
 
     public async getItem<T>(key: string, initialValue: T): Promise<T> {
-        let value: any = await api.getStore(key)
+        let value: any = await runtime.getStore(key)
         if (value === undefined || value === null) {
             value = initialValue
         }
@@ -19,7 +19,15 @@ export default class FsStorage extends BaseStorage {
     }
 
     public async removeItem(key: string): Promise<void> {
-        await api.delStore(key)
+        await runtime.delStore(key)
+    }
+
+    public async getAll(): Promise<{ [key: string]: any }> {
+        return runtime.getAllStoreValues()
+    }
+
+    public async setAll(data: { [key: string]: any }) {
+        return runtime.setAllStoreValues(data)
     }
 
     public async save() {}

@@ -5,14 +5,14 @@ import { selectAtom, atomWithStorage } from 'jotai/utils'
 import { focusAtom } from 'jotai-optics'
 import * as defaults from './defaults'
 import { v4 as uuidv4 } from 'uuid'
-import storage from '../storage'
+import storage, { StorageKey } from '../storage'
 import { VirtuosoHandle } from 'react-virtuoso'
 import * as runtime from '../packages/runtime'
 import { resetTokenConfig } from '../packages/token_config'
 
 // settings
 
-const _settingsAtom = atomWithStorage<Settings>('settings', defaults.settings(), storage)
+const _settingsAtom = atomWithStorage<Settings>(StorageKey.Settings, defaults.settings(), storage)
 export const settingsAtom = atom(
     (get) => {
         const settings = get(_settingsAtom)
@@ -50,12 +50,12 @@ export const fontSizeAtom = focusAtom(settingsAtom, (optic) => optic.prop('fontS
 export const licenseDetailAtom = focusAtom(settingsAtom, (optic) => optic.prop('licenseDetail'))
 
 // myCopilots
-export const myCopilotsAtom = atomWithStorage<CopilotDetail[]>('myCopilots', [], storage)
+export const myCopilotsAtom = atomWithStorage<CopilotDetail[]>(StorageKey.MyCopilots, [], storage)
 
 // sessions
 
 // _sessionsAtom 内部状态，不对外暴露
-const _sessionsAtom = atomWithStorage<Session[]>('chat-sessions', [], storage)
+const _sessionsAtom = atomWithStorage<Session[]>(StorageKey.ChatSessions, [], storage)
 // sessionsAtom 会话列表，保证至少有一个会话
 export const sessionsAtom = atom(
     (get) => {
@@ -135,7 +135,7 @@ export const quoteAtom = atom<string>('')
 export const realThemeAtom = atom<'light' | 'dark'>('light')
 
 // configVersion 配置版本，用于判断是否需要升级迁移配置（migration）
-export const configVersionAtom = atomWithStorage<number>('configVersion', 0, storage)
+export const configVersionAtom = atomWithStorage<number>(StorageKey.ConfigVersion, 0, storage)
 
 // message scrolling
 

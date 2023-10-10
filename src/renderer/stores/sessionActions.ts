@@ -1,5 +1,12 @@
 import { getDefaultStore } from 'jotai'
-import { Settings, createMessage, Message, Session, getMsgDisplayModelName, settings2SessionSettings } from '../../shared/types'
+import {
+    Settings,
+    createMessage,
+    Message,
+    Session,
+    getMsgDisplayModelName,
+    settings2SessionSettings,
+} from '../../shared/types'
 import * as atoms from './atoms'
 import * as client from '../packages/llm'
 import * as promptFormat from '../packages/prompts'
@@ -8,7 +15,7 @@ import * as utils from '../packages/utils'
 import { v4 as uuidv4 } from 'uuid'
 import * as defaults from './defaults'
 import * as scrollActions from './scrollActions'
-import * as storage from '../storage'
+import storage from '../storage'
 
 export function create(newSession: Session) {
     const store = getDefaultStore()
@@ -354,7 +361,7 @@ export function getEmptySession(name: string = 'Untitled'): Session {
 }
 
 function mergeSettings(globalSettings: Settings, session: Session): Settings {
-    if (! session.settings) {
+    if (!session.settings) {
         return globalSettings
     }
     let specialSettings = session.settings

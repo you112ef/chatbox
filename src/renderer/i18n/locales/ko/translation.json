@@ -150,5 +150,14 @@
     "advanced": "고급",
     "Network Proxy": "네트워크 프록시",
     "Proxy Address": "프록시 주소",
-    "not available in browser": "이 기능은 웹 브라우저에서는 사용할 수 없으며, 모든 기능을 얻으려면 데스크톱 앱을 다운로드하십시오."
+    "not available in browser": "이 기능은 웹 브라우저에서는 사용할 수 없으며, 모든 기능을 얻으려면 데스크톱 앱을 다운로드하십시오.",
+    "Data Backup and Restore": "데이터 백업 및 복원",
+    "Chat History": "채팅 기록",
+    "API KEY & License": "API KEY 및 라이선스",
+    "Data Backup": "데이터 백업",
+    "Data Restore": "데이터 복원",
+    "Export Selected Data": "선택한 데이터 내보내기",
+    "Import and Restore": "가져오기 및 복원",
+    "Upon import, changes will take effect immediately and existing data will be overwritten": "가져오기 후 변경사항이 즉시 적용되며 기존 데이터는 덮어쓰게 됩니다",
+    "Import failed, unsupported data format": "가져오기 실패, 지원하지 않는 데이터 형식"
 }

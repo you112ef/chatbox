@@ -50,7 +50,6 @@ export function settings2SessionSettings(settings: ModelSettings) {
     ])
 }
 
-
 export function createMessage(role: OpenAIRoleEnumType = OpenAIRoleEnum.User, content: string = ''): Message {
     return {
         id: uuidv4(),

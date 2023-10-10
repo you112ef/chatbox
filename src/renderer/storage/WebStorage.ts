@@ -25,4 +25,19 @@ export default class WebStorage extends BaseStorage {
     public async save() {
         return
     }
+
+    public async getAll() {
+        const ret: { [key: string]: any } = {}
+        store.each((value, key) => {
+            ret[key] = value
+        })
+        return ret
+    }
+
+    public async setAll(data: { [key: string]: any }) {
+        store.clearAll()
+        for (const [key, value] of Object.entries(data)) {
+            store.set(key, value)
+        }
+    }
 }

@@ -150,5 +150,14 @@
     "advanced": "其他",
     "Network Proxy": "Network Proxy",
     "Proxy Address": "Proxy Address",
-    "not available in browser": "此功能在浏览器中无法使用，请下载桌面应用"
+    "not available in browser": "此功能在浏览器中无法使用，请下载桌面应用",
+    "Data Backup and Restore": "数据备份与恢复",
+    "Chat History": "聊天记录",
+    "API KEY & License": "API KEY & License",
+    "Data Backup": "数据备份",
+    "Data Restore": "数据恢复",
+    "Export Selected Data": "导出勾选数据",
+    "Import and Restore": "导入与恢复",
+    "Upon import, changes will take effect immediately and existing data will be overwritten": "导入后将直接生效，原有数据将被覆盖",
+    "Import failed, unsupported data format": "导入失败，数据格式不支持"
 }

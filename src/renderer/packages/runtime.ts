@@ -36,6 +36,21 @@ export const delStore = (key: string) => {
     return electronAPI.invoke('delStoreValue', key)
 }
 
+export async function getAllStoreValues(): Promise<{ [key: string]: any }> {
+    if (!electronAPI) {
+        return {}
+    }
+    const json = await electronAPI.invoke('getAllStoreValues')
+    return JSON.parse(json)
+}
+
+export async function setAllStoreValues(data: { [key: string]: any }) {
+    if (!electronAPI) {
+        return
+    }
+    await electronAPI.invoke('setAllStoreValues', JSON.stringify(data))
+}
+
 export const shouldUseDarkColors = async (): Promise<boolean> => {
     if (isWeb) {
         return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -176,4 +191,15 @@ export async function ensureProxyConfig(config: { proxy?: string }) {
         return
     }
     return electronAPI.invoke('ensureProxy', JSON.stringify(config))
+}
+
+// 重启应用
+export async function relaunch() {
+    if (isWeb) {
+        location.reload()
+    }
+    if (!electronAPI) {
+        return
+    }
+    return electronAPI.invoke('relaunch')
 }

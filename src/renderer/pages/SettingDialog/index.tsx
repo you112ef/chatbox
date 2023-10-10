@@ -164,6 +164,7 @@ export default function SettingWindow(props: Props) {
                         setSettingsEdit={(updated) => {
                             setSettingsEdit({ ...settingsEdit, ...updated })
                         }}
+                        onCancel={onCancel}
                     />
                 )}
             </DialogContent>

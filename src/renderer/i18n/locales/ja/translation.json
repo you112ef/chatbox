@@ -150,5 +150,14 @@
     "advanced": "高度",
     "Network Proxy": "ネットワークプロキシ",
     "Proxy Address": "プロキシアドレス",
-    "not available in browser": "この機能はブラウザでは使用できません。すべての機能を利用するためには、デスクトップアプリをダウンロードしてください。"
+    "not available in browser": "この機能はブラウザでは使用できません。すべての機能を利用するためには、デスクトップアプリをダウンロードしてください。",
+    "Data Backup and Restore": "データのバックアップと復元",
+    "Chat History": "チャット履歴",
+    "API KEY & License": "APIキーとライセンス",
+    "Data Backup": "データバックアップ",
+    "Data Restore": "データ復元",
+    "Export Selected Data": "選択したデータをエクスポート",
+    "Import and Restore": "インポートと復元",
+    "Upon import, changes will take effect immediately and existing data will be overwritten": "インポート後、変更はすぐに反映され、既存のデータは上書きされます",
+    "Import failed, unsupported data format": "インポート失敗、サポートされていないデータ形式"
 }

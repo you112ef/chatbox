@@ -150,5 +150,14 @@
     "advanced": "Расширенные",
     "Network Proxy": "Сетевой прокси",
     "Proxy Address": "Адрес прокси",
-    "not available in browser": "Эта функция недоступна в браузере. Скачайте наше рабочее приложение, чтобы получить все возможности."
+    "not available in browser": "Эта функция недоступна в браузере. Скачайте наше рабочее приложение, чтобы получить все возможности.",
+    "Data Backup and Restore": "Резервное копирование и восстановление данных",
+    "Chat History": "История чата",
+    "API KEY & License": "API KEY & Лицензия",
+    "Data Backup": "Резервное копирование данных",
+    "Data Restore": "Восстановление данных",
+    "Export Selected Data": "Экспорт выбранных данных",
+    "Import and Restore": "Импорт и восстановление",
+    "Upon import, changes will take effect immediately and existing data will be overwritten": "После импорта изменения вступят в силу немедленно, а существующие данные будут перезаписаны",
+    "Import failed, unsupported data format": "Ошибка импорта, неподдерживаемый формат данных"
 }
