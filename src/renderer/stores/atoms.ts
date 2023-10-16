@@ -148,3 +148,5 @@ export const messageScrollingScrollPositionAtom = atom<number>(0) // 当前视�
 export const isSmallScreenAtom = atom(false)
 // 是否展示侧边栏
 export const showSidebarAtom = atom(true)
+
+export const openSearchDialogAtom = atom(false) 

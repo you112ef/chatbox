@@ -159,5 +159,14 @@
     "Export Selected Data": "Exporter les données sélectionnées",
     "Import and Restore": "Importer et restaurer",
     "Upon import, changes will take effect immediately and existing data will be overwritten": "A l'importation, les modifications prendront effet immédiatement et les données existantes seront remplacées",
-    "Import failed, unsupported data format": "Échec de l'importation, format de données non supporté"
+    "Import failed, unsupported data format": "Échec de l'importation, format de données non supporté",
+    "Search": "Recherche",
+    "Search in Current Conversation": "Rechercher dans la conversation actuelle",
+    "Search All Conversations": "Rechercher dans toutes les conversations",
+    "Type a command or search": "Tapez une commande ou recherchez",
+    "Show/Hide Search Dialog": "Afficher/Masquer la fenêtre de recherche",
+    "Navigate to previous option (within search dialog)": "Naviguer vers l'option précédente (dans la fenêtre de recherche)",
+    "Navigate to next option (within search dialog)": "Naviguer vers l'option suivante (dans la boîte de dialogue de recherche)",
+    "Select current option (within search dialog)": "Sélectionnez l'option actuelle (dans la boîte de dialogue de recherche)",
+    "No results found": "Aucun résultat trouvé"
 }

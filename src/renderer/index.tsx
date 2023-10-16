@@ -7,6 +7,7 @@ import * as api from './packages/runtime'
 import './i18n'
 import * as migration from './stores/migration'
 import './static/index.css'
+import './static/globals.css'
 
 import './packages/protect' // 引入保护代码
 ;(async () => {

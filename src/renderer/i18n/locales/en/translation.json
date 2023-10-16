@@ -159,5 +159,14 @@
     "Export Selected Data": "Export Selected Data",
     "Import and Restore": "Import and Restore",
     "Upon import, changes will take effect immediately and existing data will be overwritten": "Upon import, changes will take effect immediately and existing data will be overwritten",
-    "Import failed, unsupported data format": "Import failed, unsupported data format"
+    "Import failed, unsupported data format": "Import failed, unsupported data format",
+    "Search": "Search",
+    "Search in Current Conversation": "Search in Current Conversation",
+    "Search All Conversations": "Search All Conversations",
+    "Type a command or search": "Type a command or search",
+    "Show/Hide Search Dialog": "Show/Hide Search Dialog",
+    "Navigate to previous option (within search dialog)": "Navigate to previous option (within search dialog)",
+    "Navigate to next option (within search dialog)": "Navigate to next option (within search dialog)",
+    "Select current option (within search dialog)": "Select current option (within search dialog)",
+    "No results found": "No results found"
 }

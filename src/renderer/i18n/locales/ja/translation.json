@@ -159,5 +159,14 @@
     "Export Selected Data": "選択したデータをエクスポート",
     "Import and Restore": "インポートと復元",
     "Upon import, changes will take effect immediately and existing data will be overwritten": "インポート後、変更はすぐに反映され、既存のデータは上書きされます",
-    "Import failed, unsupported data format": "インポート失敗、サポートされていないデータ形式"
+    "Import failed, unsupported data format": "インポート失敗、サポートされていないデータ形式",
+    "Search": "検索",
+    "Search in Current Conversation": "現在の会話を検索する",
+    "Search All Conversations": "全ての会話を検索する",
+    "Type a command or search": "コマンドを入力または検索",
+    "Show/Hide Search Dialog": "検索ウィンドウの表示/非表示",
+    "Navigate to previous option (within search dialog)": "検索ダイアログで前のオプションに移動",
+    "Navigate to next option (within search dialog)": "検索ダイアログで次のオプションに移動",
+    "Select current option (within search dialog)": "現在の選択肢を選択（検索ダイアログ内）",
+    "No results found": "結果は見つかりませんでした"
 }

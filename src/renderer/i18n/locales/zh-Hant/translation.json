@@ -159,5 +159,14 @@
     "Export Selected Data": "匯出選取的資料",
     "Import and Restore": "匯入與恢復",
     "Upon import, changes will take effect immediately and existing data will be overwritten": "匯入後將直接生效，原有資料將會被覆蓋",
-    "Import failed, unsupported data format": "匯入失敗，不支持的資料格式"
+    "Import failed, unsupported data format": "匯入失敗，不支持的資料格式",
+    "Search": "搜尋",
+    "Search in Current Conversation": "搜尋當前對話",
+    "Search All Conversations": "搜尋所有對話",
+    "Type a command or search": "輸入指令或搜索",
+    "Show/Hide Search Dialog": "顯示/隱藏搜尋彈窗",
+    "Navigate to previous option (within search dialog)": "導航至上一選項（在搜尋彈窗中）",
+    "Navigate to next option (within search dialog)": "導航到下一選項（在搜尋對話框中）",
+    "Select current option (within search dialog)": "選擇當前選項（在搜尋對話框中）",
+    "No results found": "未找到任何結果"
 }

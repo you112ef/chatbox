@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { Box, IconButton, ButtonGroup, Stack, Grid, Typography, debounce, Chip, Tooltip } from '@mui/material'
+import { Button, Box, IconButton, ButtonGroup, Stack, Grid, Typography, Chip, Tooltip } from '@mui/material'
 import { Session, getMsgDisplayModelName } from '../shared/types'
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices'
 import Save from '@mui/icons-material/Save'
@@ -10,7 +10,7 @@ import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown'
 import SponsorChip from './components/SponsorChip'
 import * as api from './packages/runtime'
 import * as atoms from './stores/atoms'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import InputBox from './components/InputBox'
 import MessageList from './components/MessageList'
 import * as toastActions from './stores/toastActions'
@@ -18,6 +18,7 @@ import * as sessionActions from './stores/sessionActions'
 import * as scrollActions from './stores/scrollActions'
 import TuneIcon from '@mui/icons-material/Tune'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen'
+import SearchIcon from '@mui/icons-material/Search'
 import * as utils from './packages/utils'
 
 interface Props {
@@ -32,6 +33,9 @@ export default function MainPane(props: Props) {
 
     const atScrollTop = useAtomValue(atoms.messageScrollingAtTopAtom)
     const atScrollBottom = useAtomValue(atoms.messageScrollingAtBottomAtom)
+
+    const setOpenSearchDialog = useSetAtom(atoms.openSearchDialogAtom)
+    const openSearchDialog = () => setOpenSearchDialog(true)
 
     // 会话名称自动生成
     useEffect(() => {
@@ -143,6 +147,25 @@ export default function MainPane(props: Props) {
                     </Typography>
                     <SponsorChip sessionId={currentSession.id} />
                     <Box>
+                        <Button
+                            component="label"
+                            variant='outlined'
+                            color='inherit'
+                            startIcon={<SearchIcon />}
+                            sx={{ mr: 2 }}
+                            onClick={openSearchDialog}
+                            size='small'
+                            className='transform-none opacity-50'
+                        >
+                            <span className='justify-between transform-none text-sm' style={{ textTransform: 'none' }}>
+                                <span className='mr-1'>
+                                    {t('Search')}...
+                                </span>
+                                <span className='text-xs bg-slate-600 opacity-60 text-white border border-solid px-0.5 border-slate-600'>
+                                    Ctrl K
+                                </span>
+                            </span>
+                        </Button>
                         <IconButton
                             edge="start"
                             color="inherit"

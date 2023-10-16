@@ -26,12 +26,15 @@ export default function useShortcut() {
 function keyboardShortcut(e: KeyboardEvent) {
     const ctrlOrCmd = e.ctrlKey || e.metaKey
     const shift = e.shiftKey
+
     if (e.key === 'i' && ctrlOrCmd) {
         dom.focusMessageInput()
     }
+
     if (e.key === 'n' && ctrlOrCmd) {
         sessionActions.createEmpty()
     }
+
     if (e.key === 'Tab' && ctrlOrCmd && !shift) {
         sessionActions.switchToNext()
     }
@@ -41,6 +44,16 @@ function keyboardShortcut(e: KeyboardEvent) {
     for (let i = 1; i <= 9; i++) {
         if (e.key === i.toString() && ctrlOrCmd) {
             sessionActions.switchToIndex(i - 1)
+        }
+    }
+
+    if (e.key === 'k' && ctrlOrCmd) {
+        const store = getDefaultStore()
+        const openSearchDialog = store.get(atoms.openSearchDialogAtom)
+        if (openSearchDialog) {
+            store.set(atoms.openSearchDialogAtom, false)
+        } else {
+            store.set(atoms.openSearchDialogAtom, true)
         }
     }
 }

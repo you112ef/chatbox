@@ -159,5 +159,14 @@
     "Export Selected Data": "Экспорт выбранных данных",
     "Import and Restore": "Импорт и восстановление",
     "Upon import, changes will take effect immediately and existing data will be overwritten": "После импорта изменения вступят в силу немедленно, а существующие данные будут перезаписаны",
-    "Import failed, unsupported data format": "Ошибка импорта, неподдерживаемый формат данных"
+    "Import failed, unsupported data format": "Ошибка импорта, неподдерживаемый формат данных",
+    "Search": "Поиск",
+    "Search in Current Conversation": "Поиск в текущем разговоре",
+    "Search All Conversations": "Поиск во всех разговорах",
+    "Type a command or search": "Введи команду или поиск",
+    "Show/Hide Search Dialog": "Показать/скрыть окно поиска",
+    "Navigate to previous option (within search dialog)": "Перейти к предыдущему варианту (в диалоге поиска)",
+    "Navigate to next option (within search dialog)": "Перейти к следующему варианту (в диалоге поиска)",
+    "Select current option (within search dialog)": "Выберите текущий вариант (в диалоговом окне поиска)",
+    "No results found": "Не найдено результатов"
 }

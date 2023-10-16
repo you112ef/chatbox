@@ -360,6 +360,21 @@ export function getEmptySession(name: string = 'Untitled'): Session {
     }
 }
 
+export function getSessions() {
+    const store = getDefaultStore()
+    return store.get(atoms.sessionsAtom)
+}
+
+export function getCurrentSession() {
+    const store = getDefaultStore()
+    return store.get(atoms.currentSessionAtom)
+}
+
+export function getCurrentMessages() {
+    const store = getDefaultStore()
+    return store.get(atoms.currentMessagesAtom)
+}
+
 function mergeSettings(globalSettings: Settings, session: Session): Settings {
     if (!session.settings) {
         return globalSettings

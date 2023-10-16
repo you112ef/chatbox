@@ -22,8 +22,9 @@ import { useSystemLanguageWhenInit } from './hooks/useDefaultSystemLanguage'
 import ClearConversationListWindow from './pages/ClearConversationListWindow'
 import Sidebar from './Sidebar'
 import MainPane from './MainPane'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import * as atoms from './stores/atoms'
+import SearchDialog from './pages/SearchDialog'
 
 function Main() {
     // 是否展示菜单栏
@@ -87,7 +88,10 @@ function Main() {
                         setOpenSettingWindow={setOpenSettingWindow}
                     />
                 )}
-                <MainPane setConfigureChatConfig={setConfigureChatConfig} setSessionClean={setSessionClean} />
+                <MainPane
+                    setConfigureChatConfig={setConfigureChatConfig}
+                    setSessionClean={setSessionClean}
+                />
 
                 <SettingDialog
                     open={!!openSettingWindow}
@@ -118,6 +122,7 @@ function Main() {
                     open={openClearConversationListWindow}
                     close={() => setOpenClearConversationListWindow(false)}
                 />
+                <SearchDialog />
                 <Toasts />
             </Grid>
         </Box>
