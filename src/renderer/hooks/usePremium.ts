@@ -8,6 +8,7 @@ import * as api from '../packages/runtime'
 import { FetchError } from 'ofetch'
 import { ModelProvider } from '../../shared/types'
 import omit from 'lodash/omit'
+import * as Sentry from '@sentry/react'
 
 export function usePremium() {
     const [settings, setSettings] = useAtom(settingsAtom)
@@ -46,15 +47,15 @@ export function usePremium() {
                 })
             }
             // 不管是否第一次在该设备激活，最后都要验证 license 在当前设备是否有效
-            return validateLicense(licenseKey, instanceId)
+            return await validateLicense(licenseKey, instanceId)
         },
         {
             fallbackData: (settings.licenseInstances || {})[settings.licenseKey || ''] ? { valid: true } : undefined,
             revalidateOnFocus: false,
-            dedupingInterval: 10 * 60 * 1000,
+            dedupingInterval: 20 * 60 * 1000,
             onError(err) {
                 if (err instanceof FetchError) {
-                    if (err.status && err.status >= 400 && err.status < 500) {
+                    if (err.status && [401, 403].includes(err.status)) {
                         setSettings((settings) => ({
                             ...settings,
                             licenseKey: '',
@@ -62,6 +63,7 @@ export function usePremium() {
                         }))
                     }
                 }
+                Sentry.captureException(err)
             },
         }
     )

@@ -46,6 +46,7 @@ type ValidateLicenseKeyResponse = {
 export async function validateLicense(key: string, instanceId: string): Promise<ValidateLicenseKeyResponse> {
     const resp = await ofetch('https://api.lemonsqueezy.com/v1/licenses/validate', {
         method: 'POST',
+        retry: 5,
         body: {
             license_key: key,
             instance_id: instanceId,
