@@ -1,4 +1,10 @@
 const changelog = `
+### v1.1.0
+
+- Now you can search messages from current chat or all chats
+- Data backup and restore (data import/export)
+- Fixed some minor issues
+
 ### v1.0.4
 
 - Keep the previous window size and position upon startup (#30)
