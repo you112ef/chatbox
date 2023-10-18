@@ -85,6 +85,7 @@ export default function SearchDialog(props: Props) {
         const fuse = new Fuse(searchItems, {
             keys: ['content'],
             includeMatches: true,
+            threshold: 0.3,
         })
 
         const rawResult = fuse.search(searchInput, { limit: 100 })
