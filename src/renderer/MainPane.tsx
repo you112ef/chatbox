@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { Button, Box, IconButton, ButtonGroup, Stack, Grid, Typography, Chip, Tooltip } from '@mui/material'
 import { Session, getMsgDisplayModelName } from '../shared/types'
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices'
@@ -13,13 +13,11 @@ import * as atoms from './stores/atoms'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import InputBox from './components/InputBox'
 import MessageList from './components/MessageList'
-import * as toastActions from './stores/toastActions'
 import * as sessionActions from './stores/sessionActions'
 import * as scrollActions from './stores/scrollActions'
 import TuneIcon from '@mui/icons-material/Tune'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 import SearchIcon from '@mui/icons-material/Search'
-import * as utils from './packages/utils'
 
 interface Props {
     setConfigureChatConfig(session: Session | null): void
@@ -126,15 +124,15 @@ export default function MainPane(props: Props) {
                             sx={{ mr: 2 }}
                             onClick={openSearchDialog}
                             size='small'
-                            className='transform-none opacity-50'
+                            className='transform-none opacity-30'
                         >
                             <span className='justify-between transform-none text-sm' style={{ textTransform: 'none' }}>
                                 <span className='mr-1'>
                                     {t('Search')}...
                                 </span>
-                                <span className='text-xs bg-slate-600 opacity-60 text-white border border-solid px-0.5 border-slate-600'>
+                                {/* <span className='text-xs bg-slate-600 opacity-60 text-white border border-solid px-0.5 border-slate-600'>
                                     Ctrl K
-                                </span>
+                                </span> */}
                             </span>
                         </Button>
                         <IconButton
