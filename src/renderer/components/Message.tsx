@@ -5,7 +5,6 @@ import MenuItem from '@mui/material/MenuItem'
 import {
     IconButton,
     Divider,
-    ListItem,
     Typography,
     Grid,
     TextField,
@@ -45,9 +44,8 @@ import { currsentSessionPicUrlAtom, showTokenUsedAtom } from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
 import * as toastActions from '../stores/toastActions'
 import * as settingActions from '../stores/settingActions'
-import md from '../packages/markdown'
+import Markdown from '@/components/Markdown'
 import '../static/Block.css'
-import '../../../node_modules/highlight.js/styles/github-dark.css'
 
 export interface Props {
     id?: string
@@ -309,21 +307,17 @@ function _Message(props: Props) {
                             />
                         ) : (
                             <>
-                                <Box
-                                    sx={{
-                                        wordBreak: 'break-word',
-                                        wordWrap: 'break-word',
-                                    }}
-                                    className={'msg-content ' + (msg.role === 'system' ? 'msg-content-system' : '')}
-                                    dangerouslySetInnerHTML={{
-                                        __html:
-                                            md.render(
+                                <Box className={'msg-content ' + (msg.role === 'system' ? 'msg-content-system' : '')}>
+                                    <Markdown>
+                                        {
+                                            (
                                                 typeof msg.content === 'string'
                                                     ? msg.content
                                                     : JSON.stringify(msg.content)
-                                            ) + (msg.generating && msg.content !== '...' ? '...' : ''),
-                                    }}
-                                />
+                                            ) + (msg.generating ? '...' : '')
+                                        }
+                                    </Markdown>
+                                </Box>
                                 {msg.error && (
                                     <Alert icon={false} severity="error">
                                         {msg.error}
@@ -367,10 +361,10 @@ function _Message(props: Props) {
                                     opacity: 1,
                                     ...(fixedButtonGroup
                                         ? {
-                                              position: 'fixed',
-                                              bottom: '100px',
-                                              zIndex: 100,
-                                          }
+                                            position: 'fixed',
+                                            bottom: '100px',
+                                            zIndex: 100,
+                                        }
                                         : {}),
                                     backgroundColor:
                                         theme.palette.mode === 'dark'

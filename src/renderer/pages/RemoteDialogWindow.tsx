@@ -6,7 +6,7 @@ import { getDefaultStore } from 'jotai'
 import * as api from '../packages/runtime'
 import { settingsAtom } from '../stores/atoms'
 import storage from '../storage'
-import md from '../packages/markdown'
+import Markdown from '@/components/Markdown'
 
 const { useEffect, useState } = React
 
@@ -56,15 +56,9 @@ export default function RemoteDialogWindow() {
         <Dialog open={open} onClose={onClose}>
             <DialogContent>
                 <DialogContentText>
-                    <Box
-                        sx={{
-                            wordBreak: 'break-word',
-                            wordWrap: 'break-word',
-                        }}
-                        dangerouslySetInnerHTML={{
-                            __html: md.render(dialogConfig?.markdown || ''),
-                        }}
-                    />
+                    <Markdown>
+                        {dialogConfig?.markdown || ''}
+                    </Markdown>
                     <Box>
                         {dialogConfig?.buttons.map((button, index) => (
                             <Button onClick={() => api.openLink(button.url)}>{button.label}</Button>

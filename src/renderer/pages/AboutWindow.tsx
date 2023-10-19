@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
     Button,
     Paper,
@@ -17,10 +17,10 @@ import * as api from '../packages/runtime'
 import * as remote from '../packages/remote'
 import { SponsorAboutBanner } from '../../shared/types'
 import * as i18n from '../i18n'
-import md from '../packages/markdown'
 import useVersion from '../hooks/useVersion'
 import * as atoms from '../stores/atoms'
 import { useAtomValue } from 'jotai'
+import Markdown from '@/components/Markdown'
 
 interface Props {
     open: boolean
@@ -189,7 +189,11 @@ export default function AboutWindow(props: Props) {
                 </Box>
                 <Box>
                     <h4 className="text-center mb-1 mt-8">{t('Changelog')}</h4>
-                    <Box className="px-6" dangerouslySetInnerHTML={{ __html: md.render(i18n.changelog()) }} />
+                    <Box className="px-6">
+                        <Markdown>
+                            {i18n.changelog()}
+                        </Markdown>
+                    </Box>
                 </Box>
             </DialogContent>
             <DialogActions>

@@ -75,11 +75,14 @@ export function startAutoScroll(
         id: newId,
         task: newTask,
         timer: setInterval(() => {
+            if (!autoScrollTask || autoScrollTask.id !== newId) {
+                return
+            }
             const succeed = scrollToMessage(msgId, align, behavior)
             if (!succeed) {
                 clearAutoScroll()
             }
-        }, 100),
+        }, 400),
     }
     return newId
 }
