@@ -64,7 +64,7 @@ export default function ChatboxAISetting(props: ModelConfigProps) {
                         </span>
                     )}
                     <Typography sx={{ opacity: '1' }}>
-                        {t('Chatbox AI provides an affordable solution to boost productivity with AI')}
+                        {t('Chatbox AI offers a user-friendly AI solution to help you enhance productivity')}
                     </Typography>
                     <Box>
                         {[t('Fast access to AI services'), t('Hassle-free setup'), t('Ideal for work and study')].map(
