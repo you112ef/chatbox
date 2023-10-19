@@ -2,6 +2,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
+import remarkBreaks from 'remark-breaks'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/material'
 import { useMemo } from 'react'
@@ -16,7 +17,7 @@ import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for 
 export default function Markdown(props: any) {
     return (
         <ReactMarkdown
-            remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]}
+            remarkPlugins={[remarkGfm, remarkMath, remarkBreaks]} rehypePlugins={[rehypeKatex]}
             className='break-words'
             components={{
                 code: CodeBlock,
