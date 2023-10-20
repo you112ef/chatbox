@@ -85,7 +85,6 @@ export default function SettingWindow(props: Props) {
                     <Tabs
                         value={currentTab}
                         onChange={(_, value) => setCurrentTab(value)}
-                        centered
                         variant="scrollable"
                         scrollButtons
                         allowScrollButtonsMobile

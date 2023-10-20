@@ -146,8 +146,9 @@ export default function CopilotWindow(props: Props) {
                         overflowY: 'auto',
                     }}
                 >
-                    {list.map((item) => (
+                    {list.map((item, ix) => (
                         <MiniItem
+                            key={`${item.id}_${ix}`}
                             mode="local"
                             detail={item}
                             useMe={() => useCopilot(item)}
@@ -186,8 +187,8 @@ export default function CopilotWindow(props: Props) {
                         overflowY: 'auto',
                     }}
                 >
-                    {remoteStore.copilots.map((item) => (
-                        <MiniItem mode="remote" detail={item} useMe={() => useCopilot(item)} />
+                    {remoteStore.copilots.map((item, ix) => (
+                        <MiniItem key={`${item.id}_${ix}`} mode="remote" detail={item} useMe={() => useCopilot(item)} />
                     ))}
                 </div>
             </DialogContent>
