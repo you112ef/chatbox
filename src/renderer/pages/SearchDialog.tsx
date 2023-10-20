@@ -1,29 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
-import {
-    Dialog,
-    DialogContent,
-    useTheme,
-} from '@mui/material'
+import { Dialog, DialogContent, useTheme } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import * as sessionAction from '../stores/sessionActions'
 import * as scrollActions from '../stores/scrollActions'
 import { ScanSearch, Loader2 } from 'lucide-react'
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from '@/components/ui/command'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Session } from 'src/shared/types'
 import { Marker } from 'react-mark.js'
 import { cn } from '@/lib/utils'
 import { useAtom } from 'jotai'
 import * as atoms from '@/stores/atoms'
 
-interface Props {
-}
+interface Props {}
 
 export default function SearchDialog(props: Props) {
     const [open, setOpen] = useAtom(atoms.openSearchDialogAtom)
@@ -51,12 +39,11 @@ export default function SearchDialog(props: Props) {
     const onSearchClick = (flag: 'current-session' | 'global') => {
         setMode('search-result')
         setLoading(Math.random())
-        const searchSessions: Session[] = flag === 'current-session'
-            ? [sessionAction.getCurrentSession()]
-            : sessionAction.getSessions()
+        const searchSessions: Session[] =
+            flag === 'current-session' ? [sessionAction.getCurrentSession()] : sessionAction.getSessions()
 
-        const safeInput = searchInput.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-        const regexp = new RegExp(safeInput, 'i');
+        const safeInput = searchInput.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
+        const regexp = new RegExp(safeInput, 'i')
         const result: Session[] = []
         for (const session of searchSessions) {
             const matchedMessages = session.messages.filter((message) => {
@@ -84,10 +71,7 @@ export default function SearchDialog(props: Props) {
             maxWidth="sm"
         >
             <DialogContent>
-                <Command className=""
-                    shouldFilter={false}
-                    filter={(value, search) => 1}
-                >
+                <Command className="" shouldFilter={false} filter={(value, search) => 1}>
                     <CommandInput
                         ref={ref}
                         autoFocus
@@ -100,35 +84,40 @@ export default function SearchDialog(props: Props) {
                         )}
                         placeholder={t('Type a command or search') + '...'}
                     />
-                    {
-                        mode === 'command' && (
-                            <CommandList>
-                                <CommandEmpty>{t('No results found')}</CommandEmpty>
-                                <CommandGroup heading={t('Search')}>
-                                    <CommandItem
-                                        className={cn(
-                                            theme.palette.mode === 'dark'
-                                                ? 'aria-selected:bg-slate-500'
-                                                : 'aria-selected:bg-slate-100'
-                                        )}
-                                        onSelect={() => onSearchClick('current-session')}
-                                    >
-                                        <ScanSearch className="mr-2 h-4 w-4" />
-                                        <span>{t('Search in Current Conversation')}{searchInput.length > 0 ? ` "${searchInput}"` : ''}</span>
-                                    </CommandItem>
-                                    <CommandItem
-                                        className={cn(
-                                            theme.palette.mode === 'dark'
-                                                ? 'aria-selected:bg-slate-500'
-                                                : 'aria-selected:bg-slate-100'
-                                        )}
-                                        onSelect={() => onSearchClick('global')}
-                                    >
-                                        <ScanSearch className="mr-2 h-4 w-4" />
-                                        <span>{t('Search All Conversations')}{searchInput.length > 0 ? ` "${searchInput}"` : ''}</span>
-                                    </CommandItem>
-                                </CommandGroup>
-                                {/* <CommandGroup heading="对话">
+                    {mode === 'command' && (
+                        <CommandList>
+                            <CommandEmpty>{t('No results found')}</CommandEmpty>
+                            <CommandGroup heading={t('Search')}>
+                                <CommandItem
+                                    className={cn(
+                                        theme.palette.mode === 'dark'
+                                            ? 'aria-selected:bg-slate-500'
+                                            : 'aria-selected:bg-slate-100'
+                                    )}
+                                    onSelect={() => onSearchClick('current-session')}
+                                >
+                                    <ScanSearch className="mr-2 h-4 w-4" />
+                                    <span>
+                                        {t('Search in Current Conversation')}
+                                        {searchInput.length > 0 ? ` "${searchInput}"` : ''}
+                                    </span>
+                                </CommandItem>
+                                <CommandItem
+                                    className={cn(
+                                        theme.palette.mode === 'dark'
+                                            ? 'aria-selected:bg-slate-500'
+                                            : 'aria-selected:bg-slate-100'
+                                    )}
+                                    onSelect={() => onSearchClick('global')}
+                                >
+                                    <ScanSearch className="mr-2 h-4 w-4" />
+                                    <span>
+                                        {t('Search All Conversations')}
+                                        {searchInput.length > 0 ? ` "${searchInput}"` : ''}
+                                    </span>
+                                </CommandItem>
+                            </CommandGroup>
+                            {/* <CommandGroup heading="对话">
                             <CommandItem>
                                 <ScanSearch className="mr-2 h-4 w-4" />
                                 <span>创建新对话</span>
@@ -156,61 +145,56 @@ export default function SearchDialog(props: Props) {
                                 <CommandShortcut>⌘S</CommandShortcut>
                             </CommandItem>
                         </CommandGroup> */}
-                            </CommandList>
-                        )
-                    }
-                    {
-                        mode === 'search-result' && loading && (
-                            <div className="flex justify-center items-center">
-                                <Loader2 className="animate-spin" />
-                            </div>
-                        )
-                    }
-                    {
-                        mode === 'search-result' && !loading && (
-                            <CommandList>
-                                <CommandEmpty>{t('No results found')}</CommandEmpty>
-                                {searchResult.map((result, i) => (
-                                    <CommandGroup
-                                        key={i}
-                                        heading={`${t('chat')} "${result.name}":`}
-                                        className={cn(
-                                            '[&_[cmdk-group-heading]]:font-bold',
-                                            '[&_[cmdk-group-heading]]:opacity-50'
-                                        )}
-                                    >
-                                        {result.messages.map((message, j) => (
-                                            <CommandItem
-                                                key={`${i}-${j}`}
-                                                className={cn(
-                                                    theme.palette.mode === 'dark' ? 'bg-slate-600' : 'bg-slate-50',
-                                                    theme.palette.mode === 'dark'
-                                                        ? 'aria-selected:bg-slate-500'
-                                                        : 'aria-selected:bg-slate-200',
-                                                    'my-1',
-                                                    'cursor-pointer',
-                                                    'bg-opacity-50'
-                                                )}
-                                                onSelect={() => {
-                                                    sessionAction.switchCurrentSession(result.id)
-                                                    setTimeout(() => {
-                                                        scrollActions.scrollToMessage(message.id)
-                                                    }, 200)
-                                                    setOpen(false)
-                                                }}
-                                            >
-                                                {/* 下面这个隐藏元素，是为了避免这个问题：
+                        </CommandList>
+                    )}
+                    {mode === 'search-result' && loading && (
+                        <div className="flex justify-center items-center">
+                            <Loader2 className="animate-spin" />
+                        </div>
+                    )}
+                    {mode === 'search-result' && !loading && (
+                        <CommandList>
+                            <CommandEmpty>{t('No results found')}</CommandEmpty>
+                            {searchResult.map((result, i) => (
+                                <CommandGroup
+                                    key={i}
+                                    heading={`${t('chat')} "${result.name}":`}
+                                    className={cn(
+                                        '[&_[cmdk-group-heading]]:font-bold',
+                                        '[&_[cmdk-group-heading]]:opacity-50'
+                                    )}
+                                >
+                                    {result.messages.map((message, j) => (
+                                        <CommandItem
+                                            key={`${i}-${j}`}
+                                            className={cn(
+                                                theme.palette.mode === 'dark' ? 'bg-slate-600' : 'bg-slate-50',
+                                                theme.palette.mode === 'dark'
+                                                    ? 'aria-selected:bg-slate-500'
+                                                    : 'aria-selected:bg-slate-200',
+                                                'my-1',
+                                                'cursor-pointer',
+                                                'bg-opacity-50'
+                                            )}
+                                            onSelect={() => {
+                                                sessionAction.switchCurrentSession(result.id)
+                                                setTimeout(() => {
+                                                    scrollActions.scrollToMessage(message.id)
+                                                }, 200)
+                                                setOpen(false)
+                                            }}
+                                        >
+                                            {/* 下面这个隐藏元素，是为了避免这个问题：
                                                         当搜索结果列表中出现重复的元素（相同的消息），此时键盘上下键选中第二条重复消息，继续按向下键会错误切换到第一条重复消息；并且当选中其中一条消息时，重复的消息同样会有选中的显示样式。
                                                         这些异常都会影响使用。我猜测可能和默认行为是根据元素内容进行判断的，因此加上这个唯一的隐藏元素可以规避问题。 */}
-                                                <span className="hidden">{message.id}</span>
-                                                <Marker mark={searchResultMarks}>{message.content}</Marker>
-                                            </CommandItem>
-                                        ))}
-                                    </CommandGroup>
-                                ))}
-                            </CommandList>
-                        )
-                    }
+                                            <span className="hidden">{message.id}</span>
+                                            <Marker mark={searchResultMarks}>{message.content}</Marker>
+                                        </CommandItem>
+                                    ))}
+                                </CommandGroup>
+                            ))}
+                        </CommandList>
+                    )}
                 </Command>
             </DialogContent>
         </Dialog>

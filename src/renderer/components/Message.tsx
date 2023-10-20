@@ -309,13 +309,8 @@ function _Message(props: Props) {
                             <>
                                 <Box className={'msg-content ' + (msg.role === 'system' ? 'msg-content-system' : '')}>
                                     <Markdown>
-                                        {
-                                            (
-                                                typeof msg.content === 'string'
-                                                    ? msg.content
-                                                    : JSON.stringify(msg.content)
-                                            ) + (msg.generating ? '...' : '')
-                                        }
+                                        {(typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)) +
+                                            (msg.generating ? '...' : '')}
                                     </Markdown>
                                 </Box>
                                 {msg.error && (
@@ -361,10 +356,10 @@ function _Message(props: Props) {
                                     opacity: 1,
                                     ...(fixedButtonGroup
                                         ? {
-                                            position: 'fixed',
-                                            bottom: '100px',
-                                            zIndex: 100,
-                                        }
+                                              position: 'fixed',
+                                              bottom: '100px',
+                                              zIndex: 100,
+                                          }
                                         : {}),
                                     backgroundColor:
                                         theme.palette.mode === 'dark'

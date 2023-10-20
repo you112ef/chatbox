@@ -88,10 +88,7 @@ function Main() {
                         setOpenSettingWindow={setOpenSettingWindow}
                     />
                 )}
-                <MainPane
-                    setConfigureChatConfig={setConfigureChatConfig}
-                    setSessionClean={setSessionClean}
-                />
+                <MainPane setConfigureChatConfig={setConfigureChatConfig} setSessionClean={setSessionClean} />
 
                 <SettingDialog
                     open={!!openSettingWindow}

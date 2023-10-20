@@ -149,4 +149,4 @@ export const isSmallScreenAtom = atom(false)
 // 是否展示侧边栏
 export const showSidebarAtom = atom(true)
 
-export const openSearchDialogAtom = atom(false) 
+export const openSearchDialogAtom = atom(false)

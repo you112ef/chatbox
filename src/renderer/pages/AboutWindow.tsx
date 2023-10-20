@@ -190,9 +190,7 @@ export default function AboutWindow(props: Props) {
                 <Box>
                     <h4 className="text-center mb-1 mt-8">{t('Changelog')}</h4>
                     <Box className="px-6">
-                        <Markdown>
-                            {i18n.changelog()}
-                        </Markdown>
+                        <Markdown>{i18n.changelog()}</Markdown>
                     </Box>
                 </Box>
             </DialogContent>

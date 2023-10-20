@@ -56,9 +56,7 @@ export default function RemoteDialogWindow() {
         <Dialog open={open} onClose={onClose}>
             <DialogContent>
                 <DialogContentText>
-                    <Markdown>
-                        {dialogConfig?.markdown || ''}
-                    </Markdown>
+                    <Markdown>{dialogConfig?.markdown || ''}</Markdown>
                     <Box>
                         {dialogConfig?.buttons.map((button, index) => (
                             <Button onClick={() => api.openLink(button.url)}>{button.label}</Button>

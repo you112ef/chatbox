@@ -118,18 +118,16 @@ export default function MainPane(props: Props) {
                     <Box>
                         <Button
                             component="label"
-                            variant='outlined'
-                            color='inherit'
+                            variant="outlined"
+                            color="inherit"
                             startIcon={<SearchIcon />}
                             sx={{ mr: 2 }}
                             onClick={openSearchDialog}
-                            size='small'
-                            className='transform-none opacity-30'
+                            size="small"
+                            className="transform-none opacity-30"
                         >
-                            <span className='justify-between transform-none text-sm' style={{ textTransform: 'none' }}>
-                                <span className='mr-1'>
-                                    {t('Search')}...
-                                </span>
+                            <span className="justify-between transform-none text-sm" style={{ textTransform: 'none' }}>
+                                <span className="mr-1">{t('Search')}...</span>
                                 {/* <span className='text-xs bg-slate-600 opacity-60 text-white border border-solid px-0.5 border-slate-600'>
                                     Ctrl K
                                 </span> */}

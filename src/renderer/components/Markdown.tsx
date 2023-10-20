@@ -8,7 +8,7 @@ import { useTheme } from '@mui/material'
 import { useMemo } from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import * as utils from '../packages/utils'
 import * as toastActions from '../stores/toastActions'
 
@@ -17,8 +17,9 @@ import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for 
 export default function Markdown(props: any) {
     return (
         <ReactMarkdown
-            remarkPlugins={[remarkGfm, remarkMath, remarkBreaks]} rehypePlugins={[rehypeKatex]}
-            className='break-words'
+            remarkPlugins={[remarkGfm, remarkMath, remarkBreaks]}
+            rehypePlugins={[rehypeKatex]}
+            className="break-words"
             components={{
                 code: CodeBlock,
                 a: ({ node, ...props }) => (
@@ -30,7 +31,7 @@ export default function Markdown(props: any) {
                             e.stopPropagation()
                         }}
                     />
-                )
+                ),
             }}
             {...props}
         />
@@ -46,7 +47,9 @@ export function CodeBlock(props: any) {
         const language = match?.[1] || 'text'
         if (!String(children).includes('\n')) {
             return (
-                <code {...rest} className={className}
+                <code
+                    {...rest}
+                    className={className}
                     style={{
                         backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#f1f1f1',
                         padding: '2px 4px',
@@ -62,23 +65,28 @@ export function CodeBlock(props: any) {
         }
         return (
             <div>
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    width: '100%',
-                    backgroundColor: 'rgb(50, 50, 50)',
-                    fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-                    borderTopLeftRadius: '0.3rem',
-                    borderTopRightRadius: '0.3rem',
-                    borderBottomLeftRadius: '0',
-                    borderBottomRightRadius: '0',
-                }} >
-                    <span style={{
-                        textDecoration: 'none',
-                        color: 'gray',
-                        padding: '2px',
-                        margin: '2px 10px 0 10px',
-                    }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                        backgroundColor: 'rgb(50, 50, 50)',
+                        fontFamily:
+                            'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                        borderTopLeftRadius: '0.3rem',
+                        borderTopRightRadius: '0.3rem',
+                        borderBottomLeftRadius: '0',
+                        borderBottomRightRadius: '0',
+                    }}
+                >
+                    <span
+                        style={{
+                            textDecoration: 'none',
+                            color: 'gray',
+                            padding: '2px',
+                            margin: '2px 10px 0 10px',
+                        }}
+                    >
                         {'<' + language.toUpperCase() + '>'}
                     </span>
                     <ContentCopyIcon
@@ -92,7 +100,7 @@ export function CodeBlock(props: any) {
                             ':hover': {
                                 backgroundColor: 'rgb(80, 80, 80)',
                                 opacity: 1,
-                            }
+                            },
                         }}
                         onClick={() => {
                             utils.copyToClipboard(String(children))
