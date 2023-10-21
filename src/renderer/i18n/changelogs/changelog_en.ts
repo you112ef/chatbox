@@ -1,4 +1,11 @@
 const changelog = `
+### v1.1.1
+
+- Fixed an issue where message content cannot be selected during generation process
+- Improved the performance of the search function, making it faster and more accurate
+- Adjusted the layout style of messages
+- Fixed some other minor issues
+
 ### v1.1.0
 
 - Now you can search messages from current chat or all chats
