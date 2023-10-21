@@ -428,18 +428,32 @@ async function requestClaude(
     return handleSSE(response, sseHandler)
 }
 
-async function post(url: string, headers: Record<string, string>, body: Record<string, any>, signal?: AbortSignal) {
-    try {
-        const res = await fetch(url, {
-            method: 'POST',
-            headers,
-            body: JSON.stringify(body),
-            signal,
-        })
-        return res
-    } catch (e) {
-        const err = e as Error
-        const origin = new URL(url).origin
-        throw new NetworkError(err.message, origin)
+async function post(
+    url: string,
+    headers: Record<string, string>,
+    body: Record<string, any>,
+    signal?: AbortSignal,
+    retry = 3
+) {
+    let networkError: NetworkError | null = null
+    for (let i = 0; i < retry + 1; i++) {
+        try {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(body),
+                signal,
+            })
+            return res
+        } catch (e) {
+            const err = e as Error
+            const origin = new URL(url).origin
+            networkError = new NetworkError(err.message, origin)
+        }
+    }
+    if (networkError) {
+        throw networkError
+    } else {
+        throw new Error('Unknown error')
     }
 }
