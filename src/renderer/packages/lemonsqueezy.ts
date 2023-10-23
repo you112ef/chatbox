@@ -12,21 +12,25 @@ type ActivateResponse =
     | { activated: false; error: string }
 
 export async function activateLicense(key: string, instanceName: string) {
-    const resp = await ofetch<ActivateResponse>('https://api.lemonsqueezy.com/v1/licenses/activate', {
+    const res = await fetch('https://api.lemonsqueezy.com/v1/licenses/activate', {
         method: 'POST',
-        body: {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
             license_key: key,
             instance_name: instanceName,
-        },
+        }),
     })
-    if (!resp.activated) {
-        throw new Error(resp.error)
+    const json: ActivateResponse = await res.json()
+    if (!json.activated) {
+        throw new Error(json.error)
     }
     const remoteConfig = await remote.getRemoteConfig('product_ids')
-    if (!remoteConfig.product_ids.includes(resp.meta.product_id)) {
+    if (!remoteConfig.product_ids.includes(json.meta.product_id)) {
         throw new Error('Unmatching product')
     }
-    return resp.instance.id
+    return json.instance.id
 }
 
 export async function deactivateLicense(key: string, instanceId: string) {

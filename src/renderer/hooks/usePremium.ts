@@ -12,10 +12,11 @@ import * as Sentry from '@sentry/react'
 
 export function usePremium() {
     const [settings, setSettings] = useAtom(settingsAtom)
+    const [activateNo, setActivateNo] = useState('init')    // 用于在点击激活按钮后强制刷新 license 激活状态
 
     // license activation
     const activateQuery = useSWR<{ valid: boolean }>(
-        `license:${settings.licenseKey || ''}`,
+        `license:${settings.licenseKey || ''}:${activateNo}`,
         async () => {
             const licenseKey = settings.licenseKey || ''
             if (!licenseKey) {
@@ -74,6 +75,7 @@ export function usePremium() {
             aiProvider: ModelProvider.ChatboxAI,
             licenseKey: licenseKey,
         }))
+        setActivateNo(Math.random().toString()) // 强制刷新 license 激活状态
     }
 
     const deactivate = async () => {
