@@ -11,6 +11,7 @@ import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import * as utils from '../packages/utils'
 import * as toastActions from '../stores/toastActions'
+import { sanitizeUrl } from '@braintree/sanitize-url'
 
 import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for you
 
@@ -20,6 +21,9 @@ export default function Markdown(props: any) {
             remarkPlugins={[remarkGfm, remarkMath, remarkBreaks]}
             rehypePlugins={[rehypeKatex]}
             className="break-words"
+            // react-markdown 默认的 defaultUrlTransform 会错误地编码 URL 中的 Query，比如 & 会被编码成 &amp;
+            // 改用其他库，同时也可以避免 XSS 攻击
+            urlTransform={(url) => sanitizeUrl(url)}
             components={{
                 code: CodeBlock,
                 a: ({ node, ...props }) => (
