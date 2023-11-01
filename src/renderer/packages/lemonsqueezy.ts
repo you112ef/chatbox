@@ -36,6 +36,7 @@ export async function activateLicense(key: string, instanceName: string) {
 export async function deactivateLicense(key: string, instanceId: string) {
     await ofetch('https://api.lemonsqueezy.com/v1/licenses/deactivate', {
         method: 'POST',
+        retry: 5,
         body: {
             license_key: key,
             instance_id: instanceId,

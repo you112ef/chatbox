@@ -79,16 +79,16 @@ export function usePremium() {
     }
 
     const deactivate = async () => {
-        const licenseKey = settings.licenseKey || ''
-        const licenseInstances = settings.licenseInstances || {}
-        if (licenseKey && licenseInstances[licenseKey]) {
-            await deactivateLicense(licenseKey, licenseInstances[licenseKey])
-        }
         setSettings((settings) => ({
             ...settings,
             licenseKey: '',
             licenseInstances: omit(settings.licenseInstances, settings.licenseKey || ''),
         }))
+        const licenseKey = settings.licenseKey || ''
+        const licenseInstances = settings.licenseInstances || {}
+        if (licenseKey && licenseInstances[licenseKey]) {
+            await deactivateLicense(licenseKey, licenseInstances[licenseKey])
+        }
     }
 
     return {
