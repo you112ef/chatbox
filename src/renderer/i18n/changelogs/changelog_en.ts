@@ -1,4 +1,10 @@
 const changelog = `
+### v1.1.2
+
+- Optimized the interaction experience of the search box
+- Fixed the scrolling issue with new messages
+- Fixed some network related issues
+
 ### v1.1.1
 
 - Fixed an issue where message content cannot be selected during generation process
