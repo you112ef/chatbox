@@ -93,7 +93,8 @@ export function sortSessions(sessions: Session[]): Session[] {
 
 // current session and messages
 
-const _currentSessionIdCachedAtom = atom<string | null>(null) // 不对外暴露，属于内部状态
+// 缓存在 localStorage，不对外暴露，属于内部状态
+const _currentSessionIdCachedAtom = atomWithStorage<string | null>('_currentSessionIdCachedAtom', null)
 export const currentSessionIdAtom = atom(
     (get) => {
         const idCached = get(_currentSessionIdCachedAtom)
