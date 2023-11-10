@@ -126,8 +126,11 @@ function _Message(props: Props) {
     }
     if (showTokenCount && !msg.generating) {
         // 兼容旧版本没有提前计算的消息
+        if (msg.tokenCount === undefined) {
+            msg.tokenCount = utils.estimateTokensFromMessages([msg])
+        }
         tips.push(
-            `token count: ${msg.tokenCount !== undefined ? msg.tokenCount : utils.estimateTokensFromMessages([msg])}`
+            `token count: ${msg.tokenCount}`
         )
     }
     if (showTokenUsed && msg.role === 'assistant' && !msg.generating) {
