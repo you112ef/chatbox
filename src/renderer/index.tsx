@@ -8,8 +8,16 @@ import './i18n'
 import * as migration from './stores/migration'
 import './static/index.css'
 import './static/globals.css'
+import { CHATBOX_BUILD_TARGET } from './variables'
 
-import './packages/protect' // 引入保护代码
+// 引入保护代码
+import './setup/protect'
+
+// 引入移动端安全区域代码，主要为了解决异形屏幕的问题
+if (CHATBOX_BUILD_TARGET === 'mobile_app') {
+    import('./setup/mobile_safe_area')
+}
+
 ;(async () => {
     const version = await api.getVersion().catch(() => 'unknown')
     Sentry.init({
@@ -52,4 +60,7 @@ function setViewportHeight() {
     document.documentElement.style.setProperty('--vh', `${vh}px`)
 }
 setViewportHeight()
+
 window.addEventListener('resize', setViewportHeight)
+window.addEventListener('orientationchange', setViewportHeight);
+screen.orientation.addEventListener("change", setViewportHeight);

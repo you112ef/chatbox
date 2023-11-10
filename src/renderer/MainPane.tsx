@@ -18,6 +18,7 @@ import * as scrollActions from './stores/scrollActions'
 import TuneIcon from '@mui/icons-material/Tune'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 import SearchIcon from '@mui/icons-material/Search'
+import { drawerWidth } from './Sidebar'
 
 interface Props {
     setConfigureChatConfig(session: Session | null): void
@@ -57,7 +58,14 @@ export default function MainPane(props: Props) {
     }
 
     return (
-        <Grid item xs className="h-full">
+        <Box className="h-full w-full"
+            sx={{
+                flexGrow: 1,
+                ...(showSidebar && {
+                    marginLeft: { sm: `calc(${drawerWidth}px - 1rem)` },
+                }),
+            }}
+        >
             <Stack className="h-full relative">
                 <Box className="flex flex-row">
                     {!showSidebar && (
@@ -184,6 +192,6 @@ export default function MainPane(props: Props) {
                     <InputBox currentSessionId={currentSession.id} />
                 </Box>
             </Stack>
-        </Grid>
+        </Box>
     )
 }

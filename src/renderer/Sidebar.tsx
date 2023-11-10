@@ -1,18 +1,16 @@
-import React, { useRef } from 'react'
+import React, { useRef } from 'react';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import {
-    Toolbar,
     Box,
     Badge,
     ListItemText,
     MenuList,
     IconButton,
     Stack,
-    Grid,
     MenuItem,
     ListItemIcon,
     Typography,
     Divider,
-    useTheme,
 } from '@mui/material'
 import { Session } from '../shared/types'
 import SettingsIcon from '@mui/icons-material/Settings'
@@ -28,7 +26,12 @@ import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 import { useSetAtom } from 'jotai'
 import * as atoms from './stores/atoms'
 
+export const drawerWidth = 240;
+
 interface Props {
+    open: boolean
+    swtichOpen(open: boolean): void
+
     setConfigureChatConfig(session: Session | null): void
     openClearConversationListWindow(): void
     openCopilotWindow(): void
@@ -38,7 +41,6 @@ interface Props {
 
 export default function Sidebar(props: Props) {
     const { t } = useTranslation()
-    const theme = useTheme()
     const versionHook = useVersion()
     const setShowSidebar = useSetAtom(atoms.showSidebarAtom)
 
@@ -51,32 +53,13 @@ export default function Sidebar(props: Props) {
         window.gtag('event', 'create_new_conversation', { event_category: 'user' })
     }
 
-    return (
-        <Grid
-            item
-            sx={{
-                height: '100%',
-                [theme.breakpoints.down('sm')]: {
-                    position: 'absolute',
-                    zIndex: 100,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    top: 0,
-                },
-            }}
-        >
+    const stack = (
+        <div className="ToolBar h-full" >
             <Stack
-                className="ToolBar"
                 sx={{
-                    width: '210px',
                     height: '100%',
-                    [theme.breakpoints.down('sm')]: {
-                        position: 'absolute',
-                        zIndex: 1,
-                        paddingTop: '1rem',
-                        paddingLeft: '1rem',
-                    },
+                    paddingTop: '1rem',
+                    paddingLeft: '1rem',
                 }}
             >
                 <Box className="flex justify-between items-center p-0 m-0 mx-2 mb-4">
@@ -163,20 +146,52 @@ export default function Sidebar(props: Props) {
                     </MenuItem>
                 </MenuList>
             </Stack>
-            <Box
-                onClick={() => setShowSidebar(false)}
+        </div>
+    )
+
+    return (
+        <div>
+            {/* 移动端 */}
+            <SwipeableDrawer
+                anchor='left'
+                open={props.open}
+                onClose={() => props.swtichOpen(false)}
+                onOpen={() => props.swtichOpen(true)}
+                ModalProps={{
+                    keepMounted: true, // Better open performance on mobile.
+                }}
                 sx={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                    [theme.breakpoints.up('sm')]: {
-                        display: 'none',
+                    display: { xs: 'block', sm: 'none' },
+                    '& .MuiDrawer-paper': {
+                        boxSizing: 'border-box',
+                        width: drawerWidth
                     },
                 }}
-            ></Box>
-        </Grid>
-    )
+            >
+                {stack}
+            </SwipeableDrawer>
+
+            {/* 桌面、宽屏幕 */}
+            <SwipeableDrawer
+                anchor='left'
+                variant="persistent"
+                open={props.open}
+                onClose={() => props.swtichOpen(false)}
+                onOpen={() => props.swtichOpen(true)}
+                ModalProps={{
+                    keepMounted: true, // Better open performance on mobile.
+                }}
+                sx={{
+                    display: { xs: 'none', sm: 'block' },
+                    '& .MuiDrawer-paper': {
+                        boxSizing: 'border-box',
+                        width: drawerWidth,
+                        border: 'none',
+                    },
+                }}
+            >
+                {stack}
+            </SwipeableDrawer>
+        </div >
+    );
 }

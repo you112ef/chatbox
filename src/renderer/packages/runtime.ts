@@ -1,8 +1,5 @@
 import { getOS, getBrowser } from './navigator'
 
-// 在编译时，webpack 会根据环境变量替换掉 process.env.XXX
-export const CHATBOX_RUNTIME = process.env.CHATBOX_RUNTIME
-
 export const isWeb: boolean = !window.electronAPI
 
 const electronAPI = window.electronAPI

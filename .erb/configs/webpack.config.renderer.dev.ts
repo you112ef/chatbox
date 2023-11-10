@@ -7,6 +7,7 @@ import chalk from 'chalk'
 import { merge } from 'webpack-merge'
 import { execSync, spawn } from 'child_process'
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import baseConfig from './webpack.config.base'
 import webpackPaths from './webpack.paths'
 import checkNodeEnv from '../scripts/check-node-env'
@@ -142,6 +143,11 @@ const configuration: webpack.Configuration = {
 
         new webpack.LoaderOptionsPlugin({
             debug: true,
+        }),
+
+        new BundleAnalyzerPlugin({
+            analyzerMode: process.env.ANALYZE === 'true' ? 'server' : 'disabled',
+            analyzerPort: 8889,
         }),
 
         new ReactRefreshWebpackPlugin(),

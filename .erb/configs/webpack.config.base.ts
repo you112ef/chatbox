@@ -52,7 +52,7 @@ const configuration: webpack.Configuration = {
     plugins: [
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'production',
-            CHATBOX_RUNTIME: 'unknown',
+            CHATBOX_BUILD_TARGET: 'unknown',
         }),
     ],
 }

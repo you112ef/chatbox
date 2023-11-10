@@ -20,34 +20,38 @@ import { usePremium } from './hooks/usePremium'
 import RemoteDialogWindow from './pages/RemoteDialogWindow'
 import { useSystemLanguageWhenInit } from './hooks/useDefaultSystemLanguage'
 import ClearConversationListWindow from './pages/ClearConversationListWindow'
-import Sidebar from './Sidebar'
 import MainPane from './MainPane'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtom } from 'jotai'
 import * as atoms from './stores/atoms'
 import SearchDialog from './pages/SearchDialog'
+import Sidebar from './Sidebar'
+import { CHATBOX_BUILD_TARGET } from '@/variables'
 
 function Main() {
     // 是否展示菜单栏
     const theme = useTheme()
-    const showSidebar = useAtomValue(atoms.showSidebarAtom)
+    const [showSidebar, setShowSidebar] = useAtom(atoms.showSidebarAtom)
 
     // 是否展示设置窗口
     const [openSettingWindow, setOpenSettingWindow] = React.useState<'ai' | 'display' | null>(null)
     useEffect(() => {
         // 通过定时器延迟启动，防止处理状态底层存储的异步加载前错误的初始数据
         setTimeout(() => {
-            ;(async () => {
+            ; (async () => {
                 if (settingActions.needEditSetting()) {
-                    const remoteConfig = await remote.getRemoteConfig('setting_chatboxai_first').catch(
-                        () =>
+                    // 除了在手机移动端，其他环境都优先使用ChatboxAI
+                    if (CHATBOX_BUILD_TARGET !== 'mobile_app') {
+                        const remoteConfig = await remote.getRemoteConfig('setting_chatboxai_first').catch(
+                            () =>
                             ({
                                 setting_chatboxai_first: false,
                             } as RemoteConfig)
-                    )
-                    if (remoteConfig.setting_chatboxai_first) {
-                        settingActions.modify({
-                            aiProvider: ModelProvider.ChatboxAI,
-                        })
+                        )
+                        if (remoteConfig.setting_chatboxai_first) {
+                            settingActions.modify({
+                                aiProvider: ModelProvider.ChatboxAI,
+                            })
+                        }
                     }
                     setOpenSettingWindow('ai')
                 }
@@ -69,59 +73,48 @@ function Main() {
     const [sessionClean, setSessionClean] = React.useState<Session | null>(null)
 
     return (
-        <Box
-            className="box-border App"
-            sx={{
-                paddingX: '1rem',
-                [theme.breakpoints.down('sm')]: {
-                    paddingX: '0.4rem',
-                },
-            }}
-        >
+        <Box className="box-border App px-2 sm:px-4">
             <Grid container className="h-full pt-4">
-                {showSidebar && (
-                    <Sidebar
-                        setConfigureChatConfig={setConfigureChatConfig}
-                        openClearConversationListWindow={() => setOpenClearConversationListWindow(true)}
-                        openCopilotWindow={() => setOpenCopilotWindow(true)}
-                        openAboutWindow={() => setOpenAboutWindow(true)}
-                        setOpenSettingWindow={setOpenSettingWindow}
-                    />
-                )}
+                <Sidebar open={showSidebar} swtichOpen={setShowSidebar}
+                    setConfigureChatConfig={setConfigureChatConfig}
+                    openClearConversationListWindow={() => setOpenClearConversationListWindow(true)}
+                    openCopilotWindow={() => setOpenCopilotWindow(true)}
+                    openAboutWindow={() => setOpenAboutWindow(true)}
+                    setOpenSettingWindow={setOpenSettingWindow}
+                />
                 <MainPane setConfigureChatConfig={setConfigureChatConfig} setSessionClean={setSessionClean} />
-
-                <SettingDialog
-                    open={!!openSettingWindow}
-                    targetTab={openSettingWindow || undefined}
-                    close={() => setOpenSettingWindow(null)}
-                />
-                <AboutWindow open={openAboutWindow} close={() => setOpenAboutWindow(false)} />
-                {configureChatConfig !== null && (
-                    <ChatConfigWindow
-                        open={configureChatConfig !== null}
-                        session={configureChatConfig}
-                        close={() => setConfigureChatConfig(null)}
-                    />
-                )}
-                {sessionClean !== null && (
-                    <CleanWidnow open={sessionClean !== null} close={() => setSessionClean(null)} />
-                )}
-                <CopilotWindow
-                    open={openCopilotWindow}
-                    // premiumActivated={store.premiumActivated}
-                    // openPremiumPage={() => {
-                    //     setOpenSettingWindow('premium')
-                    // }}
-                    close={() => setOpenCopilotWindow(false)}
-                />
-                <RemoteDialogWindow />
-                <ClearConversationListWindow
-                    open={openClearConversationListWindow}
-                    close={() => setOpenClearConversationListWindow(false)}
-                />
-                <SearchDialog />
-                <Toasts />
             </Grid>
+            <SettingDialog
+                open={!!openSettingWindow}
+                targetTab={openSettingWindow || undefined}
+                close={() => setOpenSettingWindow(null)}
+            />
+            <AboutWindow open={openAboutWindow} close={() => setOpenAboutWindow(false)} />
+            {configureChatConfig !== null && (
+                <ChatConfigWindow
+                    open={configureChatConfig !== null}
+                    session={configureChatConfig}
+                    close={() => setConfigureChatConfig(null)}
+                />
+            )}
+            {sessionClean !== null && (
+                <CleanWidnow open={sessionClean !== null} close={() => setSessionClean(null)} />
+            )}
+            <CopilotWindow
+                open={openCopilotWindow}
+                // premiumActivated={store.premiumActivated}
+                // openPremiumPage={() => {
+                //     setOpenSettingWindow('premium')
+                // }}
+                close={() => setOpenCopilotWindow(false)}
+            />
+            <RemoteDialogWindow />
+            <ClearConversationListWindow
+                open={openClearConversationListWindow}
+                close={() => setOpenClearConversationListWindow(false)}
+            />
+            <SearchDialog />
+            <Toasts />
         </Box>
     )
 }

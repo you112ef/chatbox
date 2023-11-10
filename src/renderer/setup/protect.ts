@@ -1,9 +1,21 @@
 // 处理前端代码被剽窃的情况
 
-import * as runtime from './runtime'
-;(function () {
+import * as runtime from '../packages/runtime'
+import { CHATBOX_BUILD_TARGET } from '../variables'
+
+switch (CHATBOX_BUILD_TARGET) {
+    case 'mobile_app':
+        break
+    case 'unknown':
+        if (runtime.isWeb) {
+            protect()
+        }
+        break
+}
+
+function protect() {
     setInterval(() => {
-        if (runtime.isWeb && Math.random() < 0.1) {
+        if (Math.random() < 0.1) {
             // 如果当前地址不正确，就跳转到正确地址
             const hostname = window.location.hostname
             if (hostname !== simpleDecrypt(lh) && !hostname.endsWith(simpleDecrypt(ca))) {
@@ -11,12 +23,12 @@ import * as runtime from './runtime'
             }
         }
     }, 1400)
-})()
+}
 
 function toHomePage() {
-    const l = simpleDecrypt(ll)
-    const h = simpleDecrypt(hh)
-    ;(window as any)[l][h] = simpleDecrypt(hf)
+    const l = simpleDecrypt(ll);
+    const h = simpleDecrypt(hh);
+    ; (window as any)[l][h] = simpleDecrypt(hf)
 }
 
 const lh = '^_QR]]YAB' // localhost

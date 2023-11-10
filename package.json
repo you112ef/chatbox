@@ -25,7 +25,11 @@
         "test": "jest",
         "lint": "cross-env NODE_ENV=development eslint . --ext .js,.jsx,.ts,.tsx",
         "check": "npx tsc --noEmit",
-        "prettier": "cross-env prettier -w ."
+        "prettier": "cross-env prettier -w .",
+        "mobile:sync": "cross-env CHATBOX_BUILD_TARGET=mobile_app npm run build:renderer && npx cap sync",
+        "mobile:ios": "cross-env CHATBOX_BUILD_TARGET=mobile_app npm run build:renderer && npx cap sync && npx cap open ios",
+        "mobile:android": "cross-env CHATBOX_BUILD_TARGET=mobile_app npm run build:renderer && npx cap sync && npx cap open android",
+        "mobile:assets": "npx capacitor-assets generate --ios --android"
     },
     "repository": {
         "type": "git",
@@ -37,6 +41,8 @@
         "email": "tohuangbin@gmail.com"
     },
     "devDependencies": {
+        "@capacitor/assets": "^3.0.1",
+        "@capacitor/cli": "^5.5.1",
         "@electron/notarize": "^2.0.0",
         "@electron/rebuild": "^3.2.13",
         "@faker-js/faker": "^8.0.2",
@@ -124,6 +130,9 @@
     },
     "dependencies": {
         "@braintree/sanitize-url": "^6.0.4",
+        "@capacitor/android": "^5.5.1",
+        "@capacitor/core": "^5.5.1",
+        "@capacitor/ios": "^5.5.1",
         "@dnd-kit/core": "^6.0.8",
         "@dnd-kit/modifiers": "^6.0.1",
         "@dnd-kit/sortable": "^7.0.2",
@@ -138,6 +147,7 @@
         "@testing-library/react": "^13.4.0",
         "@testing-library/user-event": "^13.5.0",
         "axios": "^1.3.4",
+        "capacitor-plugin-safe-area": "^2.0.5",
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.0.0",
         "cmdk": "^0.2.0",
