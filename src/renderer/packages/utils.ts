@@ -1,5 +1,7 @@
 import * as Sentry from '@sentry/react'
-import GPT3Tokenizer from 'gpt3-tokenizer'
+import { Tiktoken } from "js-tiktoken/lite"
+import cl100k_base from "js-tiktoken/ranks/cl100k_base"
+
 import { Message } from '../../shared/types'
 import copyToClipboardFallback from 'copy-to-clipboard'
 
@@ -49,12 +51,11 @@ export function countWord(data: string): number {
     }
 }
 
-const tokenizer = new GPT3Tokenizer({ type: 'gpt3' })
-
 function estimateTokens(str: string): number {
     str = typeof str === 'string' ? str : JSON.stringify(str)
-    const encoded: { bpe: number[]; text: string[] } = tokenizer.encode(str)
-    return encoded.bpe.length
+    const encoding = new Tiktoken(cl100k_base);
+    const tokens = encoding.encode(str);
+    return tokens.length
 }
 
 // 参考: https://github.com/pkoukk/tiktoken-go#counting-tokens-for-chat-api-calls
