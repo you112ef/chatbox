@@ -14,6 +14,10 @@ export const modelConfigs = {
     'gpt-3.5-turbo-16k-0613': {
         maxTokens: 16384,
     },
+    'gpt-3.5-turbo-1106': {
+        maxTokens: 16384,
+    },
+
     'gpt-4': {
         maxTokens: 8192,
     },
@@ -26,6 +30,12 @@ export const modelConfigs = {
     'gpt-4-32k-0613': {
         maxTokens: 32768,
     },
+    'gpt-4-1106-preview': {
+        maxTokens: 128000,
+    },
+    // 'gpt-4-vision-preview': {
+    //     maxTokens: 128000,
+    // },
 
     // 以下模型延长到了 2024 年 6 月
     // https://platform.openai.com/docs/models/continuous-model-upgrades
@@ -36,7 +46,7 @@ export const modelConfigs = {
         maxTokens: 8192,
     },
     'gpt-4-32k-0314': {
-        maxTokens: 8192,
+        maxTokens: 32768,
     },
 }
 export type Model = keyof typeof modelConfigs
