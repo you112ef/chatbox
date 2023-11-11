@@ -13,7 +13,7 @@ export interface Props {
 export default function TemperatureSlider(props: Props) {
     const { settingsEdit, setSettingsEdit } = props
     const { t } = useTranslation()
-    const [input, setInput] = useState('0.7')
+    const [input, setInput] = useState('0.70')
     useEffect(() => {
         setInput(`${settingsEdit.temperature}`)
     }, [settingsEdit.temperature])
@@ -43,7 +43,7 @@ export default function TemperatureSlider(props: Props) {
             return
         }
         // 保留一位小数
-        num = Math.round(num * 10) / 10
+        num = Math.round(num * 100) / 100
         setInput(num.toString())
         setSettingsEdit({ ...settingsEdit, temperature: num })
     }
@@ -68,7 +68,7 @@ export default function TemperatureSlider(props: Props) {
                         aria-labelledby="discrete-slider"
                         valueLabelDisplay="auto"
                         defaultValue={settingsEdit.temperature}
-                        step={0.1}
+                        step={0.01}
                         min={0}
                         max={1}
                         marks={[
