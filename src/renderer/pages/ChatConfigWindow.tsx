@@ -15,6 +15,7 @@ import { Session, ModelProvider, SessionSettings, settings2SessionSettings } fro
 import { useTranslation } from 'react-i18next'
 import * as sessionActions from '../stores/sessionActions'
 import TemperatureSlider from '../components/TemperatureSlider'
+import TopPSlider from '../components/TopPSlider'
 import MaxContextMessageCountSlider from '../components/MaxContextMessageCountSlider'
 import * as atoms from '../stores/atoms'
 import { useAtomValue } from 'jotai'
@@ -131,6 +132,7 @@ export default function ChatConfigWindow(props: Props) {
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                        <TopPSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                                     </AccordionDetails>
                                 </Accordion>
                             </>
@@ -162,6 +164,7 @@ export default function ChatConfigWindow(props: Props) {
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                        <TopPSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                                     </AccordionDetails>
                                 </Accordion>
                             </>

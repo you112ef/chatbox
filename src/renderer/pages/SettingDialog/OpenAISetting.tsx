@@ -4,6 +4,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import * as defaults from '../../stores/defaults'
 import { Accordion, AccordionSummary, AccordionDetails } from '../../components/Accordion'
 import TemperatureSlider from '../../components/TemperatureSlider'
+import TopPSlider from '../../components/TopPSlider'
 import PasswordTextField from '../../components/PasswordTextField'
 import MaxContextMessageCountSlider from '../../components/MaxContextMessageCountSlider'
 import OpenAIModelSelect from '../../components/OpenAIModelSelect'
@@ -88,6 +89,7 @@ export default function OpenAISetting(props: ModelConfigProps) {
                                     ...settingsEdit,
                                     model: defaults.settings().model,
                                     temperature: defaults.settings().temperature,
+                                    topP: defaults.settings().topP,
                                 })
                             }
                         >
@@ -105,7 +107,10 @@ export default function OpenAISetting(props: ModelConfigProps) {
                         settingsEdit={settingsEdit}
                         setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
                     />
-
+                    <TopPSlider
+                        settingsEdit={settingsEdit}
+                        setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                    />
                     <MaxContextMessageCountSlider
                         settingsEdit={settingsEdit}
                         setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}

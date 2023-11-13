@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import * as defaults from '../../stores/defaults'
 import { Accordion, AccordionSummary, AccordionDetails } from '../../components/Accordion'
 import TemperatureSlider from '../../components/TemperatureSlider'
+import TopPSlider from '../../components/TopPSlider'
 import PasswordTextField from '../../components/PasswordTextField'
 import TokenConfig from './TokenConfig'
 
@@ -71,6 +72,7 @@ export default function AzureSetting(props: ModelConfigProps) {
                                 setSettingsEdit({
                                     ...settingsEdit,
                                     temperature: defaults.settings().temperature,
+                                    topP: defaults.settings().topP,
                                 })
                             }
                         >
@@ -79,6 +81,10 @@ export default function AzureSetting(props: ModelConfigProps) {
                         {t('to default values.')}
                     </Alert>
                     <TemperatureSlider
+                        settingsEdit={settingsEdit}
+                        setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                    />
+                    <TopPSlider
                         settingsEdit={settingsEdit}
                         setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
                     />

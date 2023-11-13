@@ -13,6 +13,7 @@ export function settings(): Settings {
         chatglm6bUrl: '',
         model: 'gpt-3.5-turbo',
         temperature: 0.7,
+        topP: 1,
         openaiMaxTokens: 0,
         openaiMaxContextTokens: 4000,
         openaiMaxContextMessageCount: 10,

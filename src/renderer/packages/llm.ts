@@ -84,6 +84,7 @@ export async function reply(
                         modelName: setting.model === 'custom-model' ? setting.openaiCustomModel || '' : setting.model,
                         maxTokensNumber: setting.openaiMaxTokens === 0 ? undefined : setting.openaiMaxTokens,
                         temperature: setting.temperature,
+                        topP: setting.topP,
                         messages,
                         signal: controller.signal,
                     },
@@ -114,6 +115,7 @@ export async function reply(
                         messages,
                         maxTokensNumber: setting.openaiMaxTokens === 0 ? undefined : setting.openaiMaxTokens,
                         temperature: setting.temperature,
+                        topP: setting.topP,
                         signal: controller.signal,
                     },
                     (message) => {
@@ -231,12 +233,13 @@ async function requestOpenAI(
         modelName: string
         maxTokensNumber?: number
         temperature: number
+        topP: number
         messages: OpenAIMessage[]
         signal: AbortSignal
     },
     sseHandler: (message: string) => void
 ) {
-    const { host, apiKey, modelName, maxTokensNumber, temperature, messages, signal } = options
+    const { host, apiKey, modelName, maxTokensNumber, temperature, topP, messages, signal } = options
     const headers: Record<string, string> = {
         Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
@@ -252,6 +255,7 @@ async function requestOpenAI(
             model: modelName,
             max_tokens: maxTokensNumber,
             temperature,
+            top_p: topP,
             stream: true,
         },
         signal
@@ -267,11 +271,12 @@ async function requestAzure(
         messages: OpenAIMessage[]
         maxTokensNumber?: number
         temperature: number
+        topP: number
         signal: AbortSignal
     },
     sseHandler: (message: string) => void
 ) {
-    const { endpoint, deploymentName, apikey, messages, maxTokensNumber, temperature, signal } = options
+    const { endpoint, deploymentName, apikey, messages, maxTokensNumber, temperature, topP, signal } = options
     const origin = new URL((endpoint || '').trim()).origin
     const url = `${origin}/openai/deployments/${deploymentName}/chat/completions?api-version=2023-03-15-preview`
     const response = await post(
@@ -285,6 +290,7 @@ async function requestAzure(
             model: deploymentName,
             max_tokens: maxTokensNumber,
             temperature,
+            top_p: topP,
             stream: true,
         },
         signal
