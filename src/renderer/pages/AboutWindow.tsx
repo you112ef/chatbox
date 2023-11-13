@@ -86,7 +86,7 @@ export default function AboutWindow(props: Props) {
                         {t('FAQs')}
                     </Button>
                 </Box>
-                <h4 className="text-center mb-1 mt-8 font-medium">
+                {/* <h4 className="text-center mb-1 mt-8 font-medium">
                     <Trans
                         i18nKey="about-author"
                         components={[
@@ -98,31 +98,39 @@ export default function AboutWindow(props: Props) {
                             />,
                         ]}
                     />
-                </h4>
+                </h4> */}
                 <Paper
                     elevation={2}
-                    className="font-light text-sm"
+                    className="font-light text-sm mx-2 my-6 py-2 px-4"
                     sx={{
-                        padding: '10px 10px 5px 10px',
                         backgroundColor: 'paper',
                     }}
                 >
-                    <span>{t('Auther Message')}</span>
+                    <p><b>Benn:</b></p>
+                    <p><span>{t('Auther Message')}</span></p>
                     <Stack spacing={2} direction="row">
                         <Button
                             variant="text"
                             onClick={() => api.openLink(`https://chatboxai.app/redirect_app/donate/${language}`)}
+                            sx={{ textTransform: 'none' }}
                         >
                             {t('Donate')}
                         </Button>
                         <Button
+                            variant="text"
+                            onClick={() => api.openLink(`https://chatboxai.app/redirect_app/author/${language}`)}
+                            sx={{ textTransform: 'none' }}
+                        >
+                            {t('Follow me on Twitter(X)')}
+                        </Button>
+                        {/* <Button
                             variant="text"
                             onClick={() =>
                                 api.openLink(`https://chatboxai.app/redirect_app/become_sponsor/${language}`)
                             }
                         >
                             {t('Or become a sponsor')}
-                        </Button>
+                        </Button> */}
                     </Stack>
                 </Paper>
 

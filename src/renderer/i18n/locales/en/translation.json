@@ -55,7 +55,7 @@
     "about-slogan": "Boost your efficiency with AI, your ultimate copilot for work and learning",
     "about-introduction": "A user-friendly AI desktop client that supports multiple advanced AI models, transforming cutting-edge artificial intelligence technology into an easy-to-use productivity tool.",
     "about-author": "Made by <0>Benn</0> and the open-source community",
-    "Auther Message": "I made Chatbox for my own use and it's great to see so many people enjoying it! If you'd like to support development, a donation would be greatly appreciated, though it is entirely optional. Many thanks, Benn",
+    "Auther Message": "Hi! I made Chatbox for my own use and it's great to see so many people enjoying it! If you'd like to support development, a donation would be greatly appreciated, though it is entirely optional. Many thanks, Benn.",
     "Donate": "Donate",
     "Or become a sponsor": "Or become a sponsor",
     "Check Update": "Check Update",
@@ -168,5 +168,6 @@
     "Navigate to previous option (within search dialog)": "Navigate to previous option (within search dialog)",
     "Navigate to next option (within search dialog)": "Navigate to next option (within search dialog)",
     "Select current option (within search dialog)": "Select current option (within search dialog)",
-    "No results found": "No results found"
+    "No results found": "No results found",
+    "Follow me on Twitter(X)": "Follow me on Twitter(X)"
 }
