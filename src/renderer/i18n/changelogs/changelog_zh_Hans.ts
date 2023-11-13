@@ -1,5 +1,5 @@
 const changelog = `
-### v1.1.3
+### v1.1.4
 
 - 新增 gpt-3.5-turbo-1106 和 gpt-4-1106-preview 模型选项
 - 更新了消息 token 计算方法，提高了准确性

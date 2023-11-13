@@ -1,5 +1,5 @@
 const changelog = `
-### v1.1.3
+### v1.1.4
 
 - Added direct support for the gpt-3.5-turbo-1106 and gpt-4-1106-preview models.
 - Updated the method for calculating message tokens to be more accurate.

@@ -1,5 +1,5 @@
 const changelog = `
-### v1.1.3
+### v1.1.4
 
 - 新增對模型 gpt-3.5-turbo-1106、gpt-4-1106-preview 的直接支援
 - 更新訊息 token 的計算方式，更加準確
