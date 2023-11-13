@@ -1,4 +1,12 @@
 const changelog = `
+### v1.1.3
+
+- Added direct support for the gpt-3.5-turbo-1106 and gpt-4-1106-preview models.
+- Updated the method for calculating message tokens to be more accurate.
+- Introduced the Top P parameter option.
+- The temperature parameter now supports two decimal places.
+- The software now retains the last conversation upon startup.
+
 ### v1.1.2
 
 - Optimized the interaction experience of the search box
