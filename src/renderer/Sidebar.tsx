@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import React, { useRef } from 'react'
+import SwipeableDrawer from '@mui/material/SwipeableDrawer'
 import {
     Box,
     Badge,
@@ -26,7 +26,7 @@ import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 import { useSetAtom } from 'jotai'
 import * as atoms from './stores/atoms'
 
-export const drawerWidth = 240;
+export const drawerWidth = 240
 
 interface Props {
     open: boolean
@@ -54,7 +54,7 @@ export default function Sidebar(props: Props) {
     }
 
     const stack = (
-        <div className="ToolBar h-full" >
+        <div className="ToolBar h-full">
             <Stack
                 sx={{
                     height: '100%',
@@ -153,7 +153,7 @@ export default function Sidebar(props: Props) {
         <div>
             {/* 移动端 */}
             <SwipeableDrawer
-                anchor='left'
+                anchor="left"
                 open={props.open}
                 onClose={() => props.swtichOpen(false)}
                 onOpen={() => props.swtichOpen(true)}
@@ -164,7 +164,7 @@ export default function Sidebar(props: Props) {
                     display: { xs: 'block', sm: 'none' },
                     '& .MuiDrawer-paper': {
                         boxSizing: 'border-box',
-                        width: drawerWidth
+                        width: drawerWidth,
                     },
                 }}
             >
@@ -173,7 +173,7 @@ export default function Sidebar(props: Props) {
 
             {/* 桌面、宽屏幕 */}
             <SwipeableDrawer
-                anchor='left'
+                anchor="left"
                 variant="persistent"
                 open={props.open}
                 onClose={() => props.swtichOpen(false)}
@@ -192,6 +192,6 @@ export default function Sidebar(props: Props) {
             >
                 {stack}
             </SwipeableDrawer>
-        </div >
-    );
+        </div>
+    )
 }

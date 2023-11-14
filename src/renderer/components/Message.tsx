@@ -129,9 +129,7 @@ function _Message(props: Props) {
         if (msg.tokenCount === undefined) {
             msg.tokenCount = utils.estimateTokensFromMessages([msg])
         }
-        tips.push(
-            `token count: ${msg.tokenCount}`
-        )
+        tips.push(`token count: ${msg.tokenCount}`)
     }
     if (showTokenUsed && msg.role === 'assistant' && !msg.generating) {
         tips.push(`tokens used: ${msg.tokensUsed || 'unknown'}`)

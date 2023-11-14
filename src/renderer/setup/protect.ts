@@ -26,9 +26,9 @@ function protect() {
 }
 
 function toHomePage() {
-    const l = simpleDecrypt(ll);
-    const h = simpleDecrypt(hh);
-    ; (window as any)[l][h] = simpleDecrypt(hf)
+    const l = simpleDecrypt(ll)
+    const h = simpleDecrypt(hh)
+    ;(window as any)[l][h] = simpleDecrypt(hf)
 }
 
 const lh = '^_QR]]YAB' // localhost

@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react'
-import { Tiktoken } from "js-tiktoken/lite"
-import cl100k_base from "js-tiktoken/ranks/cl100k_base"
+import { Tiktoken } from 'js-tiktoken/lite'
+import cl100k_base from 'js-tiktoken/ranks/cl100k_base'
 
 import { Message } from '../../shared/types'
 import copyToClipboardFallback from 'copy-to-clipboard'
@@ -51,10 +51,10 @@ export function countWord(data: string): number {
     }
 }
 
-const encoding = new Tiktoken(cl100k_base);
+const encoding = new Tiktoken(cl100k_base)
 function estimateTokens(str: string): number {
     str = typeof str === 'string' ? str : JSON.stringify(str)
-    const tokens = encoding.encode(str);
+    const tokens = encoding.encode(str)
     return tokens.length
 }
 

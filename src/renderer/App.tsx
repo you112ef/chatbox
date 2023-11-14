@@ -37,15 +37,15 @@ function Main() {
     useEffect(() => {
         // 通过定时器延迟启动，防止处理状态底层存储的异步加载前错误的初始数据
         setTimeout(() => {
-            ; (async () => {
+            ;(async () => {
                 if (settingActions.needEditSetting()) {
                     // 除了在手机移动端，其他环境都优先使用ChatboxAI
                     if (CHATBOX_BUILD_TARGET !== 'mobile_app') {
                         const remoteConfig = await remote.getRemoteConfig('setting_chatboxai_first').catch(
                             () =>
-                            ({
-                                setting_chatboxai_first: false,
-                            } as RemoteConfig)
+                                ({
+                                    setting_chatboxai_first: false,
+                                } as RemoteConfig)
                         )
                         if (remoteConfig.setting_chatboxai_first) {
                             settingActions.modify({
@@ -75,7 +75,9 @@ function Main() {
     return (
         <Box className="box-border App px-2 sm:px-4">
             <Grid container className="h-full pt-4">
-                <Sidebar open={showSidebar} swtichOpen={setShowSidebar}
+                <Sidebar
+                    open={showSidebar}
+                    swtichOpen={setShowSidebar}
                     setConfigureChatConfig={setConfigureChatConfig}
                     openClearConversationListWindow={() => setOpenClearConversationListWindow(true)}
                     openCopilotWindow={() => setOpenCopilotWindow(true)}
@@ -97,9 +99,7 @@ function Main() {
                     close={() => setConfigureChatConfig(null)}
                 />
             )}
-            {sessionClean !== null && (
-                <CleanWidnow open={sessionClean !== null} close={() => setSessionClean(null)} />
-            )}
+            {sessionClean !== null && <CleanWidnow open={sessionClean !== null} close={() => setSessionClean(null)} />}
             <CopilotWindow
                 open={openCopilotWindow}
                 // premiumActivated={store.premiumActivated}

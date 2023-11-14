@@ -51,11 +51,11 @@ export default function ChatboxAISetting(props: ModelConfigProps) {
                         setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
                     />
                 )}
-                {
-                    CHATBOX_BUILD_TARGET === 'mobile_app'
-                        ? <DetailCardForMobileApp premium={premium} />
-                        : <DetailCard premium={premium} />
-                }
+                {CHATBOX_BUILD_TARGET === 'mobile_app' ? (
+                    <DetailCardForMobileApp premium={premium} />
+                ) : (
+                    <DetailCard premium={premium} />
+                )}
             </Box>
         </Box>
     )
@@ -92,11 +92,7 @@ function DetailCard(props: { premium: ReturnType<typeof usePremium> }) {
                     )
                 )}
             </Box>
-            {
-                premium.premiumActivated
-                    ? <ActivedButtonGroup premium={premium} />
-                    : <InactivedButtonGroup />
-            }
+            {premium.premiumActivated ? <ActivedButtonGroup premium={premium} /> : <InactivedButtonGroup />}
         </Card>
     )
 }
@@ -105,8 +101,7 @@ function DetailCard(props: { premium: ReturnType<typeof usePremium> }) {
 function DetailCardForMobileApp(props: { premium: ReturnType<typeof usePremium> }) {
     const { premium } = props
     const { t } = useTranslation()
-    return (
-        premium.premiumActivated && // 只有激活了才显示
+    return premium.premiumActivated ? (
         <Card sx={{ marginTop: '20px', padding: '14px' }} elevation={3}>
             <span
                 style={{
@@ -120,9 +115,8 @@ function DetailCardForMobileApp(props: { premium: ReturnType<typeof usePremium> 
             </span>
             <ActivedButtonGroup premium={premium} />
         </Card>
-    )
+    ) : null
 }
-
 
 // 激活后的按钮组
 function ActivedButtonGroup(props: { premium: ReturnType<typeof usePremium> }) {

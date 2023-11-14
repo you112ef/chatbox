@@ -3,31 +3,25 @@
 // 通过这些变量，可以在css中设置安全区域的padding，margin等，来规避异形屏的显示问题
 // 为了达到最好的效果，在 html 的 meta 标签中设置 viewport-fit=cover
 
-import { SafeArea } from 'capacitor-plugin-safe-area';
+import { SafeArea } from 'capacitor-plugin-safe-area'
 
 SafeArea.getSafeAreaInsets().then(({ insets }) => {
     for (const [key, value] of Object.entries(insets)) {
-        document.documentElement.style.setProperty(
-            `--mobile-safe-area-inset-${key}`,
-            `${value}px`,
-        );
+        document.documentElement.style.setProperty(`--mobile-safe-area-inset-${key}`, `${value}px`)
     }
-});
+})
 
 SafeArea.getStatusBarHeight().then(({ statusBarHeight }) => {
     // console.log(statusBarHeight, 'statusbarHeight');
-});
+})
 
-; (async () => {
+;(async () => {
     // when safe-area changed
-    const eventListener = await SafeArea.addListener('safeAreaChanged', data => {
-        const { insets } = data;
+    const eventListener = await SafeArea.addListener('safeAreaChanged', (data) => {
+        const { insets } = data
         for (const [key, value] of Object.entries(insets)) {
-            document.documentElement.style.setProperty(
-                `--mobile-safe-area-inset-${key}`,
-                `${value}px`,
-            );
+            document.documentElement.style.setProperty(`--mobile-safe-area-inset-${key}`, `${value}px`)
         }
-    });
+    })
     // eventListener.remove();
-})();
+})()

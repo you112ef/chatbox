@@ -1,23 +1,21 @@
-- [项目结构](#项目结构)
-- [安装依赖](#安装依赖)
-      - [@capacitor/assets 与 M1/M2 的兼容问题](#capacitorassets-与-m1m2-的兼容问题)
-- [开发常用命令](#开发常用命令)
-    - [启动开发环境（Electron/Web）](#启动开发环境electronweb)
-      - [性能瓶颈排查](#性能瓶颈排查)
-    - [启动开发环境（iOS/Android）](#启动开发环境iosandroid)
-    - [本地打包](#本地打包)
-    - [语法检查](#语法检查)
-    - [代码格式化](#代码格式化)
-    - [代码风格检查：仅作参考，不用全部遵守](#代码风格检查仅作参考不用全部遵守)
-    - [执行单元测试](#执行单元测试)
-    - [（已弃用）打包与发布（正式版）](#已弃用打包与发布正式版)
-    - [网页版部署](#网页版部署)
-    - [提取软件包源码](#提取软件包源码)
-    - [查看软件包证书和公证](#查看软件包证书和公证)
-- [配置与日志路径](#配置与日志路径)
-    - [配置文件](#配置文件)
-    - [主进程的日志文件](#主进程的日志文件)
-
+-   [项目结构](#项目结构)
+-   [安装依赖](#安装依赖) - [@capacitor/assets 与 M1/M2 的兼容问题](#capacitorassets-与-m1m2-的兼容问题)
+-   [开发常用命令](#开发常用命令)
+    -   [启动开发环境（Electron/Web）](#启动开发环境electronweb)
+        -   [性能瓶颈排查](#性能瓶颈排查)
+    -   [启动开发环境（iOS/Android）](#启动开发环境iosandroid)
+    -   [本地打包](#本地打包)
+    -   [语法检查](#语法检查)
+    -   [代码格式化](#代码格式化)
+    -   [代码风格检查：仅作参考，不用全部遵守](#代码风格检查仅作参考不用全部遵守)
+    -   [执行单元测试](#执行单元测试)
+    -   [（已弃用）打包与发布（正式版）](#已弃用打包与发布正式版)
+    -   [网页版部署](#网页版部署)
+    -   [提取软件包源码](#提取软件包源码)
+    -   [查看软件包证书和公证](#查看软件包证书和公证)
+-   [配置与日志路径](#配置与日志路径)
+    -   [配置文件](#配置文件)
+    -   [主进程的日志文件](#主进程的日志文件)
 
 # 项目结构
 
@@ -37,7 +35,7 @@ npm install
 如果使用 @capacitor/assets 遇到了 sharp 与 M1/M2 的兼容问题：
 
 ```
-Error: 
+Error:
 Something went wrong installing the "sharp" module
 ```
 
@@ -48,7 +46,6 @@ brew uninstall --force vips
 ```
 
 [参考](https://github.com/ionic-team/capacitor-assets/issues/535)
-
 
 # 开发常用命令
 
@@ -77,17 +74,20 @@ ANALYZE=true npm run dev
 ### 启动开发环境（iOS/Android）
 
 同步 Web 数据到移动端工程（主要是 `release/app/dist/renderer`）
+
 ```shell
 npm run mobile:sync
 ```
 
 同步数据并启动 IDE
+
 ```shell
 npm run mobile:ios
 npm run mobile:android
 ```
 
 更新图片资源
+
 ```shell
 npm run mobile:assets
 ```
@@ -105,11 +105,13 @@ npm run package
 有时候 MacOS 打包可能会报错 `hdiutil exited with code ERR_ELECTRON_BUILDER_CANNOT_EXECUTE`，这和 MacOS 系统 Ventura 版本有关，也非常容易解决：进入设置，安全与隐私，完全磁盘访问权限，添加终端应用即可；进入设置，安全与隐私，应用管理，勾选终端。参考：https://github.com/electron-userland/electron-builder/issues/5431
 
 ### 语法检查
+
 ```shell
 npm run check
 ```
 
 ### 代码格式化
+
 ```shell
 npm run prettier
 ```
@@ -125,7 +127,6 @@ npm run lint
 ```shell
 npm run test
 ```
-
 
 ### （已弃用）打包与发布（正式版）
 
@@ -224,4 +225,3 @@ Windows
 ```
 %USERPROFILE%\AppData\Roaming\{app name}\logs\main.log
 ```
-

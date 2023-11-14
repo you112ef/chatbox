@@ -58,7 +58,8 @@ export default function MainPane(props: Props) {
     }
 
     return (
-        <Box className="h-full w-full"
+        <Box
+            className="h-full w-full"
             sx={{
                 flexGrow: 1,
                 ...(showSidebar && {

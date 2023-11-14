@@ -106,8 +106,12 @@ export default function AboutWindow(props: Props) {
                         backgroundColor: 'paper',
                     }}
                 >
-                    <p><b>Benn:</b></p>
-                    <p><span>{t('Auther Message')}</span></p>
+                    <p>
+                        <b>Benn:</b>
+                    </p>
+                    <p>
+                        <span>{t('Auther Message')}</span>
+                    </p>
                     <Stack spacing={2} direction="row">
                         <Button
                             variant="text"

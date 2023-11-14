@@ -187,7 +187,9 @@ export default function SearchDialog(props: Props) {
                                             {/* 下面这个隐藏元素，是为了避免这个问题：
                                                         当搜索结果列表中出现重复的元素（相同的消息），此时键盘上下键选中第二条重复消息，继续按向下键会错误切换到第一条重复消息；并且当选中其中一条消息时，重复的消息同样会有选中的显示样式。
                                                         这些异常都会影响使用。我猜测可能和默认行为是根据元素内容进行判断的，因此加上这个唯一的隐藏元素可以规避问题。 */}
-                                            <span className="hidden">{result.id}-{message.id}-{i}-{j}</span>
+                                            <span className="hidden">
+                                                {result.id}-{message.id}-{i}-{j}
+                                            </span>
                                             <Marker mark={searchResultMarks}>{message.content}</Marker>
                                         </CommandItem>
                                     ))}
