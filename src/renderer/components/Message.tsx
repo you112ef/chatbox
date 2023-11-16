@@ -164,7 +164,7 @@ function _Message(props: Props) {
                 // 元素的前半部分在可视范围内，且露出至少50px
                 ref.current.offsetTop + 50 < messageScrollingScrollPosition
                 &&
-                // 元素的后半部分不在可视范围内
+                // 元素的后半部分不在可视范围内，并且为消息生成导致的长度变化预留 50px 的空间
                 ref.current.offsetTop + ref.current.offsetHeight + 50 >= messageScrollingScrollPosition
             ) {
                 fixedButtonGroup = true
@@ -174,8 +174,8 @@ function _Message(props: Props) {
                 // 元素的前半部分在可视范围内，且露出至少50px
                 ref.current.offsetTop + 50 < messageScrollingScrollPosition
                 &&
-                // 元素的后半部分不在可视范围内，但如果只掩盖了 10px 则无所谓
-                ref.current.offsetTop + ref.current.offsetHeight - 10 >= messageScrollingScrollPosition
+                // 元素的后半部分不在可视范围内，但如果只掩盖了 40px 则无所谓
+                ref.current.offsetTop + ref.current.offsetHeight - 40 >= messageScrollingScrollPosition
             ) {
                 fixedButtonGroup = true
             }
