@@ -54,7 +54,6 @@ let autoScrollTask: {
         align: 'start' | 'center' | 'end'
         behavior: 'auto' | 'smooth'
     }
-    timer: NodeJS.Timeout
 } | null = null
 
 export function startAutoScroll(
@@ -74,17 +73,19 @@ export function startAutoScroll(
     autoScrollTask = {
         id: newId,
         task: newTask,
-        timer: setInterval(() => {
-            if (!autoScrollTask || autoScrollTask.id !== newId) {
-                return
-            }
-            const succeed = scrollToMessage(msgId, align, behavior)
-            if (!succeed) {
-                clearAutoScroll()
-            }
-        }, 400),
     }
     return newId
+}
+
+export function tickAutoScroll(id: string) {
+    if (!autoScrollTask || autoScrollTask.id !== id) {
+        return
+    }
+    const { msgId, align, behavior } = autoScrollTask.task
+    const succeed = scrollToMessage(msgId, align, behavior)
+    if (!succeed) {
+        clearAutoScroll()
+    }
 }
 
 export function clearAutoScroll(id?: string) {
@@ -94,7 +95,6 @@ export function clearAutoScroll(id?: string) {
     if (id && id !== autoScrollTask.id) {
         return false
     }
-    clearInterval(autoScrollTask.timer)
     autoScrollTask = null
     return true
 }

@@ -216,7 +216,6 @@ export async function generate(sessionId: string, targetMsg: Message) {
     setTimeout(() => {
         scrollActions.scrollToMessage(targetMsg.id, 'end')
     }, 50) // 等待消息渲染完成后再滚动到底部，否则会出现滚动不到底部的问题
-    const autoScrollId = scrollActions.startAutoScroll(targetMsg.id, 'end', 'smooth')
 
     const configs = await storage.getConfig()
     try {
@@ -254,7 +253,6 @@ export async function generate(sessionId: string, targetMsg: Message) {
     }
     modifyMessage(sessionId, targetMsg, true)
 
-    scrollActions.clearAutoScroll(autoScrollId)
 }
 
 export async function refreshMessage(sessionId: string, msg: Message) {

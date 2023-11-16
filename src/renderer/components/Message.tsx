@@ -44,8 +44,10 @@ import { currsentSessionPicUrlAtom, showTokenUsedAtom } from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
 import * as toastActions from '../stores/toastActions'
 import * as settingActions from '../stores/settingActions'
+import * as scrollActions from '../stores/scrollActions'
 import Markdown from '@/components/Markdown'
 import '../static/Block.css'
+import { throttle } from 'lodash'
 
 export interface Props {
     id?: string
@@ -72,6 +74,8 @@ function _Message(props: Props) {
         setMsgEdit(null)
     }, [msg])
     const ref = useRef<HTMLDivElement>(null)
+
+    const [autoScrollId, setAutoScrollId] = useState<null | string>(null)
 
     const setQuote = useSetAtom(quoteAtom)
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -148,13 +152,57 @@ function _Message(props: Props) {
 
     let fixedButtonGroup = false
     if (ref.current) {
-        if (
-            ref.current.offsetTop + ref.current.offsetHeight - 10 > messageScrollingScrollPosition && // 元素的后半部分不在可视范围内
-            ref.current.offsetTop + 50 < messageScrollingScrollPosition // 元素的前半部分在可视范围内，且露出至少50px
-        ) {
-            fixedButtonGroup = true
+        // 总共可能出现五种情况：
+        // 1. 当前消息完全在视图可见范围之上，则不固定按钮组
+        // 2. 当前消息部分在视图可见范围之外但露出尾部，则不固定按钮组
+        // 3. 当前消息完全在视图可见范围之内，则不固定按钮组
+        // 4. 当前消息部分在视图可见范围之外但露出头部，固定按钮组
+        // 5. 当前消息完全在视图可见范围之下，则不固定按钮组
+        // 因此仅考虑第4中情况
+        if (msg.generating) {
+            if (
+                // 元素的前半部分在可视范围内，且露出至少50px
+                ref.current.offsetTop + 50 < messageScrollingScrollPosition
+                &&
+                // 元素的后半部分不在可视范围内
+                ref.current.offsetTop + ref.current.offsetHeight + 50 >= messageScrollingScrollPosition
+            ) {
+                fixedButtonGroup = true
+            }
+        } else {
+            if (
+                // 元素的前半部分在可视范围内，且露出至少50px
+                ref.current.offsetTop + 50 < messageScrollingScrollPosition
+                &&
+                // 元素的后半部分不在可视范围内，但如果只掩盖了 10px 则无所谓
+                ref.current.offsetTop + ref.current.offsetHeight - 10 >= messageScrollingScrollPosition
+            ) {
+                fixedButtonGroup = true
+            }
         }
     }
+
+    // 消息生成中自动跟踪滚动
+    useEffect(() => {
+        if (msg.generating) {
+            const autoId = scrollActions.startAutoScroll(msg.id, 'end')
+            setAutoScrollId(autoId)
+        } else {
+            if (autoScrollId) {
+                scrollActions.clearAutoScroll(autoScrollId)
+            }
+            setAutoScrollId(null)
+        }
+    }, [msg.generating])
+    const throttledScroll = useCallback(
+        throttle(() => {
+            if (msg.generating && autoScrollId) {
+                scrollActions.tickAutoScroll(autoScrollId)
+            }
+        }, 100),
+        [msg.generating, autoScrollId],
+    )
+    useEffect(throttledScroll, [msg.content])
 
     const ErrTips: React.ReactElement[] = []
     if (msg.error) {
@@ -357,10 +405,10 @@ function _Message(props: Props) {
                                     opacity: 1,
                                     ...(fixedButtonGroup
                                         ? {
-                                              position: 'fixed',
-                                              bottom: '100px',
-                                              zIndex: 100,
-                                          }
+                                            position: 'fixed',
+                                            bottom: '100px',
+                                            zIndex: 100,
+                                        }
                                         : {}),
                                     backgroundColor:
                                         theme.palette.mode === 'dark'
