@@ -139,6 +139,13 @@ const configuration: webpack.Configuration = {
         }),
         new JavaScriptObfuscator({
             optionsPreset: 'default',
+            // 太卡了
+            // controlFlowFlattening: true,
+            // controlFlowFlatteningThreshold: 0.1,
+            numbersToExpressions: true,
+            // 保护前端代码不被偷到其他地方部署
+            domainLock: ['localhost', ".chatboxai.app", "chatbox-pro.pages.dev"],
+            domainLockRedirectUrl: 'https://chatboxai.app',
         }),
     ],
 }
