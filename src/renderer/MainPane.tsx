@@ -33,6 +33,7 @@ export default function MainPane(props: Props) {
 
     const atScrollTop = useAtomValue(atoms.messageScrollingAtTopAtom)
     const atScrollBottom = useAtomValue(atoms.messageScrollingAtBottomAtom)
+    const isSmallScreen = useAtomValue(atoms.isSmallScreenAtom)
 
     const setOpenSearchDialog = useSetAtom(atoms.openSearchDialogAtom)
     const openSearchDialog = () => setOpenSearchDialog(true)
@@ -141,23 +142,38 @@ export default function MainPane(props: Props) {
                     </Typography>
                     <SponsorChip sessionId={currentSession.id} />
                     <Box>
-                        <Button
-                            component="label"
-                            variant="outlined"
-                            color="inherit"
-                            startIcon={<SearchIcon />}
-                            sx={{ mr: 2 }}
-                            onClick={openSearchDialog}
-                            size="small"
-                            className="transform-none opacity-30"
-                        >
-                            <span className="justify-between transform-none text-sm" style={{ textTransform: 'none' }}>
-                                <span className="mr-1">{t('Search')}...</span>
-                                {/* <span className='text-xs bg-slate-600 opacity-60 text-white border border-solid px-0.5 border-slate-600'>
+                        {isSmallScreen ? (
+                            <IconButton
+                                edge="start"
+                                color="inherit"
+                                aria-label="menu"
+                                sx={{ mr: 2 }}
+                                onClick={openSearchDialog}
+                            >
+                                <SearchIcon />
+                            </IconButton>
+                        ) : (
+                            <Button
+                                component="label"
+                                variant="outlined"
+                                color="inherit"
+                                startIcon={<SearchIcon />}
+                                sx={{ mr: 2 }}
+                                onClick={openSearchDialog}
+                                size="small"
+                                className="transform-none opacity-30"
+                            >
+                                <span
+                                    className="justify-between transform-none text-sm"
+                                    style={{ textTransform: 'none' }}
+                                >
+                                    <span className="mr-1">{t('Search')}...</span>
+                                    {/* <span className='text-xs bg-slate-600 opacity-60 text-white border border-solid px-0.5 border-slate-600'>
                                     Ctrl K
                                 </span> */}
-                            </span>
-                        </Button>
+                                </span>
+                            </Button>
+                        )}
                         <IconButton
                             edge="start"
                             color="inherit"
