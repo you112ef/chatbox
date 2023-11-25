@@ -126,6 +126,7 @@
     "Default Prompt for New Conversation": "新对话的默认提示",
     "Specific model settings": "特定模型设置",
     "Current conversation configured with specific model settings": "当前的对话配置了特定的模型设置",
+    "The Image Creator plugin has been activated for the current conversation": "当前对话启动了 Image Creator 插件",
     "Conversation Settings": "对话设置",
     "Description": "描述",
     "Key Combination": "按键",
@@ -169,5 +170,15 @@
     "Navigate to next option (within search dialog)": "导航到下一选项（在搜索弹窗中）",
     "Select current option (within search dialog)": "选择当前选项（在搜索弹窗中）",
     "No results found": "未找到任何结果",
-    "Follow me on Twitter(X)": "关于我"
+    "Follow me on Twitter(X)": "关于我",
+    "Reply Again": "重新回答",
+    "Reply Again Below": "在下方重新回答",
+    "ai provider no implemented paint tips": "当前 AI 模型提供方（{{aiProvider}}）暂时不支持绘图功能，目前仅 Chatbox AI、 OpenAI 与 Azure OpenAI 支持该功能，如有需要请<0>打开设置切换</0> AI 模型提供方",
+    "Azure Dall-E Deployment Name": "Dall-E 模型部署名称",
+    "New Images": "新图片",
+    "Number of Images per Reply": "每次回复的图片数量",
+    "Image Style": "图片风格",
+    "Vivid": "艺术",
+    "Natural": "写实",
+    "Image Creator Intro": "Hi！我是 Chatbox Image Creator，“无情”的图片制造机。我可以根据你的描述生成精美图片，只要你能想象得到，我就能创造出来——迷人的风景、生动的角色、App 图标、或者抽象的构思……\n\n(๑•́ ₃ •̀๑) 额…我是一个有点自闭的机器人，所以**请直接告诉我你想要图片的文字描述**，我会集中我所有的像素去实现你的想象。\n\n现在请发挥你的想象力吧！"
 }

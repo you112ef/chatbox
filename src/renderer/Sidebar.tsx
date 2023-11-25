@@ -25,6 +25,7 @@ import * as sessionActions from './stores/sessionActions'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 import { useSetAtom } from 'jotai'
 import * as atoms from './stores/atoms'
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 
 export const drawerWidth = 240
 
@@ -46,11 +47,18 @@ export default function Sidebar(props: Props) {
 
     const sessionListRef = useRef<HTMLDivElement>(null)
     const handleCreateNewSession = () => {
-        sessionActions.createEmpty()
+        sessionActions.createEmpty('chat')
         if (sessionListRef.current) {
             sessionListRef.current.scrollTo(0, 0)
         }
         window.gtag('event', 'create_new_conversation', { event_category: 'user' })
+    }
+    const handleCreateNewPictureSession = () => {
+        sessionActions.createEmpty('picture')
+        if (sessionListRef.current) {
+            sessionListRef.current.scrollTo(0, 0)
+        }
+        window.gtag('event', 'create_new_picture_conversation', { event_category: 'user' })
     }
 
     const stack = (
@@ -84,7 +92,7 @@ export default function Sidebar(props: Props) {
 
                 <Divider sx={{ margin: '0.5rem 0.3rem' }} />
 
-                <MenuList>
+                <MenuList sx={{ marginBottom: '20px' }}>
                     <MenuItem onClick={handleCreateNewSession} sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}>
                         <ListItemIcon>
                             <IconButton>
@@ -92,6 +100,21 @@ export default function Sidebar(props: Props) {
                             </IconButton>
                         </ListItemIcon>
                         <ListItemText>{t('new chat')}</ListItemText>
+                        <Typography variant="body2" color="text.secondary">
+                            {/* ⌘N */}
+                        </Typography>
+                    </MenuItem>
+
+                    <MenuItem
+                        onClick={handleCreateNewPictureSession}
+                        sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}
+                    >
+                        <ListItemIcon>
+                            <IconButton>
+                                <AddPhotoAlternateIcon fontSize="small" />
+                            </IconButton>
+                        </ListItemIcon>
+                        <ListItemText>{t('New Images')}</ListItemText>
                         <Typography variant="body2" color="text.secondary">
                             {/* ⌘N */}
                         </Typography>

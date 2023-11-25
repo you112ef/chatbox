@@ -14,7 +14,6 @@ SafeArea.getSafeAreaInsets().then(({ insets }) => {
 SafeArea.getStatusBarHeight().then(({ statusBarHeight }) => {
     // console.log(statusBarHeight, 'statusbarHeight');
 })
-
 ;(async () => {
     // when safe-area changed
     const eventListener = await SafeArea.addListener('safeAreaChanged', (data) => {

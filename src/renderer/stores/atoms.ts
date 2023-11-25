@@ -61,7 +61,7 @@ export const sessionsAtom = atom(
     (get) => {
         let sessions = get(_sessionsAtom)
         if (sessions.length === 0) {
-            sessions = [{ id: uuidv4(), name: 'Untitled', messages: [] }]
+            sessions = [{ id: uuidv4(), name: 'Untitled', messages: [], type: 'chat' }]
         }
         return sessions
     },
@@ -69,7 +69,7 @@ export const sessionsAtom = atom(
         const sessions = get(_sessionsAtom)
         let newSessions = typeof update === 'function' ? update(sessions) : update
         if (newSessions.length === 0) {
-            newSessions = [{ id: uuidv4(), name: 'Untitled', messages: [] }]
+            newSessions = [{ id: uuidv4(), name: 'Untitled', messages: [], type: 'chat' }]
         }
         set(_sessionsAtom, newSessions)
     }
@@ -150,4 +150,9 @@ export const isSmallScreenAtom = atom(false)
 // 是否展示侧边栏
 export const showSidebarAtom = atom(true)
 
+// 弹窗显示
 export const openSearchDialogAtom = atom(false)
+export const openSettingDialogAtom = atom<'ai' | 'display' | null>(null)
+
+// 图片展示窗口的图片 storange key
+export const pictureShowStorageKeyAtom = atom<string | null>(null)

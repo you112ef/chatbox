@@ -1,25 +1,12 @@
 import { Config, Message, ModelProvider, OpenAIMessage, Settings, ChatboxAIModel } from '../../shared/types'
 import { createParser } from 'eventsource-parser'
+import { ApiError, NetworkError } from './models/errors'
 
 export interface OnTextCallbackResult {
     // response content
     text: string
     // cancel for fetch
     cancel: () => void
-}
-
-export class ApiError extends Error {
-    constructor(message: string) {
-        super('API Error: ' + message)
-    }
-}
-
-export class NetworkError extends Error {
-    public host: string
-    constructor(message: string, host: string) {
-        super('Network Error: ' + message)
-        this.host = host
-    }
 }
 
 export async function reply(
@@ -441,7 +428,7 @@ async function post(
     signal?: AbortSignal,
     retry = 3
 ) {
-    let networkError: NetworkError | null = null
+    let requestError: ApiError | NetworkError | null = null
     for (let i = 0; i < retry + 1; i++) {
         try {
             const res = await fetch(url, {
@@ -450,15 +437,24 @@ async function post(
                 body: JSON.stringify(body),
                 signal,
             })
+            // 状态码不在 200～299 之间，一般是接口报错了，这里也需要抛错后重试
+            if (!res.ok) {
+                const err = await res.text().catch((e) => null)
+                throw new ApiError(`Status Code ${res.status}, ${err}`)
+            }
             return res
         } catch (e) {
-            const err = e as Error
-            const origin = new URL(url).origin
-            networkError = new NetworkError(err.message, origin)
+            if (e instanceof ApiError) {
+                requestError = e
+            } else {
+                const err = e as Error
+                const origin = new URL(url).origin
+                requestError = new NetworkError(err.message, origin)
+            }
         }
     }
-    if (networkError) {
-        throw networkError
+    if (requestError) {
+        throw requestError
     } else {
         throw new Error('Unknown error')
     }

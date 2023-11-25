@@ -8,6 +8,8 @@ import './static/index.css'
 import './static/globals.css'
 import { CHATBOX_BUILD_TARGET } from './variables'
 
+// ==========执行初始化==============
+
 // Sentry 初始化
 import './setup/sentry_init'
 
@@ -22,7 +24,13 @@ if (CHATBOX_BUILD_TARGET === 'mobile_app') {
 // 解决移动端浏览器地址栏占用问题
 import './setup/mobile_browser_viewport_height'
 
+// 数据迁移
 migration.migrate()
+
+// 最后执行图片清理
+import './setup/picture_clear'
+
+// ==========渲染节点==============
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(

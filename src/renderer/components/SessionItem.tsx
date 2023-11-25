@@ -10,6 +10,7 @@ import StyledMenu from './StyledMenu'
 import { useTranslation } from 'react-i18next'
 import StarIcon from '@mui/icons-material/Star'
 import StarOutlineIcon from '@mui/icons-material/StarOutline'
+import ImageIcon from '@mui/icons-material/Image'
 import * as sessionActions from '../stores/sessionActions'
 
 export interface Props {
@@ -52,9 +53,11 @@ function _SessionItem(props: Props) {
                 sx={{ padding: '0.1rem', margin: '0.1rem' }}
             >
                 <ListItemIcon>
-                    <IconButton>
+                    <IconButton color={session.type === 'picture' ? 'secondary' : 'inherit'}>
                         {session.picUrl ? (
                             <Avatar sizes="20px" sx={{ width: '20px', height: '20px' }} src={session.picUrl} />
+                        ) : session.type === 'picture' ? (
+                            <ImageIcon fontSize="small" />
                         ) : (
                             <ChatBubbleOutlineOutlinedIcon fontSize="small" />
                         )}

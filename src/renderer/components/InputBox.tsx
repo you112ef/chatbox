@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { Stack, Button, Grid, Typography, TextField } from '@mui/material'
-import { Message, createMessage } from '../../shared/types'
+import { Message, SessionType, createMessage } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import SendIcon from '@mui/icons-material/Send'
 import * as atoms from '../stores/atoms'
 import { useAtom, useAtomValue } from 'jotai'
 import * as sessionActions from '../stores/sessionActions'
-import * as scrollActions from '../stores/scrollActions'
 import * as dom from '../hooks/dom'
 
 export interface Props {
     currentSessionId: string
+    currentSessionType: SessionType
 }
 
 export default function InputBox(props: Props) {
@@ -70,6 +70,7 @@ export default function InputBox(props: Props) {
                             value={messageInput}
                             onChange={(event) => setMessageInput(event.target.value)}
                             fullWidth
+                            color={props.currentSessionType === 'picture' ? 'secondary' : 'primary'}
                             id={dom.messageInputID}
                             onKeyDown={(event) => {
                                 // 发送
@@ -100,7 +101,13 @@ export default function InputBox(props: Props) {
                         />
                     </Grid>
                     <Grid item xs="auto">
-                        <Button type="submit" variant="contained" size="large" style={{ padding: '15px 16px' }}>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            size="large"
+                            style={{ padding: '15px 16px' }}
+                            color={props.currentSessionType === 'picture' ? 'secondary' : 'primary'}
+                        >
                             <SendIcon />
                         </Button>
                     </Grid>

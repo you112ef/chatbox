@@ -26,14 +26,14 @@ import * as atoms from './stores/atoms'
 import SearchDialog from './pages/SearchDialog'
 import Sidebar from './Sidebar'
 import { CHATBOX_BUILD_TARGET } from '@/variables'
+import PictureDialog from './pages/PictureDialog'
 
 function Main() {
     // 是否展示菜单栏
-    const theme = useTheme()
     const [showSidebar, setShowSidebar] = useAtom(atoms.showSidebarAtom)
 
     // 是否展示设置窗口
-    const [openSettingWindow, setOpenSettingWindow] = React.useState<'ai' | 'display' | null>(null)
+    const [openSettingWindow, setOpenSettingWindow] = useAtom(atoms.openSettingDialogAtom)
     useEffect(() => {
         // 通过定时器延迟启动，防止处理状态底层存储的异步加载前错误的初始数据
         setTimeout(() => {
@@ -114,6 +114,7 @@ function Main() {
                 close={() => setOpenClearConversationListWindow(false)}
             />
             <SearchDialog />
+            <PictureDialog />
             <Toasts />
         </Box>
     )

@@ -169,5 +169,15 @@
     "Navigate to next option (within search dialog)": "Naviguer vers l'option suivante (dans la boîte de dialogue de recherche)",
     "Select current option (within search dialog)": "Sélectionnez l'option actuelle (dans la boîte de dialogue de recherche)",
     "No results found": "Aucun résultat trouvé",
-    "Follow me on Twitter(X)": "Suivez-moi sur Twitter(X)"
+    "Follow me on Twitter(X)": "Suivez-moi sur Twitter(X)",
+    "Reply Again": "Répondre à nouveau",
+    "Reply Again Below": "Répondre à nouveau ci-dessous",
+    "ai provider no implemented paint tips": "Le fournisseur actuel du modèle AI ({{aiProvider}}) ne prend pas en charge la fonction de peinture pour le moment. Actuellement, seuls Chatbox AI, OpenAI et Azure OpenAI proposent cette fonctionnalité. Si nécessaire, veuillez <0>aller dans les paramètres</0> pour changer de fournisseur de modèle AI.",
+    "Azure Dall-E Deployment Name": "Nom du déploiement du modèle Azure Dall-E",
+    "New Images": "Nouvelles Images",
+    "Number of Images per Reply": "Nombre d'Images par Réponse",
+    "Image Style": "Style d'Image",
+    "Vivid": "Plus artistique",
+    "Natural": "Plus réaliste",
+    "Image Creator Intro": "Bonjour ! Je suis Chatbox Image Creator, votre compagnon artistique IA dédié à transformer vos paroles en visuels frappants. Si vous pouvez le rêver, je peux le créer — des paysages enchanteurs, des personnages dynamiques, des icônes d'application jusqu'à l'abstrait et au-delà.\n\nJe suis un robot silencieux, il suffit **de me dire simplement la description de l'image que vous avez en tête**, et je concentrerai tous mes pixels pour concrétiser votre vision.\n\nFaisons de l'art !"
 }

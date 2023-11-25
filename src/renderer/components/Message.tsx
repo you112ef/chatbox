@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback, MutableRefObject } from 'react'
+import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react'
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import MenuItem from '@mui/material/MenuItem'
@@ -12,7 +12,6 @@ import {
     MenuProps,
     Tooltip,
     ButtonGroup,
-    Alert,
     useTheme,
 } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
@@ -27,14 +26,14 @@ import StopIcon from '@mui/icons-material/Stop'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import * as utils from '../packages/utils'
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote'
-import { Trans, useTranslation } from 'react-i18next'
-import { Message, OpenAIRoleEnum, OpenAIRoleEnumType } from '../../shared/types'
-import { aiProviderNameHash } from '../config'
+import { useTranslation } from 'react-i18next'
+import { Message, OpenAIRoleEnum, OpenAIRoleEnumType, SessionType } from '../../shared/types'
 import ReplayIcon from '@mui/icons-material/Replay'
 import CopyAllIcon from '@mui/icons-material/CopyAll'
 import { useAtomValue, useSetAtom } from 'jotai'
 import {
     messageScrollingScrollPositionAtom,
+    pictureShowStorageKeyAtom,
     quoteAtom,
     showModelNameAtom,
     showTokenCountAtom,
@@ -43,15 +42,19 @@ import {
 import { currsentSessionPicUrlAtom, showTokenUsedAtom } from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
 import * as toastActions from '../stores/toastActions'
-import * as settingActions from '../stores/settingActions'
 import * as scrollActions from '../stores/scrollActions'
 import Markdown from '@/components/Markdown'
 import '../static/Block.css'
 import { throttle } from 'lodash'
+import ImageInStorage from './ImageInStorage'
+import SouthIcon from '@mui/icons-material/South'
+import ImageIcon from '@mui/icons-material/Image'
+import MessageErrTips from './MessageErrTips'
 
 export interface Props {
     id?: string
     sessionId: string
+    sessionType: SessionType
     msg: Message
 }
 
@@ -65,6 +68,7 @@ function _Message(props: Props) {
     const showTokenUsed = useAtomValue(showTokenUsedAtom)
     const currentSessionPicUrl = useAtomValue(currsentSessionPicUrlAtom)
     const messageScrollingScrollPosition = useAtomValue(messageScrollingScrollPositionAtom)
+    const setPictureShowStorageKey = useSetAtom(pictureShowStorageKeyAtom)
 
     const { msg } = props
 
@@ -124,22 +128,29 @@ function _Message(props: Props) {
     }
 
     const tips: string[] = []
-    if (showWordCount && !msg.generating) {
-        // 兼容旧版本没有提前计算的消息
-        tips.push(`word count: ${msg.wordCount !== undefined ? msg.wordCount : utils.countWord(msg.content)}`)
-    }
-    if (showTokenCount && !msg.generating) {
-        // 兼容旧版本没有提前计算的消息
-        if (msg.tokenCount === undefined) {
-            msg.tokenCount = utils.estimateTokensFromMessages([msg])
+    if (props.sessionType === 'chat' || !props.sessionType) {
+        if (showWordCount && !msg.generating) {
+            // 兼容旧版本没有提前计算的消息
+            tips.push(`word count: ${msg.wordCount !== undefined ? msg.wordCount : utils.countWord(msg.content)}`)
         }
-        tips.push(`token count: ${msg.tokenCount}`)
-    }
-    if (showTokenUsed && msg.role === 'assistant' && !msg.generating) {
-        tips.push(`tokens used: ${msg.tokensUsed || 'unknown'}`)
-    }
-    if (showModelName && props.msg.role === 'assistant') {
-        tips.push(`model: ${props.msg.model || 'unknown'}`)
+        if (showTokenCount && !msg.generating) {
+            // 兼容旧版本没有提前计算的消息
+            if (msg.tokenCount === undefined) {
+                msg.tokenCount = utils.estimateTokensFromMessages([msg])
+            }
+            tips.push(`token count: ${msg.tokenCount}`)
+        }
+        if (showTokenUsed && msg.role === 'assistant' && !msg.generating) {
+            tips.push(`tokens used: ${msg.tokensUsed || 'unknown'}`)
+        }
+        if (showModelName && props.msg.role === 'assistant') {
+            tips.push(`model: ${props.msg.model || 'unknown'}`)
+        }
+    } else if (props.sessionType === 'picture') {
+        if (showModelName && props.msg.role === 'assistant') {
+            tips.push(`model: ${props.msg.model || 'unknown'}`)
+            tips.push(`style: ${props.msg.style || 'unknown'}`)
+        }
     }
 
     let displayButtonGroup = false
@@ -162,8 +173,7 @@ function _Message(props: Props) {
         if (msg.generating) {
             if (
                 // 元素的前半部分在可视范围内，且露出至少50px
-                ref.current.offsetTop + 50 < messageScrollingScrollPosition
-                &&
+                ref.current.offsetTop + 50 < messageScrollingScrollPosition &&
                 // 元素的后半部分不在可视范围内，并且为消息生成导致的长度变化预留 50px 的空间
                 ref.current.offsetTop + ref.current.offsetHeight + 50 >= messageScrollingScrollPosition
             ) {
@@ -172,8 +182,7 @@ function _Message(props: Props) {
         } else {
             if (
                 // 元素的前半部分在可视范围内，且露出至少50px
-                ref.current.offsetTop + 50 < messageScrollingScrollPosition
-                &&
+                ref.current.offsetTop + 50 < messageScrollingScrollPosition &&
                 // 元素的后半部分不在可视范围内，但如果只掩盖了 40px 则无所谓
                 ref.current.offsetTop + ref.current.offsetHeight - 40 >= messageScrollingScrollPosition
             ) {
@@ -200,54 +209,9 @@ function _Message(props: Props) {
                 scrollActions.tickAutoScroll(autoScrollId)
             }
         }, 100),
-        [msg.generating, autoScrollId],
+        [msg.generating, autoScrollId]
     )
     useEffect(throttledScroll, [msg.content])
-
-    const ErrTips: React.ReactElement[] = []
-    if (msg.error) {
-        if (msg.error.startsWith('API Error')) {
-            ErrTips.push(
-                <Trans
-                    i18nKey="api error tips"
-                    values={{
-                        aiProvider: msg.aiProvider ? aiProviderNameHash[msg.aiProvider] : 'AI Provider',
-                    }}
-                    components={[
-                        <a
-                            href={`https://chatboxai.app/redirect_app/faqs/${settingActions.getLanguage()}`}
-                            target="_blank"
-                        ></a>,
-                    ]}
-                />
-            )
-        } else if (msg.error.startsWith('Network Error')) {
-            ErrTips.push(
-                <Trans
-                    i18nKey="network error tips"
-                    values={{
-                        host: msg.errorExtra?.['host'] || 'AI Provider',
-                    }}
-                />
-            )
-            const proxy = settingActions.getProxy()
-            if (proxy) {
-                ErrTips.push(<Trans i18nKey="network proxy error tips" values={{ proxy }} />)
-            }
-        } else {
-            ErrTips.push(
-                <Trans
-                    i18nKey="unknown error tips"
-                    components={[
-                        <a
-                            href={`https://chatboxai.app/redirect_app/faqs/${settingActions.getLanguage()}`}
-                            target="_blank"
-                        ></a>,
-                    ]}
-                />
-            )
-        }
-    }
 
     return (
         <Box
@@ -315,6 +279,10 @@ function _Message(props: Props) {
                                 {
                                     assistant: currentSessionPicUrl ? (
                                         <Avatar src={currentSessionPicUrl}></Avatar>
+                                    ) : props.sessionType === 'picture' ? (
+                                        <Avatar sx={{ backgroundColor: 'secondary.main' }}>
+                                            <ImageIcon />
+                                        </Avatar>
                                     ) : (
                                         <Avatar>
                                             <SmartToyIcon />
@@ -325,11 +293,16 @@ function _Message(props: Props) {
                                             <PersonIcon />
                                         </Avatar>
                                     ),
-                                    system: (
-                                        <Avatar>
-                                            <SettingsIcon />
-                                        </Avatar>
-                                    ),
+                                    system:
+                                        props.sessionType === 'picture' ? (
+                                            <Avatar sx={{ backgroundColor: 'secondary.main' }}>
+                                                <ImageIcon />
+                                            </Avatar>
+                                        ) : (
+                                            <Avatar>
+                                                <SettingsIcon />
+                                            </Avatar>
+                                        ),
                                 }[msg.role]
                             }
                         </Box>
@@ -361,15 +334,19 @@ function _Message(props: Props) {
                                         {(typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)) +
                                             (msg.generating ? '...' : '')}
                                     </Markdown>
+                                    {msg.pictures &&
+                                        msg.pictures.map((pic, index) => (
+                                            <div
+                                                key={index}
+                                                className="w-[200px] h-[200px] p-2 m-1 inline-block bg-white shadow-sm rounded-md
+                                                hover:shadow-lg hover:cursor-pointer hover:scale-105 transition-all duration-200"
+                                                onClick={() => setPictureShowStorageKey(pic.storageKey)}
+                                            >
+                                                <ImageInStorage storageKey={pic.storageKey} />
+                                            </div>
+                                        ))}
+                                    <MessageErrTips msg={msg} />
                                 </Box>
-                                {msg.error && (
-                                    <Alert icon={false} severity="error">
-                                        {msg.error}
-                                        <br />
-                                        <br />
-                                        {ErrTips}
-                                    </Alert>
-                                )}
                             </>
                         )}
                         <Typography variant="body2" sx={{ opacity: 0.5 }}>
@@ -392,7 +369,7 @@ function _Message(props: Props) {
                                         setMsgEdit(null)
                                     }}
                                     size="large"
-                                    color="primary"
+                                    color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
                                 >
                                     <CheckIcon />
                                 </IconButton>
@@ -405,10 +382,10 @@ function _Message(props: Props) {
                                     opacity: 1,
                                     ...(fixedButtonGroup
                                         ? {
-                                            position: 'fixed',
-                                            bottom: '100px',
-                                            zIndex: 100,
-                                        }
+                                              position: 'fixed',
+                                              bottom: '100px',
+                                              zIndex: 100,
+                                          }
                                         : {}),
                                     backgroundColor:
                                         theme.palette.mode === 'dark'
@@ -418,16 +395,32 @@ function _Message(props: Props) {
                                 variant="contained"
                                 aria-label="outlined primary button group"
                             >
-                                {msg.generating ? (
+                                {msg.generating && (
                                     <Tooltip title={t('stop generating')} placement="top">
                                         <IconButton aria-label="edit" color="warning" onClick={onStop}>
                                             <StopIcon fontSize="small" />
                                         </IconButton>
                                     </Tooltip>
-                                ) : (
-                                    <Tooltip title={t('regenerate')} placement="top">
-                                        <IconButton aria-label="edit" color="primary" onClick={onRefresh}>
+                                )}
+                                {!msg.generating && msg.role === 'assistant' && (
+                                    <Tooltip title={t('Reply Again')} placement="top">
+                                        <IconButton
+                                            aria-label="Reply Again"
+                                            onClick={onRefresh}
+                                            color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
+                                        >
                                             <ReplayIcon fontSize="small" />
+                                        </IconButton>
+                                    </Tooltip>
+                                )}
+                                {!msg.generating && msg.role === 'user' && (
+                                    <Tooltip title={t('Reply Again Below')} placement="top">
+                                        <IconButton
+                                            aria-label="Reply Again Below"
+                                            onClick={onRefresh}
+                                            color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
+                                        >
+                                            <SouthIcon fontSize="small" />
                                         </IconButton>
                                     </Tooltip>
                                 )}
@@ -435,7 +428,7 @@ function _Message(props: Props) {
                                     <Tooltip title={t('edit')} placement="top">
                                         <IconButton
                                             aria-label="edit"
-                                            color="primary"
+                                            color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
                                             onClick={() => {
                                                 setIsHovering(false)
                                                 setAnchorEl(null)
@@ -446,12 +439,21 @@ function _Message(props: Props) {
                                         </IconButton>
                                     </Tooltip>
                                 )}
-                                <Tooltip title={t('copy')} placement="top">
-                                    <IconButton aria-label="copy" color="primary" onClick={onCopyMsg}>
-                                        <CopyAllIcon fontSize="small" />
-                                    </IconButton>
-                                </Tooltip>
-                                <IconButton onClick={handleClick} color="primary">
+                                {!(props.sessionType === 'picture' && msg.role === 'assistant') && (
+                                    <Tooltip title={t('copy')} placement="top">
+                                        <IconButton
+                                            aria-label="copy"
+                                            onClick={onCopyMsg}
+                                            color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
+                                        >
+                                            <CopyAllIcon fontSize="small" />
+                                        </IconButton>
+                                    </Tooltip>
+                                )}
+                                <IconButton
+                                    onClick={handleClick}
+                                    color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
+                                >
                                     <MoreVertIcon fontSize="small" />
                                 </IconButton>
                                 <StyledMenu

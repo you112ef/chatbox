@@ -8,7 +8,11 @@ export type Message = OpenAIMessage & {
     generating?: boolean
     aiProvider?: ModelProvider
     model?: string
+    style?: string // image style
 
+    pictures?: { storageKey: string }[]
+
+    errorCode?: number
     error?: string
     errorExtra?: {
         [key: string]: any
@@ -19,8 +23,18 @@ export type Message = OpenAIMessage & {
     tokensUsed?: number // 生成当前消息的 token 使用量
 }
 
+export type SessionType = undefined | 'chat' | 'picture' // undefined 为了兼容老版本 chat
+
+export function isChatSession(session: Session) {
+    return session.type === 'chat' || !session.type
+}
+export function isPictureSession(session: Session) {
+    return session.type === 'picture'
+}
+
 export interface Session {
     id: string
+    type: SessionType
     name: string
     picUrl?: string
     messages: Message[]
@@ -30,6 +44,8 @@ export interface Session {
 }
 
 export type SessionSettings = ReturnType<typeof settings2SessionSettings>
+// TODO: 这里值得简单重构，将会话设置应该假定所有字段可能为空，在设置层面做好默认值的处理。这样可以防止字段覆盖冲突。
+// export type SessionSettings = Partial<ModelSettings>
 
 export function settings2SessionSettings(settings: ModelSettings) {
     return pick(settings, [
@@ -39,6 +55,8 @@ export function settings2SessionSettings(settings: ModelSettings) {
         'openaiMaxContextMessageCount',
         'temperature',
         'topP',
+        'dalleStyle',
+        'imageGenerateNum',
 
         'model',
         'openaiCustomModel',
@@ -46,9 +64,14 @@ export function settings2SessionSettings(settings: ModelSettings) {
         'openaiMaxTokens',
 
         'azureDeploymentName',
+        'azureDalleDeploymentName',
 
         'claudeModel',
     ])
+}
+
+export function pickPictureSettings(settings: ModelSettings) {
+    return pick(settings, ['dalleStyle', 'imageGenerateNum'])
 }
 
 export function createMessage(role: OpenAIRoleEnumType = OpenAIRoleEnum.User, content: string = ''): Message {
@@ -76,9 +99,13 @@ export interface ModelSettings {
     model: Model | 'custom-model'
     openaiCustomModel?: string // OpenAI 自定义模型的 ID
 
+    dalleStyle: 'vivid' | 'natural'
+    imageGenerateNum: number // 生成图片的数量
+
     // azure
     azureEndpoint: string
     azureDeploymentName: string
+    azureDalleDeploymentName: string // dall-e-3 的部署名称
     azureApikey: string
 
     // chatglm-6b
@@ -124,24 +151,36 @@ export interface Settings extends ModelSettings {
 
 export type Language = 'en' | 'zh-Hans' | 'zh-Hant' | 'ja' | 'ko' | 'ru' | 'de' | 'fr'
 
-export function getMsgDisplayModelName(settings: SessionSettings) {
+export function getMsgDisplayModelName(settings: SessionSettings, sessionType: SessionType) {
     switch (settings.aiProvider) {
         case ModelProvider.OpenAI:
-            if (settings.model === 'custom-model') {
-                let name = settings.openaiCustomModel || ''
-                if (name.length >= 10) {
-                    name = name.slice(0, 10) + '...'
+            if (sessionType === 'picture') {
+                return `OpenAI (DALL-E-3)`
+            } else {
+                if (settings.model === 'custom-model') {
+                    let name = settings.openaiCustomModel || ''
+                    if (name.length >= 10) {
+                        name = name.slice(0, 10) + '...'
+                    }
+                    return `OpenAI Custom Model (${name})`
                 }
-                return `OpenAI Custom Model (${name})`
+                return settings.model
             }
-            return settings.model
         case ModelProvider.Azure:
-            return `Azure OpenAI (${settings.azureDeploymentName})`
+            if (sessionType === 'picture') {
+                return `Azure OpenAI (${settings.azureDalleDeploymentName})`
+            } else {
+                return `Azure OpenAI (${settings.azureDeploymentName})`
+            }
         case ModelProvider.ChatGLM6B:
             return 'ChatGLM-6B'
         case ModelProvider.ChatboxAI:
-            const model = settings.chatboxAIModel || 'chatboxai-3.5'
-            return model.replace('chatboxai-', 'Chatbox-AI ')
+            if (sessionType === 'picture') {
+                return `Chatbox-AI (DALL-E-3)`
+            } else {
+                const model = settings.chatboxAIModel || 'chatboxai-3.5'
+                return model.replace('chatboxai-', 'Chatbox-AI ')
+            }
         case ModelProvider.Claude:
             return settings.claudeModel
         default:

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { Button, Box, IconButton, ButtonGroup, Stack, Grid, Typography, Chip, Tooltip } from '@mui/material'
-import { Session, getMsgDisplayModelName } from '../shared/types'
+import { Button, Box, IconButton, ButtonGroup, Stack, Typography, Chip, Tooltip } from '@mui/material'
+import { Session, getMsgDisplayModelName, isChatSession, isPictureSession } from '../shared/types'
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices'
 import Save from '@mui/icons-material/Save'
 import { useTranslation } from 'react-i18next'
@@ -19,6 +19,7 @@ import TuneIcon from '@mui/icons-material/Tune'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 import SearchIcon from '@mui/icons-material/Search'
 import { drawerWidth } from './Sidebar'
+import ImageIcon from '@mui/icons-material/Image'
 
 interface Props {
     setConfigureChatConfig(session: Session | null): void
@@ -103,7 +104,7 @@ export default function MainPane(props: Props) {
                                 {currentSession.name}
                             </Typography>
                         )}
-                        {currentSession.settings && (
+                        {isChatSession(currentSession) && currentSession.settings && (
                             <Tooltip
                                 title={t('Current conversation configured with specific model settings')}
                                 className="cursor-pointer"
@@ -116,9 +117,24 @@ export default function MainPane(props: Props) {
                                     icon={<TuneIcon className="cursor-pointer" />}
                                     label={
                                         <span className="cursor-pointer">
-                                            {getMsgDisplayModelName(currentSession.settings)}
+                                            {getMsgDisplayModelName(currentSession.settings, currentSession.type)}
                                         </span>
                                     }
+                                />
+                            </Tooltip>
+                        )}
+                        {isPictureSession(currentSession) && (
+                            <Tooltip
+                                title={t('The Image Creator plugin has been activated for the current conversation')}
+                                className="cursor-pointer"
+                            >
+                                <Chip
+                                    className="ml-2 cursor-pointer"
+                                    variant="outlined"
+                                    color="secondary"
+                                    size="small"
+                                    icon={<ImageIcon className="cursor-pointer" />}
+                                    label={<span className="cursor-pointer">{t('Image Creator')}</span>}
                                 />
                             </Tooltip>
                         )}
@@ -190,7 +206,7 @@ export default function MainPane(props: Props) {
                             <ArrowCircleDownIcon />
                         </IconButton>
                     </ButtonGroup>
-                    <InputBox currentSessionId={currentSession.id} />
+                    <InputBox currentSessionId={currentSession.id} currentSessionType={currentSession.type} />
                 </Box>
             </Stack>
         </Box>

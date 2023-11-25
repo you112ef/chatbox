@@ -7,8 +7,12 @@ export function settings(): Settings {
         aiProvider: ModelProvider.OpenAI,
         openaiKey: '',
         apiHost: 'https://api.openai.com',
+        dalleStyle: 'vivid',
+        imageGenerateNum: 3,
+
         azureApikey: '',
         azureDeploymentName: '',
+        azureDalleDeploymentName: 'dall-e-3',
         azureEndpoint: '',
         chatglm6bUrl: '',
         model: 'gpt-3.5-turbo',

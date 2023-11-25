@@ -72,6 +72,7 @@ export default function CopilotWindow(props: Props) {
         sessionActions.create({
             id: uuidv4(),
             name: copilot.name,
+            type: 'chat',
             picUrl: copilot.picUrl,
             messages: msgs,
             starred: false,

@@ -9,7 +9,7 @@ import {
 import { ofetch } from 'ofetch'
 
 const RELEASE_ORIGIN = 'https://releases.chatboxai.app'
-const API_ORIGIN = 'https://chatboxai.app'
+export const API_ORIGIN = 'https://chatboxai.app'
 
 export async function checkNeedUpdate(version: string, os: string, config: Config) {
     type Response = {

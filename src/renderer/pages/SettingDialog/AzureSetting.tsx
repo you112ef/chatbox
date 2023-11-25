@@ -56,6 +56,20 @@ export default function AzureSetting(props: ModelConfigProps) {
                     })
                 }
             />
+            <TextField
+                margin="dense"
+                label={t('Azure Dall-E Deployment Name')}
+                type="text"
+                fullWidth
+                variant="outlined"
+                value={settingsEdit.azureDalleDeploymentName}
+                onChange={(e) =>
+                    setSettingsEdit({
+                        ...settingsEdit,
+                        azureDalleDeploymentName: e.target.value.trim(),
+                    })
+                }
+            />
             <Accordion>
                 <AccordionSummary aria-controls="panel1a-content">
                     <Typography>

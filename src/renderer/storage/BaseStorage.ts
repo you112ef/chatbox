@@ -1,3 +1,5 @@
+import localforage from 'localforage'
+
 export default class BaseStorage {
     constructor() {}
 
@@ -26,5 +28,18 @@ export default class BaseStorage {
         throw new Error('not implemented')
     }
 
+    // TODO: 这些数据也应该实现数据导出与导入
+    public async setBlob<T>(key: string, value: T) {
+        return localforage.setItem(key, value)
+    }
+    public async getBlob<T>(key: string) {
+        return localforage.getItem<T>(key)
+    }
+    public async delBlob<T>(key: string) {
+        return localforage.removeItem(key)
+    }
+    public async getBlobKeys() {
+        return localforage.keys()
+    }
     // subscribe(key: string, callback: any, initialValue: any): Promise<void>
 }

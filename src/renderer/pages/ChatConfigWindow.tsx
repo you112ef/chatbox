@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import {
-    FormControlLabel,
     Switch,
     Divider,
     Button,
@@ -11,7 +10,14 @@ import {
     DialogContentText,
     TextField,
 } from '@mui/material'
-import { Session, ModelProvider, SessionSettings, settings2SessionSettings } from '../../shared/types'
+import {
+    Session,
+    ModelProvider,
+    SessionSettings,
+    settings2SessionSettings,
+    isChatSession,
+    isPictureSession,
+} from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as sessionActions from '../stores/sessionActions'
 import TemperatureSlider from '../components/TemperatureSlider'
@@ -26,6 +32,9 @@ import { resetTokenConfig } from '../packages/token_config'
 import AIProviderSelect from '../components/AIProviderSelect'
 import OpenAIModelSelect from '../components/OpenAIModelSelect'
 import TokenConfig from './SettingDialog/TokenConfig'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import ImageCountSlider from '@/components/ImageCountSlider'
+import ImageStyleSelect from '@/components/ImageStyleSelect'
 
 interface Props {
     open: boolean
@@ -35,8 +44,6 @@ interface Props {
 
 export default function ChatConfigWindow(props: Props) {
     const { t } = useTranslation()
-    const settings = useAtomValue(atoms.settingsAtom)
-    const licenseDetail = useAtomValue(atoms.licenseDetailAtom)
     const [dataEdit, setDataEdit] = React.useState<Session>(props.session)
 
     useEffect(() => {
@@ -62,14 +69,6 @@ export default function ChatConfigWindow(props: Props) {
         props.close()
     }
 
-    const settingsEdit = dataEdit.settings
-    const setSettingsEdit = (updated: SessionSettings) => {
-        if (settingsEdit?.aiProvider !== updated.aiProvider || settingsEdit?.model !== updated.model) {
-            updated = resetTokenConfig(updated)
-        }
-        setDataEdit({ ...dataEdit, settings: updated })
-    }
-
     return (
         <Dialog open={props.open} onClose={onCancel} fullWidth>
             <DialogTitle>{t('Conversation Settings')}</DialogTitle>
@@ -85,116 +84,149 @@ export default function ChatConfigWindow(props: Props) {
                     value={dataEdit.name}
                     onChange={(e) => setDataEdit({ ...dataEdit, name: e.target.value })}
                 />
-                <FormControlLabel
-                    control={<Switch size="medium" />}
-                    label={t('Specific model settings')}
-                    checked={!!dataEdit.settings}
-                    onChange={(e, checked) => {
-                        if (checked) {
-                            dataEdit.settings = settings2SessionSettings(settings)
-                        } else {
-                            dataEdit.settings = undefined
-                        }
-                        setDataEdit({ ...dataEdit })
-                    }}
-                    sx={{ margin: '12px 0' }}
-                />
-                {settingsEdit && (
-                    <>
-                        <AIProviderSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                        <Divider sx={{ margin: '16px 0' }} />
-                        {settingsEdit.aiProvider === ModelProvider.ChatboxAI && (
-                            <>
-                                {licenseDetail && (
-                                    <ChatboxAIModelSelect
-                                        settingsEdit={settingsEdit}
-                                        setSettingsEdit={setSettingsEdit}
-                                    />
-                                )}
-                                <MaxContextMessageCountSlider
-                                    settingsEdit={settingsEdit}
-                                    setSettingsEdit={setSettingsEdit}
-                                />
-                                <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                            </>
-                        )}
-                        {settingsEdit.aiProvider === ModelProvider.OpenAI && (
-                            <>
-                                <OpenAIModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                                <MaxContextMessageCountSlider
-                                    settingsEdit={settingsEdit}
-                                    setSettingsEdit={setSettingsEdit}
-                                />
-                                <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                                <Accordion>
-                                    <AccordionSummary aria-controls="panel1a-content">
-                                        {t('model')} & {t('token')}
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                                        <TopPSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                                    </AccordionDetails>
-                                </Accordion>
-                            </>
-                        )}
-                        {settingsEdit.aiProvider === ModelProvider.Azure && (
-                            <>
-                                <TextField
-                                    margin="dense"
-                                    label={t('Azure Deployment Name')}
-                                    type="text"
-                                    fullWidth
-                                    variant="outlined"
-                                    value={settingsEdit.azureDeploymentName}
-                                    onChange={(e) =>
-                                        setSettingsEdit({
-                                            ...settingsEdit,
-                                            azureDeploymentName: e.target.value.trim(),
-                                        })
-                                    }
-                                />
-                                <MaxContextMessageCountSlider
-                                    settingsEdit={settingsEdit}
-                                    setSettingsEdit={setSettingsEdit}
-                                />
-                                <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                                <Accordion>
-                                    <AccordionSummary aria-controls="panel1a-content">
-                                        {t('model')} & {t('token')}
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                                        <TopPSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                                    </AccordionDetails>
-                                </Accordion>
-                            </>
-                        )}
-                        {settingsEdit.aiProvider === ModelProvider.ChatGLM6B && (
-                            <>
-                                <MaxContextMessageCountSlider
-                                    settingsEdit={settingsEdit}
-                                    setSettingsEdit={setSettingsEdit}
-                                />
-                                <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                            </>
-                        )}
-                        {settingsEdit.aiProvider === ModelProvider.Claude && (
-                            <>
-                                <ClaudeModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                                <MaxContextMessageCountSlider
-                                    settingsEdit={settingsEdit}
-                                    setSettingsEdit={setSettingsEdit}
-                                />
-                                <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                            </>
-                        )}
-                    </>
-                )}
+                {isChatSession(props.session) && <ChatConfig dataEdit={dataEdit} setDataEdit={setDataEdit} />}
+                {isPictureSession(props.session) && <PictureConfig dataEdit={dataEdit} setDataEdit={setDataEdit} />}
             </DialogContent>
             <DialogActions>
                 <Button onClick={onCancel}>{t('cancel')}</Button>
                 <Button onClick={onSave}>{t('save')}</Button>
             </DialogActions>
         </Dialog>
+    )
+}
+
+function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => void }) {
+    const { dataEdit, setDataEdit } = props
+    const { t } = useTranslation()
+    const settings = useAtomValue(atoms.settingsAtom)
+    const licenseDetail = useAtomValue(atoms.licenseDetailAtom)
+    const settingsEdit = dataEdit.settings
+    const setSettingsEdit = (updated: SessionSettings) => {
+        if (settingsEdit?.aiProvider !== updated.aiProvider || settingsEdit?.model !== updated.model) {
+            updated = resetTokenConfig(updated)
+        }
+        setDataEdit({ ...dataEdit, settings: updated })
+    }
+    return (
+        <>
+            <FormControlLabel
+                control={<Switch size="medium" />}
+                label={t('Specific model settings')}
+                checked={!!dataEdit.settings}
+                onChange={(e, checked) => {
+                    if (checked) {
+                        dataEdit.settings = settings2SessionSettings(settings)
+                    } else {
+                        dataEdit.settings = undefined
+                    }
+                    setDataEdit({ ...dataEdit })
+                }}
+                sx={{ margin: '12px 0' }}
+            />
+            {settingsEdit && (
+                <>
+                    <AIProviderSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                    <Divider sx={{ margin: '16px 0' }} />
+                    {settingsEdit.aiProvider === ModelProvider.ChatboxAI && (
+                        <>
+                            {licenseDetail && (
+                                <ChatboxAIModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                            )}
+                            <MaxContextMessageCountSlider
+                                settingsEdit={settingsEdit}
+                                setSettingsEdit={setSettingsEdit}
+                            />
+                            <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                        </>
+                    )}
+                    {settingsEdit.aiProvider === ModelProvider.OpenAI && (
+                        <>
+                            <OpenAIModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                            <MaxContextMessageCountSlider
+                                settingsEdit={settingsEdit}
+                                setSettingsEdit={setSettingsEdit}
+                            />
+                            <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                            <Accordion>
+                                <AccordionSummary aria-controls="panel1a-content">
+                                    {t('model')} & {t('token')}
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                    <TopPSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                </AccordionDetails>
+                            </Accordion>
+                        </>
+                    )}
+                    {settingsEdit.aiProvider === ModelProvider.Azure && (
+                        <>
+                            <TextField
+                                margin="dense"
+                                label={t('Azure Deployment Name')}
+                                type="text"
+                                fullWidth
+                                variant="outlined"
+                                value={settingsEdit.azureDeploymentName}
+                                onChange={(e) =>
+                                    setSettingsEdit({
+                                        ...settingsEdit,
+                                        azureDeploymentName: e.target.value.trim(),
+                                    })
+                                }
+                            />
+                            <MaxContextMessageCountSlider
+                                settingsEdit={settingsEdit}
+                                setSettingsEdit={setSettingsEdit}
+                            />
+                            <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                            <Accordion>
+                                <AccordionSummary aria-controls="panel1a-content">
+                                    {t('model')} & {t('token')}
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                    <TopPSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                </AccordionDetails>
+                            </Accordion>
+                        </>
+                    )}
+                    {settingsEdit.aiProvider === ModelProvider.ChatGLM6B && (
+                        <>
+                            <MaxContextMessageCountSlider
+                                settingsEdit={settingsEdit}
+                                setSettingsEdit={setSettingsEdit}
+                            />
+                            <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                        </>
+                    )}
+                    {settingsEdit.aiProvider === ModelProvider.Claude && (
+                        <>
+                            <ClaudeModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                            <MaxContextMessageCountSlider
+                                settingsEdit={settingsEdit}
+                                setSettingsEdit={setSettingsEdit}
+                            />
+                            <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                        </>
+                    )}
+                </>
+            )}
+        </>
+    )
+}
+
+function PictureConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => void }) {
+    const { dataEdit, setDataEdit } = props
+    const { t } = useTranslation()
+    const settings = useAtomValue(atoms.settingsAtom)
+    const settingsEdit = dataEdit.settings || settings2SessionSettings(settings)
+    const setSettingsEdit = (updated: SessionSettings) => {
+        setDataEdit({ ...dataEdit, settings: updated })
+    }
+    return (
+        <div className="mt-8">
+            <ImageStyleSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+            <ImageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+        </div>
     )
 }

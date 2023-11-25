@@ -113,6 +113,10 @@ export default function AdvancedSettingTab(props: Props) {
                                         keys: ['Ctrl', t('any number key')],
                                     },
                                     { description: t('Create New Conversation'), keys: ['Ctrl', 'N'] },
+                                    {
+                                        description: t('Create New Image-Creator Conversation'),
+                                        keys: ['Ctrl', 'Shift', 'N'],
+                                    },
                                     { description: t('Focus on Input Box'), keys: ['Ctrl', 'I'] },
                                     { description: t('Send'), keys: [t('Enter')] },
                                     { description: t('Insert New Line in Input Box'), keys: ['Shift', t('Enter')] },

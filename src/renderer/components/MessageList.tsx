@@ -46,7 +46,15 @@ export default function MessageList(props: Props) {
                 }}
                 ref={virtuoso}
                 itemContent={(index, msg) => {
-                    return <Message id={msg.id} key={msg.id} msg={msg} sessionId={currentSession.id} />
+                    return (
+                        <Message
+                            id={msg.id}
+                            key={msg.id}
+                            msg={msg}
+                            sessionId={currentSession.id}
+                            sessionType={currentSession.type}
+                        />
+                    )
                 }}
                 onWheel={(e) => {
                     scrollActions.clearAutoScroll()

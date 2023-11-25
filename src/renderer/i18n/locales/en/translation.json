@@ -45,7 +45,6 @@
     "copied to clipboard": "Copied to clipboard",
     "language": "Language",
     "stop generating": "Stop generating",
-    "regenerate": "Regenerate",
     "font size changed, effective after next launch": "Font size changed, effective after next launch",
     "star": "Star",
     "unstar": "Unstar",
@@ -169,5 +168,16 @@
     "Navigate to next option (within search dialog)": "Navigate to next option (within search dialog)",
     "Select current option (within search dialog)": "Select current option (within search dialog)",
     "No results found": "No results found",
-    "Follow me on Twitter(X)": "Follow me on Twitter(X)"
+    "Follow me on Twitter(X)": "Follow me on Twitter(X)",
+    "Reply Again": "Reply Again",
+    "Reply Again Below": "Reply Again Below",
+    "ai provider no implemented paint tips": "The current AI model provider({{aiProvider}}) does not support painting capabilities at this time. Currently, only Chatbox AI, OpenAI and Azure OpenAI offer this feature. If needed, please <0>go to settings</0> and switch the AI model provider.",
+    "Azure Dall-E Deployment Name": "Azure Dall-E Deployment Name",
+    "New Images": "New Images",
+    "Number of Images per Reply": "Number of Images per Reply",
+    "Image Style": "Image Style",
+    "Vivid": "Vivid",
+    "Natural": "Natural",
+    "Image Creator Intro": "Hi! I'm Chatbox Image Creator, your artistic AI companion dedicated to converting your words into striking visuals. If you can dream it, I can create it—from enchanting landscapes, dynamic characters, app icons to the abstract and beyond.\n\nI'm a quiet robot, just **simply tell me the description of the image you have in mind**, and I'll focus all my pixels into crafting your vision.\n\nLet's make art!",
+    "Create New Image-Creator Conversation": "Create New Image-Creator Conversation"
 }

@@ -50,9 +50,7 @@ export default function TemperatureSlider(props: Props) {
     return (
         <Box sx={{ margin: '10px' }}>
             <Box>
-                <Typography id="discrete-slider" gutterBottom>
-                    {t('temperature')}
-                </Typography>
+                <Typography gutterBottom>{t('temperature')}</Typography>
             </Box>
             <Box
                 sx={{

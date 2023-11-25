@@ -31,8 +31,13 @@ function keyboardShortcut(e: KeyboardEvent) {
         dom.focusMessageInput()
     }
 
-    if (e.key === 'n' && ctrlOrCmd) {
-        sessionActions.createEmpty()
+    // 创建新会话 CmdOrCtrl + C
+    if (e.key === 'n' && ctrlOrCmd && !shift) {
+        sessionActions.createEmpty('chat')
+    }
+    // 创建新图片会话 CmdOrCtrl + Shift + C
+    if (e.key === 'n' && ctrlOrCmd && shift) {
+        sessionActions.createEmpty('picture')
     }
 
     if (e.key === 'Tab' && ctrlOrCmd && !shift) {

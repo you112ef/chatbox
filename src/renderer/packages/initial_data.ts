@@ -1,9 +1,11 @@
 import { Session } from '../../shared/types'
 
+// TODO: 图片 demo
 export const sessions: Session[] = [
     {
         id: '81cfc426-48b4-4a13-ad42-bfcfc4544299',
         name: '小红书文案生成器 (示例)',
+        type: 'chat',
         picUrl: 'https://pub-45c0b529c25a4d388dfa7cf57f35f8f0.r2.dev/avatar/xhs.webp',
         messages: [
             {
@@ -31,6 +33,7 @@ export const sessions: Session[] = [
     {
         id: '8732ec08-b23c-4b5e-8f65-d63d808f970f',
         name: '夸夸机 (示例)',
+        type: 'chat',
         picUrl: 'https://pub-45c0b529c25a4d388dfa7cf57f35f8f0.r2.dev/avatar/9fa8f1eb09e717d110d614d7474cbc591381206547520499117.gif',
         messages: [
             {
@@ -59,6 +62,7 @@ export const sessions: Session[] = [
     {
         id: '3e091ac6-ebfa-42c9-b125-c67ac2d45ee1',
         name: '翻译助手 (示例)',
+        type: 'chat',
         picUrl: 'https://pub-45c0b529c25a4d388dfa7cf57f35f8f0.r2.dev/avatar/translator.jpeg',
         messages: [
             {
@@ -86,6 +90,7 @@ export const sessions: Session[] = [
     {
         id: 'a7191bb6-068e-4b08-837d-89e06c944761',
         name: 'Picture Box (Example)',
+        type: 'chat',
         picUrl: 'https://pub-45c0b529c25a4d388dfa7cf57f35f8f0.r2.dev/avatar/pic.png',
         messages: [
             {
@@ -111,6 +116,7 @@ export const sessions: Session[] = [
     {
         id: '6dafa15e-c72f-4036-ac89-33c09e875bdc',
         name: 'Markdown 101 (Example)',
+        type: 'chat',
         messages: [
             {
                 id: '83240028-9d8b-43f2-87f2-a0a2be4dbf08',
@@ -149,6 +155,7 @@ export const sessions: Session[] = [
     {
         id: 'e22ab364-4681-4e24-aaba-461ed0fccfd3',
         name: 'Travel Guide (Example)',
+        type: 'chat',
         picUrl: 'https://pub-45c0b529c25a4d388dfa7cf57f35f8f0.r2.dev/avatar/travel.png',
         messages: [
             {
@@ -177,6 +184,7 @@ export const sessions: Session[] = [
     {
         id: '55d92e88-02af-4c3b-a378-aa0a1970abb1',
         name: 'Social Media Influencer (Example)',
+        type: 'chat',
         picUrl: 'https://pub-45c0b529c25a4d388dfa7cf57f35f8f0.r2.dev/avatar/twitter.png',
         messages: [
             {
@@ -205,6 +213,7 @@ export const sessions: Session[] = [
     {
         id: '35df5a96-b612-406a-985b-3ab4d2c481ff',
         name: 'Software Developer (Example)',
+        type: 'chat',
         picUrl: 'https://pub-45c0b529c25a4d388dfa7cf57f35f8f0.r2.dev/avatar/programmer.png',
         messages: [
             {
@@ -233,6 +242,7 @@ export const sessions: Session[] = [
     {
         id: '776eac23-7b4a-40da-91cd-f233bb4742ed',
         name: 'Translator (Example)',
+        type: 'chat',
         picUrl: 'https://pub-45c0b529c25a4d388dfa7cf57f35f8f0.r2.dev/avatar/translator.jpeg',
         messages: [
             {
@@ -296,6 +306,7 @@ export const sessions: Session[] = [
     {
         id: 'justchat-b612-406a-985b-3ab4d2c482ff',
         name: 'Just chat',
+        type: 'chat',
         messages: [
             {
                 id: 'a700be6c-cbdd-43a3-b572-49e7a921c059',

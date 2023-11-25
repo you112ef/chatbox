@@ -6,6 +6,8 @@ import {
     Session,
     getMsgDisplayModelName,
     settings2SessionSettings,
+    pickPictureSettings,
+    ModelSettings,
 } from '../../shared/types'
 import * as atoms from './atoms'
 import * as client from '../packages/llm'
@@ -16,6 +18,9 @@ import { v4 as uuidv4 } from 'uuid'
 import * as defaults from './defaults'
 import * as scrollActions from './scrollActions'
 import storage from '../storage'
+import i18n from '../i18n'
+import { getModel } from '@/packages/models'
+import { AIProviderNoImplementedPaint, NetworkError, ApiError } from '@/packages/models/errors'
 
 export function create(newSession: Session) {
     const store = getDefaultStore()
@@ -47,8 +52,15 @@ export function modifyName(sessionId: string, name: string) {
     )
 }
 
-export function createEmpty() {
-    create(getEmptySession())
+export function createEmpty(type: 'chat' | 'picture') {
+    switch (type) {
+        case 'chat':
+            return create(initEmptyChatSession())
+        case 'picture':
+            return create(initEmptyPictureSession())
+        default:
+            throw new Error(`Unknown session type: ${type}`)
+    }
 }
 
 export function switchCurrentSession(sessionId: string) {
@@ -111,10 +123,10 @@ export function clear(sessionId: string) {
     })
 }
 
-export function copy(source: Session) {
+export async function copy(source: Session) {
     const store = getDefaultStore()
     const newSession = { ...source }
-    newSession.id = getEmptySession().id
+    newSession.id = uuidv4()
     store.set(atoms.sessionsAtom, (sessions) => [...sessions, newSession])
 }
 
@@ -189,54 +201,103 @@ export function removeMessage(sessionId: string, messageId: string) {
 export async function generate(sessionId: string, targetMsg: Message) {
     const store = getDefaultStore()
     const globalSettings = store.get(atoms.settingsAtom)
+    const configs = await storage.getConfig()
     const session = getSession(sessionId)
     if (!session) {
         return
     }
     const settings = mergeSettings(globalSettings, session)
+
+    // 还原消息到初始状态
     const placeholder = '...'
     targetMsg = {
         ...targetMsg,
         content: placeholder,
+        pictures: [],
         cancel: undefined,
         aiProvider: settings.aiProvider,
-        model: getMsgDisplayModelName(settings),
+        model: getMsgDisplayModelName(settings, session.type),
+        style: session.type === 'picture' ? settings.dalleStyle : undefined,
         generating: true,
+        errorCode: undefined,
         error: undefined,
         errorExtra: undefined,
     }
     modifyMessage(sessionId, targetMsg)
-
-    const targetMsgIx = session.messages.findIndex((m) => m.id === targetMsg.id)
-    if (targetMsgIx < 0) {
-        return
-    }
-    const promptMsgs = genMessageContext(settings, session.messages.slice(0, targetMsgIx))
-
     setTimeout(() => {
         scrollActions.scrollToMessage(targetMsg.id, 'end')
     }, 50) // 等待消息渲染完成后再滚动到底部，否则会出现滚动不到底部的问题
 
-    const configs = await storage.getConfig()
     try {
-        await client.reply(settings, configs, promptMsgs, ({ text, cancel }) => {
-            targetMsg = {
-                ...targetMsg,
-                content: text,
-                cancel,
-            }
-            modifyMessage(sessionId, targetMsg)
-        })
+        const targetMsgIx = session.messages.findIndex((m) => m.id === targetMsg.id)
+        if (targetMsgIx <= 0) {
+            return
+        }
+        switch (session.type) {
+            // 对话消息生成
+            case 'chat':
+            case undefined:
+                const promptMsgs = genMessageContext(settings, session.messages.slice(0, targetMsgIx))
+                await client.reply(settings, configs, promptMsgs, ({ text, cancel }) => {
+                    targetMsg = { ...targetMsg, content: text, cancel }
+                    modifyMessage(sessionId, targetMsg)
+                })
+                targetMsg = {
+                    ...targetMsg,
+                    generating: false,
+                    cancel: undefined,
+                    tokensUsed: utils.estimateTokensFromMessages([...promptMsgs, targetMsg]),
+                }
+                modifyMessage(sessionId, targetMsg, true)
+                break
+            // 图片消息生成
+            case 'picture':
+                const model = getModel(settings, configs)
+                // 取当前消息之前最近的一条用户消息作为 prompt
+                let prompt = ''
+                for (let i = targetMsgIx; i >= 0; i--) {
+                    if (session.messages[i].role === 'user') {
+                        prompt = session.messages[i].content
+                        break
+                    }
+                }
+                const base64Pictures = await model.paint(prompt, settings.imageGenerateNum)
+                const pictures: { storageKey: string }[] = []
+                for (const base64 of base64Pictures) {
+                    const storageKey = `picture:${sessionId}:${targetMsg.id}:${uuidv4()}`
+                    // 图片需要存储到 indexedDB，如果直接使用 OpenAI 返回的图片链接，图片链接将随着时间而失效
+                    await storage.setBlob(storageKey, base64)
+                    pictures.push({ storageKey })
+                }
+                targetMsg = {
+                    ...targetMsg,
+                    content: '',
+                    pictures,
+                    generating: false,
+                    cancel: undefined,
+                }
+                modifyMessage(sessionId, targetMsg, true)
+                break
+            default:
+                throw new Error(`Unknown session type: ${session.type}, generate failed`)
+        }
     } catch (err: any) {
         if (!(err instanceof Error)) {
             err = new Error(`${err}`)
         }
-        if (!(err instanceof client.ApiError || err instanceof client.NetworkError)) {
+        if (!(err instanceof ApiError || err instanceof NetworkError || err instanceof AIProviderNoImplementedPaint)) {
             Sentry.captureException(err) // unexpected error should be reported
+        }
+        let errorCode: number | undefined = undefined
+        if (err instanceof AIProviderNoImplementedPaint) {
+            errorCode = err.code
         }
         targetMsg = {
             ...targetMsg,
+            generating: false,
+            cancel: undefined,
             content: targetMsg.content === placeholder ? '' : targetMsg.content,
+            errorCode,
             error: `${err.message}`, // 这么写是为了避免类型问题
             errorExtra: {
                 aiProvider: settings.aiProvider,
@@ -245,14 +306,6 @@ export async function generate(sessionId: string, targetMsg: Message) {
         }
         modifyMessage(sessionId, targetMsg, true)
     }
-    targetMsg = {
-        ...targetMsg,
-        generating: false,
-        cancel: undefined,
-        tokensUsed: utils.estimateTokensFromMessages([...promptMsgs, targetMsg]),
-    }
-    modifyMessage(sessionId, targetMsg, true)
-
 }
 
 export async function refreshMessage(sessionId: string, msg: Message) {
@@ -287,7 +340,7 @@ export async function generateName(sessionId: string) {
             }
         )
     } catch (e: any) {
-        if (!(e instanceof client.ApiError || e instanceof client.NetworkError)) {
+        if (!(e instanceof ApiError || e instanceof NetworkError)) {
             Sentry.captureException(e) // unexpected error should be reported
         }
     }
@@ -344,17 +397,33 @@ function genMessageContext(settings: Settings, msgs: Message[]) {
     return prompts
 }
 
-export function getEmptySession(name: string = 'Untitled'): Session {
+export function initEmptyChatSession(): Session {
     const store = getDefaultStore()
     const settings = store.get(atoms.settingsAtom)
     return {
         id: uuidv4(),
-        name: name,
+        name: 'Untitled',
+        type: 'chat',
         messages: [
             {
                 id: uuidv4(),
                 role: 'system',
                 content: settings.defaultPrompt || defaults.getDefaultPrompt(),
+            },
+        ],
+    }
+}
+
+export function initEmptyPictureSession(): Session {
+    return {
+        id: uuidv4(),
+        name: 'Untitled',
+        type: 'picture',
+        messages: [
+            {
+                id: uuidv4(),
+                role: 'system',
+                content: i18n.t('Image Creator Intro'),
             },
         ],
     }
@@ -379,8 +448,18 @@ function mergeSettings(globalSettings: Settings, session: Session): Settings {
     if (!session.settings) {
         return globalSettings
     }
-    let specialSettings = session.settings
-    specialSettings = settings2SessionSettings(specialSettings as Settings) // 过滤掉会话专属设置中不应该存在的设置项，为了兼容旧版本数据和防止疏漏
+    let specialSettings: Partial<ModelSettings> = session.settings
+    // 过滤掉会话专属设置中不应该存在的设置项，为了兼容旧版本数据和防止疏漏
+    switch (session.type) {
+        case 'picture':
+            specialSettings = pickPictureSettings(specialSettings as Settings)
+            break
+        case undefined:
+        case 'chat':
+        default:
+            specialSettings = settings2SessionSettings(specialSettings as Settings)
+            break
+    }
     specialSettings = omit(specialSettings) // 需要 omit 来去除 undefined，否则会覆盖掉全局配置
     return {
         ...globalSettings,
