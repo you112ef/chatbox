@@ -186,5 +186,6 @@
     "Chatbox AI Image Quota": "Chatbox AI 圖片餘額",
     "Quota Reset": "額度重置",
     "License Expiry": "授權到期",
-    "Please wait about 20 seconds": "請等待約 20 秒"
+    "Please wait about 20 seconds": "請等待約 20 秒",
+    "quota exhausted error tips": "很抱歉，您本月的{{model}}模型配額已經用盡。您可以<0>前往設定</0>查看配額詳情或升級您的套餐方案。"
 }

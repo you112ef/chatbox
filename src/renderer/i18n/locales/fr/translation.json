@@ -185,5 +185,6 @@
     "Chatbox AI Image Quota": "Quota d'Images Chatbox AI",
     "Quota Reset": "Réinitialisation du Quota",
     "License Expiry": "Expiration de la Licence",
-    "Please wait about 20 seconds": "Veuillez patienter environ 20 secondes"
+    "Please wait about 20 seconds": "Veuillez patienter environ 20 secondes",
+    "quota exhausted error tips": "Désolé, vous avez épuisé votre quota du modèle ({{model}}) pour le mois. Vous pouvez <0>aller dans les paramètres</0> pour consulter les détails du quota ou pour mettre à niveau votre plan."
 }

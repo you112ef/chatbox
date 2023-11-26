@@ -1,6 +1,6 @@
 import { Config, Message, ModelProvider, OpenAIMessage, Settings, ChatboxAIModel } from '../../shared/types'
 import { createParser } from 'eventsource-parser'
-import { ApiError, NetworkError } from './models/errors'
+import { ApiError, NetworkError, BaseError, QuotaExhausted } from './models/errors'
 import { API_ORIGIN } from './remote'
 
 export interface OnTextCallbackResult {
@@ -438,6 +438,13 @@ async function post(
                 body: JSON.stringify(body),
                 signal,
             })
+            // 配额用完了
+            if (res.status === 499) {
+                const json = await res.json()
+                if (json?.error?.code === 'token_quota_exhausted') {
+                    throw new QuotaExhausted()
+                }
+            }
             // 状态码不在 200～299 之间，一般是接口报错了，这里也需要抛错后重试
             if (!res.ok) {
                 const err = await res.text().catch((e) => null)
@@ -445,7 +452,7 @@ async function post(
             }
             return res
         } catch (e) {
-            if (e instanceof ApiError) {
+            if (e instanceof BaseError) {
                 requestError = e
             } else {
                 const err = e as Error

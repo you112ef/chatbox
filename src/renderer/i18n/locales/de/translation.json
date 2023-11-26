@@ -185,5 +185,6 @@
     "Chatbox AI Image Quota": "Chatbox AI Bildkontingent",
     "Quota Reset": "Kontingent-Reset",
     "License Expiry": "Lizenzablauf",
-    "Please wait about 20 seconds": "Bitte warten Sie etwa 20 Sekunden"
+    "Please wait about 20 seconds": "Bitte warten Sie etwa 20 Sekunden",
+    "quota exhausted error tips": "Entschuldigung, Sie haben Ihr monatliches Kontingent für das aktuelle Modell ({{model}}) aufgebraucht. Sie können <0>zu den Einstellungen gehen</0>, um die Kontingentdetails einzusehen oder Ihren Tarif zu aktualisieren."
 }

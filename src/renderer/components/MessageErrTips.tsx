@@ -55,6 +55,18 @@ export default function MessageErrTips(props: { msg: Message }) {
                 ]}
             />
         )
+    } else if (msg.errorCode === 10004) {
+        tips.push(
+            <Trans
+                i18nKey="quota exhausted error tips"
+                values={{
+                    model: msg.model,
+                }}
+                components={[
+                    <Link className="cursor-pointer font-bold" onClick={() => setOpenSettingDialogAtom('ai')}></Link>,
+                ]}
+            />
+        )
     } else {
         tips.push(
             <Trans

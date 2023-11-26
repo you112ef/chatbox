@@ -20,7 +20,7 @@ import * as scrollActions from './scrollActions'
 import storage from '../storage'
 import i18n from '../i18n'
 import { getModel } from '@/packages/models'
-import { AIProviderNoImplementedPaint, NetworkError, ApiError } from '@/packages/models/errors'
+import { AIProviderNoImplementedPaint, NetworkError, ApiError, BaseError } from '@/packages/models/errors'
 
 export function create(newSession: Session) {
     const store = getDefaultStore()
@@ -289,7 +289,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
             Sentry.captureException(err) // unexpected error should be reported
         }
         let errorCode: number | undefined = undefined
-        if (err instanceof AIProviderNoImplementedPaint) {
+        if (err instanceof BaseError) {
             errorCode = err.code
         }
         targetMsg = {

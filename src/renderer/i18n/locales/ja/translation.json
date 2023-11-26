@@ -185,5 +185,6 @@
     "Chatbox AI Image Quota": "Chatbox AI 画像クオータ",
     "Quota Reset": "クオータリセット",
     "License Expiry": "ライセンス有効期限",
-    "Please wait about 20 seconds": "約20秒お待ちください"
+    "Please wait about 20 seconds": "約20秒お待ちください",
+    "quota exhausted error tips": "申し訳ありませんが、今月のモデル({{model}})のクオータをすべて使用しました。<0>設定に移動する</0>と、クオータの詳細を表示したり、プランをアップグレードしたりすることができます。"
 }

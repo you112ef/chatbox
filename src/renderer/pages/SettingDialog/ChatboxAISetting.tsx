@@ -208,9 +208,9 @@ function InactivedButtonGroup() {
 function BorderLinearProgress(props: LinearProgressProps) {
     return (<_BorderLinearProgress variant="determinate" {...props}
         color={
-            props.value && props.value <= 10
+            props.value !== undefined && props.value <= 10
                 ? 'error'
-                : props.value && props.value <= 20 ? 'warning' : 'inherit'
+                : props.value !== undefined && props.value <= 20 ? 'warning' : 'inherit'
         }
     />)
 }
