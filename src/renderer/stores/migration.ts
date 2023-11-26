@@ -1,6 +1,7 @@
 import { getDefaultStore } from 'jotai'
 import { settingsAtom, configVersionAtom, sessionsAtom, languageAtom } from './atoms'
 import { imageCreatorSessionForCN, imageCreatorSessionForEN } from '@/packages/initial_data'
+import * as runtime from '@/packages/runtime'
 
 export function migrate() {
     // 通过定时器延迟启动，防止处理状态底层存储的异步加载前错误的初始数据（水合阶段）
@@ -36,7 +37,7 @@ function migrate_0_to_1() {
 async function migrate_1_to_2() {
     const store = getDefaultStore()
     const sessions = store.get(sessionsAtom)
-    const lang = store.get(languageAtom)
+    const lang = await runtime.getLocale()
     if (lang.startsWith('zh')) {
         if (sessions.find((session) => session.id === imageCreatorSessionForCN.id)) {
             return
