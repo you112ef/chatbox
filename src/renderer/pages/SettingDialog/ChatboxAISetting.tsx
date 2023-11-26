@@ -250,15 +250,14 @@ function LicenseDetail(props: { licenseKey?: string }) {
     return (
         <Accordion expanded={expanded} onChange={onChange} className='mb-4'>
             <AccordionSummary>
-                <span
-                    style={{
-                        fontWeight: 'bold',
-                        color: 'green',
-                        // padding: '2px 4px',
-                    }}
-                >
-                    {t('License Activated')}!
-                </span>
+                <div>
+                    <span className='font-bold text-green-700 block'>
+                        {t('License Activated')}!
+                    </span>
+                    <span className='opacity-50 text-xs font-light block'>
+                        {t('Click to view license details and quota usage')}
+                    </span>
+                </div>
             </AccordionSummary>
             <AccordionDetails>
                 {

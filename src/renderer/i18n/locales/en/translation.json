@@ -186,5 +186,6 @@
     "Quota Reset": "Quota Reset",
     "License Expiry": "License Expiry",
     "Please wait about 20 seconds": "Please wait about 20 seconds",
-    "quota exhausted error tips": "Sorry, you have used up your current model({{model}}) quota for the month. You can <0>go to settings</0> to view quota details or upgrade your plan."
+    "quota exhausted error tips": "Sorry, you have used up your current model({{model}}) quota for the month. You can <0>go to settings</0> to view quota details or upgrade your plan.",
+    "Click to view license details and quota usage": "Click to view license details and quota usage"
 }
