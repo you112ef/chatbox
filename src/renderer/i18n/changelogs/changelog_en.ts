@@ -1,4 +1,9 @@
 const changelog = `
+### v1.2.0
+
+- Added an image generation feature (Image Creator); you can now generate images within Chatbox, powered by the Dall-E-3 model.
+- Improved some usability issues.
+
 ### v1.1.4
 
 - Added direct support for the gpt-3.5-turbo-1106 and gpt-4-1106-preview models.

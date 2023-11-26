@@ -1,4 +1,9 @@
 const changelog = `
+### v1.2.0
+
+- 新增圖片生成功能（Image Creator），現在您可以在 Chatbox 中生成圖片了。由 Dall-E-3 模型提供支持。
+- 優化一些互動問題
+
 ### v1.1.4
 
 - 新增對模型 gpt-3.5-turbo-1106、gpt-4-1106-preview 的直接支援
