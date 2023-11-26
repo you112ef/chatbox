@@ -2,6 +2,11 @@ import pick from 'lodash/pick'
 import { v4 as uuidv4 } from 'uuid'
 import { ClaudeModel, Model } from '../renderer/config'
 
+export interface MessagePicture {
+    url?: string
+    storageKey?: string
+}
+
 export type Message = OpenAIMessage & {
     id: string
     cancel?: () => void
@@ -10,7 +15,7 @@ export type Message = OpenAIMessage & {
     model?: string
     style?: string // image style
 
-    pictures?: { storageKey: string }[]
+    pictures?: MessagePicture[]
 
     errorCode?: number
     error?: string

@@ -209,7 +209,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
     const settings = mergeSettings(globalSettings, session)
 
     // 还原消息到初始状态
-    const placeholder = '...'
+    const placeholder = session.type === 'picture' ? `[${i18n.t('Please wait about 20 seconds')}]` : '...'
     targetMsg = {
         ...targetMsg,
         content: placeholder,

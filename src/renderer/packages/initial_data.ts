@@ -88,32 +88,6 @@ export const sessions: Session[] = [
         copilotId: 'chatbox-featured:21',
     },
     {
-        id: 'a7191bb6-068e-4b08-837d-89e06c944761',
-        name: 'Picture Box (Example)',
-        type: 'chat',
-        picUrl: 'https://pub-45c0b529c25a4d388dfa7cf57f35f8f0.r2.dev/avatar/pic.png',
-        messages: [
-            {
-                id: 'da20620a-b8cb-4bf7-b2ee-525714ccd95f',
-                role: 'system',
-                content:
-                    '请按照以下规则给我发送图片：\n1.使用markdown格式；\n2.使用unsplash API；\n3.使用" ![image]https://source.unsplash.com/featured/?<已翻译的英文内容> "格式回复；\n4.不要使用代码块，不要描述其他内容，不要解释；\n5.根据我输入的内容生成对应格式；',
-            },
-            {
-                id: '520b5eea-67dd-4abd-b5d1-eef349e02b39',
-                role: 'user',
-                content: 'Cat',
-            },
-            {
-                id: 'add2d031-4298-4b5e-b052-96f9717f3e6c',
-                role: 'assistant',
-                content: '![image](https://source.unsplash.com/featured/?cat)',
-            },
-        ],
-        starred: false,
-        copilotId: 'chatbox-featured:15',
-    },
-    {
         id: '6dafa15e-c72f-4036-ac89-33c09e875bdc',
         name: 'Markdown 101 (Example)',
         type: 'chat',
@@ -318,3 +292,219 @@ export const sessions: Session[] = [
         starred: true,
     },
 ]
+
+export const imageCreatorSessionForCN: Session = {
+    id: 'chatbox-chat-demo-image-creator',
+    name: 'Image Creator (Example)',
+    type: 'picture',
+    starred: true,
+    messages: [
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-1',
+            role: 'system',
+            content: `Hi！我是 Chatbox Image Creator，“无情”的图片制造机。我可以根据你的描述生成精美图片，只要你能想象得到，我就能创造出来——迷人的风景、生动的角色、App 图标、或者抽象的构思……
+
+(๑•́ ₃ •̀๑) 额…我是一个有点自闭的机器人，所以**请直接告诉我你想要图片的文字描述**，我会集中我所有的像素去实现你的想象。
+
+现在请发挥你的想象力吧！`,
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-2',
+            role: 'user',
+            content: '美人鱼主题的贺卡',
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-3',
+            role: 'assistant',
+            content: '',
+            pictures: [
+                { url: 'https://download.chatboxai.app/image-demo/card1.png' },
+                { url: 'https://download.chatboxai.app/image-demo/card2.png' },
+                { url: 'https://download.chatboxai.app/image-demo/card3.png' },
+            ]
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-4',
+            role: 'user',
+            content: '太空版泰坦尼克号的电影海报',
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-5',
+            role: 'assistant',
+            content: '',
+            pictures: [
+                { url: 'https://download.chatboxai.app/image-demo/movie1.png' },
+                { url: 'https://download.chatboxai.app/image-demo/movie2.png' },
+                { url: 'https://download.chatboxai.app/image-demo/movie3.png' },
+            ]
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-6',
+            role: 'user',
+            content: '连环画，爱吃苹果的超级英雄与邪恶医生',
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-7',
+            role: 'assistant',
+            content: '',
+            pictures: [
+                { url: 'https://download.chatboxai.app/image-demo/comic1.png' },
+                { url: 'https://download.chatboxai.app/image-demo/comic2.png' },
+                { url: 'https://download.chatboxai.app/image-demo/comic3.png' },
+            ]
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-8',
+            role: 'user',
+            content: '聊天 APP 的 Icon 图标',
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-9',
+            role: 'assistant',
+            content: '',
+            pictures: [
+                { url: 'https://download.chatboxai.app/image-demo/app1.png' },
+                { url: 'https://download.chatboxai.app/image-demo/app2.png' },
+                { url: 'https://download.chatboxai.app/image-demo/app3.png' },
+            ]
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-10',
+            role: 'user',
+            content: '夜之城的女孩，日本动漫，赛博朋克风格',
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-11',
+            role: 'assistant',
+            content: '',
+            pictures: [
+                { url: 'https://download.chatboxai.app/image-demo/girl1.png' },
+                { url: 'https://download.chatboxai.app/image-demo/girl2.png' },
+                { url: 'https://download.chatboxai.app/image-demo/girl3.png' },
+            ]
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-12',
+            role: 'user',
+            content: '一只可爱的卡通猫咪',
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-13',
+            role: 'assistant',
+            content: '',
+            pictures: [
+                { url: 'https://download.chatboxai.app/image-demo/cat1.png' },
+                { url: 'https://download.chatboxai.app/image-demo/cat2.png' },
+                { url: 'https://download.chatboxai.app/image-demo/cat3.png' },
+            ]
+        },
+    ]
+}
+
+export const imageCreatorSessionForEN: Session = {
+    id: 'chatbox-chat-demo-image-creator',
+    name: 'Image Creator (Example)',
+    type: 'picture',
+    starred: true,
+    messages: [
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-1',
+            role: 'system',
+            content: `Hi! I'm Chatbox Image Creator, your artistic AI companion dedicated to converting your words into striking visuals. If you can dream it, I can create it—from enchanting landscapes, dynamic characters, app icons to the abstract and beyond.
+
+I'm a quiet robot, just **simply tell me the description of the image you have in mind**, and I'll focus all my pixels into crafting your vision.
+
+Let's make art!`,
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-2',
+            role: 'user',
+            content: 'A mermaid-themed greeting card.',
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-3',
+            role: 'assistant',
+            content: '',
+            pictures: [
+                { url: 'https://download.chatboxai.app/image-demo/card1.png' },
+                { url: 'https://download.chatboxai.app/image-demo/card2.png' },
+                { url: 'https://download.chatboxai.app/image-demo/card3.png' },
+            ]
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-4',
+            role: 'user',
+            content: 'A movie poster of the Titanic in space.',
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-5',
+            role: 'assistant',
+            content: '',
+            pictures: [
+                { url: 'https://download.chatboxai.app/image-demo/movie1.png' },
+                { url: 'https://download.chatboxai.app/image-demo/movie2.png' },
+                { url: 'https://download.chatboxai.app/image-demo/movie3.png' },
+            ]
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-6',
+            role: 'user',
+            content: 'Comic strip of a superhero who loves eating apples battling an evil doctor.',
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-7',
+            role: 'assistant',
+            content: '',
+            pictures: [
+                { url: 'https://download.chatboxai.app/image-demo/comic1.png' },
+                { url: 'https://download.chatboxai.app/image-demo/comic2.png' },
+                { url: 'https://download.chatboxai.app/image-demo/comic3.png' },
+            ]
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-8',
+            role: 'user',
+            content: 'Icon for a chat app',
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-9',
+            role: 'assistant',
+            content: '',
+            pictures: [
+                { url: 'https://download.chatboxai.app/image-demo/app1.png' },
+                { url: 'https://download.chatboxai.app/image-demo/app2.png' },
+                { url: 'https://download.chatboxai.app/image-demo/app3.png' },
+            ]
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-10',
+            role: 'user',
+            content: 'A girl in the city of night, Japanese anime, cyberpunk style.',
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-11',
+            role: 'assistant',
+            content: '',
+            pictures: [
+                { url: 'https://download.chatboxai.app/image-demo/girl1.png' },
+                { url: 'https://download.chatboxai.app/image-demo/girl2.png' },
+                { url: 'https://download.chatboxai.app/image-demo/girl3.png' },
+            ]
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-12',
+            role: 'user',
+            content: 'A cute cartoon kitty.',
+        },
+        {
+            id: 'chatbox-chat-demo-image-creator-message-id-13',
+            role: 'assistant',
+            content: '',
+            pictures: [
+                { url: 'https://download.chatboxai.app/image-demo/cat1.png' },
+                { url: 'https://download.chatboxai.app/image-demo/cat2.png' },
+                { url: 'https://download.chatboxai.app/image-demo/cat3.png' },
+            ]
+        },
+    ]
+}

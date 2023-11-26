@@ -23,7 +23,9 @@ export async function tickPictureClearTask() {
                 continue
             }
             for (const pic of msg.pictures) {
-                needDeletedSet.delete(pic.storageKey)
+                if (pic.storageKey) {
+                    needDeletedSet.delete(pic.storageKey)
+                }
             }
             if (needDeletedSet.size === 0) {
                 return

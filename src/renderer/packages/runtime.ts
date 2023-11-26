@@ -1,3 +1,4 @@
+import { parseLocale } from '@/i18n/parser'
 import { getOS, getBrowser } from './navigator'
 
 export const isWeb: boolean = !window.electronAPI
@@ -169,22 +170,23 @@ export function exportPngFile(filename: string, base64: string) {
     document.body.removeChild(eleLink)
 }
 
+export function exportByUrl(filename: string, url: string) {
+    var eleLink = document.createElement('a')
+    eleLink.style.display = 'none'
+    eleLink.download = filename
+    eleLink.href = url
+    document.body.appendChild(eleLink)
+    eleLink.click()
+    document.body.removeChild(eleLink)
+}
+
 export const getLocale = async () => {
-    if (isWeb) {
-        let lang = window.navigator.language
-        if (lang === 'zh-CN') {
-            return '' // 网页版暂时不自动更改语言，防止网址封禁
-        }
-        return lang
+    if (isWeb || !electronAPI) {
+        const lang = window.navigator.language
+        return parseLocale(lang)
     }
-    if (!electronAPI) {
-        let lang = window.navigator.language
-        if (lang === 'zh-CN') {
-            return '' // 网页版暂时不自动更改语言，防止网址封禁
-        }
-        return lang
-    }
-    return electronAPI.invoke('getLocale')
+    const locale = await electronAPI.invoke('getLocale')
+    return parseLocale(locale)
 }
 
 export async function ensureShortcutConfig(config: { disableQuickToggleShortcut: boolean }) {

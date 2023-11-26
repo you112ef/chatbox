@@ -33,7 +33,7 @@ import CopyAllIcon from '@mui/icons-material/CopyAll'
 import { useAtomValue, useSetAtom } from 'jotai'
 import {
     messageScrollingScrollPositionAtom,
-    pictureShowStorageKeyAtom,
+    pictureShowAtom,
     quoteAtom,
     showModelNameAtom,
     showTokenCountAtom,
@@ -46,7 +46,7 @@ import * as scrollActions from '../stores/scrollActions'
 import Markdown from '@/components/Markdown'
 import '../static/Block.css'
 import { throttle } from 'lodash'
-import ImageInStorage from './ImageInStorage'
+import {ImageInStorage, Image} from './Image'
 import SouthIcon from '@mui/icons-material/South'
 import ImageIcon from '@mui/icons-material/Image'
 import MessageErrTips from './MessageErrTips'
@@ -68,7 +68,7 @@ function _Message(props: Props) {
     const showTokenUsed = useAtomValue(showTokenUsedAtom)
     const currentSessionPicUrl = useAtomValue(currsentSessionPicUrlAtom)
     const messageScrollingScrollPosition = useAtomValue(messageScrollingScrollPositionAtom)
-    const setPictureShowStorageKey = useSetAtom(pictureShowStorageKeyAtom)
+    const setPictureShow = useSetAtom(pictureShowAtom)
 
     const { msg } = props
 
@@ -340,9 +340,18 @@ function _Message(props: Props) {
                                                 key={index}
                                                 className="w-[200px] h-[200px] p-2 m-1 inline-block bg-white shadow-sm rounded-md
                                                 hover:shadow-lg hover:cursor-pointer hover:scale-105 transition-all duration-200"
-                                                onClick={() => setPictureShowStorageKey(pic.storageKey)}
+                                                onClick={() => setPictureShow(pic)}
                                             >
-                                                <ImageInStorage storageKey={pic.storageKey} />
+                                                {
+                                                    pic.storageKey && (
+                                                        <ImageInStorage storageKey={pic.storageKey} />
+                                                    )
+                                                }
+                                                {
+                                                    pic.url && (
+                                                        <Image src={pic.url} />
+                                                    )
+                                                }
                                             </div>
                                         ))}
                                     <MessageErrTips msg={msg} />

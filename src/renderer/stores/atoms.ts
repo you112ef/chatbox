@@ -1,6 +1,6 @@
 import { RefObject } from 'react'
 import { atom, SetStateAction } from 'jotai'
-import { Session, Toast, Settings, CopilotDetail } from '../../shared/types'
+import { Session, Toast, Settings, CopilotDetail, MessagePicture } from '../../shared/types'
 import { selectAtom, atomWithStorage } from 'jotai/utils'
 import { focusAtom } from 'jotai-optics'
 import * as defaults from './defaults'
@@ -154,5 +154,5 @@ export const showSidebarAtom = atom(true)
 export const openSearchDialogAtom = atom(false)
 export const openSettingDialogAtom = atom<'ai' | 'display' | null>(null)
 
-// 图片展示窗口的图片 storange key
-export const pictureShowStorageKeyAtom = atom<string | null>(null)
+// 图片展示窗口的图片
+export const pictureShowAtom = atom<MessagePicture | null>(null)

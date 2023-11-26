@@ -2,35 +2,41 @@ import { Button, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/
 import { useTranslation } from 'react-i18next'
 import * as atoms from '../stores/atoms'
 import { useAtom } from 'jotai'
-import ImageInStorage from '@/components/ImageInStorage'
+import { ImageInStorage, Image } from '@/components/Image'
 import * as runtime from '@/packages/runtime'
 import storage from '@/storage'
 import SaveIcon from '@mui/icons-material/Save'
 
-interface Props {}
+interface Props { }
 
 export default function PictureDialog(props: Props) {
     const { t } = useTranslation()
-    const [pictureShowStorageKey, setPictureShowStorageKey] = useAtom(atoms.pictureShowStorageKeyAtom)
+    const [pictureShow, setPictureShow] = useAtom(atoms.pictureShowAtom)
 
-    const onClose = () => setPictureShowStorageKey(null)
+    const onClose = () => setPictureShow(null)
     const onExport = async () => {
-        if (!pictureShowStorageKey) {
+        if (!pictureShow) {
             return
         }
-        const base64 = await storage.getBlob<string>(pictureShowStorageKey)
-        if (!base64) {
-            return
+        if (pictureShow.storageKey) {
+            const base64 = await storage.getBlob<string>(pictureShow.storageKey)
+            if (!base64) {
+                return
+            }
+            runtime.exportPngFile('export.png', base64)
         }
-        runtime.exportPngFile('export.png', base64)
+        if (pictureShow.url) {
+            runtime.exportByUrl('export.png', pictureShow.url)
+        }
     }
 
     return (
-        <Dialog open={!!pictureShowStorageKey} onClose={onClose} fullWidth classes={{ paper: 'h-4/5' }}>
+        <Dialog open={!!pictureShow} onClose={onClose} fullWidth classes={{ paper: 'h-4/5' }}>
             <DialogTitle></DialogTitle>
             <DialogContent>
                 <div className="w-full h-full text-center">
-                    {pictureShowStorageKey && <ImageInStorage storageKey={pictureShowStorageKey} />}
+                    {pictureShow?.storageKey && <ImageInStorage storageKey={pictureShow.storageKey} />}
+                    {pictureShow?.url && <Image src={pictureShow.url} />}
                 </div>
             </DialogContent>
             <DialogActions>
