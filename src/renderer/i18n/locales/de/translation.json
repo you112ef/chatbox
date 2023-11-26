@@ -179,5 +179,10 @@
     "Image Style": "Bildstil",
     "vivid": "künstlerisch",
     "Natural": "realistisch",
-    "Image Creator Intro": "Hallo! Ich bin Chatbox Image Creator, dein künstlerischer AI-Begleiter, der darauf spezialisiert ist, deine Worte in atemberaubende visuelle Darstellungen zu verwandeln. Wenn du es träumen kannst, kann ich es erschaffen - von verzauberten Landschaften, dynamischen Charakteren, App-Symbolen bis hin zum Abstrakten und darüber hinaus.\n\nIch bin ein ruhiger Roboter, gib mir einfach **die Beschreibung des Bildes, das du im Kopf hast**, und ich werde all meine Pixel darauf verwenden, deine Vision zu erschaffen.\n\nLass uns Kunst machen!"
+    "Image Creator Intro": "Hallo! Ich bin Chatbox Image Creator, dein künstlerischer AI-Begleiter, der darauf spezialisiert ist, deine Worte in atemberaubende visuelle Darstellungen zu verwandeln. Wenn du es träumen kannst, kann ich es erschaffen - von verzauberten Landschaften, dynamischen Charakteren, App-Symbolen bis hin zum Abstrakten und darüber hinaus.\n\nIch bin ein ruhiger Roboter, gib mir einfach **die Beschreibung des Bildes, das du im Kopf hast**, und ich werde all meine Pixel darauf verwenden, deine Vision zu erschaffen.\n\nLass uns Kunst machen!",
+    "Chatbox AI 3.5 Quota": "Chatbox AI 3.5 Kontingent",
+    "Chatbox AI 4 Quota": "Chatbox AI 4 Kontingent",
+    "Chatbox AI Image Quota": "Chatbox AI Bildkontingent",
+    "Quota Reset": "Kontingent-Reset",
+    "License Expiry": "Lizenzablauf"
 }

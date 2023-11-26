@@ -180,5 +180,10 @@
     "Image Style": "图片风格",
     "Vivid": "艺术",
     "Natural": "写实",
-    "Image Creator Intro": "Hi！我是 Chatbox Image Creator，“无情”的图片制造机。我可以根据你的描述生成精美图片，只要你能想象得到，我就能创造出来——迷人的风景、生动的角色、App 图标、或者抽象的构思……\n\n(๑•́ ₃ •̀๑) 额…我是一个有点自闭的机器人，所以**请直接告诉我你想要图片的文字描述**，我会集中我所有的像素去实现你的想象。\n\n现在请发挥你的想象力吧！"
+    "Image Creator Intro": "Hi！我是 Chatbox Image Creator，“无情”的图片制造机。我可以根据你的描述生成精美图片，只要你能想象得到，我就能创造出来——迷人的风景、生动的角色、App 图标、或者抽象的构思……\n\n(๑•́ ₃ •̀๑) 额…我是一个有点自闭的机器人，所以**请直接告诉我你想要图片的文字描述**，我会集中我所有的像素去实现你的想象。\n\n现在请发挥你的想象力吧！",
+    "Chatbox AI 3.5 Quota": "Chatbox AI 3.5 剩余额度",
+    "Chatbox AI 4 Quota": "Chatbox AI 4 剩余额度",
+    "Chatbox AI Image Quota": "Chatbox AI 图片剩余额度",
+    "Quota Reset": "额度重置时间",
+    "License Expiry": "许可过期时间"
 }

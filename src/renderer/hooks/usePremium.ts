@@ -82,6 +82,7 @@ export function usePremium() {
         setSettings((settings) => ({
             ...settings,
             licenseKey: '',
+            licenseDetail: undefined,
             licenseInstances: omit(settings.licenseInstances, settings.licenseKey || ''),
         }))
         const licenseKey = settings.licenseKey || ''

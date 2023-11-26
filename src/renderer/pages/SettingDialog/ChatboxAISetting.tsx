@@ -1,5 +1,5 @@
-import { Button, ButtonGroup, Card, Typography, Box } from '@mui/material'
-import { ModelSettings } from '../../../shared/types'
+import { Tooltip, Button, ButtonGroup, Card, Typography, Box } from '@mui/material'
+import { ChatboxAILicenseDetail, ModelSettings } from '../../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as runtime from '../../packages/runtime'
 import { usePremium } from '../../hooks/usePremium'
@@ -7,6 +7,12 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import PasswordTextField from '../../components/PasswordTextField'
 import ChatboxAIModelSelect from '../../components/ChatboxAIModelSelect'
 import { CHATBOX_BUILD_TARGET } from '@/variables'
+import LinearProgress, { LinearProgressProps, linearProgressClasses } from '@mui/material/LinearProgress';
+import { styled } from '@mui/material/styles';
+import { Accordion, AccordionSummary, AccordionDetails } from '../../components/Accordion'
+import { useState } from 'react'
+import * as remote from '@/packages/remote'
+import CircularProgress from '@mui/material/CircularProgress';
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -45,16 +51,16 @@ export default function ChatboxAISetting(props: ModelConfigProps) {
                         </ButtonGroup>
                     </Box>
                 )}
-                {settingsEdit.licenseDetail && (
+                {premium.premiumActivated && (
                     <ChatboxAIModelSelect
                         settingsEdit={settingsEdit}
                         setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
                     />
                 )}
                 {CHATBOX_BUILD_TARGET === 'mobile_app' ? (
-                    <DetailCardForMobileApp premium={premium} />
+                    <DetailCardForMobileApp licenseKey={settingsEdit.licenseKey} premium={premium} />
                 ) : (
-                    <DetailCard premium={premium} />
+                    <DetailCard licenseKey={settingsEdit.licenseKey} premium={premium} />
                 )}
             </Box>
         </Box>
@@ -62,44 +68,46 @@ export default function ChatboxAISetting(props: ModelConfigProps) {
 }
 
 // 详细信息卡片
-function DetailCard(props: { premium: ReturnType<typeof usePremium> }) {
-    const { premium } = props
+function DetailCard(props: { licenseKey?: string, premium: ReturnType<typeof usePremium> }) {
+    const { licenseKey, premium } = props
     const { t } = useTranslation()
     return (
-        <Card sx={{ marginTop: '20px', padding: '14px' }} elevation={3}>
-            {premium.premiumActivated && (
-                <span
-                    style={{
-                        fontWeight: 'bold',
-                        backgroundColor: 'green',
-                        color: 'white',
-                        padding: '2px 4px',
-                    }}
-                >
-                    {t('License Activated')}!
-                </span>
-            )}
-            <Typography sx={{ opacity: '1' }}>
-                {t('Chatbox AI offers a user-friendly AI solution to help you enhance productivity')}
-            </Typography>
-            <Box>
-                {[t('Fast access to AI services'), t('Hassle-free setup'), t('Ideal for work and study')].map(
-                    (item) => (
-                        <Box key={item} sx={{ display: 'flex', margin: '4px 0' }}>
-                            <CheckCircleOutlineIcon color={premium.premiumActivated ? 'success' : 'action'} />
-                            <b style={{ marginLeft: '5px' }}>{item}</b>
+        <Card sx={{ marginTop: '20px', padding: '10px 14px' }} elevation={3}>
+            {
+                premium.premiumActivated && (
+                    <Box>
+                        <Box className='mb-4'>
+                            <ActivedButtonGroup premium={premium} />
                         </Box>
-                    )
-                )}
+                        <LicenseDetail licenseKey={licenseKey} />
+                    </Box>
+                )
+            }
+            <Box className='mt-4' sx={{ opacity: premium.premiumActivated ? '0.5' : undefined }}>
+                <Typography>
+                    {t('Chatbox AI offers a user-friendly AI solution to help you enhance productivity')}
+                </Typography>
+                <Box>
+                    {[t('Fast access to AI services'), t('Hassle-free setup'), t('Ideal for work and study')].map(
+                        (item) => (
+                            <Box key={item} sx={{ display: 'flex', margin: '4px 0' }}>
+                                <CheckCircleOutlineIcon color={premium.premiumActivated ? 'success' : 'action'} />
+                                <b style={{ marginLeft: '5px' }}>{item}</b>
+                            </Box>
+                        )
+                    )}
+                </Box>
             </Box>
-            {premium.premiumActivated ? <ActivedButtonGroup premium={premium} /> : <InactivedButtonGroup />}
+            {
+                !premium.premiumActivated && (<InactivedButtonGroup />)
+            }
         </Card>
     )
 }
 
 // 移动应用的详细信息卡片
-function DetailCardForMobileApp(props: { premium: ReturnType<typeof usePremium> }) {
-    const { premium } = props
+function DetailCardForMobileApp(props: { licenseKey?: string, premium: ReturnType<typeof usePremium> }) {
+    const { premium, licenseKey } = props
     const { t } = useTranslation()
     return premium.premiumActivated ? (
         <Card sx={{ marginTop: '20px', padding: '14px' }} elevation={3}>
@@ -114,6 +122,7 @@ function DetailCardForMobileApp(props: { premium: ReturnType<typeof usePremium> 
                 {t('License Activated')}!
             </span>
             <ActivedButtonGroup premium={premium} />
+            <LicenseDetail licenseKey={licenseKey} />
         </Card>
     ) : null
 }
@@ -137,7 +146,8 @@ function ActivedButtonGroup(props: { premium: ReturnType<typeof usePremium> }) {
                 {t('Manage License and Devices')}
             </Button>
             <Button
-                variant="text"
+                variant='outlined'
+                // color='warning'
                 sx={{ marginRight: '10px' }}
                 onClick={() => {
                     premium.deactivate()
@@ -192,5 +202,132 @@ function InactivedButtonGroup() {
                 {t('Retrieve License')}
             </Button>
         </Box>
+    )
+}
+
+function BorderLinearProgress(props: LinearProgressProps) {
+    return (<_BorderLinearProgress variant="determinate" {...props}
+        color={
+            props.value && props.value <= 10
+                ? 'error'
+                : props.value && props.value <= 20 ? 'warning' : 'inherit'
+        }
+    />)
+}
+
+const _BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+    height: 5,
+    borderRadius: 5,
+    [`&.${linearProgressClasses.colorPrimary}`]: {
+    },
+    [`& .${linearProgressClasses.bar}`]: {
+        borderRadius: 5,
+    },
+}));
+
+function LicenseDetail(props: { licenseKey?: string }) {
+    const { licenseKey } = props
+    const { t } = useTranslation()
+    const [expanded, setExpanded] = useState<boolean>(false);
+    const [licenseDetail, setLicenseDetail] = useState<ChatboxAILicenseDetail | null>(null)
+    const onChange = (event: React.SyntheticEvent, newExpanded: boolean) => {
+        setExpanded(newExpanded);
+        if (!newExpanded) {
+            setLicenseDetail(null)
+            return
+        }
+        if (!licenseKey) {
+            return
+        }
+        remote.getLicenseDetailRealtime({ licenseKey }).then((res) => {
+            if (res) {
+                setTimeout(() => {
+                    setLicenseDetail(res)
+                }, 200)    // 太快了，看不到加载效果
+            }
+        })
+    }
+    return (
+        <Accordion expanded={expanded} onChange={onChange} className='mb-4'>
+            <AccordionSummary>
+                <span
+                    style={{
+                        fontWeight: 'bold',
+                        color: 'green',
+                        // padding: '2px 4px',
+                    }}
+                >
+                    {t('License Activated')}!
+                </span>
+            </AccordionSummary>
+            <AccordionDetails>
+                {
+                    licenseDetail ? (
+                        <>
+                            <Box className='grid sm:grid-cols-2'>
+                                <Tooltip title={`${(licenseDetail.remaining_quota_35 * 100).toFixed(2)} %`}>
+                                    <Box className='mr-4 mb-4' >
+                                        <Typography className=''>
+                                            {t('Chatbox AI 3.5 Quota')}
+                                        </Typography>
+                                        <BorderLinearProgress className='mt-1' variant="determinate"
+                                            value={Math.floor(licenseDetail.remaining_quota_35 * 100)} />
+                                    </Box>
+                                </Tooltip>
+                                {
+                                    licenseDetail.type === 'chatboxai-4' && (
+                                        <Tooltip title={`${(licenseDetail.remaining_quota_4 * 100).toFixed(2)} %`}>
+                                            <Box className='mr-4 mb-4' >
+                                                <Typography className=''>
+                                                    {t('Chatbox AI 4 Quota')}
+                                                </Typography>
+                                                <BorderLinearProgress className='mt-1' variant="determinate"
+                                                    value={Math.floor(licenseDetail.remaining_quota_4 * 100)} />
+                                            </Box>
+                                        </Tooltip>
+                                    )
+                                }
+                                <Tooltip title={`${licenseDetail.image_total_quota - licenseDetail.image_used_count} / ${licenseDetail.image_total_quota}`}>
+                                    <Box className='mr-4 mb-4' >
+                                        <Typography >
+                                            {t('Chatbox AI Image Quota')}
+                                        </Typography>
+                                        <BorderLinearProgress className='mt-1' variant="determinate"
+                                            value={Math.floor(licenseDetail.remaining_quota_image * 100)} />
+                                    </Box>
+                                </Tooltip>
+                            </Box>
+                            <Box className='grid grid-cols-2'>
+                                <Box className='mr-4 mb-4' >
+                                    <Typography className=''>
+                                        {t('Quota Reset')}
+                                    </Typography>
+                                    <Typography className=''>{
+                                        new Date(licenseDetail.token_refreshed_time).toLocaleDateString()
+                                    }</Typography>
+                                </Box>
+                                {
+                                    licenseDetail.token_expire_time && (
+                                        <Box className='mr-4 mb-4' >
+                                            <Typography className=''>
+                                                {t('License Expiry')}
+                                            </Typography>
+                                            <Typography className=''>{
+                                                new Date(licenseDetail.token_expire_time).toLocaleDateString()
+                                            }</Typography>
+                                        </Box>
+                                    )
+                                }
+                            </Box>
+                        </>
+                    ) : (
+                        <Box className='flex items-center justify-center'>
+                            <CircularProgress />
+                        </Box>
+
+                    )
+                }
+            </AccordionDetails>
+        </Accordion>
     )
 }

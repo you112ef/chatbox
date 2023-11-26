@@ -120,3 +120,16 @@ export async function getLicenseDetail(params: { licenseKey: string }) {
     })
     return res['data'] || null
 }
+
+export async function getLicenseDetailRealtime(params: { licenseKey: string }) {
+    type Response = {
+        data: ChatboxAILicenseDetail | null
+    }
+    const res = await ofetch<Response>(`${API_ORIGIN}/api/license/detail/realtime`, {
+        retry: 3,
+        headers: {
+            Authorization: params.licenseKey,
+        },
+    })
+    return res['data'] || null
+}

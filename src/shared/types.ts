@@ -252,6 +252,13 @@ export interface RemoteConfig {
 export interface ChatboxAILicenseDetail {
     type: ChatboxAIModel
     defaultModel: ChatboxAIModel
+    remaining_quota_35: number
+    remaining_quota_4: number
+    remaining_quota_image: number
+    image_used_count: number
+    image_total_quota: number
+    token_refreshed_time: string
+    token_expire_time: string | null | undefined
 }
 
 export type ChatboxAIModel = 'chatboxai-3.5' | 'chatboxai-4'
