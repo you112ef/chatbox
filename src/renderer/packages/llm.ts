@@ -1,6 +1,7 @@
 import { Config, Message, ModelProvider, OpenAIMessage, Settings, ChatboxAIModel } from '../../shared/types'
 import { createParser } from 'eventsource-parser'
 import { ApiError, NetworkError } from './models/errors'
+import { API_ORIGIN } from './remote'
 
 export interface OnTextCallbackResult {
     // response content
@@ -368,7 +369,7 @@ async function requestChatboxAI(
 ) {
     const { license, instanceId, uuid, model, temperature, messages, signal, language } = options
     const response = await post(
-        `https://chatboxai.app/api/ai/chat`,
+        `${API_ORIGIN}/api/ai/chat`,
         {
             Authorization: license,
             'Instance-Id': instanceId,

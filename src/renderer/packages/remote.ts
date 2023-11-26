@@ -8,8 +8,38 @@ import {
 } from '../../shared/types'
 import { ofetch } from 'ofetch'
 
+// ========== API ORIGIN 根据速度维护 ==========
+
 const RELEASE_ORIGIN = 'https://releases.chatboxai.app'
-export const API_ORIGIN = 'https://chatboxai.app'
+
+export let API_ORIGIN = 'https://chatboxai.app'
+
+const pool = [
+    'https://chatboxai.app',
+    'https://api.chatboxai.app',
+    'https://api.ai-chatbox.com',
+]
+async function testApiOrigins() {
+    type Response = {
+        data: {
+            api_origins: string[]
+        }
+    }
+    const fastest = await Promise.any(pool.map(async origin => {
+        const res = await ofetch<Response>(`${origin}/api/api_origins`, { retry: 1 })
+        return { origin, res }
+    }))
+    for (const newOrigin of fastest.res.data.api_origins) {
+        if (! pool.includes(newOrigin)) {
+            pool.push(newOrigin)
+        }
+    }
+    API_ORIGIN = fastest.origin
+}
+testApiOrigins()
+setInterval(testApiOrigins, 1 * 60 * 1000);
+
+// ========== 各个接口方法 ==========
 
 export async function checkNeedUpdate(version: string, os: string, config: Config) {
     type Response = {
