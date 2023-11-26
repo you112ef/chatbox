@@ -188,5 +188,6 @@
     "License Expiry": "许可过期时间",
     "Please wait about 20 seconds": "请等待约20秒",
     "quota exhausted error tips": "很抱歉，您本月的当前模型({{model}})配额已经全部用完。您可以<0>前往设置</0>查看配额情况，或者升级套餐方案。",
-    "Click to view license details and quota usage": "点击查看 license 详情与配额使用情况"
+    "Click to view license details and quota usage": "点击查看 license 详情与配额使用情况",
+    "License Plan Overview": "License 套餐概览"
 }

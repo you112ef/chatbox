@@ -187,5 +187,6 @@
     "License Expiry": "Expiration de la Licence",
     "Please wait about 20 seconds": "Veuillez patienter environ 20 secondes",
     "quota exhausted error tips": "Désolé, vous avez épuisé votre quota du modèle ({{model}}) pour le mois. Vous pouvez <0>aller dans les paramètres</0> pour consulter les détails du quota ou pour mettre à niveau votre plan.",
-    "Click to view license details and quota usage": "Cliquez pour consulter les détails de la licence et l'utilisation du quota"
+    "Click to view license details and quota usage": "Cliquez pour consulter les détails de la licence et l'utilisation du quota",
+    "License Plan Overview": "Aperçu des Offres de Licence"
 }

@@ -301,9 +301,9 @@ function LicenseDetail(props: { licenseKey?: string }) {
                                     <Typography className=''>
                                         {t('Quota Reset')}
                                     </Typography>
-                                    <Typography className=''>{
+                                    <Typography className=''><span className='font-bold'>{
                                         new Date(licenseDetail.token_refreshed_time).toLocaleDateString()
-                                    }</Typography>
+                                    }</span></Typography>
                                 </Box>
                                 {
                                     licenseDetail.token_expire_time && (
@@ -311,12 +311,26 @@ function LicenseDetail(props: { licenseKey?: string }) {
                                             <Typography className=''>
                                                 {t('License Expiry')}
                                             </Typography>
-                                            <Typography className=''>{
+                                            <Typography className=''><span className='font-bold'>{
                                                 new Date(licenseDetail.token_expire_time).toLocaleDateString()
-                                            }</Typography>
+                                            }</span></Typography>
                                         </Box>
                                     )
                                 }
+                                <Box className='mr-4 mb-4' >
+                                    <Typography className=''>
+                                        {t('License Plan Overview')}
+                                    </Typography>
+                                    <Typography>
+                                        <span className='font-bold'>
+                                            {{
+                                                [licenseDetail.type]: licenseDetail.type,   // 兼容未来的套餐
+                                                'chatboxai-4': 'Chatbox AI Pro',
+                                                'chatboxai-3.5': 'Chatbox AI Lite',
+                                            }[licenseDetail.type]}
+                                        </span>
+                                    </Typography>
+                                </Box>
                             </Box>
                         </>
                     ) : (
