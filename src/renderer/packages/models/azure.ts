@@ -1,10 +1,17 @@
+import { OpenAIMessage } from 'src/shared/types'
 import Base from './base'
+import { ApiError } from './errors'
+import { onResultChange } from './interfaces'
 
 interface Options {
     azureEndpoint: string
     azureDeploymentName: string
     azureDalleDeploymentName: string // dall-e-3 的部署名称
     azureApikey: string
+
+    openaiMaxTokens: number
+    temperature: number
+    topP: number
 
     dalleStyle: 'vivid' | 'natural'
     imageGenerateNum: number // 生成图片的数量
@@ -19,24 +26,48 @@ export default class AzureOpenAI extends Base {
         this.options = options
     }
 
-    async paint(prompt: string, num: number, signal?: AbortSignal): Promise<string[]> {
-        const concurrence: Promise<string>[] = []
-        for (let i = 0; i < num; i++) {
-            concurrence.push(this.callDallE3(prompt, signal))
-        }
-        return await Promise.all(concurrence)
+    async callChatCompletion(messages: OpenAIMessage[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+        const origin = new URL((this.options.azureEndpoint || '').trim()).origin
+        const url = `${origin}/openai/deployments/${this.options.azureDeploymentName}/chat/completions?api-version=2023-03-15-preview`
+        const response = await this.post(
+            url,
+            this.getHeaders(),
+            {
+                messages,
+                model: this.options.azureDeploymentName,
+                max_tokens: this.options.openaiMaxTokens === 0 ? undefined : this.options.openaiMaxTokens,
+                temperature: this.options.temperature,
+                top_p: this.options.topP,
+                stream: true,
+            },
+            signal
+        )
+        let result = ''
+        await this.handleSSE(response, (message) => {
+            if (message === '[DONE]') {
+                return
+            }
+            const data = JSON.parse(message)
+            if (data.error) {
+                throw new ApiError(`Error from Azure OpenAI: ${JSON.stringify(data)}`)
+            }
+            const text = data.choices[0]?.delta?.content
+            if (text !== undefined) {
+                result += text
+                if (onResultChange) {
+                    onResultChange(result)
+                }
+            }
+        })
+        return result
     }
 
-    async callDallE3(prompt: string, signal?: AbortSignal): Promise<string> {
+    async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
         const origin = new URL((this.options.azureEndpoint || '').trim()).origin
         const url = `${origin}/openai/deployments/${this.options.azureDalleDeploymentName}/images/generations?api-version=2023-12-01-preview`
-        const headers = {
-            'api-key': this.options.azureApikey,
-            'Content-Type': 'application/json',
-        }
         const res = await this.post(
             url,
-            headers,
+            this.getHeaders(),
             {
                 prompt,
                 response_format: 'b64_json',
@@ -47,5 +78,12 @@ export default class AzureOpenAI extends Base {
         )
         const json = await res.json()
         return json['data'][0]['b64_json']
+    }
+
+    getHeaders() {
+        return {
+            'api-key': this.options.azureApikey,
+            'Content-Type': 'application/json',
+        }
     }
 }

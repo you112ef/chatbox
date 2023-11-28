@@ -2,7 +2,7 @@ import { FormGroup, FormControlLabel, Switch, Select, MenuItem, FormControl, Inp
 import { Settings, ThemeMode } from '../../../shared/types'
 import ThemeChangeButton from '../../theme/ThemeChangeIcon'
 import { useTranslation } from 'react-i18next'
-import { languageNameMap, languages } from '../../config'
+import { languageNameMap, languages } from '../../i18n/locales'
 import TranslateIcon from '@mui/icons-material/Translate'
 
 export default function DisplaySettingTab(props: {

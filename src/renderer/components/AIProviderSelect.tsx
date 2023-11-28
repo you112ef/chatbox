@@ -1,7 +1,7 @@
 import { Chip, Select, MenuItem, FormControl, InputLabel, useTheme } from '@mui/material'
 import { ModelProvider, SessionSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
-import { aiModelProviderList } from '../config'
+import { aiModelProviderList } from '../packages/models'
 
 interface ModelConfigProps {
     settingsEdit: SessionSettings

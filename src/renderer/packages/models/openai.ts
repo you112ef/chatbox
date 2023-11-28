@@ -1,4 +1,7 @@
+import { OpenAIMessage } from 'src/shared/types'
 import Base from './base'
+import { ApiError } from './errors'
+import { onResultChange } from './interfaces'
 
 interface Options {
     openaiKey: string
@@ -6,6 +9,9 @@ interface Options {
     model: Model | 'custom-model'
     dalleStyle: 'vivid' | 'natural'
     openaiCustomModel?: string // OpenAI 自定义模型的 ID
+    openaiMaxTokens: number
+    temperature: number
+    topP: number
 }
 
 export default class OpenAI extends Base {
@@ -20,28 +26,50 @@ export default class OpenAI extends Base {
         }
     }
 
-    async paint(prompt: string, num: number, signal?: AbortSignal): Promise<string[]> {
-        const concurrence: Promise<string>[] = []
-        for (let i = 0; i < num; i++) {
-            concurrence.push(this.callDallE3(prompt, signal))
-        }
-        return await Promise.all(concurrence)
+    async callChatCompletion(messages: OpenAIMessage[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+        const response = await this.post(
+            `${this.options.apiHost}/v1/chat/completions`,
+            this.getHeaders(),
+            {
+                messages,
+                model: this.options.model === 'custom-model'
+                    ? this.options.openaiCustomModel || ''
+                    : this.options.model,
+                max_tokens: this.options.openaiMaxTokens === 0 ? undefined : this.options.openaiMaxTokens,
+                temperature: this.options.temperature,
+                top_p: this.options.topP,
+                stream: true,
+            },
+            signal
+        )
+        let result = ''
+        await this.handleSSE(response, (message) => {
+                if (message === '[DONE]') {
+                    return
+                }
+                const data = JSON.parse(message)
+                if (data.error) {
+                    throw new ApiError(`Error from OpenAI: ${JSON.stringify(data)}`)
+                }
+                const text = data.choices[0]?.delta?.content
+                if (text !== undefined) {
+                    result += text
+                    if (onResultChange) {
+                        onResultChange(result)
+                    }
+                }
+            }
+        )
+        return result
     }
 
-    async callDallE3(prompt: string, signal?: AbortSignal): Promise<string> {
+    async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
         if (this.options.apiHost.endsWith('/')) {
             this.options.apiHost = this.options.apiHost.slice(0, -1)
         }
-        const headers: Record<string, string> = {
-            Authorization: `Bearer ${this.options.openaiKey}`,
-            'Content-Type': 'application/json',
-        }
-        if (this.options.apiHost.includes('openrouter.ai')) {
-            headers['HTTP-Referer'] = 'https://localhost:3000/' // 支持 OpenRouter，需要设置这个表头才能正常工作
-        }
         const res = await this.post(
             `${this.options.apiHost}/v1/images/generations`,
-            headers,
+            this.getHeaders(),
             {
                 prompt,
                 response_format: 'b64_json',
@@ -52,6 +80,17 @@ export default class OpenAI extends Base {
         )
         const json = await res.json()
         return json['data'][0]['b64_json']
+    }
+
+    getHeaders() {
+        const headers: Record<string, string> = {
+            Authorization: `Bearer ${this.options.openaiKey}`,
+            'Content-Type': 'application/json',
+        }
+        if (this.options.apiHost.includes('openrouter.ai')) {
+            headers['HTTP-Referer'] = 'https://localhost:3000/' // 支持 OpenRouter，需要设置这个表头才能正常工作
+        }
+        return headers
     }
 }
 

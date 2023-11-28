@@ -1,6 +1,7 @@
 import pick from 'lodash/pick'
 import { v4 as uuidv4 } from 'uuid'
-import { ClaudeModel, Model } from '../renderer/config'
+import { Model } from '../renderer/packages/models/openai'
+import { ClaudeModel } from '../renderer/packages/models/claude'
 
 export interface MessagePicture {
     url?: string

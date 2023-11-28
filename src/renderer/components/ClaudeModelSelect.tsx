@@ -1,5 +1,5 @@
 import SimpleSelect from './SimpleSelect'
-import { claudeModels } from '../config'
+import { claudeModels } from '../packages/models/claude'
 import { SessionSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 

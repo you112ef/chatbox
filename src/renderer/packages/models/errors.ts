@@ -34,3 +34,10 @@ export class QuotaExhausted extends BaseError {
         super(`Sorry, you have used up your current model quota for the month. You can go to settings to view quota details or upgrade your plan.`)
     }
 }
+
+export class AIProviderNoImplementedChat extends BaseError {
+    public code = 10005
+    constructor(aiProvider: string) {
+        super(`Current AI Provider ${aiProvider} Does Not Support Chat Completions API`)
+    }
+}

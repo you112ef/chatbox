@@ -1,7 +1,7 @@
 import { Select, MenuItem, FormControl, InputLabel, TextField } from '@mui/material'
 import { SessionSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
-import { models } from '../config'
+import { models } from '../packages/models/openai'
 
 export interface Props {
     settingsEdit: SessionSettings

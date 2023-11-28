@@ -10,7 +10,6 @@ import {
     ModelSettings,
 } from '../../shared/types'
 import * as atoms from './atoms'
-import * as client from '../packages/llm'
 import * as promptFormat from '../packages/prompts'
 import * as Sentry from '@sentry/react'
 import * as utils from '../packages/utils'
@@ -233,12 +232,13 @@ export async function generate(sessionId: string, targetMsg: Message) {
         if (targetMsgIx <= 0) {
             return
         }
+        const model = getModel(settings, configs)
         switch (session.type) {
             // 对话消息生成
             case 'chat':
             case undefined:
                 const promptMsgs = genMessageContext(settings, session.messages.slice(0, targetMsgIx))
-                await client.reply(settings, configs, promptMsgs, ({ text, cancel }) => {
+                await model.chat(promptMsgs, ({ text, cancel }) => {
                     targetMsg = { ...targetMsg, content: text, cancel }
                     modifyMessage(sessionId, targetMsg)
                 })
@@ -252,7 +252,6 @@ export async function generate(sessionId: string, targetMsg: Message) {
                 break
             // 图片消息生成
             case 'picture':
-                const model = getModel(settings, configs)
                 // 取当前消息之前最近的一条用户消息作为 prompt
                 let prompt = ''
                 for (let i = targetMsgIx; i >= 0; i--) {
@@ -330,15 +329,11 @@ export async function generateName(sessionId: string) {
     const settings = mergeSettings(globalSettings, session)
     const configs = await storage.getConfig()
     try {
-        await client.reply(
-            settings,
-            configs,
-            promptFormat.nameConversation(session.messages.slice(0, 3)),
-            ({ text: name }) => {
-                name = name.replace(/['"“”]/g, '')
-                modifyName(session.id, name)
-            }
-        )
+        const model = getModel(settings, configs)
+        await model.chat(promptFormat.nameConversation(session.messages.slice(0, 3)), ({ text }) => {
+            text = text.replace(/['"“”]/g, '')
+            modifyName(session.id, text)
+        })
     } catch (e: any) {
         if (!(e instanceof ApiError || e instanceof NetworkError)) {
             Sentry.captureException(e) // unexpected error should be reported

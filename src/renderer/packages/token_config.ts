@@ -1,5 +1,5 @@
 import { ModelProvider, SessionSettings } from '../../shared/types'
-import { modelConfigs } from '../config'
+import { modelConfigs } from '../packages/models/openai'
 import * as defaults from '../stores/defaults'
 
 /**

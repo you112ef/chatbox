@@ -1,13 +1,104 @@
-import { ApiError, NetworkError, AIProviderNoImplementedPaint, QuotaExhausted, BaseError } from './errors'
-import IModel from './interfaces'
+import { Message, OpenAIMessage } from 'src/shared/types'
+import { ApiError, NetworkError, AIProviderNoImplementedPaint, QuotaExhausted, BaseError, AIProviderNoImplementedChat } from './errors'
+import IModel, { onResultChange } from './interfaces'
+import { createParser } from 'eventsource-parser'
 
 export default class Base implements IModel {
     public name = 'Unknown'
 
-    constructor() {}
+    constructor() {
+    }
+
+    async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
+        throw new AIProviderNoImplementedPaint(this.name)
+    }
+
+    async callChatCompletion(messages: OpenAIMessage[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+        throw new AIProviderNoImplementedChat(this.name)
+    }
+
+    async chat(messageContext: Message[], onResultUpdated?: (data: { text: string, cancel(): void }) => void): Promise<string> {
+        // 初始化 fetch 的取消机制
+        let hasCancel = false // fetch has been canceled
+        const controller = new AbortController() // abort signal for fetch
+        const cancel = () => {
+            hasCancel = true
+            controller.abort()
+        }
+        let result = ''
+        try {
+            // 将 Message 转换为 OpenAIMessage，清理掉会报错的多余的字段
+            const messages: OpenAIMessage[] = messageContext.map((m) => ({
+                role: m.role,
+                content: m.content,
+            }))
+            // 支持 onResultUpdated 回调
+            let onResultChange: onResultChange | undefined = undefined
+            if (onResultUpdated) {
+                onResultUpdated({ text: result, cancel })    // 这里先传递 cancel 方法
+                onResultChange = (newResult: string) => {
+                    result = newResult
+                    onResultUpdated({ text: result, cancel })
+                }
+            }
+            // 调用各个模型提供商的底层接口方法
+            result = await this.callChatCompletion(messages, controller.signal, onResultChange)
+        } catch (error) {
+            /// 处理 fetch 被取消的情况
+            // if a cancellation is performed
+            // do not throw an exception
+            // otherwise the content will be overwritten.
+            if (hasCancel) {
+                return result
+            }
+            // 如果不是取消，那么正常抛出错误
+            throw error
+        }
+        return result
+    }
 
     async paint(prompt: string, num: number, signal?: AbortSignal): Promise<string[]> {
-        throw new AIProviderNoImplementedPaint(this.name)
+        const concurrence: Promise<string>[] = []
+        for (let i = 0; i < num; i++) {
+            concurrence.push(this.callImageGeneration(prompt, signal))
+        }
+        return await Promise.all(concurrence)
+    }
+
+    async handleSSE(response: Response, onMessage: (message: string) => void) {
+        // 状态码不在 200～299 之间，一般是接口报错了
+        if (!response.ok) {
+            const errJson = await response.json().catch(() => null)
+            throw new ApiError(errJson ? JSON.stringify(errJson) : `${response.status} ${response.statusText}`)
+        }
+        if (!response.body) {
+            throw new Error('No response body')
+        }
+        const parser = createParser((event) => {
+            if (event.type === 'event') {
+                onMessage(event.data)
+            }
+        })
+        for await (const chunk of this.iterableStreamAsync(response.body)) {
+            const str = new TextDecoder().decode(chunk)
+            parser.feed(str)
+        }
+    }
+
+    async * iterableStreamAsync(stream: ReadableStream): AsyncIterableIterator<Uint8Array> {
+        const reader = stream.getReader()
+        try {
+            while (true) {
+                const { value, done } = await reader.read()
+                if (done) {
+                    return
+                } else {
+                    yield value
+                }
+            }
+        } finally {
+            reader.releaseLock()
+        }
     }
 
     async post(

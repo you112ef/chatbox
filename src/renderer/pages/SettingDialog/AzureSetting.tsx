@@ -87,6 +87,7 @@ export default function AzureSetting(props: ModelConfigProps) {
                                     ...settingsEdit,
                                     temperature: defaults.settings().temperature,
                                     topP: defaults.settings().topP,
+                                    openaiMaxTokens: defaults.settings().openaiMaxTokens,
                                 })
                             }
                         >
