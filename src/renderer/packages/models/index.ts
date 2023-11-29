@@ -52,6 +52,7 @@ export const aiModelProviderList = [
     {
         value: ModelProvider.Claude,
         label: aiProviderNameHash[ModelProvider.Claude],
+        disabled: false,
     },
     // {
     //     value: 'hunyuan',
