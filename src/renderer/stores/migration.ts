@@ -5,7 +5,7 @@ import * as runtime from '@/packages/runtime'
 
 export function migrate() {
     // 通过定时器延迟启动，防止处理状态底层存储的异步加载前错误的初始数据（水合阶段）
-    setTimeout(_migrate, 600)
+    setTimeout(_migrate, 5000)
 }
 
 async function _migrate() {
