@@ -2,6 +2,8 @@ import { getDefaultStore } from 'jotai'
 import { settingsAtom, configVersionAtom, sessionsAtom, languageAtom } from './atoms'
 import { imageCreatorSessionForCN, imageCreatorSessionForEN } from '@/packages/initial_data'
 import * as runtime from '@/packages/runtime'
+import WebStorage from '@/storage/WebStorage'
+import storage from '@/storage'
 
 export function migrate() {
     // 通过定时器延迟启动，防止处理状态底层存储的异步加载前错误的初始数据（水合阶段）
@@ -20,6 +22,11 @@ async function _migrate() {
     if (configVersion < 2) {
         await migrate_1_to_2()
         configVersion = 2
+        store.set(configVersionAtom, configVersion)
+    }
+    if (configVersion < 3) {
+        await migrate_2_to_3()
+        configVersion = 3
         store.set(configVersionAtom, configVersion)
     }
 }
@@ -48,5 +55,22 @@ async function migrate_1_to_2() {
             return
         }
         store.set(sessionsAtom, [imageCreatorSessionForEN, ...sessions])
+    }
+}
+
+async function migrate_2_to_3() {
+    // 原来 Electron 应用存储图片 base64 数据到 IndexedDB，现在改成本地文件存储
+    if (runtime.runtime !== 'electron') {
+        return
+    }
+    const ws = new WebStorage()
+    const blobKeys = await ws.getBlobKeys()
+    for (const key of blobKeys) {
+        const value = await ws.getBlob(key)
+        if (!value) {
+            continue
+        }
+        await storage.setBlob(key, value)
+        await ws.delBlob(key)
     }
 }

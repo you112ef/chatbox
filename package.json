@@ -183,6 +183,7 @@
         "remark-breaks": "^4.0.0",
         "remark-gfm": "^4.0.0",
         "remark-math": "^6.0.0",
+        "sanitize-filename": "^1.6.3",
         "store": "^2.0.12",
         "swr": "^2.1.5",
         "tailwind-merge": "^1.14.0",

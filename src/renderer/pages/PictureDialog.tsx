@@ -19,7 +19,7 @@ export default function PictureDialog(props: Props) {
             return
         }
         if (pictureShow.storageKey) {
-            const base64 = await storage.getBlob<string>(pictureShow.storageKey)
+            const base64 = await storage.getBlob(pictureShow.storageKey)
             if (!base64) {
                 return
             }

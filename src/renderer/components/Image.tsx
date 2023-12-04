@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 export function ImageInStorage(props: { storageKey: string }) {
     const [base64, setPic] = useState<string>('')
     useEffect(() => {
-        storage.getBlob<string>(props.storageKey).then((blob) => {
+        storage.getBlob(props.storageKey).then((blob) => {
             if (blob) {
                 setPic(blob)
             }

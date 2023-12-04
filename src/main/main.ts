@@ -19,6 +19,8 @@ import { store } from './store'
 import * as shortcuts from './shortcut'
 import * as proxy from './proxy'
 import * as windowState from './window_state'
+import * as fs from 'fs-extra'
+import sanitizeFilename from 'sanitize-filename'
 
 // 这行代码是解决 Windows 通知的标题和图标不正确的问题，标题会错误显示成 electron.app.Chatbox
 // 参考：https://stackoverflow.com/questions/65859634/notification-from-electron-shows-electron-app-electron
@@ -228,6 +230,35 @@ ipcMain.handle('getAllStoreValues', (event) => {
 ipcMain.handle('setAllStoreValues', (event, dataJson) => {
     const data = JSON.parse(dataJson)
     store.store = data
+})
+ipcMain.handle('getStoreBlob', async (event, key) => {
+    const filename = path.resolve(app.getPath('userData'), 'chatbox-blobs', sanitizeFilename(key))
+    const exists = await fs.pathExists(filename)
+    if (!exists) {
+        return null
+    }
+    return fs.readFile(filename, { encoding: 'utf-8' })
+})
+ipcMain.handle('setStoreBlob', async (event, key, value: string) => {
+    const filename = path.resolve(app.getPath('userData'), 'chatbox-blobs', sanitizeFilename(key))
+    await fs.ensureDir(path.dirname(filename))
+    return fs.writeFile(filename, value, { encoding: 'utf-8' })
+})
+ipcMain.handle('delStoreBlob', async (event, key) => {
+    const filename = path.resolve(app.getPath('userData'), 'chatbox-blobs', sanitizeFilename(key))
+    const exists = await fs.pathExists(filename)
+    if (!exists) {
+        return
+    }
+    await fs.remove(filename)
+})
+ipcMain.handle('listStoreBlobKeys', async (event) => {
+    const dir = path.resolve(app.getPath('userData'), 'chatbox-blobs')
+    const exists = await fs.pathExists(dir)
+    if (!exists) {
+        return []
+    }
+    return fs.readdir(dir)
 })
 
 ipcMain.handle('getVersion', () => {

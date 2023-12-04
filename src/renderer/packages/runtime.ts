@@ -219,3 +219,43 @@ export async function relaunch() {
     }
     return electronAPI.invoke('relaunch')
 }
+
+export async function getStoreBlob(key: string): Promise<string> {
+    if (isWeb) {
+        return ""
+    }
+    if (!electronAPI) {
+        return ""
+    }
+    return electronAPI.invoke('getStoreBlob', key)
+}
+
+export async function setStoreBlob(key: string, value: string) {
+    if (isWeb) {
+        return
+    }
+    if (!electronAPI) {
+        return
+    }
+    return electronAPI.invoke('setStoreBlob', key, value)
+}
+
+export async function delStoreBlob(key: string) {
+    if (isWeb) {
+        return
+    }
+    if (!electronAPI) {
+        return
+    }
+    return electronAPI.invoke('delStoreBlob', key)
+}
+
+export async function listStoreBlobKeys(): Promise<string[]> {
+    if (isWeb) {
+        return []
+    }
+    if (!electronAPI) {
+        return []
+    }
+    return electronAPI.invoke('listStoreBlobKeys')
+}
