@@ -1,9 +1,9 @@
 import { getDefaultStore } from 'jotai'
-import { settingsAtom, configVersionAtom, sessionsAtom, languageAtom } from './atoms'
+import { settingsAtom, configVersionAtom, sessionsAtom } from './atoms'
 import { imageCreatorSessionForCN, imageCreatorSessionForEN } from '@/packages/initial_data'
 import * as runtime from '@/packages/runtime'
 import WebStorage from '@/storage/WebStorage'
-import storage from '@/storage'
+import storage, { StorageKey } from '@/storage'
 
 export function migrate() {
     // 通过定时器延迟启动，防止处理状态底层存储的异步加载前错误的初始数据（水合阶段）
@@ -11,22 +11,24 @@ export function migrate() {
 }
 
 async function _migrate() {
+    let configVersion = await storage.getItem(StorageKey.ConfigVersion, 0)
     const store = getDefaultStore()
-    let configVersion = store.get(configVersionAtom)
-
     if (configVersion < 1) {
         migrate_0_to_1()
         configVersion = 1
+        await storage.setItem(StorageKey.ConfigVersion, configVersion)
         store.set(configVersionAtom, configVersion)
     }
     if (configVersion < 2) {
         await migrate_1_to_2()
         configVersion = 2
+        await storage.setItem(StorageKey.ConfigVersion, configVersion)
         store.set(configVersionAtom, configVersion)
     }
     if (configVersion < 3) {
         await migrate_2_to_3()
         configVersion = 3
+        await storage.setItem(StorageKey.ConfigVersion, configVersion)
         store.set(configVersionAtom, configVersion)
     }
 }
