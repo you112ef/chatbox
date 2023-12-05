@@ -61,7 +61,7 @@ export const sessionsAtom = atom(
     (get) => {
         let sessions = get(_sessionsAtom)
         if (sessions.length === 0) {
-            sessions = [{ id: uuidv4(), name: 'Untitled', messages: [], type: 'chat' }]
+            sessions = defaults.sessions()
         }
         return sessions
     },
@@ -69,7 +69,7 @@ export const sessionsAtom = atom(
         const sessions = get(_sessionsAtom)
         let newSessions = typeof update === 'function' ? update(sessions) : update
         if (newSessions.length === 0) {
-            newSessions = [{ id: uuidv4(), name: 'Untitled', messages: [], type: 'chat' }]
+            newSessions = defaults.sessions()
         }
         set(_sessionsAtom, newSessions)
     }

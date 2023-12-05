@@ -1,5 +1,6 @@
 import { getDefaultStore } from 'jotai'
 import { settingsAtom, configVersionAtom, sessionsAtom } from './atoms'
+import * as defaults from './defaults'
 import { imageCreatorSessionForCN, imageCreatorSessionForEN } from '@/packages/initial_data'
 import * as runtime from '@/packages/runtime'
 import WebStorage from '@/storage/WebStorage'
@@ -12,51 +13,48 @@ export function migrate() {
 
 async function _migrate() {
     let configVersion = await storage.getItem(StorageKey.ConfigVersion, 0)
-    const store = getDefaultStore()
     if (configVersion < 1) {
-        migrate_0_to_1()
+        await migrate_0_to_1()
         configVersion = 1
         await storage.setItem(StorageKey.ConfigVersion, configVersion)
-        store.set(configVersionAtom, configVersion)
+        getDefaultStore().set(configVersionAtom, configVersion)
     }
     if (configVersion < 2) {
         await migrate_1_to_2()
         configVersion = 2
         await storage.setItem(StorageKey.ConfigVersion, configVersion)
-        store.set(configVersionAtom, configVersion)
+        getDefaultStore().set(configVersionAtom, configVersion)
     }
     if (configVersion < 3) {
         await migrate_2_to_3()
         configVersion = 3
         await storage.setItem(StorageKey.ConfigVersion, configVersion)
-        store.set(configVersionAtom, configVersion)
+        getDefaultStore().set(configVersionAtom, configVersion)
     }
 }
 
-function migrate_0_to_1() {
-    const store = getDefaultStore()
-    const settings = store.get(settingsAtom)
+async function migrate_0_to_1() {
+    const settings = await storage.getItem(StorageKey.Settings, defaults.settings())
     // 如果历史版本的用户开启了消息的token计数展示，那么也帮他们开启token消耗展示
     if (settings.showTokenCount) {
         settings.showTokenUsed = true
-        store.set(settingsAtom, { ...settings })
+        getDefaultStore().set(settingsAtom, { ...settings })
     }
 }
 
 async function migrate_1_to_2() {
-    const store = getDefaultStore()
-    const sessions = store.get(sessionsAtom)
+    const sessions = await storage.getItem(StorageKey.ChatSessions, defaults.sessions())
     const lang = await runtime.getLocale()
     if (lang.startsWith('zh')) {
         if (sessions.find((session) => session.id === imageCreatorSessionForCN.id)) {
             return
         }
-        store.set(sessionsAtom, [imageCreatorSessionForCN, ...sessions])
+        getDefaultStore().set(sessionsAtom, [imageCreatorSessionForCN, ...sessions])
     } else {
         if (sessions.find((session) => session.id === imageCreatorSessionForEN.id)) {
             return
         }
-        store.set(sessionsAtom, [imageCreatorSessionForEN, ...sessions])
+        getDefaultStore().set(sessionsAtom, [imageCreatorSessionForEN, ...sessions])
     }
 }
 
