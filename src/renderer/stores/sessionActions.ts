@@ -126,7 +126,15 @@ export async function copy(source: Session) {
     const store = getDefaultStore()
     const newSession = { ...source }
     newSession.id = uuidv4()
-    store.set(atoms.sessionsAtom, (sessions) => [...sessions, newSession])
+    store.set(atoms.sessionsAtom, (sessions) => {
+        let originIndex = sessions.findIndex((s) => s.id === source.id)
+        if (originIndex < 0) {
+            originIndex = 0
+        }
+        const newSessions = [...sessions]
+        newSessions.splice(originIndex + 1, 0, newSession)
+        return newSessions
+    })
 }
 
 export function getSession(sessionId: string) {
