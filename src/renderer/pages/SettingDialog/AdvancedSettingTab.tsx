@@ -54,13 +54,16 @@ export default function AdvancedSettingTab(props: Props) {
                     <TextFieldReset
                         label={t('Proxy Address')}
                         value={settingsEdit.proxy || ''}
-                        setValue={(value) => {
-                            setSettingsEdit({ ...settingsEdit, proxy: value })
+                        onValueChange={(value) => {
+                            setSettingsEdit({ ...settingsEdit, proxy: value.trim() })
                         }}
                         placeholder="socks5://127.0.0.1:6153"
                         autoFocus
+                        fullWidth
+                        margin="dense"
+                        variant="outlined"
                         disabled={runtime.isWeb}
-                        className="cursor-not-allowed"
+                        inputProps={{ className: 'cursor-not-allowed' }}
                         helperText={
                             runtime.isWeb ? <span className="text-red-600">{t('not available in browser')}</span> : null
                         }

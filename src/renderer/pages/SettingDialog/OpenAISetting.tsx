@@ -9,6 +9,7 @@ import PasswordTextField from '../../components/PasswordTextField'
 import MaxContextMessageCountSlider from '../../components/MaxContextMessageCountSlider'
 import OpenAIModelSelect from '../../components/OpenAIModelSelect'
 import TokenConfig from './TokenConfig'
+import TextFieldReset from '@/components/TextFieldReset'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -29,48 +30,23 @@ export default function OpenAISetting(props: ModelConfigProps) {
                 placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx"
             />
             <>
-                <TextField
+                <TextFieldReset
                     margin="dense"
                     label={t('api host')}
                     type="text"
                     fullWidth
                     variant="outlined"
-                    placeholder="https://api.openai.com"
                     value={settingsEdit.apiHost}
-                    onChange={(e) =>
-                        setSettingsEdit({
-                            ...settingsEdit,
-                            apiHost: e.target.value.trim(),
-                        })
-                    }
+                    placeholder="https://api.openai.com"
+                    defaultValue='https://api.openai.com'
+                    onValueChange={(value) => {
+                        value = value.trim()
+                        if (value.length > 4 && !value.startsWith('http')) {
+                            value = 'https://' + value
+                        }
+                        setSettingsEdit({ ...settingsEdit, apiHost: value })
+                    }}
                 />
-                {!settingsEdit.apiHost.match(/^(https?:\/\/)?api.openai.com(:\d+)?$/) && (
-                    <Alert severity="warning">
-                        {t('proxy warning', {
-                            apiHost: settingsEdit.apiHost,
-                        })}
-                        <Button
-                            onClick={() =>
-                                setSettingsEdit({
-                                    ...settingsEdit,
-                                    apiHost: defaults.settings().apiHost,
-                                })
-                            }
-                        >
-                            {t('reset')}
-                        </Button>
-                    </Alert>
-                )}
-                {settingsEdit.apiHost.startsWith('http://') && (
-                    <Alert severity="warning">
-                        {<Trans i18nKey="protocol warning" components={{ bold: <strong /> }} />}
-                    </Alert>
-                )}
-                {!settingsEdit.apiHost.startsWith('http') && (
-                    <Alert severity="error">
-                        {<Trans i18nKey="protocol error" components={{ bold: <strong /> }} />}
-                    </Alert>
-                )}
             </>
             <Accordion>
                 <AccordionSummary aria-controls="panel1a-content">
