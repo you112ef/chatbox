@@ -7,7 +7,8 @@ tickPictureClearTask()
 
 // 假设所有图片都需要删除，然后遍历会话列表，如果会话中有图片，就从待删除列表中删除
 export async function tickPictureClearTask() {
-    const pictureKeys = await storage.getBlobKeys()
+    const allBlobKeys = await storage.getBlobKeys()
+    const pictureKeys = allBlobKeys.filter(key => key.startsWith('picture'))
     if (pictureKeys.length === 0) {
         return
     }
