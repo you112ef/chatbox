@@ -21,12 +21,11 @@ export default function TextFieldReset(props: {
                 defaultValue === props.value
                     ? {}
                     : {
-                        endAdornment:
-                            props.value === '' ? null : (
-                                <Button variant='text' onClick={handleReset} onMouseDown={handleMouseDown}>
-                                    {t('reset')}
-                                </Button>
-                            ),
+                        endAdornment: (
+                            <Button variant='text' onClick={handleReset} onMouseDown={handleMouseDown}>
+                                {t('reset')}
+                            </Button>
+                        ),
                     }
             }
             helperText={props.helperText}
