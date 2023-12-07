@@ -114,11 +114,11 @@ export const getPlatform = async () => {
 }
 
 export async function getInstanceName() {
-    const platform = await getPlatform()
-    if (platform === 'web') {
+    if (isWeb || !electronAPI) {
         return `${getOS()} / ${getBrowser()}`
     }
-    return platform
+    const hostname = await electronAPI.invoke('getHostname')
+    return `${hostname} / ${getOS()}`
 }
 
 // export async function exportTextFile(filename: string, content: string) {
