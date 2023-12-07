@@ -3,14 +3,16 @@ import Base from './base'
 import { ApiError } from './errors'
 import { onResultChange } from './interfaces'
 
-export type ClaudeModel = 'claude-instant-1' | 'claude-1' | 'claude-instant-1-100k' | 'claude-1-100k' | 'claude-2'
+export type ClaudeModel = 'claude-instant-1' | 'claude-1' | 'claude-instant-1-100k' | 'claude-1-100k' | 'claude-2' | 'claude-2.1' | 'claude-instant-1.2'
 
 export const claudeModels: ClaudeModel[] = [
     'claude-instant-1',
+    'claude-instant-1.2',
+    'claude-2',
+    'claude-2.1',
     'claude-1',
     'claude-instant-1-100k',
     'claude-1-100k',
-    'claude-2',
 ]
 
 interface Options {
