@@ -27,6 +27,7 @@ import SearchDialog from './pages/SearchDialog'
 import Sidebar from './Sidebar'
 import { CHATBOX_BUILD_TARGET } from '@/variables'
 import PictureDialog from './pages/PictureDialog'
+import MessageEditDialog from './pages/MessageEditDialog'
 
 function Main() {
     // 是否展示菜单栏
@@ -115,6 +116,7 @@ function Main() {
             />
             <SearchDialog />
             <PictureDialog />
+            <MessageEditDialog />
             <Toasts />
         </Box>
     )

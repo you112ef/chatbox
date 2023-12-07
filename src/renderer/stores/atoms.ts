@@ -1,14 +1,12 @@
 import { RefObject } from 'react'
 import { atom, SetStateAction } from 'jotai'
-import { Session, Toast, Settings, CopilotDetail, MessagePicture } from '../../shared/types'
+import { Session, Toast, Settings, CopilotDetail, MessagePicture, Message } from '../../shared/types'
 import { selectAtom, atomWithStorage } from 'jotai/utils'
 import { focusAtom } from 'jotai-optics'
 import * as defaults from './defaults'
-import { v4 as uuidv4 } from 'uuid'
 import storage, { StorageKey } from '../storage'
 import { VirtuosoHandle } from 'react-virtuoso'
 import * as runtime from '../packages/runtime'
-import { resetTokenConfig } from '../packages/token_config'
 
 // settings
 
@@ -156,3 +154,6 @@ export const openSettingDialogAtom = atom<'ai' | 'display' | null>(null)
 
 // 图片展示窗口的图片
 export const pictureShowAtom = atom<MessagePicture | null>(null)
+
+// 会话编辑窗口
+export const messageEditDialogShowAtom = atom<{ msg: Message, sessionId: string } | null>(null)

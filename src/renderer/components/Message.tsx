@@ -7,19 +7,16 @@ import {
     Divider,
     Typography,
     Grid,
-    TextField,
     Menu,
     MenuProps,
     Tooltip,
     ButtonGroup,
     useTheme,
 } from '@mui/material'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
 import PersonIcon from '@mui/icons-material/Person'
 import SmartToyIcon from '@mui/icons-material/SmartToy'
 import SettingsIcon from '@mui/icons-material/Settings'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
-import CheckIcon from '@mui/icons-material/Check'
 import EditIcon from '@mui/icons-material/Edit'
 import { styled, alpha } from '@mui/material/styles'
 import StopIcon from '@mui/icons-material/Stop'
@@ -32,6 +29,7 @@ import ReplayIcon from '@mui/icons-material/Replay'
 import CopyAllIcon from '@mui/icons-material/CopyAll'
 import { useAtomValue, useSetAtom } from 'jotai'
 import {
+    messageEditDialogShowAtom,
     messageScrollingScrollPositionAtom,
     pictureShowAtom,
     quoteAtom,
@@ -46,7 +44,7 @@ import * as scrollActions from '../stores/scrollActions'
 import Markdown from '@/components/Markdown'
 import '../static/Block.css'
 import { throttle } from 'lodash'
-import {ImageInStorage, Image} from './Image'
+import { ImageInStorage, Image } from './Image'
 import SouthIcon from '@mui/icons-material/South'
 import ImageIcon from '@mui/icons-material/Image'
 import MessageErrTips from './MessageErrTips'
@@ -69,14 +67,11 @@ function _Message(props: Props) {
     const currentSessionPicUrl = useAtomValue(currsentSessionPicUrlAtom)
     const messageScrollingScrollPosition = useAtomValue(messageScrollingScrollPositionAtom)
     const setPictureShow = useSetAtom(pictureShowAtom)
+    const setMessageEditDialogShow = useSetAtom(messageEditDialogShowAtom)
 
     const { msg } = props
 
     const [isHovering, setIsHovering] = useState(false)
-    const [msgEdit, setMsgEdit] = useState<Message | null>(null)
-    useEffect(() => {
-        setMsgEdit(null)
-    }, [msg])
     const ref = useRef<HTMLDivElement>(null)
 
     const [autoScrollId, setAutoScrollId] = useState<null | string>(null)
@@ -121,10 +116,17 @@ function _Message(props: Props) {
         sessionActions.modifyMessage(props.sessionId, updated, true)
     }
     const onDelMsg = () => {
-        setMsgEdit(null)
         setIsHovering(false)
         setAnchorEl(null)
         sessionActions.removeMessage(props.sessionId, msg.id)
+    }
+    const onEditClick = () => {
+        setIsHovering(false)
+        setAnchorEl(null)
+        setMessageEditDialogShow({
+            sessionId: props.sessionId,
+            msg: msg,
+        })
     }
 
     const tips: string[] = []
@@ -154,7 +156,7 @@ function _Message(props: Props) {
     }
 
     let displayButtonGroup = false
-    if (isHovering && !msgEdit) {
+    if (isHovering) {
         displayButtonGroup = true // 鼠标悬停时，显示按钮组
     }
     if (msg.generating) {
@@ -245,145 +247,72 @@ function _Message(props: Props) {
         >
             <Grid container wrap="nowrap" spacing={2}>
                 <Grid item>
-                    {msgEdit ? (
-                        <Select
-                            value={msgEdit.role}
-                            onChange={(e: SelectChangeEvent) => {
-                                setMsgEdit({
-                                    ...msgEdit,
-                                    role: e.target.value as OpenAIRoleEnumType,
-                                })
-                            }}
-                            size="small"
-                            id={msgEdit.id + 'select'}
-                        >
-                            <MenuItem value={OpenAIRoleEnum.System}>
-                                <Avatar>
-                                    <SettingsIcon />
-                                </Avatar>
-                            </MenuItem>
-                            <MenuItem value={OpenAIRoleEnum.User}>
-                                <Avatar>
-                                    <PersonIcon />
-                                </Avatar>
-                            </MenuItem>
-                            <MenuItem value={OpenAIRoleEnum.Assistant}>
-                                <Avatar>
-                                    <SmartToyIcon />
-                                </Avatar>
-                            </MenuItem>
-                        </Select>
-                    ) : (
-                        <Box sx={{ marginTop: '8px' }}>
+                    <Box sx={{ marginTop: '8px' }}>
+                        {
                             {
-                                {
-                                    assistant: currentSessionPicUrl ? (
-                                        <Avatar src={currentSessionPicUrl}></Avatar>
-                                    ) : props.sessionType === 'picture' ? (
+                                assistant: currentSessionPicUrl ? (
+                                    <Avatar src={currentSessionPicUrl}></Avatar>
+                                ) : props.sessionType === 'picture' ? (
+                                    <Avatar sx={{ backgroundColor: 'secondary.main' }}>
+                                        <ImageIcon />
+                                    </Avatar>
+                                ) : (
+                                    <Avatar>
+                                        <SmartToyIcon />
+                                    </Avatar>
+                                ),
+                                user: (
+                                    <Avatar>
+                                        <PersonIcon />
+                                    </Avatar>
+                                ),
+                                system:
+                                    props.sessionType === 'picture' ? (
                                         <Avatar sx={{ backgroundColor: 'secondary.main' }}>
                                             <ImageIcon />
                                         </Avatar>
                                     ) : (
                                         <Avatar>
-                                            <SmartToyIcon />
+                                            <SettingsIcon />
                                         </Avatar>
                                     ),
-                                    user: (
-                                        <Avatar>
-                                            <PersonIcon />
-                                        </Avatar>
-                                    ),
-                                    system:
-                                        props.sessionType === 'picture' ? (
-                                            <Avatar sx={{ backgroundColor: 'secondary.main' }}>
-                                                <ImageIcon />
-                                            </Avatar>
-                                        ) : (
-                                            <Avatar>
-                                                <SettingsIcon />
-                                            </Avatar>
-                                        ),
-                                }[msg.role]
-                            }
-                        </Box>
-                    )}
+                            }[msg.role]
+                        }
+                    </Box>
                 </Grid>
                 <Grid item xs sm container sx={{ width: '0px', paddingRight: '15px' }}>
                     <Grid item xs>
-                        {msgEdit ? (
-                            <TextField
-                                style={{
-                                    width: '100%',
-                                }}
-                                multiline // multiline 需要和 maxRows 一起使用，否则长文本可能会导致退出编辑？
-                                // maxRows={15} // 不限制行数。防止点击编辑后，因为高度变化导致滚动条跳走
-                                placeholder="prompt"
-                                value={msgEdit.content}
-                                onChange={(e) => {
-                                    setMsgEdit({
-                                        ...msgEdit,
-                                        content: e.target.value,
-                                    })
-                                }}
-                                id={msgEdit.id + 'input'}
-                            />
-                        ) : (
-                            <>
-                                <Box className={'msg-content ' + (msg.role === 'system' ? 'msg-content-system' : '')}>
-                                    <Markdown>
-                                        {(typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)) +
-                                            (msg.generating ? '...' : '')}
-                                    </Markdown>
-                                    {msg.pictures &&
-                                        msg.pictures.map((pic, index) => (
-                                            <div
-                                                key={index}
-                                                className="w-[200px] h-[200px] p-2 m-1 inline-block bg-white shadow-sm rounded-md
+                        <Box className={'msg-content ' + (msg.role === 'system' ? 'msg-content-system' : '')}>
+                            <Markdown>
+                                {(typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)) +
+                                    (msg.generating ? '...' : '')}
+                            </Markdown>
+                            {msg.pictures &&
+                                msg.pictures.map((pic, index) => (
+                                    <div
+                                        key={index}
+                                        className="w-[200px] h-[200px] p-2 m-1 inline-block bg-white shadow-sm rounded-md
                                                 hover:shadow-lg hover:cursor-pointer hover:scale-105 transition-all duration-200"
-                                                onClick={() => setPictureShow(pic)}
-                                            >
-                                                {
-                                                    pic.storageKey && (
-                                                        <ImageInStorage storageKey={pic.storageKey} />
-                                                    )
-                                                }
-                                                {
-                                                    pic.url && (
-                                                        <Image src={pic.url} />
-                                                    )
-                                                }
-                                            </div>
-                                        ))}
-                                    <MessageErrTips msg={msg} />
-                                </Box>
-                            </>
-                        )}
+                                        onClick={() => setPictureShow(pic)}
+                                    >
+                                        {
+                                            pic.storageKey && (
+                                                <ImageInStorage storageKey={pic.storageKey} />
+                                            )
+                                        }
+                                        {
+                                            pic.url && (
+                                                <Image src={pic.url} />
+                                            )
+                                        }
+                                    </div>
+                                ))}
+                            <MessageErrTips msg={msg} />
+                        </Box>
                         <Typography variant="body2" sx={{ opacity: 0.5 }}>
                             {tips.join(', ')}
                         </Typography>
                         <Box sx={{ height: '35px' }}>
-                            <ButtonGroup
-                                sx={{
-                                    display: msgEdit ? 'inline-flex' : 'none',
-                                    height: '35px',
-                                }}
-                                variant="contained"
-                                aria-label="outlined primary button group"
-                            >
-                                <IconButton
-                                    onClick={() => {
-                                        if (msgEdit) {
-                                            setMsg(msgEdit)
-                                        }
-                                        setMsgEdit(null)
-                                    }}
-                                    size="large"
-                                    color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
-                                >
-                                    <CheckIcon />
-                                </IconButton>
-                            </ButtonGroup>
-
                             <ButtonGroup
                                 sx={{
                                     display: displayButtonGroup ? 'inline-flex' : 'none',
@@ -391,10 +320,10 @@ function _Message(props: Props) {
                                     opacity: 1,
                                     ...(fixedButtonGroup
                                         ? {
-                                              position: 'fixed',
-                                              bottom: '100px',
-                                              zIndex: 100,
-                                          }
+                                            position: 'fixed',
+                                            bottom: '100px',
+                                            zIndex: 100,
+                                        }
                                         : {}),
                                     backgroundColor:
                                         theme.palette.mode === 'dark'
@@ -438,11 +367,7 @@ function _Message(props: Props) {
                                         <IconButton
                                             aria-label="edit"
                                             color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
-                                            onClick={() => {
-                                                setIsHovering(false)
-                                                setAnchorEl(null)
-                                                setMsgEdit(msg)
-                                            }}
+                                            onClick={onEditClick}
                                         >
                                             <EditIcon fontSize="small" />
                                         </IconButton>
