@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
-import { Box, Grid, useTheme, useMediaQuery } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import { RemoteConfig, Session, ModelProvider } from '../shared/types'
 import SettingDialog from './pages/SettingDialog'
 import ChatConfigWindow from './pages/ChatConfigWindow'

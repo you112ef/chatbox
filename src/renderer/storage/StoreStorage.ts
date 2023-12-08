@@ -1,8 +1,8 @@
 import FsStorage from './FsStorage'
 import WebStorage from './WebStorage'
-import { isWeb } from '../packages/runtime'
+import * as runtime from '../packages/runtime'
 import BaseStorage from './BaseStorage'
-import { sessions as defaultSessions } from '../packages/initial_data'
+import { defaultSessionsForEN, defaultSessionsForCN } from '../packages/initial_data'
 import * as defaults from '../stores/defaults'
 
 export enum StorageKey {
@@ -14,7 +14,7 @@ export enum StorageKey {
 }
 
 // 根据运行环境，选择不同的存储方式
-const Storage: new () => BaseStorage = isWeb ? WebStorage : FsStorage
+const Storage: new () => BaseStorage = runtime.isWeb ? WebStorage : FsStorage
 export default class StoreStorage extends Storage {
     constructor() {
         super()
@@ -23,7 +23,12 @@ export default class StoreStorage extends Storage {
         let value: T = await super.getItem(key, initialValue)
 
         if (key === StorageKey.ChatSessions && value === initialValue) {
-            value = defaultSessions as T
+            const lang = await runtime.getLocale().catch(e => 'en')
+            if (lang.startsWith('zh')) {
+                value = defaultSessionsForCN as T
+            } else {
+                value = defaultSessionsForEN as T
+            }
             await super.setItem(key, value)
         }
         if (key === StorageKey.Configs && value === initialValue) {
