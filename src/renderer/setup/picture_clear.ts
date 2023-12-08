@@ -1,9 +1,14 @@
 import storage from '../storage'
 import { getDefaultStore } from 'jotai'
 import * as atoms from '../stores/atoms'
+import * as runtime from '../packages/runtime'
 
 // 启动时执行消息图片清理
-tickPictureClearTask()
+// 只有网页版本需要清理，桌面版本存在本地、空间足够大无需清理
+// 同时也避免了桌面端疑似出现的“图片丢失”问题（可能不是bug，与开发环境有关？）
+if (runtime.isWeb) {
+    tickPictureClearTask()
+}
 
 // 假设所有图片都需要删除，然后遍历会话列表，如果会话中有图片，就从待删除列表中删除
 export async function tickPictureClearTask() {
