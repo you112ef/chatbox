@@ -190,5 +190,7 @@
     "Click to view license details and quota usage": "Нажмите, чтобы просмотреть детали лицензии и использование квоты",
     "License Plan Overview": "Обзор Лицензионных Планов",
     "Generate More Images Below": "Создать больше изображений ниже",
-    "More Images": "Больше изображений"
+    "More Images": "Больше изображений",
+    "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend": "[Ctrl+Enter] Сохранить, [Ctrl+Shift+Enter] Сохранить и отправить заново",
+    "Save & Resend": "Сохранить и отправить заново"
 }

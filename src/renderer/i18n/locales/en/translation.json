@@ -190,5 +190,7 @@
     "Click to view license details and quota usage": "Click to view license details and quota usage",
     "License Plan Overview": "License Plan Overview",
     "Generate More Images Below": "Generate More Images Below",
-    "More Images": "More Images"
+    "More Images": "More Images",
+    "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend": "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend",
+    "Save & Resend": "Save & Resend"
 }

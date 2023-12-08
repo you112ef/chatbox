@@ -191,5 +191,7 @@
     "Click to view license details and quota usage": "点击查看 license 详情与配额使用情况",
     "License Plan Overview": "License 套餐概览",
     "Generate More Images Below": "在下方生成更多图片",
-    "More Images": "更多图片"
+    "More Images": "更多图片",
+    "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend": "[Ctrl+Enter] 保存, [Ctrl+Shift+Enter] 保存并发送",
+    "Save & Resend": "保存并发送"
 }

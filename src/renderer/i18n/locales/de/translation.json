@@ -26,7 +26,7 @@
     "chat": "Chat",
     "new chat": "Neuer Chat",
     "send": "Senden",
-    "[Enter] send, [Shift+Enter] Zeilenumbruch, [Ctrl+Enter] senden ohne Generierung": "[Enter] senden, [Shift+Enter] Zeilenumbruch, [Ctrl+Enter] senden ohne Generierung",
+    "[Enter] send, [Shift+Enter] Zeilenumbruch, [Ctrl+Enter] senden ohne Generierung": "[Enter] senden, [Umschalt+Enter] Zeilenumbruch, [Strg+Enter] senden ohne Generierung",
     "version": "Version",
     "rename": "Umbenennen",
     "name": "Name",
@@ -190,5 +190,7 @@
     "Click to view license details and quota usage": "Klicken Sie hier, um Lizenzdetails und Quotennutzung anzusehen",
     "License Plan Overview": "Übersicht der Lizenzpakete",
     "Generate More Images Below": "Generieren Sie weitere Bilder unten",
-    "More Images": "Mehr Bilder"
+    "More Images": "Mehr Bilder",
+    "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend": "[Strg+Enter] Speichern, [Strg+Umschalt+Enter] Speichern und erneut senden",
+    "Save & Resend": "Speichern & Erneut senden"
 }

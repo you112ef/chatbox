@@ -190,5 +190,7 @@
     "Click to view license details and quota usage": "ライセンスの詳細とクオータの使用状況を確認するには、こちらをクリックしてください",
     "License Plan Overview": "ライセンスプラン概要",
     "Generate More Images Below": "以下でさらに画像を生成",
-    "More Images": "更に画像"
+    "More Images": "更に画像",
+    "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend": "[Ctrl+Enter] 保存, [Ctrl+Shift+Enter] 保存して再送信",
+    "Save & Resend": "保存して再送信"
 }
