@@ -188,5 +188,7 @@
     "Please wait about 20 seconds": "Bitte warten Sie etwa 20 Sekunden",
     "quota exhausted error tips": "Entschuldigung, Sie haben Ihr monatliches Kontingent für das aktuelle Modell ({{model}}) aufgebraucht. Sie können <0>zu den Einstellungen gehen</0>, um die Kontingentdetails einzusehen oder Ihren Tarif zu aktualisieren.",
     "Click to view license details and quota usage": "Klicken Sie hier, um Lizenzdetails und Quotennutzung anzusehen",
-    "License Plan Overview": "Übersicht der Lizenzpakete"
+    "License Plan Overview": "Übersicht der Lizenzpakete",
+    "Generate More Images Below": "Generieren Sie weitere Bilder unten",
+    "More Images": "Mehr Bilder"
 }

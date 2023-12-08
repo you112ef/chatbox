@@ -188,5 +188,7 @@
     "Please wait about 20 seconds": "約20秒お待ちください",
     "quota exhausted error tips": "申し訳ありませんが、今月のモデル({{model}})のクオータをすべて使用しました。<0>設定に移動する</0>と、クオータの詳細を表示したり、プランをアップグレードしたりすることができます。",
     "Click to view license details and quota usage": "ライセンスの詳細とクオータの使用状況を確認するには、こちらをクリックしてください",
-    "License Plan Overview": "ライセンスプラン概要"
+    "License Plan Overview": "ライセンスプラン概要",
+    "Generate More Images Below": "以下でさらに画像を生成",
+    "More Images": "更に画像"
 }

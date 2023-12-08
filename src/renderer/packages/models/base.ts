@@ -57,10 +57,18 @@ export default class Base implements IModel {
         return result
     }
 
-    async paint(prompt: string, num: number, signal?: AbortSignal): Promise<string[]> {
+    async paint(prompt: string, num: number, callback?: (picBase64: string) => any, signal?: AbortSignal): Promise<string[]> {
         const concurrence: Promise<string>[] = []
         for (let i = 0; i < num; i++) {
-            concurrence.push(this.callImageGeneration(prompt, signal))
+            concurrence.push(
+                this.callImageGeneration(prompt, signal)
+                    .then((picBase64) => {
+                        if (callback) {
+                            callback(picBase64)
+                        }
+                        return picBase64
+                    })
+            )
         }
         return await Promise.all(concurrence)
     }

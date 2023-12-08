@@ -6,6 +6,7 @@ import { ClaudeModel } from '../renderer/packages/models/claude'
 export interface MessagePicture {
     url?: string
     storageKey?: string
+    loading?: boolean
 }
 
 export type Message = OpenAIMessage & {

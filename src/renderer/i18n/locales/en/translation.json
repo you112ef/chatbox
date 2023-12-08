@@ -188,5 +188,7 @@
     "Please wait about 20 seconds": "Please wait about 20 seconds",
     "quota exhausted error tips": "Sorry, you have used up your current model({{model}}) quota for the month. You can <0>go to settings</0> to view quota details or upgrade your plan.",
     "Click to view license details and quota usage": "Click to view license details and quota usage",
-    "License Plan Overview": "License Plan Overview"
+    "License Plan Overview": "License Plan Overview",
+    "Generate More Images Below": "Generate More Images Below",
+    "More Images": "More Images"
 }

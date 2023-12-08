@@ -8,6 +8,7 @@ import {
     settings2SessionSettings,
     pickPictureSettings,
     ModelSettings,
+    MessagePicture,
 } from '../../shared/types'
 import * as atoms from './atoms'
 import * as promptFormat from '../packages/prompts'
@@ -60,6 +61,14 @@ export function createEmpty(type: 'chat' | 'picture') {
         default:
             throw new Error(`Unknown session type: ${type}`)
     }
+}
+
+export function createEmptyPictures(n: number): MessagePicture[] {
+    const ret: MessagePicture[] = []
+    for (let i = 0; i < n; i++) {
+        ret.push({ loading: true })
+    }
+    return ret
 }
 
 export function switchCurrentSession(sessionId: string) {
@@ -220,7 +229,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
     targetMsg = {
         ...targetMsg,
         content: placeholder,
-        pictures: [],
+        pictures: session.type === 'picture' ? createEmptyPictures(settings.imageGenerateNum) : [],
         cancel: undefined,
         aiProvider: settings.aiProvider,
         model: getMsgDisplayModelName(settings, session.type),
@@ -268,18 +277,25 @@ export async function generate(sessionId: string, targetMsg: Message) {
                         break
                     }
                 }
-                const base64Pictures = await model.paint(prompt, settings.imageGenerateNum)
-                const pictures: { storageKey: string }[] = []
-                for (const base64 of base64Pictures) {
+                await model.paint(prompt, settings.imageGenerateNum, async (picBase64) => {
                     const storageKey = `picture:${sessionId}:${targetMsg.id}:${uuidv4()}`
                     // 图片需要存储到 indexedDB，如果直接使用 OpenAI 返回的图片链接，图片链接将随着时间而失效
-                    await storage.setBlob(storageKey, base64)
-                    pictures.push({ storageKey })
-                }
+                    await storage.setBlob(storageKey, picBase64)
+
+                    const newPictures = targetMsg.pictures ? [...targetMsg.pictures] : []
+                    const loadingIndex = newPictures.findIndex((p) => p.loading)
+                    if (loadingIndex >= 0) {
+                        newPictures[loadingIndex] = { storageKey }
+                    }
+                    targetMsg = {
+                        ...targetMsg,
+                        pictures: newPictures,
+                    }
+                    modifyMessage(sessionId, targetMsg, true)
+                })
                 targetMsg = {
                     ...targetMsg,
                     content: '',
-                    pictures,
                     generating: false,
                     cancel: undefined,
                 }
@@ -315,8 +331,8 @@ export async function generate(sessionId: string, targetMsg: Message) {
     }
 }
 
-export async function refreshMessage(sessionId: string, msg: Message) {
-    if (msg.role === 'assistant') {
+export async function refreshMessage(sessionId: string, msg: Message, alwayInsertNew = false) {
+    if (msg.role === 'assistant' && !alwayInsertNew) {
         await generate(sessionId, msg)
     } else {
         const session = getSession(sessionId)

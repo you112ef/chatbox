@@ -3,6 +3,7 @@ import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import MenuItem from '@mui/material/MenuItem'
 import {
+    CircularProgress,
     IconButton,
     Divider,
     Typography,
@@ -48,6 +49,7 @@ import { ImageInStorage, Image } from './Image'
 import SouthIcon from '@mui/icons-material/South'
 import ImageIcon from '@mui/icons-material/Image'
 import MessageErrTips from './MessageErrTips'
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 export interface Props {
     id?: string
@@ -105,6 +107,10 @@ function _Message(props: Props) {
         onStop()
         sessionActions.refreshMessage(props.sessionId, msg)
     }, [onStop])
+
+    const onGenerateMore = () => {
+        sessionActions.refreshMessage(props.sessionId, msg, true)
+    }
 
     const onCopyMsg = () => {
         utils.copyToClipboard(msg.content)
@@ -287,26 +293,37 @@ function _Message(props: Props) {
                                 {(typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)) +
                                     (msg.generating ? '...' : '')}
                             </Markdown>
-                            {msg.pictures &&
-                                msg.pictures.map((pic, index) => (
-                                    <div
-                                        key={index}
-                                        className="w-[200px] h-[200px] p-2 m-1 inline-block bg-white shadow-sm rounded-md
+                            {msg.pictures && (
+                                <div className='flex flex-row items-start justify-start'>
+                                    {
+                                        msg.pictures.map((pic, index) => (
+                                            <div
+                                                key={index}
+                                                className="w-[200px] h-[200px] p-2 m-1 inline-flex items-center justify-center
+                                                bg-white shadow-sm rounded-md
                                                 hover:shadow-lg hover:cursor-pointer hover:scale-105 transition-all duration-200"
-                                        onClick={() => setPictureShow(pic)}
-                                    >
-                                        {
-                                            pic.storageKey && (
-                                                <ImageInStorage storageKey={pic.storageKey} />
-                                            )
-                                        }
-                                        {
-                                            pic.url && (
-                                                <Image src={pic.url} />
-                                            )
-                                        }
-                                    </div>
-                                ))}
+                                                onClick={() => setPictureShow(pic)}
+                                            >
+                                                {
+                                                    pic.loading && !pic.storageKey && !pic.url && (
+                                                        <CircularProgress className='block max-w-full max-h-full' color='secondary' />
+                                                    )
+                                                }
+                                                {
+                                                    pic.storageKey && (
+                                                        <ImageInStorage storageKey={pic.storageKey} />
+                                                    )
+                                                }
+                                                {
+                                                    pic.url && (
+                                                        <Image src={pic.url} />
+                                                    )
+                                                }
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            )}
                             <MessageErrTips msg={msg} />
                         </Box>
                         <Typography variant="body2" sx={{ opacity: 0.5 }}>
@@ -331,6 +348,7 @@ function _Message(props: Props) {
                                             : theme.palette.background.paper,
                                 }}
                                 variant="contained"
+                                color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
                                 aria-label="outlined primary button group"
                             >
                                 {msg.generating && (
@@ -340,17 +358,21 @@ function _Message(props: Props) {
                                         </IconButton>
                                     </Tooltip>
                                 )}
-                                {!msg.generating && msg.role === 'assistant' && (
-                                    <Tooltip title={t('Reply Again')} placement="top">
-                                        <IconButton
-                                            aria-label="Reply Again"
-                                            onClick={onRefresh}
-                                            color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
-                                        >
-                                            <ReplayIcon fontSize="small" />
-                                        </IconButton>
-                                    </Tooltip>
-                                )}
+                                {
+                                    // 生成中的消息不显示刷新按钮，必须是助手消息
+                                    !msg.generating && msg.role === 'assistant' &&
+                                    (
+                                        <Tooltip title={t('Reply Again')} placement="top">
+                                            <IconButton
+                                                aria-label="Reply Again"
+                                                onClick={onRefresh}
+                                                color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
+                                            >
+                                                <ReplayIcon fontSize="small" />
+                                            </IconButton>
+                                        </Tooltip>
+                                    )
+                                }
                                 {!msg.generating && msg.role === 'user' && (
                                     <Tooltip title={t('Reply Again Below')} placement="top">
                                         <IconButton
@@ -362,17 +384,23 @@ function _Message(props: Props) {
                                         </IconButton>
                                     </Tooltip>
                                 )}
-                                {!msg.model?.startsWith('Chatbox-AI') && (
-                                    <Tooltip title={t('edit')} placement="top">
-                                        <IconButton
-                                            aria-label="edit"
-                                            color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
-                                            onClick={onEditClick}
-                                        >
-                                            <EditIcon fontSize="small" />
-                                        </IconButton>
-                                    </Tooltip>
-                                )}
+                                {
+                                    // Chatbox-AI 模型不支持编辑消息
+                                    !msg.model?.startsWith('Chatbox-AI') &&
+                                    // 图片会话中，助手消息无需编辑
+                                    !(msg.role === 'assistant' && props.sessionType === 'picture') &&
+                                    (
+                                        <Tooltip title={t('edit')} placement="top">
+                                            <IconButton
+                                                aria-label="edit"
+                                                color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
+                                                onClick={onEditClick}
+                                            >
+                                                <EditIcon fontSize="small" />
+                                            </IconButton>
+                                        </Tooltip>
+                                    )
+                                }
                                 {!(props.sessionType === 'picture' && msg.role === 'assistant') && (
                                     <Tooltip title={t('copy')} placement="top">
                                         <IconButton
@@ -384,6 +412,20 @@ function _Message(props: Props) {
                                         </IconButton>
                                     </Tooltip>
                                 )}
+                                {
+                                    !msg.generating && props.sessionType === 'picture' && msg.role === 'assistant' && (
+                                        <Tooltip title={t('Generate More Images Below')} placement="top">
+                                            <IconButton
+                                                aria-label="copy"
+                                                onClick={onGenerateMore}
+                                                color='secondary'
+                                            >
+                                                <AddPhotoAlternateIcon className='mr-1' fontSize="small" />
+                                                <Typography fontSize="small">{t('More Images')}</Typography>
+                                            </IconButton>
+                                        </Tooltip>
+                                    )
+                                }
                                 <IconButton
                                     onClick={handleClick}
                                     color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
