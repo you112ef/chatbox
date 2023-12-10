@@ -10,6 +10,9 @@ import { CHATBOX_BUILD_TARGET, CHATBOX_BUILD_PLATFORM } from './variables'
 
 // ==========执行初始化==============
 
+// 按需加载 polyfill
+import './setup/load_polyfill'
+
 // Sentry 初始化
 import './setup/sentry_init'
 
