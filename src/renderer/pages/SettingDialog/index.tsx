@@ -50,7 +50,8 @@ export default function SettingWindow(props: Props) {
     }
 
     useEffect(() => {
-        setSettingsEdit(settings)
+        // 仅更新数据，不触发 token 重置
+        _setSettingsEdit(settings)
     }, [settings])
 
     const onSave = () => {
