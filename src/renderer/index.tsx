@@ -6,7 +6,7 @@ import './i18n'
 import * as migration from './stores/migration'
 import './static/index.css'
 import './static/globals.css'
-import { CHATBOX_BUILD_TARGET } from './variables'
+import { CHATBOX_BUILD_TARGET, CHATBOX_BUILD_PLATFORM } from './variables'
 
 // ==========执行初始化==============
 
@@ -17,7 +17,7 @@ import './setup/sentry_init'
 import './setup/protect'
 
 // 引入移动端安全区域代码，主要为了解决异形屏幕的问题
-if (CHATBOX_BUILD_TARGET === 'mobile_app') {
+if (CHATBOX_BUILD_TARGET === 'mobile_app' && CHATBOX_BUILD_PLATFORM === 'ios') {
     import('./setup/mobile_safe_area')
 }
 
