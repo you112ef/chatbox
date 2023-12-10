@@ -1,4 +1,13 @@
 const changelog = `
+### v1.2.1
+
+1. Redesigned the message editing dialog
+2. Fixed an issue where token configurations could not be saved
+3. Fixed the positioning issue with newly copied conversations
+4. Simplified the tips in settings
+5. Optimized some interaction issues
+6. Fixed several other issues
+
 ### v1.2.0
 
 - Added an image generation feature (Image Creator); you can now generate images within Chatbox, powered by the Dall-E-3 model.
