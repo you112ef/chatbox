@@ -25,6 +25,6 @@ export function useSystemLanguageWhenInit() {
                 settings.languageInited = true
                 store.set(settingsAtom, { ...settings })
             })()
-        }, 600)
+        }, 2000)
     }, [])
 }

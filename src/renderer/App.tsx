@@ -57,7 +57,7 @@ function Main() {
                     setOpenSettingWindow('ai')
                 }
             })()
-        }, 600)
+        }, 2000)
     }, [])
 
     // 是否展示相关信息的窗口
