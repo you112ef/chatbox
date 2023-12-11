@@ -84,7 +84,7 @@ export async function onWindowShow(callback: () => void) {
 
 export const getVersion = async () => {
     if (isWeb) {
-        return 'Web'
+        return ''
     }
     if (!electronAPI) {
         return 'Unknown'

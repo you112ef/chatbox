@@ -162,7 +162,8 @@ export default function Sidebar(props: Props) {
                                 sx={{ paddingRight: '8px' }}
                             >
                                 <Typography sx={{ opacity: 0.5 }}>
-                                    {t('About')} ({versionHook.version})
+                                    {t('About')}
+                                    {versionHook.version !== '' ? `(${versionHook.version})` : ''}
                                 </Typography>
                             </Badge>
                         </ListItemText>

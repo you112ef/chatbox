@@ -46,7 +46,13 @@ export default function AboutWindow(props: Props) {
             <DialogContent>
                 <Box sx={{ textAlign: 'center', padding: '0 20px' }}>
                     <img src={iconPNG} style={{ width: '100px', margin: 0, display: 'inline-block' }} />
-                    <h3 style={{ margin: '4px 0 5px 0' }}>Chatbox(v{versionHook.version})</h3>
+                    <h3 style={{ margin: '4px 0 5px 0' }}>Chatbox
+                        {
+                            versionHook.version !== ""
+                                ? `(v${versionHook.version})`
+                                : ''
+                        }
+                    </h3>
                     <p className="p-0 m-0">{t('about-slogan')}</p>
                     <p className="p-0 m-0 opacity-60 text-xs">{t('about-introduction')}</p>
                 </Box>

@@ -4,7 +4,7 @@ import * as api from '../packages/runtime'
 import * as remote from '../packages/remote'
 
 export default function useVersion() {
-    const [version, _setVersion] = useState('unknown')
+    const [version, _setVersion] = useState('')
     const [needCheckUpdate, setNeedCheckUpdate] = useState(false)
     const updateCheckTimer = useRef<NodeJS.Timeout>()
     useEffect(() => {
