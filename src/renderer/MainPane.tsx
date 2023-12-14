@@ -70,6 +70,14 @@ export default function MainPane(props: Props) {
             }}
         >
             <Stack className="h-full relative">
+                {
+                    // 小屏幕的广告UI
+                    isSmallScreen && (
+                        <Box className="text-center">
+                            <SponsorChip sessionId={currentSession.id} />
+                        </Box>
+                    )
+                }
                 <Box className="flex flex-row">
                     {!showSidebar && (
                         <Box className="mr-1">
@@ -140,7 +148,10 @@ export default function MainPane(props: Props) {
                             </Tooltip>
                         )}
                     </Typography>
-                    <SponsorChip sessionId={currentSession.id} />
+                    {
+                        // 大屏幕的广告UI
+                        !isSmallScreen && <SponsorChip sessionId={currentSession.id} />
+                    }
                     <Box>
                         {isSmallScreen ? (
                             <IconButton
