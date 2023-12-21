@@ -3,15 +3,18 @@ import Message from './Message'
 import * as atoms from '../stores/atoms'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { Virtuoso } from 'react-virtuoso'
-import { List } from '@mui/material'
+import { List, Divider } from '@mui/material'
 import { VirtuosoHandle } from 'react-virtuoso'
 import * as scrollActions from '../stores/scrollActions'
+import { useTranslation } from 'react-i18next'
 
-interface Props {}
+interface Props { }
 
 export default function MessageList(props: Props) {
+    const { t } = useTranslation()
     const currentSession = useAtomValue(atoms.currentSessionAtom)
-    const currentMessages = useAtomValue(atoms.currentMessagesAtom)
+    const currentMessageList = useAtomValue(atoms.currentMessageListAtom)
+    const currentThreadHash = useAtomValue(atoms.currentThreadHistoryHashAtom)
     const virtuoso = useRef<VirtuosoHandle>(null)
     const messageListRef = useRef<HTMLDivElement>(null)
 
@@ -19,6 +22,7 @@ export default function MessageList(props: Props) {
     const setAtTop = useSetAtom(atoms.messageScrollingAtTopAtom)
     const setAtBottom = useSetAtom(atoms.messageScrollingAtBottomAtom)
     const setMessageScrollingScrollPosition = useSetAtom(atoms.messageScrollingScrollPositionAtom)
+    const setShowHistoryDrawer = useSetAtom(atoms.showThreadHistoryDrawerAtom)
 
     useEffect(() => {
         setMessageScrollingAtom(virtuoso)
@@ -37,7 +41,7 @@ export default function MessageList(props: Props) {
             ref={messageListRef}
         >
             <Virtuoso
-                data={currentMessages}
+                data={currentMessageList}
                 atTopStateChange={(atTop) => {
                     setAtTop(atTop)
                 }}
@@ -47,13 +51,38 @@ export default function MessageList(props: Props) {
                 ref={virtuoso}
                 itemContent={(index, msg) => {
                     return (
-                        <Message
-                            id={msg.id}
-                            key={msg.id}
-                            msg={msg}
-                            sessionId={currentSession.id}
-                            sessionType={currentSession.type}
-                        />
+                        // <div key={msg.id}>
+                        <>
+                            {
+                                index !== 0 && currentThreadHash[msg.id] && (
+                                    <Divider variant='middle' className='py-3' key={'divider-' + msg.id} >
+                                        <span className='cursor-pointer'
+                                            onClick={() => setShowHistoryDrawer(currentThreadHash[msg.id].id)}
+                                        >
+                                            {
+                                                currentThreadHash[msg.id].name
+                                                || t('New Thread')
+                                            }
+                                            {
+                                                currentThreadHash[msg.id].createdAtLabel && (
+                                                    <span className="pl-1 opacity-70">
+                                                        {currentThreadHash[msg.id].createdAtLabel}
+                                                    </span>
+                                                )
+                                            }
+                                        </span>
+                                    </Divider>
+                                )
+                            }
+                            <Message
+                                id={msg.id}
+                                key={'msg-' + msg.id}
+                                msg={msg}
+                                sessionId={currentSession.id}
+                                sessionType={currentSession.type}
+                            />
+                        </>
+                        // </div>
                     )
                 }}
                 onWheel={(e) => {

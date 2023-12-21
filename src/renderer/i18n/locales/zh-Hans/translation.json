@@ -193,5 +193,12 @@
     "Generate More Images Below": "在下方生成更多图片",
     "More Images": "更多图片",
     "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend": "[Ctrl+Enter] 保存, [Ctrl+Shift+Enter] 保存并发送",
-    "Save & Resend": "保存并发送"
+    "Save & Resend": "保存并发送",
+    "New Thread": "新话题",
+    "Threads History": "历史话题",
+    "Continue this Thread": "继续该话题",
+    "Back to Previous": "回到上个话题",
+    "Refresh Context, Start New Thread": "刷新上下文，开始新话题",
+    "Export Chat": "导出聊天记录",
+    "Clear All Messages": "清空所有消息"
 }

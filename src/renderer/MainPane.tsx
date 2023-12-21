@@ -1,14 +1,11 @@
 import { useEffect } from 'react'
-import { Button, Box, IconButton, ButtonGroup, Stack, Typography, Chip, Tooltip } from '@mui/material'
+import { Box, IconButton, ButtonGroup, Stack, Typography, Chip, Tooltip } from '@mui/material'
 import { Session, getMsgDisplayModelName, isChatSession, isPictureSession } from '../shared/types'
-import CleaningServicesIcon from '@mui/icons-material/CleaningServices'
-import Save from '@mui/icons-material/Save'
 import { useTranslation } from 'react-i18next'
 import icon from './static/icon.png'
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp'
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown'
 import SponsorChip from './components/SponsorChip'
-import * as api from './packages/runtime'
 import * as atoms from './stores/atoms'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import InputBox from './components/InputBox'
@@ -17,13 +14,12 @@ import * as sessionActions from './stores/sessionActions'
 import * as scrollActions from './stores/scrollActions'
 import TuneIcon from '@mui/icons-material/Tune'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen'
-import SearchIcon from '@mui/icons-material/Search'
 import { drawerWidth } from './Sidebar'
 import ImageIcon from '@mui/icons-material/Image'
+import Toolbar from './components/Toolbar'
 
 interface Props {
     setConfigureChatConfig(session: Session | null): void
-    setSessionClean(session: Session | null): void
 }
 
 export default function MainPane(props: Props) {
@@ -34,9 +30,6 @@ export default function MainPane(props: Props) {
     const atScrollTop = useAtomValue(atoms.messageScrollingAtTopAtom)
     const atScrollBottom = useAtomValue(atoms.messageScrollingAtBottomAtom)
     const isSmallScreen = useAtomValue(atoms.isSmallScreenAtom)
-
-    const setOpenSearchDialog = useSetAtom(atoms.openSearchDialogAtom)
-    const openSearchDialog = () => setOpenSearchDialog(true)
 
     // 会话名称自动生成
     useEffect(() => {
@@ -50,13 +43,6 @@ export default function MainPane(props: Props) {
 
     const editCurrentSession = () => {
         props.setConfigureChatConfig(currentSession)
-    }
-
-    const exportSession = async (session: Session) => {
-        const content = session.messages
-            .map((msg) => `**${msg.role}**:\n${msg.content}`)
-            .join('\n\n--------------------\n\n')
-        return api.exportTextFile('Export.md', content)
     }
 
     return (
@@ -152,58 +138,7 @@ export default function MainPane(props: Props) {
                         // 大屏幕的广告UI
                         !isSmallScreen && <SponsorChip sessionId={currentSession.id} />
                     }
-                    <Box>
-                        {isSmallScreen ? (
-                            <IconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="menu"
-                                sx={{ mr: 2 }}
-                                onClick={openSearchDialog}
-                            >
-                                <SearchIcon />
-                            </IconButton>
-                        ) : (
-                            <Button
-                                component="label"
-                                variant="outlined"
-                                color="inherit"
-                                startIcon={<SearchIcon />}
-                                sx={{ mr: 2 }}
-                                onClick={openSearchDialog}
-                                size="small"
-                                className="transform-none opacity-30"
-                            >
-                                <span
-                                    className="justify-between transform-none text-sm"
-                                    style={{ textTransform: 'none' }}
-                                >
-                                    <span className="mr-1">{t('Search')}...</span>
-                                    {/* <span className='text-xs bg-slate-600 opacity-60 text-white border border-solid px-0.5 border-slate-600'>
-                                    Ctrl K
-                                </span> */}
-                                </span>
-                            </Button>
-                        )}
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="menu"
-                            sx={{ mr: 2 }}
-                            onClick={() => props.setSessionClean(currentSession)}
-                        >
-                            <CleaningServicesIcon />
-                        </IconButton>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="menu"
-                            sx={{}}
-                            onClick={() => exportSession(currentSession)}
-                        >
-                            <Save />
-                        </IconButton>
-                    </Box>
+                    <Toolbar />
                 </Box>
                 <MessageList />
                 <Box className="relative py-5">

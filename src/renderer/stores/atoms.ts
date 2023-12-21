@@ -1,6 +1,6 @@
 import { RefObject } from 'react'
 import { atom, SetStateAction } from 'jotai'
-import { Session, Toast, Settings, CopilotDetail, MessagePicture, Message } from '../../shared/types'
+import { Session, Toast, Settings, CopilotDetail, MessagePicture, Message, SessionThreadBrief } from '../../shared/types'
 import { selectAtom, atomWithStorage } from 'jotai/utils'
 import { focusAtom } from 'jotai-optics'
 import * as defaults from './defaults'
@@ -97,7 +97,7 @@ export const currentSessionIdAtom = atom(
     (get) => {
         const idCached = get(_currentSessionIdCachedAtom)
         const sessions = get(sessionsAtom)
-        if (sessions.some((session) => session.id === idCached)) {
+        if (idCached && sessions.some((session) => session.id === idCached)) {
             return idCached
         }
         return sessions[sessions.length - 1].id // 当前会话不存在时，返回最后一个会话
@@ -118,8 +118,50 @@ export const currentSessionAtom = atom((get) => {
 })
 
 export const currentSessionNameAtom = selectAtom(currentSessionAtom, (s) => s.name)
-export const currentMessagesAtom = selectAtom(currentSessionAtom, (s) => s.messages || [])
 export const currsentSessionPicUrlAtom = selectAtom(currentSessionAtom, (s) => s.picUrl)
+
+// 当前消息列表（包含历史主题下的消息）
+
+export const currentMessageListAtom = selectAtom(currentSessionAtom, (s) => {
+    let messageContext: Message[] = []
+    if (s.threads) {
+        for (const thread of s.threads) {
+            messageContext = messageContext.concat(thread.messages)
+        }
+    }
+    if (s.messages) {
+        messageContext = messageContext.concat(s.messages)
+    }
+    return messageContext
+})
+
+export const currentThreadHistoryHashAtom = selectAtom(currentSessionAtom, (s) => {
+    const ret: { [firstMessageId: string]: SessionThreadBrief } = {}
+    if (s.threads) {
+        for (const thread of s.threads) {
+            if (!thread.messages || thread.messages.length === 0) {
+                continue
+            }
+            ret[thread.messages[0].id] = {
+                id: thread.id,
+                name: thread.name,
+                createdAt: thread.createdAt,
+                createdAtLabel: (new Date(thread.createdAt)).toLocaleString(),
+                firstMessageId: thread.messages[0].id,
+                messageCount: thread.messages.length,
+            }
+        }
+        if (s.messages && s.messages.length > 0) {
+            ret[s.messages[0].id] = {
+                id: s.id,
+                name: '',
+                firstMessageId: s.messages[0].id,
+                messageCount: s.messages.length,
+            }
+        }
+    }
+    return ret
+})
 
 // toasts
 
@@ -147,10 +189,13 @@ export const messageScrollingScrollPositionAtom = atom<number>(0) // 当前视�
 export const isSmallScreenAtom = atom(false)
 // 是否展示侧边栏
 export const showSidebarAtom = atom(true)
+// 显示会话历史主题的抽屉。值可以是历史的ID，用于打开抽屉时自动选择主题
+export const showThreadHistoryDrawerAtom = atom<boolean | string>(false)
 
 // 弹窗显示
 export const openSearchDialogAtom = atom(false)
 export const openSettingDialogAtom = atom<'ai' | 'display' | null>(null)
+export const sessionCleanDialogAtom = atom<Session | null>(null)  // 清空会话的弹窗
 
 // 图片展示窗口的图片
 export const pictureShowAtom = atom<MessagePicture | null>(null)

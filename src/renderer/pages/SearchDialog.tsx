@@ -46,9 +46,18 @@ export default function SearchDialog(props: Props) {
         const regexp = new RegExp(safeInput, 'i')
         const result: Session[] = []
         for (const session of searchSessions) {
+            // 搜索会话的当前主题
             const matchedMessages = session.messages.filter((message) => {
                 return regexp.test(message.content)
             })
+            // 搜索会话的历史主题
+            if (session.threads) {
+                for (const thread of session.threads) {
+                    matchedMessages.push(
+                        ...thread.messages.filter((message) => regexp.test(message.content))
+                    )
+                }
+            }
             if (matchedMessages.length > 0) {
                 result.push({ ...session, messages: matchedMessages })
             }

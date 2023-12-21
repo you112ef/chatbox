@@ -192,5 +192,12 @@
     "Generate More Images Below": "Generieren Sie weitere Bilder unten",
     "More Images": "Mehr Bilder",
     "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend": "[Strg+Enter] Speichern, [Strg+Umschalt+Enter] Speichern und erneut senden",
-    "Save & Resend": "Speichern & Erneut senden"
+    "Save & Resend": "Speichern & Erneut senden",
+    "New Thread": "Neues Thema",
+    "Threads History": "Themenverlauf",
+    "Continue this Thread": "Dieses Thema fortsetzen",
+    "Back to Previous": "Zum vorherigen Thema zurückkehren",
+    "Refresh Context, Start New Thread": "Kontext aktualisieren, Neues Thema beginnen",
+    "Export Chat": "Chat exportieren",
+    "Clear All Messages": "Alle Nachrichten löschen"
 }

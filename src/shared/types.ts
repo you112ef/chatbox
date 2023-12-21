@@ -48,6 +48,24 @@ export interface Session {
     starred?: boolean
     copilotId?: string
     settings?: SessionSettings
+    threads?: SessionThread[] // 历史话题列表
+}
+
+// 话题
+export interface SessionThread {
+    id: string
+    name: string
+    messages: Message[]
+    createdAt: number
+}
+
+export interface SessionThreadBrief {
+    id: string
+    name: string
+    createdAt?: number
+    createdAtLabel?: string
+    firstMessageId: string
+    messageCount: number
 }
 
 export type SessionSettings = ReturnType<typeof settings2SessionSettings>

@@ -8,7 +8,7 @@ export function scrollToMessage(
     behavior: 'auto' | 'smooth' = 'auto' // 'auto' 立即滚动到指定位置，'smooth' 平滑滚动到指定位置
 ): boolean {
     const store = getDefaultStore()
-    const currentMessages = store.get(atoms.currentMessagesAtom)
+    const currentMessages = store.get(atoms.currentMessageListAtom)
     const index = currentMessages.findIndex((msg) => msg.id === msgId)
     if (index === -1) {
         return false
@@ -29,7 +29,7 @@ export function scrollToIndex(
 
 export function scrollToTop(behavior: 'auto' | 'smooth' = 'auto') {
     const store = getDefaultStore()
-    const currentMessages = store.get(atoms.currentMessagesAtom)
+    const currentMessages = store.get(atoms.currentMessageListAtom)
     if (currentMessages.length === 0) {
         return
     }
@@ -39,7 +39,7 @@ export function scrollToTop(behavior: 'auto' | 'smooth' = 'auto') {
 
 export function scrollToBottom(behavior: 'auto' | 'smooth' = 'auto') {
     const store = getDefaultStore()
-    const currentMessages = store.get(atoms.currentMessagesAtom)
+    const currentMessages = store.get(atoms.currentMessageListAtom)
     if (currentMessages.length === 0) {
         return
     }

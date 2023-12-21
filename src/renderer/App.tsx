@@ -28,6 +28,7 @@ import Sidebar from './Sidebar'
 import { CHATBOX_BUILD_TARGET } from '@/variables'
 import PictureDialog from './pages/PictureDialog'
 import MessageEditDialog from './pages/MessageEditDialog'
+import ThreadHistoryDrawer from './components/ThreadHistoryDrawer'
 
 function Main() {
     // 是否展示菜单栏
@@ -71,8 +72,6 @@ function Main() {
 
     const [configureChatConfig, setConfigureChatConfig] = React.useState<Session | null>(null)
 
-    const [sessionClean, setSessionClean] = React.useState<Session | null>(null)
-
     return (
         <Box className="box-border App px-2 sm:px-4">
             <Grid container className="h-full pt-4">
@@ -85,7 +84,8 @@ function Main() {
                     openAboutWindow={() => setOpenAboutWindow(true)}
                     setOpenSettingWindow={setOpenSettingWindow}
                 />
-                <MainPane setConfigureChatConfig={setConfigureChatConfig} setSessionClean={setSessionClean} />
+                <MainPane setConfigureChatConfig={setConfigureChatConfig} />
+                <ThreadHistoryDrawer />
             </Grid>
             <SettingDialog
                 open={!!openSettingWindow}
@@ -100,7 +100,7 @@ function Main() {
                     close={() => setConfigureChatConfig(null)}
                 />
             )}
-            {sessionClean !== null && <CleanWidnow open={sessionClean !== null} close={() => setSessionClean(null)} />}
+            <CleanWidnow />
             <CopilotWindow
                 open={openCopilotWindow}
                 // premiumActivated={store.premiumActivated}

@@ -192,5 +192,12 @@
     "Generate More Images Below": "Generate More Images Below",
     "More Images": "More Images",
     "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend": "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend",
-    "Save & Resend": "Save & Resend"
+    "Save & Resend": "Save & Resend",
+    "New Thread": "New Thread",
+    "Threads History": "Threads History",
+    "Continue this Thread": "Continue this Thread",
+    "Back to Previous": "Back to Previous",
+    "Refresh Context, Start New Thread": "Refresh Context, Start New Thread",
+    "Export Chat": "Export Chat",
+    "Clear All Messages": "Clear All Messages"
 }

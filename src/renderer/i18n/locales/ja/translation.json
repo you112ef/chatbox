@@ -192,5 +192,12 @@
     "Generate More Images Below": "以下でさらに画像を生成",
     "More Images": "更に画像",
     "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend": "[Ctrl+Enter] 保存, [Ctrl+Shift+Enter] 保存して再送信",
-    "Save & Resend": "保存して再送信"
+    "Save & Resend": "保存して再送信",
+    "New Thread": "新しいスレッド",
+    "Threads History": "スレッド履歴",
+    "Continue this Thread": "このスレッドを続ける",
+    "Back to Previous": "前のスレッドに戻る",
+    "Refresh Context, Start New Thread": "コンテキストを更新し、新しいスレッドを始める",
+    "Export Chat": "チャットをエクスポート",
+    "Clear All Messages": "すべてのメッセージをクリアする"
 }

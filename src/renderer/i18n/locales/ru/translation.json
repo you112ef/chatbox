@@ -192,5 +192,12 @@
     "Generate More Images Below": "Создать больше изображений ниже",
     "More Images": "Больше изображений",
     "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend": "[Ctrl+Enter] Сохранить, [Ctrl+Shift+Enter] Сохранить и отправить заново",
-    "Save & Resend": "Сохранить и отправить заново"
+    "Save & Resend": "Сохранить и отправить заново",
+    "New Thread": "Новая Тема",
+    "Threads History": "История Тем",
+    "Continue this Thread": "Продолжить эту Тему",
+    "Back to Previous": "Вернуться к Предыдущему",
+    "Refresh Context, Start New Thread": "Обновить Контекст, Начать Новую Тему",
+    "Export Chat": "Экспорт Переписки",
+    "Clear All Messages": "Очистить Все Сообщения"
 }

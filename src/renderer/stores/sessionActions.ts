@@ -9,6 +9,7 @@ import {
     pickPictureSettings,
     ModelSettings,
     MessagePicture,
+    SessionThread,
 } from '../../shared/types'
 import * as atoms from './atoms'
 import * as promptFormat from '../packages/prompts'
@@ -21,13 +22,21 @@ import storage from '../storage'
 import i18n from '../i18n'
 import { getModel } from '@/packages/models'
 import { AIProviderNoImplementedPaint, NetworkError, ApiError, BaseError } from '@/packages/models/errors'
+import * as dom from '../hooks/dom'
 
+/**
+ * 创建一个新的会话
+ * @param newSession
+ */
 export function create(newSession: Session) {
     const store = getDefaultStore()
     store.set(atoms.sessionsAtom, (sessions) => [...sessions, newSession])
     switchCurrentSession(newSession.id)
 }
 
+/**
+ * 修改会话，根据 id 匹配
+ */
 export function modify(update: Session) {
     const store = getDefaultStore()
     store.set(atoms.sessionsAtom, (sessions) =>
@@ -40,6 +49,9 @@ export function modify(update: Session) {
     )
 }
 
+/**
+ * 修改会话名称
+ */
 export function modifyName(sessionId: string, name: string) {
     const store = getDefaultStore()
     store.set(atoms.sessionsAtom, (sessions) =>
@@ -52,6 +64,9 @@ export function modifyName(sessionId: string, name: string) {
     )
 }
 
+/**
+ * 创建一个空的会话
+ */
 export function createEmpty(type: 'chat' | 'picture') {
     switch (type) {
         case 'chat':
@@ -63,7 +78,12 @@ export function createEmpty(type: 'chat' | 'picture') {
     }
 }
 
-export function createEmptyPictures(n: number): MessagePicture[] {
+/**
+ * 创建 n 个空图片消息（loading 中，用于占位）
+ * @param n 空消息数量
+ * @returns 
+ */
+export function createEmptyPictureMessages(n: number): MessagePicture[] {
     const ret: MessagePicture[] = []
     for (let i = 0; i < n; i++) {
         ret.push({ loading: true })
@@ -71,6 +91,10 @@ export function createEmptyPictures(n: number): MessagePicture[] {
     return ret
 }
 
+/**
+ * 切换当前会话，根据 id
+ * @param sessionId
+ */
 export function switchCurrentSession(sessionId: string) {
     const store = getDefaultStore()
     store.set(atoms.currentSessionIdAtom, sessionId)
@@ -84,6 +108,11 @@ export function switchCurrentSession(sessionId: string) {
     }
 }
 
+/**
+ * 切换当前会话，根据排序后的索引
+ * @param index 
+ * @returns 
+ */
 export function switchToIndex(index: number) {
     const store = getDefaultStore()
     const sessions = store.get(atoms.sortedSessionsAtom)
@@ -94,6 +123,11 @@ export function switchToIndex(index: number) {
     switchCurrentSession(target.id)
 }
 
+/**
+ * 将当前会话切换到下一个，根据排序后到会话列表顺序
+ * @param reversed 是否反向切换到上一个
+ * @returns 
+ */
 export function switchToNext(reversed?: boolean) {
     const store = getDefaultStore()
     const sessions = store.get(atoms.sortedSessionsAtom)
@@ -114,11 +148,20 @@ export function switchToNext(reversed?: boolean) {
     switchCurrentSession(target.id)
 }
 
+/**
+ * 删除会话，根据 id
+ * @param session 
+ */
 export function remove(session: Session) {
     const store = getDefaultStore()
     store.set(atoms.sessionsAtom, (sessions) => sessions.filter((s) => s.id !== session.id))
 }
 
+/**
+ * 清空会话中的所有消息，仅保留 system prompt
+ * @param sessionId
+ * @returns 
+ */
 export function clear(sessionId: string) {
     const store = getDefaultStore()
     const session = getSession(sessionId)
@@ -128,9 +171,14 @@ export function clear(sessionId: string) {
     modify({
         ...session,
         messages: session.messages.filter((m) => m.role === 'system'),
+        threads: undefined,
     })
 }
 
+/**
+ * 复制会话
+ * @param source
+ */
 export async function copy(source: Session) {
     const store = getDefaultStore()
     const newSession = { ...source }
@@ -146,13 +194,134 @@ export async function copy(source: Session) {
     })
 }
 
+/**
+ * 根据 id 获取会话的最新数据，一般用于无需监听会话变化的场景下查询数据
+ * @param sessionId
+ * @returns 
+ */
 export function getSession(sessionId: string) {
     const store = getDefaultStore()
     const sessions = store.get(atoms.sessionsAtom)
     return sessions.find((s) => s.id === sessionId)
 }
 
-export function insertMessage(sessionId: string, msg: Message, index?: number) {
+/**
+ * 将会话中的当前消息移动到历史记录中，并清空上下文
+ * @param sessionId
+ */
+export function refreshContextAndCreateNewThread(sessionId: string) {
+    const store = getDefaultStore()
+    store.set(atoms.sessionsAtom, (sessions) => {
+        return sessions.map(s => {
+            if (s.id !== sessionId) {
+                return s
+            }
+            for (const m of s.messages) {
+                m?.cancel?.()
+            }
+            const newThread: SessionThread = {
+                id: uuidv4(),
+                name: s.name,
+                messages: s.messages,
+                createdAt: Date.now(),
+            }
+            let systemPrompt = s.messages.find((m) => m.role === 'system')
+            if (systemPrompt) {
+                systemPrompt = createMessage('system', systemPrompt.content)
+            }
+            return {
+                ...s,
+                threads: s.threads ? [...s.threads, newThread] : [newThread],
+                messages: systemPrompt
+                    ? [systemPrompt]
+                    : [createMessage('system', defaults.getDefaultPrompt())],
+            }
+        })
+    })
+    setTimeout(() => {
+        scrollActions.scrollToBottom() // 自动滚动到底部
+        dom.focusMessageInput()
+    }, 100);
+}
+
+export function startNewThread() {
+    const store = getDefaultStore()
+    const sessionId = store.get(atoms.currentSessionIdAtom)
+    refreshContextAndCreateNewThread(sessionId)
+}
+
+/**
+ * 切换到历史记录中的某个上下文，原有上下文存储到历史记录中
+ * @param sessionId 
+ * @param threadId 
+ */
+export function switchThread(sessionId: string, threadId: string) {
+    const store = getDefaultStore()
+    store.set(atoms.sessionsAtom, (sessions) => {
+        return sessions.map(s => {
+            if (s.id !== sessionId) {
+                return s
+            }
+            if (!s.threads) {
+                return s
+            }
+            const target = s.threads.find(h => h.id === threadId)
+            if (!target) {
+                return s
+            }
+            for (const m of s.messages) {
+                m?.cancel?.()
+            }
+            const newThreads = s.threads.filter(h => h.id !== threadId)
+            newThreads.push({
+                id: uuidv4(),
+                name: s.name,
+                messages: s.messages,
+                createdAt: Date.now(),
+            })
+            return {
+                ...s,
+                threads: newThreads,
+                messages: target.messages,
+            }
+        })
+    })
+    setTimeout(() => {
+        scrollActions.scrollToBottom() // 自动滚动到底部
+        dom.focusMessageInput()
+    }, 100);
+}
+
+export function rollbackStartNewThread(sessionId: string) {
+    const store = getDefaultStore()
+    store.set(atoms.sessionsAtom, (sessions) => {
+        return sessions.map(s => {
+            if (s.id !== sessionId) {
+                return s
+            }
+            if (!s.threads || s.threads.length === 0) {
+                return s
+            }
+            const last = s.threads[s.threads.length - 1]
+            return {
+                ...s,
+                threads: s.threads.slice(0, s.threads.length - 1),
+                messages: last.messages,
+            }
+        })
+    })
+    setTimeout(() => {
+        scrollActions.scrollToBottom() // 自动滚动到底部
+        dom.focusMessageInput()
+    }, 100);
+}
+
+/**
+ * 在当前主题的最后插入一条消息。
+ * @param sessionId 
+ * @param msg 
+ */
+export function insertMessage(sessionId: string, msg: Message) {
     const store = getDefaultStore()
     msg.wordCount = utils.countWord(msg.content)
     msg.tokenCount = utils.estimateTokensFromMessages([msg])
@@ -160,11 +329,7 @@ export function insertMessage(sessionId: string, msg: Message, index?: number) {
         sessions.map((s) => {
             if (s.id === sessionId) {
                 const newMessages = [...s.messages]
-                if (index === undefined) {
-                    newMessages.push(msg)
-                } else {
-                    newMessages.splice(index, 0, msg)
-                }
+                newMessages.push(msg)
                 return {
                     ...s,
                     messages: newMessages,
@@ -175,46 +340,130 @@ export function insertMessage(sessionId: string, msg: Message, index?: number) {
     )
 }
 
+/**
+ * 在某条消息后面插入新消息。如果消息在历史主题中，也能支持插入
+ * @param sessionId 
+ * @param msg 
+ * @param afterMsgId 
+ */
+export function insertMessageAfter(sessionId: string, msg: Message, afterMsgId: string) {
+    const store = getDefaultStore()
+    msg.wordCount = utils.countWord(msg.content)
+    msg.tokenCount = utils.estimateTokensFromMessages([msg])
+    let hasHandled = false
+    const handle = (msgs: Message[]) => {
+        const index = msgs.findIndex((m) => m.id === afterMsgId)
+        if (index < 0) {
+            return msgs
+        }
+        hasHandled = true
+        const newMessages = [...msgs]
+        newMessages.splice(index + 1, 0, msg)
+        return newMessages
+    }
+    store.set(atoms.sessionsAtom, (sessions) =>
+        sessions.map((s) => {
+            if (s.id !== sessionId) {
+                return s
+            }
+            s.messages = handle(s.messages)
+            if (s.threads && !hasHandled) {
+                s.threads = s.threads.map(h => {
+                    h.messages = handle(h.messages)
+                    return h
+                })
+            }
+            return { ...s }
+        })
+    )
+}
+
+/**
+ * 根据 id 修改消息。如果消息在历史主题中，也能支持修改
+ * @param sessionId 
+ * @param updated 
+ * @param refreshCounting 
+ */
 export function modifyMessage(sessionId: string, updated: Message, refreshCounting?: boolean) {
     const store = getDefaultStore()
+    if (refreshCounting) {
+        updated.wordCount = utils.countWord(updated.content)
+        updated.tokenCount = utils.estimateTokensFromMessages([updated])
+    }
+    let hasHandled = false
+    const handle = (msgs: Message[]) => {
+        return msgs.map((m) => {
+            if (m.id === updated.id) {
+                hasHandled = true
+                return updated
+            }
+            return m
+        })
+    }
     store.set(atoms.sessionsAtom, (sessions) =>
         sessions.map((s) => {
-            if (s.id === sessionId) {
-                return {
-                    ...s,
-                    messages: s.messages.map((m) => {
-                        if (m.id === updated.id) {
-                            if (refreshCounting) {
-                                updated.wordCount = utils.countWord(updated.content)
-                                updated.tokenCount = utils.estimateTokensFromMessages([updated])
-                            }
-                            return updated
-                        }
-                        return m
-                    }),
-                }
+            if (s.id !== sessionId) {
+                return s
             }
-            return s
+            s.messages = handle(s.messages)
+            if (s.threads && !hasHandled) {
+                s.threads = s.threads.map(h => {
+                    h.messages = handle(h.messages)
+                    return h
+                })
+            }
+            return { ...s }
         })
     )
 }
 
+/**
+ * 在会话中删除消息。如果消息存在于历史主题中，也能支持删除
+ * @param sessionId 
+ * @param messageId 
+ */
 export function removeMessage(sessionId: string, messageId: string) {
     const store = getDefaultStore()
-    store.set(atoms.sessionsAtom, (sessions) =>
-        sessions.map((s) => {
-            if (s.id === sessionId) {
-                return {
-                    ...s,
-                    messages: s.messages.filter((m) => m.id !== messageId),
-                }
+    store.set(atoms.sessionsAtom, (sessions) => {
+        let newSessions = sessions.map((s) => {
+            if (s.id !== sessionId) {
+                return s
             }
-            return s
+            s.messages = s.messages.filter((m) => m.id !== messageId)
+            if (s.threads) {
+                s.threads = s.threads.map(h => ({
+                    ...h,
+                    messages: h.messages.filter((m) => m.id !== messageId)
+                }))
+                s.threads = s.threads.filter(h => h.messages.length > 0)
+            }
+            return { ...s }
         })
-    )
+        // 如果某个对话的消息为空，尽量使用上一个话题的消息
+        newSessions = newSessions.map(s => {
+            if (s.messages && s.messages.length > 0) {
+                return s
+            }
+            if (!s.threads || s.threads.length === 0) {
+                return s
+            }
+            const lastThread = s.threads[s.threads.length - 1]
+            s.messages = lastThread.messages
+            s.threads = s.threads.slice(0, s.threads.length-1)
+            return { ...s }
+        })
+        return newSessions
+    })
 }
 
+/**
+ * 执行消息生成，会修改消息的状态
+ * @param sessionId
+ * @param targetMsg
+ * @returns 
+ */
 export async function generate(sessionId: string, targetMsg: Message) {
+    // 获得依赖的数据
     const store = getDefaultStore()
     const globalSettings = store.get(atoms.settingsAtom)
     const configs = await storage.getConfig()
@@ -224,12 +473,12 @@ export async function generate(sessionId: string, targetMsg: Message) {
     }
     const settings = mergeSettings(globalSettings, session)
 
-    // 还原消息到初始状态
+    // 将消息的状态修改成初始状态
     const placeholder = session.type === 'picture' ? `[${i18n.t('Please wait about 20 seconds')}]` : '...'
     targetMsg = {
         ...targetMsg,
         content: placeholder,
-        pictures: session.type === 'picture' ? createEmptyPictures(settings.imageGenerateNum) : [],
+        pictures: session.type === 'picture' ? createEmptyPictureMessages(settings.imageGenerateNum) : [],
         cancel: undefined,
         aiProvider: settings.aiProvider,
         model: getMsgDisplayModelName(settings, session.type),
@@ -244,17 +493,32 @@ export async function generate(sessionId: string, targetMsg: Message) {
         scrollActions.scrollToMessage(targetMsg.id, 'end')
     }, 50) // 等待消息渲染完成后再滚动到底部，否则会出现滚动不到底部的问题
 
-    try {
-        const targetMsgIx = session.messages.findIndex((m) => m.id === targetMsg.id)
+    // 获取目标消息所在的消息列表（可能是历史消息），获取目标消息的索引
+    let messages = session.messages
+    let targetMsgIx = messages.findIndex((m) => m.id === targetMsg.id)
+    if (targetMsgIx <= 0) {
+        if (!session.threads) {
+            return
+        }
+        for (const t of session.threads) {
+            messages = t.messages
+            targetMsgIx = messages.findIndex((m) => m.id === targetMsg.id)
+            if (targetMsgIx > 0) {
+                break
+            }
+        }
         if (targetMsgIx <= 0) {
             return
         }
+    }
+
+    try {
         const model = getModel(settings, configs)
         switch (session.type) {
             // 对话消息生成
             case 'chat':
             case undefined:
-                const promptMsgs = genMessageContext(settings, session.messages.slice(0, targetMsgIx))
+                const promptMsgs = genMessageContext(settings, messages.slice(0, targetMsgIx))
                 await model.chat(promptMsgs, ({ text, cancel }) => {
                     targetMsg = { ...targetMsg, content: text, cancel }
                     modifyMessage(sessionId, targetMsg)
@@ -272,8 +536,8 @@ export async function generate(sessionId: string, targetMsg: Message) {
                 // 取当前消息之前最近的一条用户消息作为 prompt
                 let prompt = ''
                 for (let i = targetMsgIx; i >= 0; i--) {
-                    if (session.messages[i].role === 'user') {
-                        prompt = session.messages[i].content
+                    if (messages[i].role === 'user') {
+                        prompt = messages[i].content
                         break
                     }
                 }
@@ -335,10 +599,8 @@ export async function refreshMessage(sessionId: string, msg: Message, alwayInser
     if (msg.role === 'assistant' && !alwayInsertNew) {
         await generate(sessionId, msg)
     } else {
-        const session = getSession(sessionId)
-        const ix = session?.messages.findIndex((m) => m.id === msg.id) ?? -1
         const newAssistantMsg = createMessage('assistant', '...')
-        insertMessage(sessionId, newAssistantMsg, ix + 1)
+        insertMessageAfter(sessionId, newAssistantMsg, msg.id)
         await generate(sessionId, newAssistantMsg)
     }
 }
@@ -460,7 +722,7 @@ export function getCurrentSession() {
 
 export function getCurrentMessages() {
     const store = getDefaultStore()
-    return store.get(atoms.currentMessagesAtom)
+    return store.get(atoms.currentMessageListAtom)
 }
 
 function mergeSettings(globalSettings: Settings, session: Session): Settings {

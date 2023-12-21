@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useState, useRef } from 'react'
 import {
     Typography,
     TableContainer,
@@ -35,15 +35,6 @@ interface Props {
 export default function AdvancedSettingTab(props: Props) {
     const { settingsEdit, setSettingsEdit } = props
     const { t } = useTranslation()
-    const [alt, setAlt] = useState('Alt')
-    useEffect(() => {
-        ;(async () => {
-            const platform = await runtime.getPlatform()
-            if (platform === 'darwin') {
-                setAlt('Option')
-            }
-        })()
-    }, [])
     return (
         <Box>
             <Accordion>
@@ -90,7 +81,7 @@ export default function AdvancedSettingTab(props: Props) {
                                         {t('Show/Hide Application Window')}
                                     </TableCell>
                                     <TableCell align="center">
-                                        <Shortcut keys={[alt, '`']} />
+                                        <Shortcut keys={['alt', '`']} />
                                     </TableCell>
                                     <TableCell align="center">
                                         <Switch
@@ -121,9 +112,10 @@ export default function AdvancedSettingTab(props: Props) {
                                         keys: ['Ctrl', 'Shift', 'N'],
                                     },
                                     { description: t('Focus on Input Box'), keys: ['Ctrl', 'I'] },
-                                    { description: t('Send'), keys: [t('Enter')] },
-                                    { description: t('Insert New Line in Input Box'), keys: ['Shift', t('Enter')] },
-                                    { description: t('Send Without Generating Response'), keys: ['Ctrl', t('Enter')] },
+                                    { description: t('Send'), keys: ['enter'] },
+                                    { description: t('Insert New Line in Input Box'), keys: ['Shift', 'enter'] },
+                                    { description: t('Send Without Generating Response'), keys: ['Ctrl', 'enter'] },
+                                    { description: t('Refresh Context, Start New Thread'), keys: ['alt', 'R'] },
                                     { description: t('Show/Hide Search Dialog'), keys: ['Ctrl', 'K'] },
                                     {
                                         description: t('Navigate to previous option (within search dialog)'),
@@ -132,7 +124,7 @@ export default function AdvancedSettingTab(props: Props) {
                                     { description: t('Navigate to next option (within search dialog)'), keys: ['↓'] },
                                     {
                                         description: t('Select current option (within search dialog)'),
-                                        keys: [t('Enter')],
+                                        keys: ['enter'],
                                     },
                                 ].map((item, ix) => (
                                     <TableRow key={ix}>

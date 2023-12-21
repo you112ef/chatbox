@@ -192,5 +192,12 @@
     "Generate More Images Below": "Générez plus d'images ci-dessous",
     "More Images": "Plus d'images",
     "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend": "[Ctrl+Enter] Enregistrer, [Ctrl+Shift+Enter] Enregistrer et Renvoyer",
-    "Save & Resend": "Enregistrer et Renvoyer"
+    "Save & Resend": "Enregistrer et Renvoyer",
+    "New Thread": "Nouveau Sujet",
+    "Threads History": "Historique des Sujets",
+    "Continue this Thread": "Continuer ce Sujet",
+    "Back to Previous": "Retour au Sujet Précédent",
+    "Refresh Context, Start New Thread": "Rafraîchir le Contexte, Commencer Nouveau Sujet",
+    "Export Chat": "Exporter la Discussion",
+    "Clear All Messages": "Effacer Tous les Messages"
 }
