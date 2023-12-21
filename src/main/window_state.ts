@@ -42,11 +42,18 @@ export function getState(): [IWindowState, boolean? /* has multiple displays */]
 export function saveState(win: Electron.BrowserWindow): void {
     const [x, y] = win.getPosition()
     const [width, height] = win.getSize()
+    let mode = WindowMode.Normal
+    if (win.isFullScreen()) {
+        mode = WindowMode.Fullscreen
+    } else if (win.isMaximized()) {
+        mode = WindowMode.Maximized
+    }
     setCache({
         width,
         height,
         x,
         y,
+        mode,
         // mode?: WindowMode;
         // readonly display?: number;
     })

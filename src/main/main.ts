@@ -126,6 +126,12 @@ const createWindow = async () => {
         if (process.env.START_MINIMIZED) {
             mainWindow.minimize()
         } else {
+            if (state.mode === windowState.WindowMode.Maximized) {
+                mainWindow.maximize()
+            }
+            if (state.mode === windowState.WindowMode.Fullscreen) {
+                mainWindow.setFullScreen(true)
+            }
             mainWindow.show()
         }
     })
