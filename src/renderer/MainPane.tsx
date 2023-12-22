@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Box, IconButton, ButtonGroup, Stack, Typography, Chip, Tooltip } from '@mui/material'
-import { Session, getMsgDisplayModelName, isChatSession, isPictureSession } from '../shared/types'
+import { Session, isChatSession, isPictureSession } from '../shared/types'
 import { useTranslation } from 'react-i18next'
 import icon from './static/icon.png'
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp'
@@ -17,6 +17,7 @@ import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 import { drawerWidth } from './Sidebar'
 import ImageIcon from '@mui/icons-material/Image'
 import Toolbar from './components/Toolbar'
+import { getModelDisplayName } from '@/packages/models'
 
 interface Props {
     setConfigureChatConfig(session: Session | null): void
@@ -112,7 +113,7 @@ export default function MainPane(props: Props) {
                                     icon={<TuneIcon className="cursor-pointer" />}
                                     label={
                                         <span className="cursor-pointer">
-                                            {getMsgDisplayModelName(currentSession.settings, currentSession.type)}
+                                            {getModelDisplayName(currentSession.settings, currentSession.type)}
                                         </span>
                                     }
                                 />

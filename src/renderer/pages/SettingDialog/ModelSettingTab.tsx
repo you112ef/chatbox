@@ -6,6 +6,7 @@ import ChatboxAISetting from './ChatboxAISetting'
 import ClaudeSetting from './ClaudeSetting'
 import ChatGLM6BSetting from './ChatGLMSetting'
 import AIProviderSelect from '../../components/AIProviderSelect'
+import GeminiSetting from './GeminiSetting'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -35,6 +36,9 @@ export default function ModelSettingTab(props: ModelConfigProps) {
             )}
             {settingsEdit.aiProvider === ModelProvider.Claude && (
                 <ClaudeSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+            )}
+            {settingsEdit.aiProvider === ModelProvider.Gemini && (
+                <GeminiSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
             )}
         </Box>
     )

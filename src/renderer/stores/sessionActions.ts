@@ -4,7 +4,6 @@ import {
     createMessage,
     Message,
     Session,
-    getMsgDisplayModelName,
     settings2SessionSettings,
     pickPictureSettings,
     ModelSettings,
@@ -20,7 +19,7 @@ import * as defaults from './defaults'
 import * as scrollActions from './scrollActions'
 import storage from '../storage'
 import i18n from '../i18n'
-import { getModel } from '@/packages/models'
+import { getModel, getModelDisplayName } from '@/packages/models'
 import { AIProviderNoImplementedPaint, NetworkError, ApiError, BaseError } from '@/packages/models/errors'
 import * as dom from '../hooks/dom'
 
@@ -481,7 +480,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
         pictures: session.type === 'picture' ? createEmptyPictureMessages(settings.imageGenerateNum) : [],
         cancel: undefined,
         aiProvider: settings.aiProvider,
-        model: getMsgDisplayModelName(settings, session.type),
+        model: getModelDisplayName(settings, session.type),
         style: session.type === 'picture' ? settings.dalleStyle : undefined,
         generating: true,
         errorCode: undefined,

@@ -1,7 +1,7 @@
 import { Chip, Select, MenuItem, FormControl, InputLabel, useTheme } from '@mui/material'
 import { ModelProvider, SessionSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
-import { aiModelProviderList } from '../packages/models'
+import { AIModelProviderMenuOptionList } from '../packages/models'
 
 interface ModelConfigProps {
     settingsEdit: SessionSettings
@@ -29,7 +29,7 @@ export default function AIProviderSelect(props: ModelConfigProps) {
                     })
                 }}
             >
-                {aiModelProviderList.map((provider) => (
+                {AIModelProviderMenuOptionList.map((provider) => (
                     <MenuItem key={provider.value} value={provider.value} disabled={provider.disabled}>
                         {provider.label}
                         {provider.disabled ? ` (${t('Coming soon')})` : ''}

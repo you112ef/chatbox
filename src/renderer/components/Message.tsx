@@ -206,6 +206,7 @@ function _Message(props: Props) {
             setAutoScrollId(autoId)
         } else {
             if (autoScrollId) {
+                scrollActions.tickAutoScroll(autoScrollId)  // 清理之前，最后再滚动一次，确保非流式生成的消息也能滚动到底部
                 scrollActions.clearAutoScroll(autoScrollId)
             }
             setAutoScrollId(null)

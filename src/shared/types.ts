@@ -113,6 +113,7 @@ export enum ModelProvider {
     Azure = 'azure',
     ChatGLM6B = 'chatglm-6b',
     Claude = 'claude',
+    Gemini = 'gemini',
 }
 
 export interface ModelSettings {
@@ -144,8 +145,12 @@ export interface ModelSettings {
     }
     licenseDetail?: ChatboxAILicenseDetail
 
+    // claude
     claudeApiKey: string
     claudeModel: ClaudeModel
+
+    // google gemini
+    geminiAPIKey: string
 
     temperature: number
     topP: number
@@ -175,43 +180,6 @@ export interface Settings extends ModelSettings {
 }
 
 export type Language = 'en' | 'zh-Hans' | 'zh-Hant' | 'ja' | 'ko' | 'ru' | 'de' | 'fr'
-
-export function getMsgDisplayModelName(settings: SessionSettings, sessionType: SessionType) {
-    switch (settings.aiProvider) {
-        case ModelProvider.OpenAI:
-            if (sessionType === 'picture') {
-                return `OpenAI (DALL-E-3)`
-            } else {
-                if (settings.model === 'custom-model') {
-                    let name = settings.openaiCustomModel || ''
-                    if (name.length >= 10) {
-                        name = name.slice(0, 10) + '...'
-                    }
-                    return `OpenAI Custom Model (${name})`
-                }
-                return settings.model
-            }
-        case ModelProvider.Azure:
-            if (sessionType === 'picture') {
-                return `Azure OpenAI (${settings.azureDalleDeploymentName})`
-            } else {
-                return `Azure OpenAI (${settings.azureDeploymentName})`
-            }
-        case ModelProvider.ChatGLM6B:
-            return 'ChatGLM-6B'
-        case ModelProvider.ChatboxAI:
-            if (sessionType === 'picture') {
-                return `Chatbox-AI (DALL-E-3)`
-            } else {
-                const model = settings.chatboxAIModel || 'chatboxai-3.5'
-                return model.replace('chatboxai-', 'Chatbox-AI ')
-            }
-        case ModelProvider.Claude:
-            return settings.claudeModel
-        default:
-            return 'unknown'
-    }
-}
 
 export const OpenAIRoleEnum = {
     System: 'system',
