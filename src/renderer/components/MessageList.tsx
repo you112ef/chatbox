@@ -55,10 +55,10 @@ export default function MessageList(props: Props) {
                         <>
                             {
                                 index !== 0 && currentThreadHash[msg.id] && (
-                                    <Divider variant='middle' className='py-3' key={'divider-' + msg.id} >
-                                        <span className='cursor-pointer'
-                                            onClick={() => setShowHistoryDrawer(currentThreadHash[msg.id].id)}
-                                        >
+                                    <Divider variant='middle' className='py-3 cursor-pointer' key={'divider-' + msg.id}
+                                        onClick={() => setShowHistoryDrawer(currentThreadHash[msg.id].id)}
+                                    >
+                                        <span className=''>
                                             {
                                                 currentThreadHash[msg.id].name
                                                 || t('New Thread')
