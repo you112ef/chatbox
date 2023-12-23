@@ -1,4 +1,11 @@
 const changelog = `
+### v1.2.2
+
+1. 新增話題歸檔（刷新上下文）、歷史話題列表等功能
+2. 新增 Google Gemini 模型支持
+3. 新增對 Ollama 支援，可輕鬆访问本地部署的 llama2、mistral、mixtral、codellama、vicuna、yi、solar 等模型
+4. 修復全螢幕視窗第二次啟動時無法恢復全螢幕的問題
+
 ### v1.2.1
 
 1. 重新設計訊息編輯視窗

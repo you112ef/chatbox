@@ -1,4 +1,11 @@
 const changelog = `
+### v1.2.2
+
+1. **Thread Archiving** (refreshes context) and Thread History List.
+2. Introduced support for the **Google Gemini** model.
+3. Introduced support for the **Ollama**, enabling easy access to locally deployed models such as llama2, mistral, mixtral, codellama, vicuna, yi, and solar.
+4. Fixed an issue where the fullscreen window would not restore to fullscreen on the second launch.
+
 ### v1.2.1
 
 1. Redesigned the message editing dialog
