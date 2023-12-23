@@ -200,5 +200,7 @@
     "Back to Previous": "回到上个话题",
     "Refresh Context, Start New Thread": "刷新上下文，开始新话题",
     "Export Chat": "导出聊天记录",
-    "Clear All Messages": "清空所有消息"
+    "Clear All Messages": "清空所有消息",
+    "To access locally deployed model services, please install the Chatbox desktop version": "为访问本地部署的模型服务，请安装 Chatbox 的桌面版本",
+    "Download": "下载"
 }

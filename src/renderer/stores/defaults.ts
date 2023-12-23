@@ -27,6 +27,11 @@ export function settings(): Settings {
         claudeApiKey: '',
         claudeModel: 'claude-1',
 
+        geminiAPIKey: '',
+
+        ollamaHost: 'http://localhost:11434',
+        ollamaModel: '',
+
         showWordCount: true,
         showTokenCount: false,
         showTokenUsed: true,

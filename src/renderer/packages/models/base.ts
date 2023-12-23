@@ -93,6 +93,33 @@ export default class Base implements IModel {
         }
     }
 
+    async handleNdjson(response: Response, onMessage: (message: string) => void) {
+        // 状态码不在 200～299 之间，一般是接口报错了
+        if (!response.ok) {
+            const errJson = await response.json().catch(() => null)
+            throw new ApiError(errJson ? JSON.stringify(errJson) : `${response.status} ${response.statusText}`)
+        }
+        if (!response.body) {
+            throw new Error('No response body')
+        }
+        let buffer = ''
+        for await (const chunk of this.iterableStreamAsync(response.body)) {
+            let data = new TextDecoder().decode(chunk)
+            buffer = buffer + data
+            let lines = buffer.split('\n')
+            if (lines.length <= 1) {
+                continue
+            }
+            buffer = lines[lines.length - 1]
+            lines = lines.slice(0, -1)
+            for (const line of lines) {
+                if (line.trim() !== '') {
+                    onMessage(line)
+                }
+            }
+        }
+    }
+
     async * iterableStreamAsync(stream: ReadableStream): AsyncIterableIterator<Uint8Array> {
         const reader = stream.getReader()
         try {
@@ -123,6 +150,50 @@ export default class Base implements IModel {
                     method: 'POST',
                     headers,
                     body: JSON.stringify(body),
+                    signal,
+                })
+                // 配额用完了
+                if (res.status === 499) {
+                    const json = await res.json()
+                    if (json?.error?.code === 'token_quota_exhausted') {
+                        throw new QuotaExhausted()
+                    }
+                }
+                // 状态码不在 200～299 之间，一般是接口报错了，这里也需要抛错后重试
+                if (!res.ok) {
+                    const err = await res.text().catch((e) => null)
+                    throw new ApiError(`Status Code ${res.status}, ${err}`)
+                }
+                return res
+            } catch (e) {
+                if (e instanceof BaseError) {
+                    requestError = e
+                } else {
+                    const err = e as Error
+                    const origin = new URL(url).origin
+                    requestError = new NetworkError(err.message, origin)
+                }
+            }
+        }
+        if (requestError) {
+            throw requestError
+        } else {
+            throw new Error('Unknown error')
+        }
+    }
+
+    async get(
+        url: string,
+        headers: Record<string, string>,
+        signal?: AbortSignal,
+        retry = 3
+    ) {
+        let requestError: ApiError | NetworkError | null = null
+        for (let i = 0; i < retry + 1; i++) {
+            try {
+                const res = await fetch(url, {
+                    method: 'GET',
+                    headers,
                     signal,
                 })
                 // 配额用完了

@@ -92,6 +92,9 @@ export function settings2SessionSettings(settings: ModelSettings) {
         'azureDalleDeploymentName',
 
         'claudeModel',
+
+        'ollamaHost',
+        'ollamaModel'
     ])
 }
 
@@ -114,6 +117,7 @@ export enum ModelProvider {
     ChatGLM6B = 'chatglm-6b',
     Claude = 'claude',
     Gemini = 'gemini',
+    Ollama = 'ollama',
 }
 
 export interface ModelSettings {
@@ -151,6 +155,10 @@ export interface ModelSettings {
 
     // google gemini
     geminiAPIKey: string
+
+    // ollama
+    ollamaHost: string
+    ollamaModel: string
 
     temperature: number
     topP: number

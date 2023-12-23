@@ -199,5 +199,7 @@
     "Back to Previous": "Retour au Sujet Précédent",
     "Refresh Context, Start New Thread": "Rafraîchir le Contexte, Commencer Nouveau Sujet",
     "Export Chat": "Exporter la Discussion",
-    "Clear All Messages": "Effacer Tous les Messages"
+    "Clear All Messages": "Effacer Tous les Messages",
+    "To access locally deployed model services, please install the Chatbox desktop version": "Pour accéder aux services de modèles déployés localement, veuillez installer la version de bureau de Chatbox",
+    "Download": "Télécharger"
 }

@@ -199,5 +199,7 @@
     "Back to Previous": "前のスレッドに戻る",
     "Refresh Context, Start New Thread": "コンテキストを更新し、新しいスレッドを始める",
     "Export Chat": "チャットをエクスポート",
-    "Clear All Messages": "すべてのメッセージをクリアする"
+    "Clear All Messages": "すべてのメッセージをクリアする",
+    "To access locally deployed model services, please install the Chatbox desktop version": "ローカルにデプロイされたモデルサービスにアクセスするには、Chatboxのデスクトップ版をインストールしてください",
+    "Download": "ダウンロード"
 }

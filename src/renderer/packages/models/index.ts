@@ -5,6 +5,7 @@ import AzureOpenAI from './azure'
 import ChatGLM from './chatglm'
 import Claude from './claude'
 import Gemini from './gemini'
+import Ollama from './ollama'
 
 export function getModel(setting: Settings, config: Config) {
     switch (setting.aiProvider) {
@@ -20,6 +21,8 @@ export function getModel(setting: Settings, config: Config) {
             return new Claude(setting)
         case ModelProvider.Gemini:
             return new Gemini(setting)
+        case ModelProvider.Ollama:
+            return new Ollama(setting)
         default:
             throw new Error('Cannot find model with provider: ' + setting.aiProvider)
     }
@@ -32,6 +35,7 @@ export const aiProviderNameHash = {
     [ModelProvider.ChatboxAI]: 'Chatbox-AI',
     [ModelProvider.Claude]: 'Claude',
     [ModelProvider.Gemini]: 'Google Gemini',
+    [ModelProvider.Ollama]: 'Ollama',
 }
 
 export const AIModelProviderMenuOptionList = [
@@ -52,11 +56,6 @@ export const AIModelProviderMenuOptionList = [
         disabled: false,
     },
     {
-        value: ModelProvider.ChatGLM6B,
-        label: aiProviderNameHash[ModelProvider.ChatGLM6B],
-        disabled: false,
-    },
-    {
         value: ModelProvider.Claude,
         label: aiProviderNameHash[ModelProvider.Claude],
         disabled: false,
@@ -64,6 +63,16 @@ export const AIModelProviderMenuOptionList = [
     {
         value: ModelProvider.Gemini,
         label: aiProviderNameHash[ModelProvider.Gemini],
+        disabled: false,
+    },
+    {
+        value: ModelProvider.Ollama,
+        label: aiProviderNameHash[ModelProvider.Ollama],
+        disabled: false,
+    },
+    {
+        value: ModelProvider.ChatGLM6B,
+        label: aiProviderNameHash[ModelProvider.ChatGLM6B],
         disabled: false,
     },
     // {
@@ -107,6 +116,8 @@ export function getModelDisplayName(settings: SessionSettings, sessionType: Sess
             return settings.claudeModel
         case ModelProvider.Gemini:
             return 'Google (gemini-pro)'
+        case ModelProvider.Ollama:
+            return `Ollama (${settings.ollamaModel})`
         default:
             return 'unknown'
     }

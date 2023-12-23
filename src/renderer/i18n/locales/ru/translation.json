@@ -199,5 +199,7 @@
     "Back to Previous": "Вернуться к Предыдущему",
     "Refresh Context, Start New Thread": "Обновить Контекст, Начать Новую Тему",
     "Export Chat": "Экспорт Переписки",
-    "Clear All Messages": "Очистить Все Сообщения"
+    "Clear All Messages": "Очистить Все Сообщения",
+    "To access locally deployed model services, please install the Chatbox desktop version": "Для доступа к локально развернутым модельным сервисам, пожалуйста, установите настольную версию Chatbox",
+    "Download": "Скачать"
 }

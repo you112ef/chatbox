@@ -35,6 +35,7 @@ import TokenConfig from './SettingDialog/TokenConfig'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import ImageCountSlider from '@/components/ImageCountSlider'
 import ImageStyleSelect from '@/components/ImageStyleSelect'
+import OllamaSetting from './SettingDialog/OllamaSetting'
 
 interface Props {
     open: boolean
@@ -209,6 +210,11 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                             <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                         </>
                     )}
+                    {
+                        settingsEdit.aiProvider === ModelProvider.Ollama && (
+                            <OllamaSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                        )
+                    }
                 </>
             )}
         </>
