@@ -37,7 +37,7 @@ async function testApiOrigins() {
     API_ORIGIN = fastest.origin
 }
 testApiOrigins()
-setInterval(testApiOrigins, 1 * 60 * 1000);
+setInterval(testApiOrigins, 60 * 60 * 1000);
 
 // ========== 各个接口方法 ==========
 
