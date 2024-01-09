@@ -26,9 +26,15 @@ export default class AzureOpenAI extends Base {
         this.options = options
     }
 
+    getApiVersion() {
+        const apiVersion = '2023-12-01-preview'
+        return apiVersion
+    }
+
     async callChatCompletion(messages: OpenAIMessage[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
         const origin = new URL((this.options.azureEndpoint || '').trim()).origin
-        const url = `${origin}/openai/deployments/${this.options.azureDeploymentName}/chat/completions?api-version=2023-03-15-preview`
+        const apiVersion = this.getApiVersion()
+        const url = `${origin}/openai/deployments/${this.options.azureDeploymentName}/chat/completions?api-version=${apiVersion}`
         const response = await this.post(
             url,
             this.getHeaders(),
@@ -64,7 +70,8 @@ export default class AzureOpenAI extends Base {
 
     async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
         const origin = new URL((this.options.azureEndpoint || '').trim()).origin
-        const url = `${origin}/openai/deployments/${this.options.azureDalleDeploymentName}/images/generations?api-version=2023-12-01-preview`
+        const apiVersion = this.getApiVersion()
+        const url = `${origin}/openai/deployments/${this.options.azureDalleDeploymentName}/images/generations?api-version=${apiVersion}`
         const res = await this.post(
             url,
             this.getHeaders(),
