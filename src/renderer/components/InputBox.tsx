@@ -21,9 +21,9 @@ export default function InputBox(props: Props) {
     const isSmallScreen = useAtomValue(atoms.isSmallScreenAtom)
     const { t } = useTranslation()
     const [messageInput, setMessageInput] = useState('')
-    const [previousMessageInput, setPreviousMessageInput] = useState('')
     const [showRollbackThreadButton, setShowRollbackThreadButton] = useState(false)
     const showRollbackThreadButtonTimerRef = useRef<null | NodeJS.Timeout>(null)
+    const inputRef = useRef<HTMLInputElement | null>(null)
 
     useEffect(() => {
         if (quote !== '') {
@@ -54,7 +54,6 @@ export default function InputBox(props: Props) {
             return
         }
         submit(createMessage('user', messageInput), needGenerating)
-        setPreviousMessageInput(messageInput)
         setMessageInput('')
         window.gtag('event', 'send_message', { event_category: 'user' })
         // 重置清理上下文按钮
@@ -65,34 +64,66 @@ export default function InputBox(props: Props) {
             }
         }
     }
-    const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+
+    const onMessageInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const input = event.target.value
+        setMessageInput(input)
+    }
+
+    const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         // 发送
         if (
-            e.keyCode === 13 &&
-            !e.shiftKey &&
-            !e.ctrlKey &&
-            !e.altKey &&
-            !e.metaKey
+            event.keyCode === 13 &&
+            !event.shiftKey &&
+            !event.ctrlKey &&
+            !event.altKey &&
+            !event.metaKey
         ) {
-            e.preventDefault()
+            event.preventDefault()
             handleSubmit()
             return
         }
         // 发送但不生成
-        if (e.keyCode === 13 && e.ctrlKey) {
-            e.preventDefault()
+        if (event.keyCode === 13 && event.ctrlKey) {
+            event.preventDefault()
             handleSubmit(false)
             return
         }
-        // 向上键翻阅历史消息
-        if (e.keyCode === 38 && messageInput === '') {
-            e.preventDefault()
-            setMessageInput(previousMessageInput)
-            return
+        // 向上向下键翻阅历史消息
+        if (
+            (event.key === 'ArrowUp' || event.key === 'ArrowDown')
+            && inputRef.current
+            && inputRef.current === document.activeElement  // 聚焦在输入框
+            && (messageInput.length === 0 || window.getSelection()?.toString() === messageInput)    // 要么为空，要么输入框全选
+        ) {
+            event.preventDefault()
+            let historyMessages = sessionActions.getCurrentMessages()
+            historyMessages = historyMessages.slice(historyMessages.length - 100)
+            historyMessages = historyMessages.filter((m => m.role !== 'assistant'))
+            if (historyMessages.length === 0) {
+                return
+            }
+            if (messageInput.length === 0) {
+                if (event.key === 'ArrowUp') {
+                    setMessageInput(historyMessages[historyMessages.length - 1].content)
+                    setTimeout(() => inputRef.current?.select(), 10)
+                    return
+                } else if (event.key === 'ArrowDown') {
+                    return
+                }
+            } else {
+                const ix = historyMessages.findIndex(m => m.content === messageInput)
+                const next = event.key === 'ArrowUp' ? historyMessages[ix - 1] : historyMessages[ix + 1]
+                if (next) {
+                    setMessageInput(next.content)
+                    setTimeout(() => inputRef.current?.select(), 10)
+                }
+                return
+            }
         }
         // 防止创建新话题时键入字符
-        if (e.code === 'KeyR' && e.altKey) {
-            e.preventDefault()
+        if (event.code === 'KeyR' && event.altKey) {
+            event.preventDefault()
             // setMessageInput(messageInput.replace(`®`, ''))
             return
         }
@@ -172,11 +203,12 @@ export default function InputBox(props: Props) {
                             maxRows={12}
                             label=""
                             value={messageInput}
-                            onChange={(event) => setMessageInput(event.target.value)}
+                            onChange={onMessageInput}
                             fullWidth
                             color={props.currentSessionType === 'picture' ? 'secondary' : 'primary'}
                             id={dom.messageInputID}
                             onKeyDown={onKeyDown}
+                            inputRef={inputRef}
                         />
                     </Grid>
                     <Grid item xs="auto">

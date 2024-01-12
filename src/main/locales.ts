@@ -58,5 +58,5 @@ const translations = {
     ReplaceWith: {
         en: 'Replace with',
         zh: '替换成',
-    }
+    },
 }
