@@ -1,4 +1,8 @@
 .msg-block {
+    /* 避免用户复制时，复制到文字的样式 */
+    -webkit-user-select: text;
+    user-select: text;
+
     .msg-content p {
         margin: 0.6rem 0 0.4rem 0;
     }
