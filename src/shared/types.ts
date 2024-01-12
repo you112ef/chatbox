@@ -94,7 +94,7 @@ export function settings2SessionSettings(settings: ModelSettings) {
         'claudeModel',
 
         'ollamaHost',
-        'ollamaModel'
+        'ollamaModel',
     ])
 }
 
