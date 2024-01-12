@@ -73,7 +73,9 @@ function Main() {
     const [configureChatConfig, setConfigureChatConfig] = React.useState<Session | null>(null)
 
     return (
-        <Box className="box-border App px-2 sm:px-4">
+        <Box className="box-border App px-2 sm:px-4"
+            spellCheck={false}  // 全局禁用拼写检查。输入代码时，拼写检查的下划线会影响输入体验
+        >
             <Grid container className="h-full pt-4">
                 <Sidebar
                     open={showSidebar}
