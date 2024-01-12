@@ -1,4 +1,4 @@
-import { app, Menu, shell, BrowserWindow, MenuItemConstructorOptions } from 'electron'
+import { app, Menu, MenuItem, shell, BrowserWindow, MenuItemConstructorOptions } from 'electron'
 import Locale from './locales'
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
@@ -25,6 +25,13 @@ export default class MenuBuilder {
                 // { role: 'zoomIn' },
                 // { role: 'zoomOut' },
             ]
+            // Add each spelling suggestion
+            for (const suggestion of props.dictionarySuggestions.slice(0, 3)) {
+                items.push({
+                    label: `${locale.t('ReplaceWith')} "${suggestion}"`,
+                    click: () => this.mainWindow.webContents.replaceMisspelling(suggestion)
+                })
+            }
             if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
                 items.push({
                     label: 'Inspect element',
@@ -217,37 +224,37 @@ export default class MenuBuilder {
                 submenu:
                     process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true'
                         ? [
-                              {
-                                  label: '&Reload',
-                                  accelerator: 'Ctrl+R',
-                                  click: () => {
-                                      this.mainWindow.webContents.reload()
-                                  },
-                              },
-                              {
-                                  label: 'Toggle &Full Screen',
-                                  accelerator: 'F11',
-                                  click: () => {
-                                      this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
-                                  },
-                              },
-                              // {
-                              //   label: 'Toggle &Developer Tools',
-                              //   accelerator: 'Alt+Ctrl+I',
-                              //   click: () => {
-                              //     this.mainWindow.webContents.toggleDevTools();
-                              //   },
-                              // },
-                          ]
+                            {
+                                label: '&Reload',
+                                accelerator: 'Ctrl+R',
+                                click: () => {
+                                    this.mainWindow.webContents.reload()
+                                },
+                            },
+                            {
+                                label: 'Toggle &Full Screen',
+                                accelerator: 'F11',
+                                click: () => {
+                                    this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
+                                },
+                            },
+                            // {
+                            //   label: 'Toggle &Developer Tools',
+                            //   accelerator: 'Alt+Ctrl+I',
+                            //   click: () => {
+                            //     this.mainWindow.webContents.toggleDevTools();
+                            //   },
+                            // },
+                        ]
                         : [
-                              {
-                                  label: 'Toggle &Full Screen',
-                                  accelerator: 'F11',
-                                  click: () => {
-                                      this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
-                                  },
-                              },
-                          ],
+                            {
+                                label: 'Toggle &Full Screen',
+                                accelerator: 'F11',
+                                click: () => {
+                                    this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
+                                },
+                            },
+                        ],
             },
             {
                 label: 'Help',

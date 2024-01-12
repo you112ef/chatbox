@@ -201,5 +201,6 @@
     "Export Chat": "チャットをエクスポート",
     "Clear All Messages": "すべてのメッセージをクリアする",
     "To access locally deployed model services, please install the Chatbox desktop version": "ローカルにデプロイされたモデルサービスにアクセスするには、Chatboxのデスクトップ版をインストールしてください",
-    "Download": "ダウンロード"
+    "Download": "ダウンロード",
+    "Spell Check": "スペルチェック"
 }

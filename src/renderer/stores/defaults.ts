@@ -39,6 +39,7 @@ export function settings(): Settings {
         theme: ThemeMode.System,
         language: 'en',
         fontSize: 12,
+        spellCheck: true,
 
         defaultPrompt: getDefaultPrompt(),
     }

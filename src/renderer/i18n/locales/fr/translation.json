@@ -201,5 +201,6 @@
     "Export Chat": "Exporter la Discussion",
     "Clear All Messages": "Effacer Tous les Messages",
     "To access locally deployed model services, please install the Chatbox desktop version": "Pour accéder aux services de modèles déployés localement, veuillez installer la version de bureau de Chatbox",
-    "Download": "Télécharger"
+    "Download": "Télécharger",
+    "Spell Check": "Vérification orthographique"
 }

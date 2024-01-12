@@ -110,6 +110,7 @@ const createWindow = async () => {
         minHeight: windowState.minHeight,
         icon: getAssetPath('icon.png'),
         webPreferences: {
+            spellcheck: true,
             webSecurity: false,
             allowRunningInsecureContent: false,
             preload: app.isPackaged

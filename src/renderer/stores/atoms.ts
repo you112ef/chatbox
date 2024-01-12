@@ -44,6 +44,7 @@ export const showTokenUsedAtom = focusAtom(settingsAtom, (optic) => optic.prop('
 export const showModelNameAtom = focusAtom(settingsAtom, (optic) => optic.prop('showModelName'))
 export const themeAtom = focusAtom(settingsAtom, (optic) => optic.prop('theme'))
 export const fontSizeAtom = focusAtom(settingsAtom, (optic) => optic.prop('fontSize'))
+export const spellCheckAtom = focusAtom(settingsAtom, (optic) => optic.prop('spellCheck'))
 
 export const licenseDetailAtom = focusAtom(settingsAtom, (optic) => optic.prop('licenseDetail'))
 

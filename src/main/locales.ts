@@ -55,4 +55,8 @@ const translations = {
         en: 'Paste',
         zh: '粘贴',
     },
+    ReplaceWith: {
+        en: 'Replace with',
+        zh: '替换成',
+    }
 }

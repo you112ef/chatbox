@@ -179,6 +179,7 @@ export interface Settings extends ModelSettings {
     language: Language
     languageInited?: boolean
     fontSize: number
+    spellCheck: boolean
 
     disableQuickToggleShortcut?: boolean // 是否关闭快捷键切换窗口显隐
 

@@ -201,5 +201,6 @@
     "Export Chat": "채팅 내보내기",
     "Clear All Messages": "모든 메시지 지우기",
     "To access locally deployed model services, please install the Chatbox desktop version": "로컬에 배포된 모델 서비스에 접근하려면 Chatbox 데스크톱 버전을 설치해 주세요",
-    "Download": "다운로드"
+    "Download": "다운로드",
+    "Spell Check": "맞춤법 검사"
 }
