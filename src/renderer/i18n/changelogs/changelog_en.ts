@@ -1,9 +1,9 @@
 const changelog = `
 ### v1.2.3
 
-- Now you can navigate through the history of messages in the input field using the up and down arrow keys.
-- Fixed the spell check feature, which can now be turned off in settings.
-- Text copied from the Chatbox will now be copied to the clipboard as plain text, without the background color included.
+1. You can now use the ⬆️⬇️ arrow keys in the input field to select and quickly enter previous messages.
+2. Fixed the spell check feature, which can now be turned off in settings.
+3. Text copied from Chatbox will be copied to the clipboard as plain text without background color — a longstanding minor bug that has finally been resolved.
 
 ### v1.2.2
 
