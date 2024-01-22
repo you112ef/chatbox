@@ -1,5 +1,5 @@
 const changelog = `
-### v1.2.3
+### v1.2.4
 
 1. You can now use the ⬆️⬇️ arrow keys in the input field to select and quickly enter previous messages.
 2. Fixed the spell check feature, which can now be turned off in settings.
