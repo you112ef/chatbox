@@ -1,4 +1,10 @@
 const changelog = `
+### v1.2.3
+
+- Now you can navigate through the history of messages in the input field using the up and down arrow keys.
+- Fixed the spell check feature, which can now be turned off in settings.
+- Text copied from the Chatbox will now be copied to the clipboard as plain text, without the background color included.
+
 ### v1.2.2
 
 1. **Thread Archiving** (refreshes context) and Thread History List.
