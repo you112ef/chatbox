@@ -24,11 +24,13 @@ export default function InputBox(props: Props) {
     const [showRollbackThreadButton, setShowRollbackThreadButton] = useState(false)
     const showRollbackThreadButtonTimerRef = useRef<null | NodeJS.Timeout>(null)
     const inputRef = useRef<HTMLInputElement | null>(null)
+    const [previousMessageQuickInputMark, setPreviousMessageQuickInputMark] = useState('')
 
     useEffect(() => {
         if (quote !== '') {
             setMessageInput(quote)
             setQuote('')
+            setPreviousMessageQuickInputMark('')
             dom.focusMessageInput()
             dom.setMessageInputCursorToEnd()
         }
@@ -50,6 +52,7 @@ export default function InputBox(props: Props) {
         }
     }
     const handleSubmit = (needGenerating = true) => {
+        setPreviousMessageQuickInputMark('')
         if (messageInput.trim() === '') {
             return
         }
@@ -68,6 +71,7 @@ export default function InputBox(props: Props) {
     const onMessageInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         const input = event.target.value
         setMessageInput(input)
+        setPreviousMessageQuickInputMark('')
     }
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -103,19 +107,25 @@ export default function InputBox(props: Props) {
             if (historyMessages.length === 0) {
                 return
             }
-            if (messageInput.length === 0) {
+            if (!previousMessageQuickInputMark) {
                 if (event.key === 'ArrowUp') {
-                    setMessageInput(historyMessages[historyMessages.length - 1].content)
+                    const msg = historyMessages[historyMessages.length - 1]
+                    setMessageInput(msg.content)
+                    setPreviousMessageQuickInputMark(msg.id)
                     setTimeout(() => inputRef.current?.select(), 10)
                     return
                 } else if (event.key === 'ArrowDown') {
                     return
                 }
             } else {
-                const ix = historyMessages.findIndex(m => m.content === messageInput)
-                const next = event.key === 'ArrowUp' ? historyMessages[ix - 1] : historyMessages[ix + 1]
-                if (next) {
-                    setMessageInput(next.content)
+                const ix = historyMessages.findIndex(m => m.id === previousMessageQuickInputMark)
+                if (ix === -1) {
+                    return
+                }
+                const msg = event.key === 'ArrowUp' ? historyMessages[ix - 1] : historyMessages[ix + 1]
+                if (msg) {
+                    setMessageInput(msg.content)
+                    setPreviousMessageQuickInputMark(msg.id)
                     setTimeout(() => inputRef.current?.select(), 10)
                 }
                 return
