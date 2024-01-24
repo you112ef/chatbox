@@ -32,6 +32,14 @@ export default class AzureOpenAI extends Base {
     }
 
     async callChatCompletion(messages: OpenAIMessage[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+        // 解决 GPT-4 不认识自己的问题
+        for (const message of messages) {
+            if (message.role === 'system') {
+                message.content = `Current model: ${this.options.azureDeploymentName}\n\n` + message.content
+                break
+            }
+        }
+
         const origin = new URL((this.options.azureEndpoint || '').trim()).origin
         const apiVersion = this.getApiVersion()
         const url = `${origin}/openai/deployments/${this.options.azureDeploymentName}/chat/completions?api-version=${apiVersion}`

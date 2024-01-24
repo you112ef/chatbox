@@ -27,14 +27,23 @@ export default class OpenAI extends Base {
     }
 
     async callChatCompletion(messages: OpenAIMessage[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+        // 解决 GPT-4 不认识自己的问题
+        const model = this.options.model === 'custom-model'
+            ? this.options.openaiCustomModel || ''
+            : this.options.model
+        for (const message of messages) {
+            if (message.role === 'system') {
+                message.content = `Current model: ${model}\n\n` + message.content
+                break
+            }
+        }
+
         const response = await this.post(
             `${this.options.apiHost}/v1/chat/completions`,
             this.getHeaders(),
             {
                 messages,
-                model: this.options.model === 'custom-model'
-                    ? this.options.openaiCustomModel || ''
-                    : this.options.model,
+                model,
                 max_tokens: this.options.openaiMaxTokens === 0 ? undefined : this.options.openaiMaxTokens,
                 temperature: this.options.temperature,
                 top_p: this.options.topP,
@@ -44,21 +53,21 @@ export default class OpenAI extends Base {
         )
         let result = ''
         await this.handleSSE(response, (message) => {
-                if (message === '[DONE]') {
-                    return
-                }
-                const data = JSON.parse(message)
-                if (data.error) {
-                    throw new ApiError(`Error from OpenAI: ${JSON.stringify(data)}`)
-                }
-                const text = data.choices[0]?.delta?.content
-                if (text !== undefined) {
-                    result += text
-                    if (onResultChange) {
-                        onResultChange(result)
-                    }
+            if (message === '[DONE]') {
+                return
+            }
+            const data = JSON.parse(message)
+            if (data.error) {
+                throw new ApiError(`Error from OpenAI: ${JSON.stringify(data)}`)
+            }
+            const text = data.choices[0]?.delta?.content
+            if (text !== undefined) {
+                result += text
+                if (onResultChange) {
+                    onResultChange(result)
                 }
             }
+        }
         )
         return result
     }
