@@ -67,37 +67,37 @@ export default function ThreadHistoryDrawer(props: Props) {
                 },
             }}
         >
-            <Box sx={{ padding: '1rem 0.5rem 0.2rem 0.5rem', margin: '0.1rem 0.1rem 0.1rem 0.2rem' }} >
-                <span className="text-xs opacity-80">{t('Threads History')}</span>
+            <Box className='ThreadHistoryDrawer flex flex-col h-full w-full'>
+                <Box sx={{ padding: '1rem 0.5rem 0.2rem 0.5rem', margin: '0.1rem 0.1rem 0.1rem 0.2rem' }} >
+                    <span className="text-xs opacity-80">{t('Threads History')}</span>
+                </Box>
+                <MenuList
+                    sx={{
+                        position: 'relative',
+                        overflow: 'auto',
+                        '& ul': { padding: 0 },
+                        paddingX: '0.5rem',
+                        paddingY: '0',
+                    }}
+                    className="w-full flex-grow"
+                    component="div"
+                >
+                    <Virtuoso
+                        data={threadList}
+                        ref={ref}
+                        increaseViewportBy={{ top: 500, bottom: 500 }}
+                        itemContent={(index, thread) => (
+                            <ThreadItem
+                                key={index}
+                                thread={thread}
+                                goto={gotoThreadMessage}
+                                showHistoryDrawer={showDrawer}
+                                switchThread={switchThread}
+                            />
+                        )}
+                    />
+                </MenuList>
             </Box>
-            <MenuList
-                sx={{
-                    width: '100%',
-                    height: '100%',
-                    position: 'relative',
-                    overflow: 'auto',
-                    '& ul': { padding: 0 },
-                    paddingX: '0.5rem',
-                    paddingY: '0',
-                }}
-                className="w-full"
-                component="div"
-            >
-                <Virtuoso
-                    data={threadList}
-                    ref={ref}
-                    increaseViewportBy={{ top: 500, bottom: 500 }}
-                    itemContent={(index, thread) => (
-                        <ThreadItem
-                            key={index}
-                            thread={thread}
-                            goto={gotoThreadMessage}
-                            showHistoryDrawer={showDrawer}
-                            switchThread={switchThread}
-                        />
-                    )}
-                />
-            </MenuList>
         </Drawer>
     )
 }
