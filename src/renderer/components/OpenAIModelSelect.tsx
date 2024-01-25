@@ -2,6 +2,7 @@ import { Select, MenuItem, FormControl, InputLabel, TextField } from '@mui/mater
 import { SessionSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import { models } from '../packages/models/openai'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 export interface Props {
     settingsEdit: SessionSettings
@@ -11,6 +12,7 @@ export interface Props {
 export default function OpenAIModelSelect(props: Props) {
     const { settingsEdit, setSettingsEdit } = props
     const { t } = useTranslation()
+    const isSmallScreen = useIsSmallScreen()
     return (
         <FormControl fullWidth variant="outlined" margin="dense">
             <InputLabel htmlFor="model-select">{t('model')}</InputLabel>
@@ -36,7 +38,7 @@ export default function OpenAIModelSelect(props: Props) {
             </Select>
             {settingsEdit.model === 'custom-model' && (
                 <TextField
-                    autoFocus
+                    autoFocus={!isSmallScreen}
                     margin="dense"
                     label={t('Custom Model Name')}
                     type="text"

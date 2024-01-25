@@ -10,10 +10,12 @@ import { Marker } from 'react-mark.js'
 import { cn } from '@/lib/utils'
 import { useAtom } from 'jotai'
 import * as atoms from '@/stores/atoms'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 interface Props {}
 
 export default function SearchDialog(props: Props) {
+    const isSmallScreen = useIsSmallScreen()
     const [open, setOpen] = useAtom(atoms.openSearchDialogAtom)
     const [mode, setMode] = useState<'command' | 'search-result'>('command')
     const [loading, setLoading] = useState<number | null>(null)
@@ -83,7 +85,7 @@ export default function SearchDialog(props: Props) {
                 <Command shouldFilter={false} filter={(value, search) => 1}>
                     <CommandInput
                         ref={ref}
-                        autoFocus
+                        autoFocus={!isSmallScreen}
                         value={searchInput}
                         onInput={onSearchInput}
                         className={cn(

@@ -2,6 +2,7 @@ import React from 'react'
 import { TextField, InputAdornment, IconButton } from '@mui/material'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 export default function PasswordTextField(props: {
     label: string
@@ -11,6 +12,7 @@ export default function PasswordTextField(props: {
     disabled?: boolean
     helperText?: React.ReactNode
 }) {
+    const isSmallScreen = useIsSmallScreen()
     const [showPassword, setShowPassword] = React.useState(false)
     const handleClickShowPassword = () => setShowPassword((show) => !show)
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -19,7 +21,7 @@ export default function PasswordTextField(props: {
     return (
         <TextField
             type={showPassword ? 'text' : 'password'}
-            autoFocus
+            autoFocus={!isSmallScreen}
             margin="dense"
             label={props.label}
             fullWidth

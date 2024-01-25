@@ -18,6 +18,7 @@ import { drawerWidth } from './Sidebar'
 import ImageIcon from '@mui/icons-material/Image'
 import Toolbar from './components/Toolbar'
 import { getModelDisplayName } from '@/packages/models'
+import { useIsSmallScreen } from './hooks/useScreenChange'
 
 interface Props {
     setConfigureChatConfig(session: Session | null): void
@@ -30,7 +31,7 @@ export default function MainPane(props: Props) {
 
     const atScrollTop = useAtomValue(atoms.messageScrollingAtTopAtom)
     const atScrollBottom = useAtomValue(atoms.messageScrollingAtBottomAtom)
-    const isSmallScreen = useAtomValue(atoms.isSmallScreenAtom)
+    const isSmallScreen = useIsSmallScreen()
 
     // 会话名称自动生成
     useEffect(() => {

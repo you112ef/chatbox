@@ -36,6 +36,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import ImageCountSlider from '@/components/ImageCountSlider'
 import ImageStyleSelect from '@/components/ImageStyleSelect'
 import OllamaSetting from './SettingDialog/OllamaSetting'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 interface Props {
     open: boolean
@@ -45,6 +46,7 @@ interface Props {
 
 export default function ChatConfigWindow(props: Props) {
     const { t } = useTranslation()
+    const isSmallScreen = useIsSmallScreen()
     const [dataEdit, setDataEdit] = React.useState<Session>(props.session)
 
     useEffect(() => {
@@ -76,7 +78,7 @@ export default function ChatConfigWindow(props: Props) {
             <DialogContent>
                 <DialogContentText></DialogContentText>
                 <TextField
-                    autoFocus
+                    autoFocus={!isSmallScreen}
                     margin="dense"
                     label={t('name')}
                     type="text"

@@ -14,6 +14,7 @@ import { useState } from 'react'
 import { MenuItem, Divider } from '@mui/material'
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import { Message } from 'src/shared/types'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 /**
  * 顶部标题工具栏（右侧）
@@ -21,7 +22,7 @@ import { Message } from 'src/shared/types'
  */
 export default function Toolbar() {
     const { t } = useTranslation()
-    const isSmallScreen = useAtomValue(atoms.isSmallScreenAtom)
+    const isSmallScreen = useIsSmallScreen()
     const currentSession = useAtomValue(atoms.currentSessionAtom)
 
     const setOpenSearchDialog = useSetAtom(atoms.openSearchDialogAtom)

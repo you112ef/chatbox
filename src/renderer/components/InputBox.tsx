@@ -10,6 +10,7 @@ import * as dom from '../hooks/dom'
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import UndoIcon from '@mui/icons-material/Undo';
 import { Shortcut } from './Shortcut'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 export interface Props {
     currentSessionId: string
@@ -18,7 +19,7 @@ export interface Props {
 
 export default function InputBox(props: Props) {
     const [quote, setQuote] = useAtom(atoms.quoteAtom)
-    const isSmallScreen = useAtomValue(atoms.isSmallScreenAtom)
+    const isSmallScreen = useIsSmallScreen()
     const { t } = useTranslation()
     const [messageInput, setMessageInput] = useState('')
     const [showRollbackThreadButton, setShowRollbackThreadButton] = useState(false)
@@ -219,6 +220,7 @@ export default function InputBox(props: Props) {
                             id={dom.messageInputID}
                             onKeyDown={onKeyDown}
                             inputRef={inputRef}
+                            autoFocus={!isSmallScreen}
                         />
                     </Grid>
                     <Grid item xs="auto">

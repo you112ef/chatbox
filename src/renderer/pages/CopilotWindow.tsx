@@ -36,6 +36,7 @@ import * as atoms from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
 import { useAtomValue } from 'jotai'
 import storage from '../storage'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 interface Props {
     open: boolean
@@ -393,6 +394,7 @@ interface CopilotFormProps {
 function CopilotForm(props: CopilotFormProps) {
     const { t } = useTranslation()
     const theme = useTheme()
+    const isSmallScreen = useIsSmallScreen()
     const [copilotEdit, setCopilotEdit] = useState<CopilotDetail>(props.copilotDetail)
     useEffect(() => {
         setCopilotEdit(props.copilotDetail)
@@ -441,7 +443,7 @@ function CopilotForm(props: CopilotFormProps) {
             }}
         >
             <TextField
-                autoFocus
+                autoFocus={!isSmallScreen}
                 margin="dense"
                 label={t('Copilot Name')}
                 fullWidth

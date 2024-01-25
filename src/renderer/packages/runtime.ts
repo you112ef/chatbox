@@ -72,7 +72,7 @@ export async function onSystemThemeChange(callback: () => void) {
     return electronAPI.onSystemThemeChange(callback)
 }
 
-export async function onWindowShow(callback: () => void) {
+export function onWindowShow(callback: () => void) {
     if (isWeb) {
         return () => null
     }

@@ -5,13 +5,14 @@ import { useEffect } from 'react'
 
 export default function useScreenChange() {
     const setShowSidebar = useSetAtom(atoms.showSidebarAtom)
-    const setIsSmallScreen = useSetAtom(atoms.isSmallScreenAtom)
-
-    const theme = useTheme()
-    const realIsSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
-
+    const realIsSmallScreen = useIsSmallScreen()
     useEffect(() => {
-        setIsSmallScreen(realIsSmallScreen)
         setShowSidebar(!realIsSmallScreen)
     }, [realIsSmallScreen])
+}
+
+export function useIsSmallScreen() {
+    const theme = useTheme()
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+    return isSmallScreen
 }

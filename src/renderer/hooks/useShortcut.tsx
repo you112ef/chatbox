@@ -4,23 +4,23 @@ import * as dom from './dom'
 import * as atoms from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
 import { getDefaultStore } from 'jotai'
+import { useIsSmallScreen } from './useScreenChange'
 
 export default function useShortcut() {
+    const isSmallScreen = useIsSmallScreen()
     useEffect(() => {
-        api.onWindowShow(() => {
-            const store = getDefaultStore()
-            const isSmallScreen = store.get(atoms.isSmallScreenAtom)
+        const cancel = api.onWindowShow(() => {
             // 大屏幕下，窗口显示时自动聚焦输入框
             if (!isSmallScreen) {
                 dom.focusMessageInput()
             }
         })
-
         window.addEventListener('keydown', keyboardShortcut)
         return () => {
+            cancel()
             window.removeEventListener('keydown', keyboardShortcut)
         }
-    }, [])
+    }, [isSmallScreen])
 }
 
 function keyboardShortcut(e: KeyboardEvent) {

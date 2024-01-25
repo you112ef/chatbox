@@ -7,6 +7,7 @@ import TemperatureSlider from '../../components/TemperatureSlider'
 import TopPSlider from '../../components/TopPSlider'
 import PasswordTextField from '../../components/PasswordTextField'
 import TokenConfig from './TokenConfig'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -16,11 +17,12 @@ interface ModelConfigProps {
 export default function AzureSetting(props: ModelConfigProps) {
     const { settingsEdit, setSettingsEdit } = props
     const { t } = useTranslation()
+    const isSmallScreen = useIsSmallScreen()
     return (
         <Box>
             <TextField
                 placeholder="https://<resource_name>.openai.azure.com/"
-                autoFocus
+                autoFocus={!isSmallScreen}
                 margin="dense"
                 label={t('Azure Endpoint')}
                 type="text"
@@ -42,7 +44,7 @@ export default function AzureSetting(props: ModelConfigProps) {
                 }}
             />
             <TextField
-                autoFocus
+                autoFocus={!isSmallScreen}
                 margin="dense"
                 label={t('Azure Deployment Name')}
                 type="text"

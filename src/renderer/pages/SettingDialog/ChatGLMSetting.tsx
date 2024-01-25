@@ -2,6 +2,7 @@ import { TextField, Box } from '@mui/material'
 import { ModelSettings } from '../../../shared/types'
 import { Trans, useTranslation } from 'react-i18next'
 import * as runtime from '../../packages/runtime'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -11,11 +12,12 @@ interface ModelConfigProps {
 export default function ChatGLM6BSetting(props: ModelConfigProps) {
     const { settingsEdit, setSettingsEdit } = props
     const { t } = useTranslation()
+    const isSmallScreen = useIsSmallScreen()
     return (
         <Box>
             <TextField
                 placeholder="http://localhost:8000"
-                autoFocus
+                autoFocus={!isSmallScreen}
                 margin="dense"
                 label={t('ChatGLM-6B URL')}
                 type="text"

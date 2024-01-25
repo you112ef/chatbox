@@ -99,12 +99,6 @@ export function switchCurrentSession(sessionId: string) {
     store.set(atoms.currentSessionIdAtom, sessionId)
     scrollActions.scrollToBottom() // 切换会话时自动滚动到底部
     scrollActions.clearAutoScroll() // 切换会话时清除自动滚动
-
-    // 小屏幕切换会话时隐藏侧边栏
-    const isSmallScreen = store.get(atoms.isSmallScreenAtom)
-    if (isSmallScreen) {
-        store.set(atoms.showSidebarAtom, false)
-    }
 }
 
 /**
@@ -237,10 +231,6 @@ export function refreshContextAndCreateNewThread(sessionId: string) {
             }
         })
     })
-    setTimeout(() => {
-        scrollActions.scrollToBottom() // 自动滚动到底部
-        dom.focusMessageInput()
-    }, 100);
 }
 
 export function startNewThread() {
@@ -285,10 +275,6 @@ export function switchThread(sessionId: string, threadId: string) {
             }
         })
     })
-    setTimeout(() => {
-        scrollActions.scrollToBottom() // 自动滚动到底部
-        dom.focusMessageInput()
-    }, 100);
 }
 
 export function rollbackStartNewThread(sessionId: string) {
@@ -309,10 +295,6 @@ export function rollbackStartNewThread(sessionId: string) {
             }
         })
     })
-    setTimeout(() => {
-        scrollActions.scrollToBottom() // 自动滚动到底部
-        dom.focusMessageInput()
-    }, 100);
 }
 
 /**

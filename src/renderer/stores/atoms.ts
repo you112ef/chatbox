@@ -186,8 +186,6 @@ export const messageScrollingAtTopAtom = atom(false)
 export const messageScrollingAtBottomAtom = atom(false)
 export const messageScrollingScrollPositionAtom = atom<number>(0) // 当前视图高度位置（包含了视图的高度+视图距离顶部的偏移）
 
-// 是否当前为小屏幕
-export const isSmallScreenAtom = atom(false)
 // 是否展示侧边栏
 export const showSidebarAtom = atom(true)
 // 显示会话历史主题的抽屉。值可以是历史的ID，用于打开抽屉时自动选择主题

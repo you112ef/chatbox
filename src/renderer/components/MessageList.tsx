@@ -7,6 +7,8 @@ import { List, Divider } from '@mui/material'
 import { VirtuosoHandle } from 'react-virtuoso'
 import * as scrollActions from '../stores/scrollActions'
 import { useTranslation } from 'react-i18next'
+import * as dom from '@/hooks/dom'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 interface Props { }
 
@@ -27,6 +29,17 @@ export default function MessageList(props: Props) {
     useEffect(() => {
         setMessageScrollingAtom(virtuoso)
     }, [virtuoso])
+
+    // 当历史 threads 发生变化时，自动滚动到底部
+    const isSmallScreen = useIsSmallScreen()
+    useEffect(() => {
+        setTimeout(() => {
+            scrollActions.scrollToBottom() // 自动滚动到底部
+            if (! isSmallScreen) {
+                dom.focusMessageInput() // 除了在小屏幕，否则自动聚焦到输入框
+            }
+        }, 100);
+    }, [currentSession.threads])
 
     return (
         <List

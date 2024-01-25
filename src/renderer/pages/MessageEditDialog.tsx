@@ -7,13 +7,14 @@ import * as sessionActions from '../stores/sessionActions'
 import PersonIcon from '@mui/icons-material/Person'
 import SmartToyIcon from '@mui/icons-material/SmartToy'
 import SettingsIcon from '@mui/icons-material/Settings'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 interface Props {
 }
 
 export default function MessageEditDialog(props: Props) {
     const { t } = useTranslation()
-    const isSmallScreen = useAtomValue(atoms.isSmallScreenAtom)
+    const isSmallScreen = useIsSmallScreen()
     const [data, setData] = useAtom(atoms.messageEditDialogShowAtom)
 
     const onClose = () => {
@@ -114,7 +115,7 @@ export default function MessageEditDialog(props: Props) {
                 </Select>
                 <TextField
                     className='w-full'
-                    autoFocus
+                    autoFocus={!isSmallScreen}
                     multiline // multiline 需要和 maxRows 一起使用，否则长文本可能会导致退出编辑？
                     minRows={5}
                     maxRows={15}

@@ -25,6 +25,7 @@ import { useTranslation } from 'react-i18next'
 import { Accordion, AccordionSummary, AccordionDetails } from '../../components/Accordion'
 import TextFieldReset from '../../components/TextFieldReset'
 import storage, { StorageKey } from '../../storage'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 interface Props {
     settingsEdit: Settings
@@ -35,6 +36,7 @@ interface Props {
 export default function AdvancedSettingTab(props: Props) {
     const { settingsEdit, setSettingsEdit } = props
     const { t } = useTranslation()
+    const isSmallScreen = useIsSmallScreen()
     return (
         <Box>
             <Accordion>
@@ -49,7 +51,7 @@ export default function AdvancedSettingTab(props: Props) {
                             setSettingsEdit({ ...settingsEdit, proxy: value.trim() })
                         }}
                         placeholder="socks5://127.0.0.1:6153"
-                        autoFocus
+                        autoFocus={!isSmallScreen}
                         fullWidth
                         margin="dense"
                         variant="outlined"

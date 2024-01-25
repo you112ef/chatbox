@@ -2,6 +2,7 @@ import { Button, TextField, Box, FormControlLabel, Switch, FormGroup } from '@mu
 import { Settings } from '../../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as defaults from '../../stores/defaults'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 export default function ChatSettingTab(props: {
     settingsEdit: Settings
@@ -9,11 +10,12 @@ export default function ChatSettingTab(props: {
 }) {
     const { settingsEdit, setSettingsEdit } = props
     const { t } = useTranslation()
+    const isSmallScreen = useIsSmallScreen()
     return (
         <Box>
             <Box className='mb-2'>
                 <TextField
-                    autoFocus
+                    autoFocus={!isSmallScreen}
                     margin="dense"
                     label={t('Default Prompt for New Conversation')}
                     fullWidth

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import SwipeableDrawer from '@mui/material/SwipeableDrawer'
 import {
     Box,
@@ -23,9 +23,10 @@ import useVersion from './hooks/useVersion'
 import SessionList from './components/SessionList'
 import * as sessionActions from './stores/sessionActions'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen'
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useAtomValue } from 'jotai'
 import * as atoms from './stores/atoms'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
+import { useIsSmallScreen } from './hooks/useScreenChange'
 
 export const drawerWidth = 240
 
@@ -44,6 +45,7 @@ export default function Sidebar(props: Props) {
     const { t } = useTranslation()
     const versionHook = useVersion()
     const setShowSidebar = useSetAtom(atoms.showSidebarAtom)
+    const currentSessionId = useAtomValue(atoms.currentSessionIdAtom)
 
     const sessionListRef = useRef<HTMLDivElement>(null)
     const handleCreateNewSession = () => {
@@ -60,6 +62,14 @@ export default function Sidebar(props: Props) {
         }
         window.gtag('event', 'create_new_picture_conversation', { event_category: 'user' })
     }
+
+    // 小屏幕切换会话时隐藏侧边栏
+    const isSmallScreen = useIsSmallScreen()
+    useEffect(() => {
+        if (isSmallScreen) {
+            setShowSidebar(false)
+        }
+    }, [isSmallScreen, currentSessionId])
 
     const stack = (
         <div className="ToolBar h-full">
