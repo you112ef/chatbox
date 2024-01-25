@@ -25,22 +25,23 @@ function _SessionItem(props: Props) {
     const [hovering, setHovering] = useState(false)
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
         event.stopPropagation()
         event.preventDefault()
         setAnchorEl(event.currentTarget)
     }
-    const handleClose = () => {
+    const handleMenuClose = () => {
         setAnchorEl(null)
+    }
+    const onClick = () => {
+        sessionActions.switchCurrentSession(session.id)
     }
     return (
         <>
             <MenuItem
                 key={session.id}
                 selected={selected}
-                onClick={() => {
-                    sessionActions.switchCurrentSession(session.id)
-                }}
+                onClick={onClick}
                 onMouseEnter={() => {
                     setHovering(true)
                 }}
@@ -53,7 +54,7 @@ function _SessionItem(props: Props) {
                 sx={{ padding: '0.1rem', margin: '0.1rem' }}
             >
                 <ListItemIcon>
-                    <IconButton color={session.type === 'picture' ? 'secondary' : 'inherit'}>
+                    <IconButton color={session.type === 'picture' ? 'secondary' : 'inherit'} onClick={onClick}>
                         {session.picUrl ? (
                             <Avatar sizes="20px" sx={{ width: '20px', height: '20px' }} src={session.picUrl} />
                         ) : session.type === 'picture' ? (
@@ -69,7 +70,7 @@ function _SessionItem(props: Props) {
                     </Typography>
                 </ListItemText>
                 {
-                    <IconButton onClick={handleClick} sx={{ color: 'primary.main' }}>
+                    <IconButton onClick={handleMenuClick} sx={{ color: 'primary.main' }}>
                         {session.starred ? (
                             <StarIcon fontSize="small" />
                         ) : (
@@ -84,13 +85,13 @@ function _SessionItem(props: Props) {
                 }}
                 anchorEl={anchorEl}
                 open={open}
-                onClose={handleClose}
+                onClose={handleMenuClose}
             >
                 <MenuItem
                     key={session.id + 'edit'}
                     onClick={() => {
                         setConfigureChatConfig(session)
-                        handleClose()
+                        handleMenuClose()
                     }}
                     disableRipple
                 >
@@ -102,7 +103,7 @@ function _SessionItem(props: Props) {
                     key={session.id + 'copy'}
                     onClick={() => {
                         sessionActions.copy(session)
-                        handleClose()
+                        handleMenuClose()
                     }}
                     disableRipple
                 >
@@ -116,7 +117,7 @@ function _SessionItem(props: Props) {
                             ...session,
                             starred: !session.starred,
                         })
-                        handleClose()
+                        handleMenuClose()
                     }}
                     disableRipple
                 >
@@ -139,7 +140,7 @@ function _SessionItem(props: Props) {
                     key={session.id + 'del'}
                     onClick={() => {
                         setAnchorEl(null)
-                        handleClose()
+                        handleMenuClose()
                         sessionActions.remove(session)
                     }}
                     disableRipple
