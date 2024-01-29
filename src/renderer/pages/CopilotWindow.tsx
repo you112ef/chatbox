@@ -146,6 +146,7 @@ export default function CopilotWindow(props: Props) {
                         flexWrap: 'wrap',
                         width: '100%',
                         overflowY: 'auto',
+                        overflowX: 'hidden',
                     }}
                 >
                     {list.map((item, ix) => (
@@ -187,6 +188,7 @@ export default function CopilotWindow(props: Props) {
                         flexWrap: 'wrap',
                         width: '100%',
                         overflowY: 'auto',
+                        overflowX: 'hidden',
                     }}
                 >
                     {remoteStore.copilots.map((item, ix) => (
@@ -249,6 +251,7 @@ function MiniItem(props: MiniItemProps) {
                     opacity: 1,
                 },
             }}
+            className='w-full sm:w-48'
         >
             <Avatar
                 onClick={props.useMe}
@@ -260,8 +263,8 @@ function MiniItem(props: MiniItemProps) {
                 onClick={props.useMe}
                 style={{
                     marginLeft: '5px',
-                    width: '100px',
                 }}
+                className='w-full sm:w-36'
             >
                 <Typography variant="body1" noWrap>
                     {props.detail.name}
