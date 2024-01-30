@@ -226,7 +226,11 @@ npm run mobile:assets
 
 1. 编译代码并同步到移动端工程
 2. 修改版本号（版本号 v1.2.2 和 build number 整型递增数字）
+   - Xcode 点击左侧栏的 “App” 顶部菜单，即可看到设置
+   - Android Studio 顶部导航栏的 “File” -> “Project Structure” 即可看到设置
 3. 构建正式签名版本
+    - Xcode 点击顶部导航栏的 “Product” -> “Archive”
+    - Android Studio 点击顶部导航栏的 “Build” -> “Generate Signed Bundle/APK”
 4. iOS 可以在 Xcode 中直接上传，Android 需要在 Google Play Console 中手动上传
 
 # 配置与日志路径
