@@ -294,7 +294,6 @@
                     ]
                 }
             ],
-            "verifyUpdateCodeSignature": false,
             "artifactName": "${productName}-${version}-Setup.${ext}"
         },
         "linux": {
