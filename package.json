@@ -294,7 +294,6 @@
                     ]
                 }
             ],
-            "publisherName": "Galaxy Edge Limited",
             "verifyUpdateCodeSignature": false,
             "artifactName": "${productName}-${version}-Setup.${ext}"
         },
