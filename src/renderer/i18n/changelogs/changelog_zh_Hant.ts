@@ -1,5 +1,5 @@
 const changelog = `
-### v1.2.5
+### v1.2.6
 
 1. 新增 0125 版本系列模型 (gpt-3.5-turbo-0125, gpt-4-0125-preview, gpt-4-turbo-preview)
 2. 優化一些窗口的移動端適配問題

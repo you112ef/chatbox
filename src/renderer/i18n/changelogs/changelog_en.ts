@@ -1,5 +1,5 @@
 const changelog = `
-### v1.2.5
+### v1.2.6
 
 1. Added new model series for version 0125 (gpt-3.5-turbo-0125, gpt-4-0125-preview, gpt-4-turbo-preview).
 2. Optimized mobile adaptation for some dialogs.
