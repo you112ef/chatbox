@@ -1,4 +1,9 @@
 const changelog = `
+### v1.2.5
+
+1. Added new model series for version 0125 (gpt-3.5-turbo-0125, gpt-4-0125-preview, gpt-4-turbo-preview).
+2. Optimized mobile adaptation for some dialogs.
+
 ### v1.2.4
 
 1. You can now use the ⬆️⬇️ arrow keys in the input field to select and quickly enter previous messages.
