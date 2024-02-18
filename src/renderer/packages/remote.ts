@@ -76,7 +76,7 @@ export async function listSponsorAboutBanner() {
     const res = await ofetch<Response>(`${API_ORIGIN}/sponsor_ad`, {
         retry: 3,
     })
-    return res['data']
+    return res['data'] || []
 }
 
 export async function listCopilots(lang: string) {

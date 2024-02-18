@@ -14,8 +14,10 @@ export default function useVersion() {
             _setVersion(version)
             try {
                 const os = await api.getPlatform()
-                const needUpdate = await remote.checkNeedUpdate(version, os, config)
-                setNeedCheckUpdate(needUpdate)
+                if (version !== '') {   // web 版本无需检查更新
+                    const needUpdate = await remote.checkNeedUpdate(version, os, config)
+                    setNeedCheckUpdate(needUpdate)
+                }
             } catch (e) {
                 console.log(e)
                 setNeedCheckUpdate(true)
