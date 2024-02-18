@@ -1,6 +1,6 @@
 import { Tooltip, Button, ButtonGroup, Card, Typography, Box } from '@mui/material'
 import { ChatboxAILicenseDetail, ModelSettings } from '../../../shared/types'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import * as runtime from '../../packages/runtime'
 import { usePremium } from '../../hooks/usePremium'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
@@ -35,7 +35,18 @@ export default function ChatboxAISetting(props: ModelConfigProps) {
                     placeholder="xxxxxxxxxxxxxxxxxxxxxxxx"
                     disabled={premium.premiumActivated || premium.premiumIsLoading}
                     helperText={
-                        <span style={{ color: 'green' }}>{premium.premiumActivated ? t('License Activated') : ''}</span>
+                        <>
+                            <span style={{ color: 'green' }}>{premium.premiumActivated ? t('License Activated') : ''}</span>
+                            {
+                                !premium.premiumIsLoading && !premium.premiumActivated && premium.reachedActivationLimit && (
+                                    <Box className='text-red-500'>
+                                        <Trans i18nKey="This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices."
+                                            components={{ a: <a href='https://chatboxai.app/redirect_app/manage_license' target='_blank' rel='noreferrer' /> }}
+                                        />
+                                    </Box>
+                                )
+                            }
+                        </>
                     }
                 />
                 {!premium.premiumActivated && (

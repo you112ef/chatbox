@@ -3,15 +3,30 @@ import * as remote from './remote'
 
 type ActivateResponse =
     | {
-          activated: true
-          instance: { id: string }
-          meta: {
-              product_id: number
-          }
-      }
-    | { activated: false; error: string }
+        activated: true
+        instance: { id: string }
+        meta: {
+            product_id: number
+        }
+    }
+    | {
+        activated: false
+        error: string
+        license_key?: {
+            "id": number
+            "status": string
+            "key": string
+            "activation_limit": number
+            "activation_usage": number
+            "created_at": string
+            "expires_at": any
+        }
+    }
 
-export async function activateLicense(key: string, instanceName: string) {
+export async function activateLicense(key: string, instanceName: string): Promise<{
+    instanceId: string
+    reachedActivationLimit?: boolean
+}> {
     const res = await fetch('https://api.lemonsqueezy.com/v1/licenses/activate', {
         method: 'POST',
         headers: {
@@ -24,13 +39,17 @@ export async function activateLicense(key: string, instanceName: string) {
     })
     const json: ActivateResponse = await res.json()
     if (!json.activated) {
-        throw new Error(json.error)
+        if (json.error.includes('This license key has reached the activation limit') && json.license_key) {
+            return { instanceId: '', reachedActivationLimit: true }
+        } else {
+            throw new Error(json.error)
+        }
     }
     const remoteConfig = await remote.getRemoteConfig('product_ids')
     if (!remoteConfig.product_ids.includes(json.meta.product_id)) {
         throw new Error('Unmatching product')
     }
-    return json.instance.id
+    return { instanceId: json.instance.id }
 }
 
 export async function deactivateLicense(key: string, instanceId: string) {

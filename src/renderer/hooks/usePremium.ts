@@ -12,10 +12,10 @@ import * as Sentry from '@sentry/react'
 
 export function usePremium() {
     const [settings, setSettings] = useAtom(settingsAtom)
-    const [activateNo, setActivateNo] = useState('init') // 用于在点击激活按钮后强制刷新 license 激活状态
+    const [activateNo, setActivateNo] = useState(Math.random().toString()) // 用于在点击激活按钮后强制刷新 license 激活状态
 
     // license activation
-    const activateQuery = useSWR<{ valid: boolean }>(
+    const activateQuery = useSWR<{ valid: boolean, reachedActivationLimit?: boolean }>(
         `license:${settings.licenseKey || ''}:${activateNo}`,
         async () => {
             const licenseKey = settings.licenseKey || ''
@@ -25,7 +25,11 @@ export function usePremium() {
             let instanceId = (settings.licenseInstances || {})[licenseKey]
             // 如果 license 第一次在当前设备激活，则记录 instanceId 设备ID，并且根据 license 类型初始化默认的 AI 模型
             if (!instanceId) {
-                instanceId = await activateLicense(licenseKey, await api.getInstanceName())
+                const activateResult = await activateLicense(licenseKey, await api.getInstanceName())
+                instanceId = activateResult.instanceId
+                if (activateResult.reachedActivationLimit) {
+                    return { valid: false, reachedActivationLimit: true }
+                }
                 const licenseDetail = await remote.getLicenseDetail({ licenseKey }).catch((e) => {
                     console.log(e)
                     return null
@@ -94,6 +98,7 @@ export function usePremium() {
 
     return {
         premiumActivated: activateQuery.data?.valid || false,
+        reachedActivationLimit: activateQuery.data?.reachedActivationLimit || false,
         premiumIsLoading: activateQuery.isLoading,
         activate,
         deactivate,

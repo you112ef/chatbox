@@ -185,7 +185,7 @@
     "Chatbox AI 4 Quota": "Chatbox AI 4 餘額",
     "Chatbox AI Image Quota": "Chatbox AI 圖片餘額",
     "Quota Reset": "額度重置",
-    "License Expiry": "授權到期",
+    "License Expiry": "License 到期",
     "Please wait about 20 seconds": "請等待約 20 秒",
     "quota exhausted error tips": "很抱歉，您本月的{{model}}模型配額已經用盡。您可以<0>前往設定</0>查看配額詳情或升級您的套餐方案。",
     "Click to view license details and quota usage": "點擊查看 License 詳情與配額使用情況",
@@ -203,5 +203,6 @@
     "Clear All Messages": "清空所有消息",
     "To access locally deployed model services, please install the Chatbox desktop version": "為訪問本地部署的模型服務，請安裝 Chatbox 的桌面版本",
     "Download": "下載",
-    "Spell Check": "拼字檢查"
+    "Spell Check": "拼字檢查",
+    "This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices.": "此 license 授權密鑰已達到啟用限制，<a>點擊這裡</a>管理授權與設備以停用舊設備。"
 }

@@ -202,5 +202,6 @@
     "Clear All Messages": "すべてのメッセージをクリアする",
     "To access locally deployed model services, please install the Chatbox desktop version": "ローカルにデプロイされたモデルサービスにアクセスするには、Chatboxのデスクトップ版をインストールしてください",
     "Download": "ダウンロード",
-    "Spell Check": "スペルチェック"
+    "Spell Check": "スペルチェック",
+    "This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices.": "このライセンスキーは有効化制限に達しました、古いデバイスを無効化するためにライセンスとデバイスを管理するには<a>ここをクリックして</a>ください。"
 }

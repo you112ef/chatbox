@@ -202,5 +202,6 @@
     "Clear All Messages": "모든 메시지 지우기",
     "To access locally deployed model services, please install the Chatbox desktop version": "로컬에 배포된 모델 서비스에 접근하려면 Chatbox 데스크톱 버전을 설치해 주세요",
     "Download": "다운로드",
-    "Spell Check": "맞춤법 검사"
+    "Spell Check": "맞춤법 검사",
+    "This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices.": "이 라이선스 키는 활성화 제한에 도달했습니다. 이전 기기를 비활성화하려면 <a>여기를 클릭</a>하여 라이선스 및 기기를 관리하세요."
 }
