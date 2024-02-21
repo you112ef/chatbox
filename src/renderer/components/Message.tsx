@@ -50,6 +50,7 @@ import SouthIcon from '@mui/icons-material/South'
 import ImageIcon from '@mui/icons-material/Image'
 import MessageErrTips from './MessageErrTips'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import * as dom from '@/hooks/dom'
 
 export interface Props {
     id?: string
@@ -339,7 +340,7 @@ function _Message(props: Props) {
                                     ...(fixedButtonGroup
                                         ? {
                                             position: 'fixed',
-                                            bottom: '100px',
+                                            bottom: dom.getInputBoxHeight() + 10 + 'px',
                                             zIndex: 100,
                                         }
                                         : {}),

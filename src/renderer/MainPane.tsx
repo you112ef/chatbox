@@ -143,7 +143,7 @@ export default function MainPane(props: Props) {
                     <Toolbar />
                 </Box>
                 <MessageList />
-                <Box className="relative py-5">
+                <Box className="relative">
                     <ButtonGroup
                         sx={{
                             position: 'absolute',
@@ -170,8 +170,8 @@ export default function MainPane(props: Props) {
                             <ArrowCircleDownIcon />
                         </IconButton>
                     </ButtonGroup>
-                    <InputBox currentSessionId={currentSession.id} currentSessionType={currentSession.type} />
                 </Box>
+                <InputBox currentSessionId={currentSession.id} currentSessionType={currentSession.type} />
             </Stack>
         </Box>
     )

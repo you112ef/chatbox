@@ -1,5 +1,19 @@
 // 有时候直接操作 DOM 依然是最方便、性能最好的方式，这里对 DOM 操作进行统一管理
 
+// ------ 消息输入框 ------
+
+export const InputBoxID = 'message-input'
+
+export function getInputBoxHeight(): number {
+    const element = document.getElementById(InputBoxID)
+    if (!element) {
+        return 0
+    }
+    return element.clientHeight
+}
+
+// ------ 消息输入框表单(input) ------
+
 export const messageInputID = 'message-input'
 
 export const focusMessageInput = () => {

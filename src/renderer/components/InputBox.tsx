@@ -165,7 +165,7 @@ export default function InputBox(props: Props) {
                 handleSubmit()
             }}
         >
-            <Stack direction="column" spacing={1}>
+            <div className='flex flex-col py-5' id={dom.InputBoxID}>
                 <Grid container spacing={1}>
                     <Grid item xs="auto" className='flex items-start' >
                         <ButtonGroup size='medium'>
@@ -236,11 +236,11 @@ export default function InputBox(props: Props) {
                     </Grid>
                 </Grid>
                 {!isSmallScreen && (
-                    <Typography variant="caption" style={{ opacity: 0.3 }}>
+                    <Typography variant="caption" className='opacity-30 pt-2'>
                         {t('[Enter] send, [Shift+Enter] line break, [Ctrl+Enter] send without generating')}
                     </Typography>
                 )}
-            </Stack>
+            </div>
         </form>
     )
 }
