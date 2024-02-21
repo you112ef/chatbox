@@ -9,7 +9,7 @@ import {
     DialogContent,
     DialogActions,
     DialogTitle,
-    Stack,
+    useTheme,
 } from '@mui/material'
 import iconPNG from '../static/icon.png'
 import { Trans, useTranslation } from 'react-i18next'
@@ -29,6 +29,7 @@ interface Props {
 
 export default function AboutWindow(props: Props) {
     const { t } = useTranslation()
+    const theme = useTheme()
     const language = useAtomValue(atoms.languageAtom)
     const versionHook = useVersion()
     const [sponsorBanners, setSponsorBanners] = useState<SponsorAboutBanner[]>([])
@@ -65,7 +66,9 @@ export default function AboutWindow(props: Props) {
                         marginTop: '10px',
                     }}
                 >
-                    <Badge color="primary" variant="dot" invisible={!versionHook.needCheckUpdate}>
+                    <Badge color="primary" variant="dot" invisible={!versionHook.needCheckUpdate}
+                        sx={{ margin: '4px' }}
+                    >
                         <Button
                             variant="outlined"
                             onClick={() => api.openLink(`https://chatboxai.app/redirect_app/check_update/${language}`)}
@@ -75,18 +78,21 @@ export default function AboutWindow(props: Props) {
                     </Badge>
                     <Button
                         variant="outlined"
+                        sx={{ margin: '4px' }}
                         onClick={() => api.openLink(`https://chatboxai.app/redirect_app/homepage/${language}`)}
                     >
                         {t('Homepage')}
                     </Button>
                     <Button
                         variant="outlined"
+                        sx={{ margin: '4px' }}
                         onClick={() => api.openLink(`https://chatboxai.app/redirect_app/feedback/${language}`)}
                     >
                         {t('Feedback')}
                     </Button>
                     <Button
                         variant="outlined"
+                        sx={{ margin: '4px' }}
                         onClick={() => api.openLink(`https://chatboxai.app/redirect_app/faqs/${language}`)}
                     >
                         {t('FAQs')}
@@ -112,27 +118,25 @@ export default function AboutWindow(props: Props) {
                         backgroundColor: 'paper',
                     }}
                 >
-                    <p>
+                    <div className='my-2'>
                         <b>Benn:</b>
-                    </p>
-                    <p>
+                    </div>
+                    <div className='my-2'>
                         <span>{t('Auther Message')}</span>
-                    </p>
-                    <Stack spacing={2} direction="row">
-                        <Button
-                            variant="text"
+                    </div>
+                    <div className='my-2'>
+                        <a
+                            className='underline font-normal cursor-pointer mr-4' style={{color: theme.palette.primary.main}}
                             onClick={() => api.openLink(`https://chatboxai.app/redirect_app/donate/${language}`)}
-                            sx={{ textTransform: 'none' }}
                         >
                             {t('Donate')}
-                        </Button>
-                        <Button
-                            variant="text"
+                        </a>
+                        <a
+                            className='underline font-normal cursor-pointer mr-4' style={{color: theme.palette.primary.main}}
                             onClick={() => api.openLink(`https://chatboxai.app/redirect_app/author/${language}`)}
-                            sx={{ textTransform: 'none' }}
                         >
                             {t('Follow me on Twitter(X)')}
-                        </Button>
+                        </a>
                         {/* <Button
                             variant="text"
                             onClick={() =>
@@ -141,7 +145,7 @@ export default function AboutWindow(props: Props) {
                         >
                             {t('Or become a sponsor')}
                         </Button> */}
-                    </Stack>
+                    </div>
                 </Paper>
 
                 {sponsorBanners.length > 0 && (
