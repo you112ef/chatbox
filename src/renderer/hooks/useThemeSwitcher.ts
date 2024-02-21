@@ -34,7 +34,14 @@ export default function useThemeSwicher() {
     }, [])
 
     useLayoutEffect(() => {
+        // update material-ui theme
         document.querySelector('html')?.setAttribute('data-theme', realTheme)
+        // update tailwindcss theme
+        if (realTheme === 'dark') {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
     }, [realTheme])
 
     const themeObj = useMemo(() => createTheme(fetchThemeDesign(realTheme, fontSize)), [realTheme, fontSize])
@@ -48,11 +55,11 @@ export function fetchThemeDesign(realTheme: 'light' | 'dark', fontSize: number):
             ...(realTheme === 'light'
                 ? {}
                 : {
-                      background: {
-                          default: 'rgb(40, 40, 40)',
-                          paper: 'rgb(40, 40, 40)',
-                      },
-                  }),
+                    background: {
+                        default: 'rgb(40, 40, 40)',
+                        paper: 'rgb(40, 40, 40)',
+                    },
+                }),
         },
         typography: {
             // In Chinese and Japanese the characters are usually larger,
