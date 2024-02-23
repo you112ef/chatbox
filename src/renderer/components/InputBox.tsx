@@ -307,6 +307,7 @@ export default function InputBox(props: Props) {
                         fontSize: theme.typography.body1.fontSize,
                     }}
                     placeholder={t('Type your question here...') || ''}
+                    {...{ enterKeyHint: 'send' } as any}
                 />
             </div>
         </div>
