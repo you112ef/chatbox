@@ -195,6 +195,7 @@ export const showThreadHistoryDrawerAtom = atom<boolean | string>(false)
 export const openSearchDialogAtom = atom(false)
 export const openSettingDialogAtom = atom<'ai' | 'display' | null>(null)
 export const sessionCleanDialogAtom = atom<Session | null>(null)  // 清空会话的弹窗
+export const chatConfigDialogAtom = atom<Session | null>(null)   // 会话配置窗口
 
 // 图片展示窗口的图片
 export const pictureShowAtom = atom<MessagePicture | null>(null)

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import SwipeableDrawer from '@mui/material/SwipeableDrawer'
 import {
     Box,
@@ -12,7 +12,6 @@ import {
     Typography,
     Divider,
 } from '@mui/material'
-import { Session } from '../shared/types'
 import SettingsIcon from '@mui/icons-material/Settings'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import { useTranslation } from 'react-i18next'
@@ -34,7 +33,6 @@ interface Props {
     open: boolean
     swtichOpen(open: boolean): void
 
-    setConfigureChatConfig(session: Session | null): void
     openClearConversationListWindow(): void
     openCopilotWindow(): void
     openAboutWindow(): void
@@ -74,10 +72,9 @@ export default function Sidebar(props: Props) {
     const stack = (
         <div className="ToolBar h-full">
             <Stack
+                className='pt-3 pl-2 pr-1'
                 sx={{
                     height: '100%',
-                    paddingTop: '1rem',
-                    paddingLeft: '1rem',
                 }}
             >
                 <Box className="flex justify-between items-center p-0 m-0 mx-2 mb-4">
@@ -95,12 +92,11 @@ export default function Sidebar(props: Props) {
                 </Box>
 
                 <SessionList
-                    setConfigureChatConfig={props.setConfigureChatConfig}
                     openClearWindow={props.openClearConversationListWindow}
                     sessionListRef={sessionListRef}
                 />
 
-                <Divider sx={{ margin: '0.5rem 0.3rem' }} />
+                <Divider variant='fullWidth' />
 
                 <MenuList sx={{ marginBottom: '20px' }}>
                     <MenuItem onClick={handleCreateNewSession} sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}>
@@ -220,7 +216,6 @@ export default function Sidebar(props: Props) {
                     '& .MuiDrawer-paper': {
                         boxSizing: 'border-box',
                         width: drawerWidth,
-                        border: 'none',
                     },
                 }}
             >

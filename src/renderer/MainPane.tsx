@@ -1,8 +1,7 @@
 import { useEffect } from 'react'
-import { Box, IconButton, ButtonGroup, Stack, Typography, Chip, Tooltip } from '@mui/material'
-import { Session, isChatSession, isPictureSession } from '../shared/types'
+import { Box, IconButton, ButtonGroup, Stack, Typography, Chip, Tooltip, useTheme } from '@mui/material'
+import { isChatSession, isPictureSession } from '../shared/types'
 import { useTranslation } from 'react-i18next'
-import icon from './static/icon.png'
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp'
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown'
 import SponsorChip from './components/SponsorChip'
@@ -21,12 +20,13 @@ import { getModelDisplayName } from '@/packages/models'
 import { useIsSmallScreen } from './hooks/useScreenChange'
 
 interface Props {
-    setConfigureChatConfig(session: Session | null): void
 }
 
 export default function MainPane(props: Props) {
     const { t } = useTranslation()
+    const theme = useTheme()
     const currentSession = useAtomValue(atoms.currentSessionAtom)
+    const setChatConfigDialogSession = useSetAtom(atoms.chatConfigDialogAtom)
     const [showSidebar, setShowSidebar] = useAtom(atoms.showSidebarAtom)
 
     const atScrollTop = useAtomValue(atoms.messageScrollingAtTopAtom)
@@ -44,7 +44,7 @@ export default function MainPane(props: Props) {
     }, [currentSession.messages])
 
     const editCurrentSession = () => {
-        props.setConfigureChatConfig(currentSession)
+        setChatConfigDialogSession(currentSession)
     }
 
     return (
@@ -53,11 +53,11 @@ export default function MainPane(props: Props) {
             sx={{
                 flexGrow: 1,
                 ...(showSidebar && {
-                    marginLeft: { sm: `calc(${drawerWidth}px - 1rem)` },
+                    marginLeft: { sm: `${drawerWidth}px` },
                 }),
             }}
         >
-            <Stack className="h-full relative">
+            <div className="flex flex-col h-full">
                 {
                     // 小屏幕的广告UI
                     isSmallScreen && (
@@ -66,7 +66,13 @@ export default function MainPane(props: Props) {
                         </Box>
                     )
                 }
-                <Box className="flex flex-row">
+                <div className="flex flex-row pt-3 pb-2 px-0.5 sm:px-4"
+                    style={{
+                        borderBottomWidth: '1px',
+                        borderBottomStyle: 'solid',
+                        borderBottomColor: theme.palette.divider,
+                    }}
+                >
                     {!showSidebar && (
                         <Box className="mr-1">
                             <IconButton onClick={() => setShowSidebar(!showSidebar)}>
@@ -91,7 +97,6 @@ export default function MainPane(props: Props) {
                     >
                         {!showSidebar ? (
                             <>
-                                <img className="w-7 h-7" src={icon} />
                                 <Typography variant="h6" noWrap className="ml-1 max-w-56">
                                     {currentSession.name}
                                 </Typography>
@@ -141,13 +146,13 @@ export default function MainPane(props: Props) {
                         !isSmallScreen && <SponsorChip sessionId={currentSession.id} />
                     }
                     <Toolbar />
-                </Box>
+                </div>
                 <MessageList />
                 <Box className="relative">
                     <ButtonGroup
                         sx={{
                             position: 'absolute',
-                            right: '0.2rem',
+                            right: '0.8rem',
                             top: '-5.5rem',
                             opacity: 0.6,
                         }}
@@ -172,7 +177,7 @@ export default function MainPane(props: Props) {
                     </ButtonGroup>
                 </Box>
                 <InputBox currentSessionId={currentSession.id} currentSessionType={currentSession.type} />
-            </Stack>
+            </div>
         </Box>
     )
 }

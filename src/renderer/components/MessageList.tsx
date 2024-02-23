@@ -3,7 +3,7 @@ import Message from './Message'
 import * as atoms from '../stores/atoms'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { Virtuoso } from 'react-virtuoso'
-import { List, Divider } from '@mui/material'
+import { Divider } from '@mui/material'
 import { VirtuosoHandle } from 'react-virtuoso'
 import * as scrollActions from '../stores/scrollActions'
 import { useTranslation } from 'react-i18next'
@@ -42,17 +42,7 @@ export default function MessageList(props: Props) {
     }, [currentSession.threads])
 
     return (
-        <List
-            className="scroll"
-            sx={{
-                bgcolor: 'background.paper',
-                overflow: 'auto',
-                '& ul': { padding: 0 },
-                height: '100%',
-            }}
-            component="div"
-            ref={messageListRef}
-        >
+        <div className='overflow-auto h-full pr-0 pl-1 sm:pl-0' ref={messageListRef}>
             <Virtuoso
                 data={currentMessageList}
                 atTopStateChange={(atTop) => {
@@ -68,10 +58,12 @@ export default function MessageList(props: Props) {
                         <>
                             {
                                 index !== 0 && currentThreadHash[msg.id] && (
-                                    <Divider variant='middle' className='py-3 cursor-pointer' key={'divider-' + msg.id}
-                                        onClick={() => setShowHistoryDrawer(currentThreadHash[msg.id].id)}
+                                    <div className='text-center pb-4 pt-8' key={'divider-' + msg.id}
                                     >
-                                        <span className=''>
+                                        <span className='cursor-pointer font-bold border-solid border rounded-2xl py-2 px-3 border-slate-400/25'
+                                            onClick={() => setShowHistoryDrawer(currentThreadHash[msg.id].id)}
+                                        >
+                                            #
                                             {
                                                 currentThreadHash[msg.id].name
                                                 || t('New Thread')
@@ -84,7 +76,7 @@ export default function MessageList(props: Props) {
                                                 )
                                             }
                                         </span>
-                                    </Divider>
+                                    </div>
                                 )
                             }
                             <Message
@@ -122,6 +114,6 @@ export default function MessageList(props: Props) {
                     }
                 }}
             />
-        </List>
+        </div>
     )
 }

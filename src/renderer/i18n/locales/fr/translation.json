@@ -203,5 +203,8 @@
     "To access locally deployed model services, please install the Chatbox desktop version": "Pour accéder aux services de modèles déployés localement, veuillez installer la version de bureau de Chatbox",
     "Download": "Télécharger",
     "Spell Check": "Vérification orthographique",
-    "This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices.": "Cette clé de licence a atteint la limite d'activation, <a>cliquez ici</a> pour gérer la licence et les appareils pour désactiver les anciens appareils."
+    "This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices.": "Cette clé de licence a atteint la limite d'activation, <a>cliquez ici</a> pour gérer la licence et les appareils pour désactiver les anciens appareils.",
+    "Type your question here...": "Tapez votre question ici...",
+    "View historical threads": "Voir les sujets historiques",
+    "Customize settings for the current conversation": "Personnaliser les paramètres pour la conversation actuelle"
 }

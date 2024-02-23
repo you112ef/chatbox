@@ -93,7 +93,7 @@ export default function Toolbar() {
                     </span>
                 </Button>
             )}
-            <IconButton
+            {/* <IconButton
                 edge="start"
                 color="inherit"
                 aria-label="thread-history-drawer-button"
@@ -101,7 +101,7 @@ export default function Toolbar() {
                 onClick={() => setThreadHistoryDrawerOpen(true)}
             >
                 <HistoryIcon />
-            </IconButton>
+            </IconButton> */}
             <IconButton
                 edge="start"
                 color="inherit"

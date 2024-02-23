@@ -1,6 +1,5 @@
-import React, { MutableRefObject } from 'react'
+import { MutableRefObject } from 'react'
 import SessionItem from './SessionItem'
-import { Session } from '../../shared/types'
 import * as atoms from '../stores/atoms'
 import { useAtomValue, useSetAtom } from 'jotai'
 import type { DragEndEvent } from '@dnd-kit/core'
@@ -20,7 +19,6 @@ import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { SortableItem } from './SortableItem'
 
 export interface Props {
-    setConfigureChatConfig(session: Session): void
     openClearWindow(): void
     sessionListRef: MutableRefObject<HTMLDivElement | null>
 }
@@ -88,7 +86,6 @@ export default function SessionList(props: Props) {
                                 key={session.id}
                                 selected={currentSessionId === session.id}
                                 session={session}
-                                setConfigureChatConfig={props.setConfigureChatConfig}
                             />
                         </SortableItem>
                     ))}
@@ -103,7 +100,9 @@ function Subheader(props: { openClearWindow: () => void }) {
     return (
         <ListSubheader
             className="flex justify-between items-center"
-            sx={{ padding: '0.1rem 0.2rem', margin: '0.1rem 0.1rem 0.1rem 0.2rem' }}
+            sx={{
+                padding: '0.1rem 0.3rem 0.1rem 0.5rem',
+            }}
         >
             <span className="text-xs opacity-80">{t('chat')}</span>
             <IconButton onClick={props.openClearWindow}>

@@ -24,7 +24,7 @@ import TemperatureSlider from '../components/TemperatureSlider'
 import TopPSlider from '../components/TopPSlider'
 import MaxContextMessageCountSlider from '../components/MaxContextMessageCountSlider'
 import * as atoms from '../stores/atoms'
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useAtom } from 'jotai'
 import { Accordion, AccordionSummary, AccordionDetails } from '../components/Accordion'
 import ClaudeModelSelect from '../components/ClaudeModelSelect'
 import ChatboxAIModelSelect from '../components/ChatboxAIModelSelect'
@@ -39,41 +39,54 @@ import OllamaSetting from './SettingDialog/OllamaSetting'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 interface Props {
-    open: boolean
-    session: Session
-    close(): void
 }
 
 export default function ChatConfigWindow(props: Props) {
     const { t } = useTranslation()
     const isSmallScreen = useIsSmallScreen()
-    const [dataEdit, setDataEdit] = React.useState<Session>(props.session)
+    const [chatConfigDialogSession, setChatConfigDialogSession] = useAtom(atoms.chatConfigDialogAtom)
+
+    const [editingData, setEditingData] = React.useState<Session | null>(chatConfigDialogSession)
+    useEffect(() => {
+        if (!chatConfigDialogSession) {
+            setEditingData(null)
+        } else {
+            setEditingData({
+                ...chatConfigDialogSession,
+                settings: chatConfigDialogSession.settings
+                    ? { ...chatConfigDialogSession.settings }
+                    : undefined,
+            })
+        }
+    }, [chatConfigDialogSession])
 
     useEffect(() => {
-        setDataEdit(props.session)
-    }, [props.session])
-    useEffect(() => {
-        if (props.open) {
+        if (chatConfigDialogSession) {
             window.gtag('event', 'screen_view', { screen_name: 'chat_config_window' })
         }
-    }, [props.open])
+    }, [chatConfigDialogSession])
 
     const onCancel = () => {
-        props.close()
-        setDataEdit(props.session)
+        setChatConfigDialogSession(null)
+        setEditingData(null)
     }
-
     const onSave = () => {
-        if (dataEdit.name === '') {
-            dataEdit.name = props.session.name
+        if (!chatConfigDialogSession || !editingData) {
+            return
         }
-        dataEdit.name = dataEdit.name.trim()
-        sessionActions.modify(dataEdit)
-        props.close()
+        if (editingData.name === '') {
+            editingData.name = chatConfigDialogSession.name
+        }
+        editingData.name = editingData.name.trim()
+        sessionActions.modify(editingData)
+        setChatConfigDialogSession(null)
     }
 
+    if (!chatConfigDialogSession || !editingData) {
+        return null
+    }
     return (
-        <Dialog open={props.open} onClose={onCancel} fullWidth>
+        <Dialog open={!!chatConfigDialogSession} onClose={onCancel} fullWidth>
             <DialogTitle>{t('Conversation Settings')}</DialogTitle>
             <DialogContent>
                 <DialogContentText></DialogContentText>
@@ -84,11 +97,11 @@ export default function ChatConfigWindow(props: Props) {
                     type="text"
                     fullWidth
                     variant="outlined"
-                    value={dataEdit.name}
-                    onChange={(e) => setDataEdit({ ...dataEdit, name: e.target.value })}
+                    value={editingData.name}
+                    onChange={(e) => setEditingData({ ...editingData, name: e.target.value })}
                 />
-                {isChatSession(props.session) && <ChatConfig dataEdit={dataEdit} setDataEdit={setDataEdit} />}
-                {isPictureSession(props.session) && <PictureConfig dataEdit={dataEdit} setDataEdit={setDataEdit} />}
+                {isChatSession(chatConfigDialogSession) && <ChatConfig dataEdit={editingData} setDataEdit={setEditingData} />}
+                {isPictureSession(chatConfigDialogSession) && <PictureConfig dataEdit={editingData} setDataEdit={setEditingData} />}
             </DialogContent>
             <DialogActions>
                 <Button onClick={onCancel}>{t('cancel')}</Button>

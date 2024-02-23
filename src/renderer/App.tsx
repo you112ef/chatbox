@@ -71,21 +71,18 @@ function Main() {
     // 是否展示会话列表清理窗口
     const [openClearConversationListWindow, setOpenClearConversationListWindow] = React.useState(false)
 
-    const [configureChatConfig, setConfigureChatConfig] = React.useState<Session | null>(null)
-
     return (
-        <Box className="box-border App px-2 sm:px-4" spellCheck={spellCheck}>
-            <Grid container className="h-full pt-4">
+        <Box className="box-border App" spellCheck={spellCheck}>
+            <Grid container className="h-full">
                 <Sidebar
                     open={showSidebar}
                     swtichOpen={setShowSidebar}
-                    setConfigureChatConfig={setConfigureChatConfig}
                     openClearConversationListWindow={() => setOpenClearConversationListWindow(true)}
                     openCopilotWindow={() => setOpenCopilotWindow(true)}
                     openAboutWindow={() => setOpenAboutWindow(true)}
                     setOpenSettingWindow={setOpenSettingWindow}
                 />
-                <MainPane setConfigureChatConfig={setConfigureChatConfig} />
+                <MainPane />
                 <ThreadHistoryDrawer />
             </Grid>
             <SettingDialog
@@ -94,13 +91,7 @@ function Main() {
                 close={() => setOpenSettingWindow(null)}
             />
             <AboutWindow open={openAboutWindow} close={() => setOpenAboutWindow(false)} />
-            {configureChatConfig !== null && (
-                <ChatConfigWindow
-                    open={configureChatConfig !== null}
-                    session={configureChatConfig}
-                    close={() => setConfigureChatConfig(null)}
-                />
-            )}
+            <ChatConfigWindow />
             <CleanWidnow />
             <CopilotWindow
                 open={openCopilotWindow}

@@ -204,5 +204,8 @@
     "To access locally deployed model services, please install the Chatbox desktop version": "为访问本地部署的模型服务，请安装 Chatbox 的桌面版本",
     "Download": "下载",
     "Spell Check": "拼写检查",
-    "This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices.": "此 license 已达到激活上限，<a>点击这里</a>管理 license 与设备来取消激活旧设备。"
+    "This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices.": "此 license 已达到激活上限，<a>点击这里</a>管理 license 与设备来取消激活旧设备。",
+    "Type your question here...": "在这里输入你的问题...",
+    "View historical threads": "查看历史话题",
+    "Customize settings for the current conversation": "打开当前对话的专属设置"
 }

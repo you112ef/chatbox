@@ -2,7 +2,7 @@
 
 // ------ 消息输入框 ------
 
-export const InputBoxID = 'message-input'
+export const InputBoxID = 'input-box-2024-02-22'
 
 export function getInputBoxHeight(): number {
     const element = document.getElementById(InputBoxID)
@@ -22,7 +22,7 @@ export const focusMessageInput = () => {
 
 // 将光标位置设置为文本末尾
 export function setMessageInputCursorToEnd() {
-    const dom = document.getElementById(messageInputID) as HTMLInputElement
+    const dom = document.getElementById(messageInputID) as HTMLTextAreaElement
     if (!dom) {
         return
     }

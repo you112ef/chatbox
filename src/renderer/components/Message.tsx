@@ -236,6 +236,7 @@ function _Message(props: Props) {
             }}
             className={[
                 'msg-block',
+                'px-2',
                 msg.generating ? 'rendering' : 'render-done',
                 {
                     user: 'user-msg',
@@ -253,35 +254,70 @@ function _Message(props: Props) {
                 },
             }}
         >
-            <Grid container wrap="nowrap" spacing={2}>
+            <Grid container wrap="nowrap" spacing={1.5}>
                 <Grid item>
                     <Box sx={{ marginTop: '8px' }}>
                         {
                             {
                                 assistant: currentSessionPicUrl ? (
-                                    <Avatar src={currentSessionPicUrl}></Avatar>
+                                    <Avatar
+                                        src={currentSessionPicUrl}
+                                        sx={{
+                                            width: '28px',
+                                            height: '28px',
+                                        }}
+                                    />
                                 ) : props.sessionType === 'picture' ? (
-                                    <Avatar sx={{ backgroundColor: 'secondary.main' }}>
-                                        <ImageIcon />
+                                    <Avatar
+                                        sx={{
+                                            backgroundColor: theme.palette.secondary.main,
+                                            width: '28px',
+                                            height: '28px',
+                                        }}
+                                    >
+                                        <ImageIcon fontSize='small' />
                                     </Avatar>
                                 ) : (
-                                    <Avatar>
-                                        <SmartToyIcon />
+                                    <Avatar
+                                        sx={{
+                                            backgroundColor: theme.palette.primary.main,
+                                            width: '28px',
+                                            height: '28px',
+                                        }}
+                                    >
+                                        <SmartToyIcon fontSize='small' />
                                     </Avatar>
                                 ),
                                 user: (
-                                    <Avatar>
-                                        <PersonIcon />
+                                    <Avatar
+                                        sx={{
+                                            width: '28px',
+                                            height: '28px',
+                                        }}
+                                    >
+                                        <PersonIcon fontSize='small' />
                                     </Avatar>
                                 ),
                                 system:
                                     props.sessionType === 'picture' ? (
-                                        <Avatar sx={{ backgroundColor: 'secondary.main' }}>
-                                            <ImageIcon />
+                                        <Avatar
+                                            sx={{
+                                                backgroundColor: theme.palette.secondary.main,
+                                                width: '28px',
+                                                height: '28px',
+                                            }}
+                                        >
+                                            <ImageIcon fontSize='small' />
                                         </Avatar>
                                     ) : (
-                                        <Avatar>
-                                            <SettingsIcon />
+                                        <Avatar
+                                            sx={{
+                                                backgroundColor: theme.palette.warning.main,
+                                                width: '28px',
+                                                height: '28px',
+                                            }}
+                                        >
+                                            <SettingsIcon fontSize='small' />
                                         </Avatar>
                                     ),
                             }[msg.role]
@@ -340,7 +376,7 @@ function _Message(props: Props) {
                                     ...(fixedButtonGroup
                                         ? {
                                             position: 'fixed',
-                                            bottom: dom.getInputBoxHeight() + 10 + 'px',
+                                            bottom: dom.getInputBoxHeight() + 4 + 'px',
                                             zIndex: 100,
                                         }
                                         : {}),

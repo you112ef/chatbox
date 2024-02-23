@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react'
+import { useSetAtom } from 'jotai'
 import { ListItemText, MenuItem, Divider, Avatar, IconButton, Typography, ListItemIcon } from '@mui/material'
 import { Session } from '../../shared/types'
 import CopyIcon from '@mui/icons-material/CopyAll'
@@ -12,16 +13,17 @@ import StarIcon from '@mui/icons-material/Star'
 import StarOutlineIcon from '@mui/icons-material/StarOutline'
 import ImageIcon from '@mui/icons-material/Image'
 import * as sessionActions from '../stores/sessionActions'
+import * as atoms from '@/stores/atoms'
 
 export interface Props {
     session: Session
     selected: boolean
-    setConfigureChatConfig: (session: Session) => void
 }
 
 function _SessionItem(props: Props) {
-    const { session, selected, setConfigureChatConfig } = props
+    const { session, selected } = props
     const { t } = useTranslation()
+    const setChatConfigDialogSession = useSetAtom(atoms.chatConfigDialogAtom)
     const [hovering, setHovering] = useState(false)
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
@@ -90,7 +92,7 @@ function _SessionItem(props: Props) {
                 <MenuItem
                     key={session.id + 'edit'}
                     onClick={() => {
-                        setConfigureChatConfig(session)
+                        setChatConfigDialogSession(session)
                         handleMenuClose()
                     }}
                     disableRipple
@@ -156,5 +158,5 @@ function _SessionItem(props: Props) {
 export default function Session(props: Props) {
     return useMemo(() => {
         return <_SessionItem {...props} />
-    }, [props.session, props.selected, props.setConfigureChatConfig])
+    }, [props.session, props.selected])
 }

@@ -204,5 +204,8 @@
     "To access locally deployed model services, please install the Chatbox desktop version": "為訪問本地部署的模型服務，請安裝 Chatbox 的桌面版本",
     "Download": "下載",
     "Spell Check": "拼字檢查",
-    "This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices.": "此 license 授權密鑰已達到啟用限制，<a>點擊這裡</a>管理授權與設備以停用舊設備。"
+    "This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices.": "此 license 授權密鑰已達到啟用限制，<a>點擊這裡</a>管理授權與設備以停用舊設備。",
+    "Type your question here...": "在這裡輸入你的問題...",
+    "View historical threads": "查看歷史話題",
+    "Customize settings for the current conversation": "為當前對話自定義設置"
 }
