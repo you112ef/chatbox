@@ -280,7 +280,8 @@ export default function InputBox(props: Props) {
                                 {t('[Enter] send, [Shift+Enter] line break, [Ctrl+Enter] send without generating')}
                             </Typography>
                         }
-                        tooltipPlacement='top-end'
+                        tooltipPlacement='top'
+                        onClick={() => handleSubmit()}
                     >
                         <SendHorizontal size='22' strokeWidth={1} />
                     </MiniButton>
