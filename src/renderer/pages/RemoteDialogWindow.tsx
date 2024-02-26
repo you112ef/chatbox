@@ -15,30 +15,33 @@ export default function RemoteDialogWindow() {
     const [open, setOpen] = useState(false)
     const [dialogConfig, setDialogConfig] = useState<remote.DialogConfig | null>(null)
 
-    const store = getDefaultStore()
+    const checkRemoteDialog = async () => {
+        const store = getDefaultStore()
+        const config = await storage.getConfig()
+        const settings = store.get(settingsAtom)
+        const version = await api.getVersion()
+        if (version === '0.0.1') {
+            return // 本地开发环境不显示远程弹窗
+        }
+        try {
+            const dialog = await remote.getDialogConfig({
+                uuid: config.uuid,
+                language: settings.language,
+                version: version,
+            })
+            setDialogConfig(dialog)
+            if (dialog) {
+                setOpen(true)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
     useEffect(() => {
-        ;(async () => {
-            const config = await storage.getConfig()
-            const settings = store.get(settingsAtom)
-            const version = await api.getVersion()
-            if (version === '0.0.1') {
-                return // 本地开发环境不显示远程弹窗
-            }
-            try {
-                const dialog = await remote.getDialogConfig({
-                    uuid: config.uuid,
-                    language: settings.language,
-                    version: version,
-                })
-                setDialogConfig(dialog)
-                if (dialog) {
-                    setOpen(true)
-                }
-            } catch (e) {
-                console.log(e)
-            }
-        })()
+        checkRemoteDialog()
+        setInterval(checkRemoteDialog, 1000 * 60 * 60 * 24) // 对于常年不关机的用户，也要每天检查一次
     }, [])
+    // 打点上报
     useEffect(() => {
         if (open) {
             window.gtag('event', 'screen_view', { screen_name: 'remote_dialog_window' })
