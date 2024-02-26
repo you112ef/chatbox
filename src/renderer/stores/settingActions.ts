@@ -1,6 +1,6 @@
 import { getDefaultStore } from 'jotai'
 import * as atoms from './atoms'
-import * as defaults from './defaults'
+import * as defaults from '../../shared/defaults'
 import { Settings } from '../../shared/types'
 
 export function modify(update: Partial<Settings>) {

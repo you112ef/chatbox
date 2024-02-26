@@ -1,7 +1,7 @@
 import { Button, Alert, TextField, Typography, Box } from '@mui/material'
 import { ModelSettings } from '../../../shared/types'
 import { useTranslation } from 'react-i18next'
-import * as defaults from '../../stores/defaults'
+import * as defaults from '../../../shared/defaults'
 import { Accordion, AccordionSummary, AccordionDetails } from '../../components/Accordion'
 import TemperatureSlider from '../../components/TemperatureSlider'
 import TopPSlider from '../../components/TopPSlider'

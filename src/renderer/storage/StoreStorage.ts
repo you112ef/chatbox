@@ -3,7 +3,7 @@ import WebStorage from './WebStorage'
 import * as runtime from '../packages/runtime'
 import BaseStorage from './BaseStorage'
 import { defaultSessionsForEN, defaultSessionsForCN } from '../packages/initial_data'
-import * as defaults from '../stores/defaults'
+import * as defaults from '../../shared/defaults'
 
 export enum StorageKey {
     ChatSessions = 'chat-sessions',

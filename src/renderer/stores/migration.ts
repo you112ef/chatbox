@@ -1,6 +1,6 @@
 import { getDefaultStore } from 'jotai'
 import { settingsAtom, configVersionAtom, sessionsAtom } from './atoms'
-import * as defaults from './defaults'
+import * as defaults from '../../shared/defaults'
 import { imageCreatorSessionForCN, imageCreatorSessionForEN } from '@/packages/initial_data'
 import * as runtime from '@/packages/runtime'
 import WebStorage from '@/storage/WebStorage'

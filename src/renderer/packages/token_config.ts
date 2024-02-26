@@ -1,6 +1,6 @@
 import { ModelProvider, SessionSettings } from '../../shared/types'
 import { modelConfigs } from '../packages/models/openai'
-import * as defaults from '../stores/defaults'
+import * as defaults from '../../shared/defaults'
 
 /**
  * 根据模型提供方、模型版本的设置，重置模型的 maxTokens、maxContextTokens

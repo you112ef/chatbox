@@ -1,7 +1,7 @@
 import { Button, TextField, Box, FormControlLabel, Switch, FormGroup } from '@mui/material'
 import { Settings } from '../../../shared/types'
 import { useTranslation } from 'react-i18next'
-import * as defaults from '../../stores/defaults'
+import * as defaults from '../../../shared/defaults'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 export default function ChatSettingTab(props: {
