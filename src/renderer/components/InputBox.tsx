@@ -14,7 +14,7 @@ import {
     Settings2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { scrollToBottom } from '@/stores/scrollActions'
+import { scrollToMessage } from '@/stores/scrollActions'
 import icon from '../static/icon.png'
 
 export interface Props {
@@ -65,7 +65,8 @@ export default function InputBox(props: Props) {
         if (messageInput.trim() === '') {
             return
         }
-        submit(createMessage('user', messageInput), needGenerating)
+        const newMessage = createMessage('user', messageInput)
+        submit(newMessage, needGenerating)
         setMessageInput('')
         window.gtag('event', 'send_message', { event_category: 'user' })
         // 重置清理上下文按钮
@@ -75,7 +76,7 @@ export default function InputBox(props: Props) {
                 clearTimeout(showRollbackThreadButtonTimerRef.current)
             }
         }
-        setTimeout(() => scrollToBottom(), 100)
+        setTimeout(() => scrollToMessage(newMessage.id), 100)
     }
 
     const minTextareaHeight = isSmallScreen ? 32 : 96
