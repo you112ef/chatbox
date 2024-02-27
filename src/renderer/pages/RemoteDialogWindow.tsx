@@ -7,6 +7,7 @@ import * as api from '../packages/runtime'
 import { settingsAtom } from '../stores/atoms'
 import storage from '../storage'
 import Markdown from '@/components/Markdown'
+import platform from '../platform'
 
 const { useEffect, useState } = React
 
@@ -17,9 +18,9 @@ export default function RemoteDialogWindow() {
 
     const checkRemoteDialog = async () => {
         const store = getDefaultStore()
-        const config = await storage.getConfig()
+        const config = await platform.getConfig()
         const settings = store.get(settingsAtom)
-        const version = await api.getVersion()
+        const version = await platform.getVersion()
         if (version === '0.0.1') {
             return // 本地开发环境不显示远程弹窗
         }
@@ -44,7 +45,7 @@ export default function RemoteDialogWindow() {
     // 打点上报
     useEffect(() => {
         if (open) {
-            window.gtag('event', 'screen_view', { screen_name: 'remote_dialog_window' })
+            platform.trackingEvent('remote_dialog_window', { event_category: 'screen_view' })
         }
     }, [open])
 

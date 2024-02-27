@@ -21,6 +21,7 @@ import useVersion from '../hooks/useVersion'
 import * as atoms from '../stores/atoms'
 import { useAtomValue } from 'jotai'
 import Markdown from '@/components/Markdown'
+import platform from '@/platform'
 
 interface Props {
     open: boolean
@@ -36,7 +37,7 @@ export default function AboutWindow(props: Props) {
     useEffect(() => {
         if (props.open) {
             remote.listSponsorAboutBanner().then(setSponsorBanners)
-            window.gtag('event', 'screen_view', { screen_name: 'about_window' })
+            platform.trackingEvent('about_window', { event_category: 'screen_view' })
         } else {
             setSponsorBanners([])
         }

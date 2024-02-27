@@ -1,9 +1,9 @@
-import { ElectronHandler } from '../main/preload'
+import { ElectronIPC } from '../shared/electron-types'
 
 declare global {
     // eslint-disable-next-line no-unused-vars
     interface Window {
-        electronAPI?: ElectronHandler
+        electronAPI?: ElectronIPC
     }
 }
 

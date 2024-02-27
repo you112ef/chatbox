@@ -45,7 +45,4 @@ export default class StoreStorage extends Storage {
         }
     }
 
-    public async getConfig() {
-        return this.getItem(StorageKey.Configs, defaults.configs())
-    }
 }

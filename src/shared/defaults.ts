@@ -44,7 +44,7 @@ export function settings(): Settings {
     }
 }
 
-export function configs(): Config {
+export function newConfigs(): Config {
     return { uuid: uuidv4() }
 }
 
@@ -53,7 +53,5 @@ export function getDefaultPrompt() {
 }
 
 export function sessions(): Session[] {
-    return [
-        { id: uuidv4(), name: 'Untitled', messages: [], type: 'chat' }
-    ]
+    return [{ id: uuidv4(), name: 'Untitled', messages: [], type: 'chat' }]
 }

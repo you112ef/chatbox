@@ -1,7 +1,8 @@
 import * as Sentry from '@sentry/react'
-import * as api from '../packages/runtime'
+import platform from '../platform'
+
 ;(async () => {
-    const version = await api.getVersion().catch(() => 'unknown')
+    const version = await platform.getVersion().catch(() => 'unknown')
     Sentry.init({
         dsn: 'https://3cf8d15960fc432cb886d6f62e3716dc@o180365.ingest.sentry.io/4505411943464960',
         integrations: [

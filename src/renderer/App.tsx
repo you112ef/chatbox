@@ -12,7 +12,6 @@ import useShortcut from './hooks/useShortcut'
 import useScreenChange from './hooks/useScreenChange'
 import * as remote from './packages/remote'
 import CopilotWindow from './pages/CopilotWindow'
-import useAnalytics from './hooks/useAnalytics'
 import { useI18nEffect } from './hooks/useI18nEffect'
 import Toasts from './components/Toasts'
 import * as settingActions from './stores/settingActions'
@@ -116,7 +115,6 @@ function Main() {
 
 export default function App() {
     useI18nEffect()
-    useAnalytics()
     usePremium() // 每次启动都执行usePremium，防止用户在其他地方取消订阅
     useSystemLanguageWhenInit()
     useShortcut()

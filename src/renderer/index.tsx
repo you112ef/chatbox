@@ -16,6 +16,9 @@ import './setup/load_polyfill'
 // Sentry 初始化
 import './setup/sentry_init'
 
+// GA4 初始化
+import './setup/ga_init'
+
 // 引入保护代码
 import './setup/protect'
 

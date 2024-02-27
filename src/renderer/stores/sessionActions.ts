@@ -21,7 +21,7 @@ import storage from '../storage'
 import i18n from '../i18n'
 import { getModel, getModelDisplayName } from '@/packages/models'
 import { AIProviderNoImplementedPaint, NetworkError, ApiError, BaseError } from '@/packages/models/errors'
-import * as dom from '../hooks/dom'
+import platform from '../platform'
 
 /**
  * 创建一个新的会话
@@ -447,7 +447,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
     // 获得依赖的数据
     const store = getDefaultStore()
     const globalSettings = store.get(atoms.settingsAtom)
-    const configs = await storage.getConfig()
+    const configs = await platform.getConfig()
     const session = getSession(sessionId)
     if (!session) {
         return
@@ -594,7 +594,7 @@ export async function generateName(sessionId: string) {
         return
     }
     const settings = mergeSettings(globalSettings, session)
-    const configs = await storage.getConfig()
+    const configs = await platform.getConfig()
     try {
         const model = getModel(settings, configs)
         await model.chat(promptFormat.nameConversation(session.messages.slice(0, 3)), ({ text }) => {

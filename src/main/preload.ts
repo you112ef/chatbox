@@ -1,10 +1,11 @@
 // Disable no-unused-vars, broken for spread args
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron'
+import { ElectronIPC } from 'src/shared/electron-types'
 
 // export type Channels = 'ipc-example';
 
-const electronHandler = {
+const electronHandler: ElectronIPC = {
     // ipcRenderer: {
     //     sendMessage(channel: Channels, ...args: unknown[]) {
     //         ipcRenderer.send(channel, ...args);
@@ -36,5 +37,3 @@ const electronHandler = {
 }
 
 contextBridge.exposeInMainWorld('electronAPI', electronHandler)
-
-export type ElectronHandler = typeof electronHandler

@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import storage from '../storage'
-import * as api from '../packages/runtime'
 import * as remote from '../packages/remote'
+import platform from '../platform'
 
 export default function useVersion() {
     const [version, _setVersion] = useState('')
@@ -9,11 +8,11 @@ export default function useVersion() {
     const updateCheckTimer = useRef<NodeJS.Timeout>()
     useEffect(() => {
         const handler = async () => {
-            const config = await storage.getConfig()
-            const version = await api.getVersion()
+            const config = await platform.getConfig()
+            const version = await platform.getVersion()
             _setVersion(version)
             try {
-                const os = await api.getPlatform()
+                const os = await platform.getPlatform()
                 if (version !== '') {   // web 版本无需检查更新
                     const needUpdate = await remote.checkNeedUpdate(version, os, config)
                     setNeedCheckUpdate(needUpdate)

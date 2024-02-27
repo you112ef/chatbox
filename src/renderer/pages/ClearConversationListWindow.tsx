@@ -2,6 +2,7 @@ import { ChangeEvent, useEffect, useState } from 'react'
 import { Input, Button, Dialog, DialogContent, DialogActions, DialogTitle, DialogContentText } from '@mui/material'
 import { useTranslation, Trans } from 'react-i18next'
 import * as sessionActions from '../stores/sessionActions'
+import platform from '@/platform'
 
 interface Props {
     open: boolean
@@ -21,13 +22,13 @@ export default function ClearConversationListWindow(props: Props) {
     useEffect(() => {
         setValue(100)
         if (props.open) {
-            window.gtag('event', 'screen_view', { screen_name: 'clear_conversation_list_window' })
+            platform.trackingEvent('clear_conversation_list_window', { event_category: 'screen_view' })
         }
     }, [props.open])
 
     const clean = () => {
         sessionActions.clearConversationList(value)
-        window.gtag('event', 'clear_conversation_list', { event_category: 'user' })
+        platform.trackingEvent('clear_conversation_list', { event_category: 'user' })
         props.close()
     }
     return (

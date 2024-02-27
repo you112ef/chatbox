@@ -82,16 +82,6 @@ export function onWindowShow(callback: () => void) {
     return electronAPI.onWindowShow(callback)
 }
 
-export const getVersion = async () => {
-    if (isWeb) {
-        return ''
-    }
-    if (!electronAPI) {
-        return 'Unknown'
-    }
-    return electronAPI.invoke('getVersion')
-}
-
 export const openLink = async (url: string) => {
     if (isWeb) {
         window.open(url)
@@ -101,16 +91,6 @@ export const openLink = async (url: string) => {
         return
     }
     electronAPI.invoke('openLink', url)
-}
-
-export const getPlatform = async () => {
-    if (isWeb) {
-        return 'web'
-    }
-    if (!electronAPI) {
-        return 'unknown'
-    }
-    return electronAPI.invoke('getPlatform')
 }
 
 export async function getInstanceName() {

@@ -19,8 +19,7 @@ import Toolbar from './components/Toolbar'
 import { getModelDisplayName } from '@/packages/models'
 import { useIsSmallScreen } from './hooks/useScreenChange'
 
-interface Props {
-}
+interface Props {}
 
 export default function MainPane(props: Props) {
     const { t } = useTranslation()
@@ -66,7 +65,8 @@ export default function MainPane(props: Props) {
                         </Box>
                     )
                 }
-                <div className="flex flex-row pt-3 pb-2 px-0.5 sm:px-4"
+                <div
+                    className="flex flex-row pt-3 pb-2 px-0.5 sm:px-4"
                     style={{
                         borderBottomWidth: '1px',
                         borderBottomStyle: 'solid',

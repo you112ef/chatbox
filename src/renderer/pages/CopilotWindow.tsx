@@ -37,6 +37,7 @@ import * as sessionActions from '../stores/sessionActions'
 import { useAtomValue } from 'jotai'
 import storage from '../storage'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import platform from '../platform'
 
 interface Props {
     open: boolean
@@ -79,7 +80,7 @@ export default function CopilotWindow(props: Props) {
             starred: false,
             copilotId: copilot.id,
         })
-        window.gtag('event', 'create_copilot_conversation', { event_category: 'user' })
+        platform.trackingEvent('create_copilot_conversation', { event_category: 'user' })
     }
 
     const useCopilot = (detail: CopilotDetail) => {
@@ -97,7 +98,7 @@ export default function CopilotWindow(props: Props) {
         if (!props.open) {
             setCopilotEdit(null)
         } else {
-            window.gtag('event', 'screen_view', { screen_name: 'copilot_window' })
+            platform.trackingEvent('copilot_window', { event_category: 'screen_view' })
         }
     }, [props.open])
 
@@ -435,7 +436,7 @@ function CopilotForm(props: CopilotFormProps) {
             return
         }
         props.save(copilotEdit)
-        window.gtag('event', 'create_copilot', { event_category: 'user' })
+        platform.trackingEvent('create_copilot', { event_category: 'user' })
     }
     return (
         <Box
@@ -508,7 +509,7 @@ function CopilotForm(props: CopilotFormProps) {
 }
 
 export async function getEmptyCopilot(): Promise<CopilotDetail> {
-    const conf = await storage.getConfig()
+    const conf = await platform.getConfig()
     return {
         id: `${conf.uuid}:${uuidv4()}`,
         name: '',

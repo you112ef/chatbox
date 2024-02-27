@@ -16,11 +16,12 @@ import log from 'electron-log'
 import MenuBuilder from './menu'
 import { resolveHtmlPath } from './util'
 import Locale from './locales'
-import { store } from './store'
+import { store, getConfig } from './store'
 import * as shortcuts from './shortcut'
 import * as proxy from './proxy'
 import * as windowState from './window_state'
 import * as fs from 'fs-extra'
+import * as analystic from './analystic-node'
 import sanitizeFilename from 'sanitize-filename'
 
 // 这行代码是解决 Windows 通知的标题和图标不正确的问题，标题会错误显示成 electron.app.Chatbox
@@ -308,4 +309,15 @@ ipcMain.handle('ensureProxy', (event, json) => {
 ipcMain.handle('relaunch', () => {
     app.relaunch()
     app.quit()
+})
+
+ipcMain.handle('analysticTrackingEvent', (event, dataJson) => {
+    const data = JSON.parse(dataJson)
+    analystic.event(data.name, data.params).catch((e) => {
+        log.error('analystic_tracking_event', e)
+    })
+})
+
+ipcMain.handle('getConfig', (event) => {
+    return getConfig()
 })

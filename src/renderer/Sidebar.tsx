@@ -26,6 +26,7 @@ import { useSetAtom, useAtomValue } from 'jotai'
 import * as atoms from './stores/atoms'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import { useIsSmallScreen } from './hooks/useScreenChange'
+import platform from './platform'
 
 export const drawerWidth = 240
 
@@ -51,14 +52,14 @@ export default function Sidebar(props: Props) {
         if (sessionListRef.current) {
             sessionListRef.current.scrollTo(0, 0)
         }
-        window.gtag('event', 'create_new_conversation', { event_category: 'user' })
+        platform.trackingEvent('create_new_conversation', { event_category: 'user' })
     }
     const handleCreateNewPictureSession = () => {
         sessionActions.createEmpty('picture')
         if (sessionListRef.current) {
             sessionListRef.current.scrollTo(0, 0)
         }
-        window.gtag('event', 'create_new_picture_conversation', { event_category: 'user' })
+        platform.trackingEvent('create_new_picture_conversation', { event_category: 'user' })
     }
 
     // 小屏幕切换会话时隐藏侧边栏
@@ -72,7 +73,7 @@ export default function Sidebar(props: Props) {
     const stack = (
         <div className="ToolBar h-full">
             <Stack
-                className='pt-3 pl-2 pr-1'
+                className="pt-3 pl-2 pr-1"
                 sx={{
                     height: '100%',
                 }}
@@ -91,12 +92,9 @@ export default function Sidebar(props: Props) {
                     </Box>
                 </Box>
 
-                <SessionList
-                    openClearWindow={props.openClearConversationListWindow}
-                    sessionListRef={sessionListRef}
-                />
+                <SessionList openClearWindow={props.openClearConversationListWindow} sessionListRef={sessionListRef} />
 
-                <Divider variant='fullWidth' />
+                <Divider variant="fullWidth" />
 
                 <MenuList sx={{ marginBottom: '20px' }}>
                     <MenuItem onClick={handleCreateNewSession} sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}>
