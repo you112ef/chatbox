@@ -1,7 +1,6 @@
 import { Tooltip, Button, ButtonGroup, Card, Typography, Box } from '@mui/material'
 import { ChatboxAILicenseDetail, ModelSettings } from '../../../shared/types'
 import { Trans, useTranslation } from 'react-i18next'
-import * as runtime from '../../packages/runtime'
 import { usePremium } from '../../hooks/usePremium'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import PasswordTextField from '../../components/PasswordTextField'
@@ -149,7 +148,7 @@ function ActivedButtonGroup(props: { premium: ReturnType<typeof usePremium> }) {
                 variant="outlined"
                 sx={{ marginRight: '10px' }}
                 onClick={() => {
-                    runtime.openLink('https://chatboxai.app/redirect_app/manage_license')
+                    platform.openLink('https://chatboxai.app/redirect_app/manage_license')
                     platform.trackingEvent('click_manage_license_button', { event_category: 'user' })
                 }}
             >
@@ -170,7 +169,7 @@ function ActivedButtonGroup(props: { premium: ReturnType<typeof usePremium> }) {
                 variant="text"
                 sx={{ marginRight: '10px' }}
                 onClick={() => {
-                    runtime.openLink('https://chatboxai.app/redirect_app/view_more_plans')
+                    platform.openLink('https://chatboxai.app/redirect_app/view_more_plans')
                     platform.trackingEvent('click_view_more_plans_button', { event_category: 'user' })
                 }}
             >
@@ -189,7 +188,7 @@ function InactivedButtonGroup() {
                 variant="outlined"
                 sx={{ marginRight: '10px' }}
                 onClick={() => {
-                    runtime.openLink('https://chatboxai.app/redirect_app/get_license')
+                    platform.openLink('https://chatboxai.app/redirect_app/get_license')
                     platform.trackingEvent('click_get_license_button', { event_category: 'user' })
                 }}
             >
@@ -199,7 +198,7 @@ function InactivedButtonGroup() {
                 variant="text"
                 sx={{ marginRight: '10px' }}
                 onClick={() => {
-                    runtime.openLink('https://chatboxai.app/redirect_app/manage_license')
+                    platform.openLink('https://chatboxai.app/redirect_app/manage_license')
                     platform.trackingEvent('click_retrieve_license_button', { event_category: 'user' })
                 }}
             >

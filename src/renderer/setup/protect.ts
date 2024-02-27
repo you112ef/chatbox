@@ -1,13 +1,13 @@
 // 处理前端代码被剽窃的情况
 
-import * as runtime from '../packages/runtime'
+import platform from '../platform'
 import { CHATBOX_BUILD_TARGET } from '../variables'
 
 switch (CHATBOX_BUILD_TARGET) {
     case 'mobile_app':
         break
     case 'unknown':
-        if (runtime.isWeb) {
+        if (platform.type === 'web') {
             protect()
         }
         break

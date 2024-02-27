@@ -1,7 +1,7 @@
 import { TextField, Box } from '@mui/material'
 import { ModelSettings } from '../../../shared/types'
 import { Trans, useTranslation } from 'react-i18next'
-import * as runtime from '../../packages/runtime'
+import platform from '../../platform'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 interface ModelConfigProps {
@@ -42,7 +42,7 @@ export default function ChatGLM6BSetting(props: ModelConfigProps) {
                                 <a href={'https://github.com/THUDM/ChatGLM-6B'} target="_blank"></a>,
                             ]}
                         />
-                        {runtime.isWeb && (
+                        {platform.type === 'web' && (
                             <>
                                 <br />
                                 <Trans i18nKey="ChatGLM-6B Warnning for Chatbox-Web" />

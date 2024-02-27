@@ -1,45 +1,46 @@
-import localforage from 'localforage'
+import platform from "@/platform"
 
 export default class BaseStorage {
     constructor() {}
 
     public async setItem<T>(key: string, value: T): Promise<void> {
-        throw new Error('not implemented')
+        return platform.setStoreValue(key, value)
     }
 
     // getItem 需要保证如果数据不存在，返回默认值的同时，也要将默认值写入存储
     public async getItem<T>(key: string, initialValue: T): Promise<T> {
-        throw new Error('not implemented')
+        let value: any = await platform.getStoreValue(key)
+        if (value === undefined || value === null) {
+            value = initialValue
+            this.setItem(key, value)
+        }
+        return value
     }
 
     public async removeItem(key: string): Promise<void> {
-        throw new Error('not implemented')
-    }
-
-    public async save() {
-        throw new Error('not implemented')
+        return platform.delStoreValue(key)
     }
 
     public async getAll(): Promise<{ [key: string]: any }> {
-        throw new Error('not implemented')
+        return platform.getAllStoreValues()
     }
 
     public async setAll(data: { [key: string]: any }) {
-        throw new Error('not implemented')
+        return platform.setAllStoreValues(data)
     }
 
     // TODO: 这些数据也应该实现数据导出与导入
     public async setBlob(key: string, value: string) {
-        return localforage.setItem(key, value)
+        return platform.setStoreBlob(key, value)
     }
     public async getBlob(key: string): Promise<string | null> {
-        return localforage.getItem<string>(key)
+        return platform.getStoreBlob(key)
     }
     public async delBlob(key: string) {
-        return localforage.removeItem(key)
+        return platform.delStoreBlob(key)
     }
     public async getBlobKeys(): Promise<string[]> {
-        return localforage.keys()
+        return platform.listStoreBlobKeys()
     }
     // subscribe(key: string, callback: any, initialValue: any): Promise<void>
 }

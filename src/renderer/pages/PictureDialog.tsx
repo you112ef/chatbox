@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next'
 import * as atoms from '../stores/atoms'
 import { useAtom } from 'jotai'
 import { ImageInStorage, Image } from '@/components/Image'
-import * as runtime from '@/packages/runtime'
 import storage from '@/storage'
 import SaveIcon from '@mui/icons-material/Save'
+import * as exporter from '@/packages/exporter'
 
 interface Props { }
 
@@ -23,10 +23,10 @@ export default function PictureDialog(props: Props) {
             if (!base64) {
                 return
             }
-            runtime.exportPngFile('export.png', base64)
+            exporter.exportPngFile('export.png', base64)
         }
         if (pictureShow.url) {
-            runtime.exportByUrl('export.png', pictureShow.url)
+            exporter.exportByUrl('export.png', pictureShow.url)
         }
     }
 

@@ -2,8 +2,8 @@ import { getDefaultStore } from 'jotai'
 import { settingsAtom, configVersionAtom, sessionsAtom } from './atoms'
 import * as defaults from '../../shared/defaults'
 import { imageCreatorSessionForCN, imageCreatorSessionForEN } from '@/packages/initial_data'
-import * as runtime from '@/packages/runtime'
-import WebStorage from '@/storage/WebStorage'
+import platform from '@/platform'
+import WebPlatform from '@/platform/web_platform'
 import storage, { StorageKey } from '@/storage'
 
 export function migrate() {
@@ -44,7 +44,7 @@ async function migrate_0_to_1() {
 
 async function migrate_1_to_2() {
     const sessions = await storage.getItem(StorageKey.ChatSessions, defaults.sessions())
-    const lang = await runtime.getLocale()
+    const lang = await platform.getLocale()
     if (lang.startsWith('zh')) {
         if (sessions.find((session) => session.id === imageCreatorSessionForCN.id)) {
             return
@@ -60,17 +60,17 @@ async function migrate_1_to_2() {
 
 async function migrate_2_to_3() {
     // 原来 Electron 应用存储图片 base64 数据到 IndexedDB，现在改成本地文件存储
-    if (runtime.runtime !== 'electron') {
+    if (platform.type !== 'desktop') {
         return
     }
-    const ws = new WebStorage()
-    const blobKeys = await ws.getBlobKeys()
+    const ws = new WebPlatform()
+    const blobKeys = await ws.listStoreBlobKeys()
     for (const key of blobKeys) {
-        const value = await ws.getBlob(key)
+        const value = await ws.getStoreBlob(key)
         if (!value) {
             continue
         }
         await storage.setBlob(key, value)
-        await ws.delBlob(key)
+        await ws.delStoreBlob(key)
     }
 }

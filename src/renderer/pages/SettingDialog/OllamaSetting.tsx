@@ -5,8 +5,7 @@ import TemperatureSlider from '@/components/TemperatureSlider'
 import TextFieldReset from '@/components/TextFieldReset'
 import { useEffect, useState } from 'react'
 import Ollama from '@/packages/models/ollama'
-import { isWeb } from '@/packages/runtime'
-import * as runtime from '@/packages/runtime'
+import platform from '@/platform'
 
 interface ModelConfigProps {
     settingsEdit: SessionSettings
@@ -38,10 +37,10 @@ export default function OllamaSetting(props: ModelConfigProps) {
                 fullWidth
             />
             {
-                settingsEdit.ollamaHost && settingsEdit.ollamaHost.includes('http://localhost') && isWeb && (
+                settingsEdit.ollamaHost && settingsEdit.ollamaHost.includes('http://localhost') && platform.type === 'web' && (
                     <Alert severity="warning">
                         {t('To access locally deployed model services, please install the Chatbox desktop version')}
-                        <Button onClick={() => runtime.openLink('https://chatboxai.app/')}>
+                        <Button onClick={() => platform.openLink('https://chatboxai.app/')}>
                             {t('Download')}
                         </Button>
                     </Alert>

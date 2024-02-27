@@ -2,12 +2,10 @@ import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import Button from '@mui/material/Button'
 import SearchIcon from '@mui/icons-material/Search'
-import HistoryIcon from '@mui/icons-material/History'
 import Save from '@mui/icons-material/Save'
 import { useAtomValue, useSetAtom } from 'jotai'
 import * as atoms from '../stores/atoms'
 import { useTranslation } from 'react-i18next'
-import * as runtime from '../packages/runtime'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import StyledMenu from './StyledMenu'
 import { useState } from 'react'
@@ -15,6 +13,7 @@ import { MenuItem, Divider } from '@mui/material'
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import { Message } from 'src/shared/types'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import * as exporter from '@/packages/exporter'
 
 /**
  * 顶部标题工具栏（右侧）
@@ -51,7 +50,7 @@ export default function Toolbar() {
         const content = messageList
             .map((msg) => `**${msg.role}**:\n${msg.content}`)
             .join('\n\n--------------------\n\n')
-        runtime.exportTextFile('Export.md', content)
+        exporter.exportTextFile('Export.md', content)
         handleMoreMenuClose()
     }
     const handleSessionClean = () => {

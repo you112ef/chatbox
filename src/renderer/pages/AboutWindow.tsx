@@ -13,7 +13,7 @@ import {
 } from '@mui/material'
 import iconPNG from '../static/icon.png'
 import { Trans, useTranslation } from 'react-i18next'
-import * as api from '../packages/runtime'
+import platform from '../platform'
 import * as remote from '../packages/remote'
 import { SponsorAboutBanner } from '../../shared/types'
 import * as i18n from '../i18n'
@@ -21,7 +21,6 @@ import useVersion from '../hooks/useVersion'
 import * as atoms from '../stores/atoms'
 import { useAtomValue } from 'jotai'
 import Markdown from '@/components/Markdown'
-import platform from '@/platform'
 
 interface Props {
     open: boolean
@@ -72,7 +71,7 @@ export default function AboutWindow(props: Props) {
                     >
                         <Button
                             variant="outlined"
-                            onClick={() => api.openLink(`https://chatboxai.app/redirect_app/check_update/${language}`)}
+                            onClick={() => platform.openLink(`https://chatboxai.app/redirect_app/check_update/${language}`)}
                         >
                             {t('Check Update')}
                         </Button>
@@ -80,21 +79,21 @@ export default function AboutWindow(props: Props) {
                     <Button
                         variant="outlined"
                         sx={{ margin: '4px' }}
-                        onClick={() => api.openLink(`https://chatboxai.app/redirect_app/homepage/${language}`)}
+                        onClick={() => platform.openLink(`https://chatboxai.app/redirect_app/homepage/${language}`)}
                     >
                         {t('Homepage')}
                     </Button>
                     <Button
                         variant="outlined"
                         sx={{ margin: '4px' }}
-                        onClick={() => api.openLink(`https://chatboxai.app/redirect_app/feedback/${language}`)}
+                        onClick={() => platform.openLink(`https://chatboxai.app/redirect_app/feedback/${language}`)}
                     >
                         {t('Feedback')}
                     </Button>
                     <Button
                         variant="outlined"
                         sx={{ margin: '4px' }}
-                        onClick={() => api.openLink(`https://chatboxai.app/redirect_app/faqs/${language}`)}
+                        onClick={() => platform.openLink(`https://chatboxai.app/redirect_app/faqs/${language}`)}
                     >
                         {t('FAQs')}
                     </Button>
@@ -128,13 +127,13 @@ export default function AboutWindow(props: Props) {
                     <div className='my-2'>
                         <a
                             className='underline font-normal cursor-pointer mr-4' style={{color: theme.palette.primary.main}}
-                            onClick={() => api.openLink(`https://chatboxai.app/redirect_app/donate/${language}`)}
+                            onClick={() => platform.openLink(`https://chatboxai.app/redirect_app/donate/${language}`)}
                         >
                             {t('Donate')}
                         </a>
                         <a
                             className='underline font-normal cursor-pointer mr-4' style={{color: theme.palette.primary.main}}
-                            onClick={() => api.openLink(`https://chatboxai.app/redirect_app/author/${language}`)}
+                            onClick={() => platform.openLink(`https://chatboxai.app/redirect_app/author/${language}`)}
                         >
                             {t('Follow me on Twitter(X)')}
                         </a>

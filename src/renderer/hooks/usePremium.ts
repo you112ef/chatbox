@@ -4,7 +4,7 @@ import useSWR from 'swr'
 import { useAtom } from 'jotai'
 import { settingsAtom } from '../stores/atoms'
 import { activateLicense, deactivateLicense, validateLicense } from '../packages/lemonsqueezy'
-import * as api from '../packages/runtime'
+import platform from '../platform'
 import { FetchError } from 'ofetch'
 import { ModelProvider } from '../../shared/types'
 import omit from 'lodash/omit'
@@ -25,7 +25,7 @@ export function usePremium() {
             let instanceId = (settings.licenseInstances || {})[licenseKey]
             // 如果 license 第一次在当前设备激活，则记录 instanceId 设备ID，并且根据 license 类型初始化默认的 AI 模型
             if (!instanceId) {
-                const activateResult = await activateLicense(licenseKey, await api.getInstanceName())
+                const activateResult = await activateLicense(licenseKey, await platform.getInstanceName())
                 instanceId = activateResult.instanceId
                 if (activateResult.reachedActivationLimit) {
                     return { valid: false, reachedActivationLimit: true }

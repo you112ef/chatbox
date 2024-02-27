@@ -3,7 +3,7 @@ import { ModelSettings } from '../../../shared/types'
 import { useTranslation } from 'react-i18next'
 import PasswordTextField from '@/components/PasswordTextField'
 import TemperatureSlider from '@/components/TemperatureSlider'
-import * as runtime from '@/packages/runtime'
+import platform from '@/platform'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -24,7 +24,7 @@ export default function GeminiSetting(props: ModelConfigProps) {
                 helperText={
                     <Link
                         className="cursor-pointer" 
-                        onClick={() =>  runtime.openLink('https://makersuite.google.com/')}
+                        onClick={() =>  platform.openLink('https://makersuite.google.com/')}
                     >
                         {t('Get API key in Google AI Studio')}
                     </Link>

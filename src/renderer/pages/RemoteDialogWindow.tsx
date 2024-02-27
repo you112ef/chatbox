@@ -3,11 +3,10 @@ import { Box, Button, Dialog, DialogContent, DialogActions, DialogContentText } 
 import { useTranslation } from 'react-i18next'
 import * as remote from '../packages/remote'
 import { getDefaultStore } from 'jotai'
-import * as api from '../packages/runtime'
+import platform from '@/platform'
 import { settingsAtom } from '../stores/atoms'
 import storage from '../storage'
 import Markdown from '@/components/Markdown'
-import platform from '../platform'
 
 const { useEffect, useState } = React
 
@@ -63,7 +62,7 @@ export default function RemoteDialogWindow() {
                     <Markdown>{dialogConfig?.markdown || ''}</Markdown>
                     <Box>
                         {dialogConfig?.buttons.map((button, index) => (
-                            <Button onClick={() => api.openLink(button.url)}>{button.label}</Button>
+                            <Button onClick={() => platform.openLink(button.url)}>{button.label}</Button>
                         ))}
                     </Box>
                 </DialogContentText>

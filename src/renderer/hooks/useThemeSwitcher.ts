@@ -4,12 +4,12 @@ import { realThemeAtom, themeAtom, fontSizeAtom } from '../stores/atoms'
 import { createTheme } from '@mui/material/styles'
 import { ThemeOptions } from '@mui/material/styles'
 import { ThemeMode } from '../../shared/types'
-import * as api from '../packages/runtime'
+import platform from '../platform'
 
 export const switchTheme = async (theme: ThemeMode) => {
     const store = getDefaultStore()
     if (theme === ThemeMode.System) {
-        const isDark = await api.shouldUseDarkColors()
+        const isDark = await platform.shouldUseDarkColors()
         store.set(realThemeAtom, isDark ? 'dark' : 'light')
     } else {
         store.set(realThemeAtom, theme === ThemeMode.Dark ? 'dark' : 'light')
@@ -26,7 +26,7 @@ export default function useThemeSwicher() {
     }, [theme])
 
     useLayoutEffect(() => {
-        api.onSystemThemeChange(() => {
+        platform.onSystemThemeChange(() => {
             const store = getDefaultStore()
             const theme = store.get(themeAtom)
             switchTheme(theme)

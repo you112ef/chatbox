@@ -18,7 +18,7 @@ import {
     Tab,
     useTheme,
 } from '@mui/material'
-import * as runtime from '../../packages/runtime'
+import platform from '../../platform'
 import { Shortcut } from '../../components/Shortcut'
 import { Settings } from '../../../shared/types'
 import { useTranslation } from 'react-i18next'
@@ -26,6 +26,7 @@ import { Accordion, AccordionSummary, AccordionDetails } from '../../components/
 import TextFieldReset from '../../components/TextFieldReset'
 import storage, { StorageKey } from '../../storage'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import * as exporter from '@/packages/exporter'
 
 interface Props {
     settingsEdit: Settings
@@ -55,10 +56,10 @@ export default function AdvancedSettingTab(props: Props) {
                         fullWidth
                         margin="dense"
                         variant="outlined"
-                        disabled={runtime.isWeb}
+                        disabled={platform.type === 'web'}
                         inputProps={{ className: 'cursor-not-allowed' }}
                         helperText={
-                            runtime.isWeb ? <span className="text-red-600">{t('not available in browser')}</span> : null
+                            platform.type === 'web' ? <span className="text-red-600">{t('not available in browser')}</span> : null
                         }
                     />
                 </AccordionDetails>
@@ -200,7 +201,7 @@ function ExportAndImport(props: { onCancel: () => void }) {
         data['__exported_items'] = exportItems
         data['__exported_at'] = date.toISOString()
         const dateStr = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
-        runtime.exportTextFile(`chatbox-exported-data-${dateStr}.json`, JSON.stringify(data))
+        exporter.exportTextFile(`chatbox-exported-data-${dateStr}.json`, JSON.stringify(data))
     }
     const onImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const errTip = t('Import failed, unsupported data format')
@@ -221,7 +222,7 @@ function ExportAndImport(props: { onCancel: () => void }) {
                     // FIXME: 这里缺少了数据校验
                     await storage.setAll(json)
                     props.onCancel() // 导出成功后立即关闭设置窗口，防止用户点击保存、导致设置数据被覆盖
-                    runtime.relaunch() // 重启应用以生效
+                    platform.relaunch() // 重启应用以生效
                 } catch (err) {
                     setImportTips(errTip)
 

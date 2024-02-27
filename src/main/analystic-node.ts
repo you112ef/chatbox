@@ -29,7 +29,7 @@ export async function event(name: string, params: any = {}) {
                             chatbox_platform_type: 'desktop',
                             chatbox_platform: 'desktop',
                             app_platform: process.platform,
-                            ...params
+                            ...params,
                         },
                     },
                 ],

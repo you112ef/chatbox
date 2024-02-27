@@ -2,6 +2,9 @@ import { Config } from "src/shared/types"
 import * as defaults from 'src/shared/defaults'
 import { Platform, PlatformType } from "./interfaces"
 import store from 'store'
+import { getOS, getBrowser } from '../packages/navigator'
+import { parseLocale } from '@/i18n/parser'
+import localforage from 'localforage'
 
 export default class WebPlatform implements Platform {
     public type: PlatformType = 'web'
@@ -15,6 +18,37 @@ export default class WebPlatform implements Platform {
     public async getPlatform(): Promise<string> {
         return 'web'
     }
+    public async shouldUseDarkColors(): Promise<boolean> {
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+    }
+    public onSystemThemeChange(callback: () => void): () => void {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', callback)
+        return () => {
+            window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', callback)
+        }
+    }
+    public onWindowShow(callback: () => void): () => void {
+        return () => null
+    }
+    public async openLink(url: string): Promise<void> {
+        window.open(url)
+    }
+    public async getInstanceName(): Promise<string> {
+        return `${getOS()} / ${getBrowser()}`
+    }
+    public async getLocale() {
+        const lang = window.navigator.language
+        return parseLocale(lang)
+    }
+    public async ensureShortcutConfig(config: { disableQuickToggleShortcut: boolean }): Promise<void> {
+        return
+    }
+    public async ensureProxyConfig(config: { proxy?: string }): Promise<void> {
+        return
+    }
+    public async relaunch(): Promise<void> {
+        location.reload()
+    }
 
     public async getConfig(): Promise<Config> {
         let value = store.get('configs')
@@ -23,6 +57,42 @@ export default class WebPlatform implements Platform {
             store.set('configs', value)
         }
         return value
+    }
+
+    public async setStoreValue(key: string, value: any) {
+        return store.set(key, value)
+    }
+    public async getStoreValue(key: string) {
+        return store.get(key)
+    }
+    public async delStoreValue(key: string) {
+        return store.remove(key)
+    }
+    public async getAllStoreValues(): Promise<{ [key: string]: any }> {
+        const ret: { [key: string]: any } = {}
+        store.each((value, key) => {
+            ret[key] = value
+        })
+        return ret
+    }
+    public async setAllStoreValues(data: { [key: string]: any }): Promise<void> {
+        store.clearAll()
+        for (const [key, value] of Object.entries(data)) {
+            store.set(key, value)
+        }
+    }
+
+    public async getStoreBlob(key: string): Promise<string | null> {
+        return localforage.getItem<string>(key)
+    }
+    public async setStoreBlob(key: string, value: string): Promise<void> {
+        await localforage.setItem(key, value)
+    }
+    public async delStoreBlob(key: string) {
+        return localforage.removeItem(key)
+    }
+    public async listStoreBlobKeys(): Promise<string[]> {
+        return localforage.keys()
     }
 
     public async initTracking() {

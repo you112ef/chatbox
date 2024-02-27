@@ -6,7 +6,7 @@ import { focusAtom } from 'jotai-optics'
 import * as defaults from '../../shared/defaults'
 import storage, { StorageKey } from '../storage'
 import { VirtuosoHandle } from 'react-virtuoso'
-import * as runtime from '../packages/runtime'
+import platform from '../platform'
 
 // settings
 
@@ -25,13 +25,13 @@ export const settingsAtom = atom(
         }
         // 如果快捷键配置发生变化，需要重新注册快捷键
         if (!!newSettings.disableQuickToggleShortcut !== !!settings.disableQuickToggleShortcut) {
-            runtime.ensureShortcutConfig({
+            platform.ensureShortcutConfig({
                 disableQuickToggleShortcut: !!newSettings.disableQuickToggleShortcut,
             })
         }
         // 如果代理配置发生变化，需要重新注册代理
         if (newSettings.proxy !== settings.proxy) {
-            runtime.ensureProxyConfig({ proxy: newSettings.proxy })
+            platform.ensureProxyConfig({ proxy: newSettings.proxy })
         }
         set(_settingsAtom, newSettings)
     }

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import * as api from '../packages/runtime'
+import platform from '../platform'
 import * as dom from './dom'
 import * as atoms from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
@@ -9,7 +9,7 @@ import { useIsSmallScreen } from './useScreenChange'
 export default function useShortcut() {
     const isSmallScreen = useIsSmallScreen()
     useEffect(() => {
-        const cancel = api.onWindowShow(() => {
+        const cancel = platform.onWindowShow(() => {
             // 大屏幕下，窗口显示时自动聚焦输入框
             if (!isSmallScreen) {
                 dom.focusMessageInput()
