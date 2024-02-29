@@ -9,12 +9,13 @@ export default function useVersion() {
     useEffect(() => {
         const handler = async () => {
             const config = await platform.getConfig()
+            const settings = await platform.getSettings()
             const version = await platform.getVersion()
             _setVersion(version)
             try {
                 const os = await platform.getPlatform()
                 if (version !== '') {   // web 版本无需检查更新
-                    const needUpdate = await remote.checkNeedUpdate(version, os, config)
+                    const needUpdate = await remote.checkNeedUpdate(version, os, config, settings)
                     setNeedCheckUpdate(needUpdate)
                 }
             } catch (e) {

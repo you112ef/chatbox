@@ -5,6 +5,7 @@ import {
     SponsorAd,
     RemoteConfig,
     ChatboxAILicenseDetail,
+    Settings,
 } from '../../shared/types'
 import { ofetch } from 'ofetch'
 
@@ -41,7 +42,7 @@ setInterval(testApiOrigins, 60 * 60 * 1000);
 
 // ========== 各个接口方法 ==========
 
-export async function checkNeedUpdate(version: string, os: string, config: Config) {
+export async function checkNeedUpdate(version: string, os: string, config: Config, settings: Settings) {
     type Response = {
         need_update?: boolean
     }
@@ -52,6 +53,7 @@ export async function checkNeedUpdate(version: string, os: string, config: Confi
         body: {
             uuid: config.uuid,
             os: os,
+            allowReportingAndTracking: settings.allowReportingAndTracking ? 1 : 0,
         },
     })
     return !!res['need_update']

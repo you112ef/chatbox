@@ -209,7 +209,6 @@ export interface OpenAIMessage {
 
 export interface Config {
     uuid: string
-    hasWelcome?: boolean
 }
 
 export interface SponsorAd {
