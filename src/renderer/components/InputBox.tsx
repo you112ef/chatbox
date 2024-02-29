@@ -16,7 +16,7 @@ import {
 import { cn } from '@/lib/utils'
 import { scrollToMessage } from '@/stores/scrollActions'
 import icon from '../static/icon.png'
-import platform from '@/platform'
+import { trackingEvent } from '@/packages/event'
 
 export interface Props {
     currentSessionId: string
@@ -69,7 +69,7 @@ export default function InputBox(props: Props) {
         const newMessage = createMessage('user', messageInput)
         submit(newMessage, needGenerating)
         setMessageInput('')
-        platform.trackingEvent('send_message', { event_category: 'user' })
+        trackingEvent('send_message', { event_category: 'user' })
         // 重置清理上下文按钮
         if (showRollbackThreadButton) {
             setShowRollbackThreadButton(false)

@@ -27,6 +27,7 @@ import * as atoms from './stores/atoms'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import { useIsSmallScreen } from './hooks/useScreenChange'
 import platform from './platform'
+import { trackingEvent } from './packages/event'
 
 export const drawerWidth = 240
 
@@ -52,14 +53,14 @@ export default function Sidebar(props: Props) {
         if (sessionListRef.current) {
             sessionListRef.current.scrollTo(0, 0)
         }
-        platform.trackingEvent('create_new_conversation', { event_category: 'user' })
+        trackingEvent('create_new_conversation', { event_category: 'user' })
     }
     const handleCreateNewPictureSession = () => {
         sessionActions.createEmpty('picture')
         if (sessionListRef.current) {
             sessionListRef.current.scrollTo(0, 0)
         }
-        platform.trackingEvent('create_new_picture_conversation', { event_category: 'user' })
+        trackingEvent('create_new_picture_conversation', { event_category: 'user' })
     }
 
     // 小屏幕切换会话时隐藏侧边栏

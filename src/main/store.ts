@@ -19,6 +19,10 @@ export function getSettings(): Settings {
 }
 
 export function getConfig(): Config {
-    const configs = store.get<'configs'>('configs', defaults.newConfigs())
+    let configs = store.get<'configs'>('configs')
+    if (!configs) {
+        configs = defaults.newConfigs()
+        store.set<'configs'>('configs', configs)
+    }
     return configs
 }

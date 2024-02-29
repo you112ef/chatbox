@@ -206,5 +206,14 @@
     "This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices.": "이 라이선스 키는 활성화 제한에 도달했습니다. 이전 기기를 비활성화하려면 <a>여기를 클릭</a>하여 라이선스 및 기기를 관리하세요.",
     "Type your question here...": "여기에 질문을 입력하세요...",
     "View historical threads": "과거 스레드 보기",
-    "Customize settings for the current conversation": "현재 대화에 대한 설정 사용자 정의"
+    "Customize settings for the current conversation": "현재 대화에 대한 설정 사용자 정의",
+    "Enable optional anonymous reporting of crash and event data": "선택적으로 충돌 및 이벤트 데이터의 익명 보고 활성화",
+    "Chatbox respects your privacy and only uploads anonymous error data and events when necessary. You can change your preferences at any time in the settings.": "Chatbox는 당신의 개인 정보를 존중하며 필요할 때만 익명의 오류 데이터와 이벤트를 업로드합니다. 설정에서 언제든지 선호도를 변경할 수 있습니다.",
+    "Error Reporting": "오류 보고",
+    "An easy-to-use AI client app": "사용하기 쉬운 AI 클라이언트 앱",
+    "All data is stored locally, ensuring privacy and rapid access": "모든 데이터는 로컬에 저장되어 개인 정보 보호와 빠른 액세스를 보장합니다",
+    "Supports a variety of advanced AI models": "다양한 고급 AI 모델을 지원합니다",
+    "Ideal for both work and educational scenarios": "일과 교육적인 시나리오에 모두 이상적입니다",
+    "Select and configure an AI model provider": "AI 모델 공급자를 선택하고 구성하세요",
+    "Start Setup": "설정 시작"
 }

@@ -41,6 +41,8 @@ export function settings(): Settings {
         spellCheck: true,
 
         defaultPrompt: getDefaultPrompt(),
+
+        allowReportingAndTracking: true,
     }
 }
 

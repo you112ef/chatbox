@@ -206,5 +206,14 @@
     "This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices.": "This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices.",
     "Type your question here...": "Type your question here...",
     "View historical threads": "View historical threads",
-    "Customize settings for the current conversation": "Customize settings for the current conversation"
+    "Customize settings for the current conversation": "Customize settings for the current conversation",
+    "Enable optional anonymous reporting of crash and event data": "Enable optional anonymous reporting of crash and event data",
+    "Chatbox respects your privacy and only uploads anonymous error data and events when necessary. You can change your preferences at any time in the settings.": "Chatbox respects your privacy and only uploads anonymous error data and events when necessary. You can change your preferences at any time in the settings.",
+    "Error Reporting": "Error Reporting",
+    "An easy-to-use AI client app": "An easy-to-use AI client app",
+    "All data is stored locally, ensuring privacy and rapid access": "All data is stored locally, ensuring privacy and rapid access",
+    "Supports a variety of advanced AI models": "Supports a variety of advanced AI models",
+    "Ideal for both work and educational scenarios": "Ideal for both work and educational scenarios",
+    "Select and configure an AI model provider": "Select and configure an AI model provider",
+    "Start Setup": "Start Setup"
 }

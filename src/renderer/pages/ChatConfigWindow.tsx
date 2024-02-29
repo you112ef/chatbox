@@ -37,7 +37,7 @@ import ImageCountSlider from '@/components/ImageCountSlider'
 import ImageStyleSelect from '@/components/ImageStyleSelect'
 import OllamaSetting from './SettingDialog/OllamaSetting'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
-import platform from '@/platform'
+import { trackingEvent } from '@/packages/event'
 
 interface Props {
 }
@@ -63,7 +63,7 @@ export default function ChatConfigWindow(props: Props) {
 
     useEffect(() => {
         if (chatConfigDialogSession) {
-            platform.trackingEvent('chat_config_window', { event_category: 'screen_view' })
+            trackingEvent('chat_config_window', { event_category: 'screen_view' })
         }
     }, [chatConfigDialogSession])
 

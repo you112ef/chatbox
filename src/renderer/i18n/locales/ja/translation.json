@@ -206,5 +206,14 @@
     "This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices.": "このライセンスキーは有効化制限に達しました、古いデバイスを無効化するためにライセンスとデバイスを管理するには<a>ここをクリックして</a>ください。",
     "Type your question here...": "ここに質問を入力してください...",
     "View historical threads": "過去のスレッドを表示",
-    "Customize settings for the current conversation": "現在の会話の設定をカスタマイズ"
+    "Customize settings for the current conversation": "現在の会話の設定をカスタマイズ",
+    "Enable optional anonymous reporting of crash and event data": "クラッシュとイベントデータの任意の匿名レポートを有効にする",
+    "Chatbox respects your privacy and only uploads anonymous error data and events when necessary. You can change your preferences at any time in the settings.": "Chatboxはあなたのプライバシーを尊重し、必要な場合にのみ匿名のエラーデータとイベントをアップロードします。設定でいつでも設定を変更できます。",
+    "Error Reporting": "エラーレポート",
+    "An easy-to-use AI client app": "使いやすいAIクライアントアプリ",
+    "All data is stored locally, ensuring privacy and rapid access": "すべてのデータはローカルに保存され、プライバシーと迅速なアクセスを保証",
+    "Supports a variety of advanced AI models": "さまざまな先進的なAIモデルをサポート",
+    "Ideal for both work and educational scenarios": "仕事と教育の両方のシナリオに最適",
+    "Select and configure an AI model provider": "AIモデルプロバイダーを選択して設定",
+    "Start Setup": "セットアップを開始"
 }

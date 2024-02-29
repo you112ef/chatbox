@@ -14,7 +14,7 @@ import ModelSettingTab from './ModelSettingTab'
 import AdvancedSettingTab from './AdvancedSettingTab'
 import { resetTokenConfig } from '../../packages/token_config'
 import SettingsIcon from '@mui/icons-material/Settings'
-import platform from '@/platform'
+import { trackingEvent } from '@/packages/event'
 
 type Tab = 'ai' | 'display' | 'chat' | 'advanced'
 
@@ -37,7 +37,7 @@ export default function SettingWindow(props: Props) {
     }, [props.targetTab, props.open])
     useEffect(() => {
         if (props.open) {
-            platform.trackingEvent('setting_window', { event_category: 'screen_view' })
+            trackingEvent('setting_window', { event_category: 'screen_view' })
         }
     }, [props.open])
 

@@ -206,5 +206,14 @@
     "This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices.": "Cette clé de licence a atteint la limite d'activation, <a>cliquez ici</a> pour gérer la licence et les appareils pour désactiver les anciens appareils.",
     "Type your question here...": "Tapez votre question ici...",
     "View historical threads": "Voir les sujets historiques",
-    "Customize settings for the current conversation": "Personnaliser les paramètres pour la conversation actuelle"
+    "Customize settings for the current conversation": "Personnaliser les paramètres pour la conversation actuelle",
+    "Enable optional anonymous reporting of crash and event data": "Activer le signalement anonyme facultatif des données de plantage et d'événements",
+    "Chatbox respects your privacy and only uploads anonymous error data and events when necessary. You can change your preferences at any time in the settings.": "Chatbox respecte votre vie privée et ne télécharge que des données d'erreur anonymes et des événements lorsque cela est nécessaire. Vous pouvez modifier vos préférences à tout moment dans les paramètres.",
+    "Error Reporting": "Signalement d'erreurs",
+    "An easy-to-use AI client app": "Une application client IA facile à utiliser",
+    "All data is stored locally, ensuring privacy and rapid access": "Toutes les données sont stockées localement, garantissant la confidentialité et un accès rapide",
+    "Supports a variety of advanced AI models": "Prend en charge une variété de modèles IA avancés",
+    "Ideal for both work and educational scenarios": "Idéal pour les scénarios de travail et d'éducation",
+    "Select and configure an AI model provider": "Sélectionnez et configurez un fournisseur de modèle IA",
+    "Start Setup": "Démarrer la configuration"
 }

@@ -16,7 +16,7 @@ import log from 'electron-log'
 import MenuBuilder from './menu'
 import { resolveHtmlPath } from './util'
 import Locale from './locales'
-import { store, getConfig } from './store'
+import { store, getConfig, getSettings } from './store'
 import * as shortcuts from './shortcut'
 import * as proxy from './proxy'
 import * as windowState from './window_state'
@@ -320,4 +320,8 @@ ipcMain.handle('analysticTrackingEvent', (event, dataJson) => {
 
 ipcMain.handle('getConfig', (event) => {
     return getConfig()
+})
+
+ipcMain.handle('getSettings', (event) => {
+    return getSettings()
 })

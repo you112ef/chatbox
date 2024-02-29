@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { Box, Grid } from '@mui/material'
@@ -28,6 +28,7 @@ import { CHATBOX_BUILD_TARGET } from '@/variables'
 import PictureDialog from './pages/PictureDialog'
 import MessageEditDialog from './pages/MessageEditDialog'
 import ThreadHistoryDrawer from './components/ThreadHistoryDrawer'
+import WelcomeDialog from './pages/WelcomeDialog'
 
 function Main() {
     // 是否展示菜单栏
@@ -36,6 +37,8 @@ function Main() {
 
     // 是否展示设置窗口
     const [openSettingWindow, setOpenSettingWindow] = useAtom(atoms.openSettingDialogAtom)
+    const [openWelcomeDialog, setOpenWelcomeDialog] = useState(false)
+
     useEffect(() => {
         // 通过定时器延迟启动，防止处理状态底层存储的异步加载前错误的初始数据
         setTimeout(() => {
@@ -55,7 +58,8 @@ function Main() {
                             })
                         }
                     }
-                    setOpenSettingWindow('ai')
+                    // setOpenSettingWindow('ai')
+                    setOpenWelcomeDialog(true)
                 }
             })()
         }, 2000)
@@ -108,6 +112,11 @@ function Main() {
             <SearchDialog />
             <PictureDialog />
             <MessageEditDialog />
+            <WelcomeDialog
+                open={openWelcomeDialog}
+                onClose={() => setOpenWelcomeDialog(false)}
+                onSetup={() => setOpenSettingWindow('ai')}
+            />
             <Toasts />
         </Box>
     )

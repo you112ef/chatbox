@@ -186,6 +186,8 @@ export interface Settings extends ModelSettings {
     defaultPrompt?: string // 新会话的默认 prompt
 
     proxy?: string // 代理地址
+
+    allowReportingAndTracking: boolean  // 是否允许错误报告和事件追踪
 }
 
 export type Language = 'en' | 'zh-Hans' | 'zh-Hant' | 'ja' | 'ko' | 'ru' | 'de' | 'fr'
@@ -207,6 +209,7 @@ export interface OpenAIMessage {
 
 export interface Config {
     uuid: string
+    hasWelcome?: boolean
 }
 
 export interface SponsorAd {

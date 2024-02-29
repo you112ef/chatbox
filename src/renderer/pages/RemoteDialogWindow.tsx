@@ -7,6 +7,7 @@ import platform from '@/platform'
 import { settingsAtom } from '../stores/atoms'
 import storage from '../storage'
 import Markdown from '@/components/Markdown'
+import { trackingEvent } from '@/packages/event'
 
 const { useEffect, useState } = React
 
@@ -44,7 +45,7 @@ export default function RemoteDialogWindow() {
     // 打点上报
     useEffect(() => {
         if (open) {
-            platform.trackingEvent('remote_dialog_window', { event_category: 'screen_view' })
+            trackingEvent('remote_dialog_window', { event_category: 'screen_view' })
         }
     }, [open])
 

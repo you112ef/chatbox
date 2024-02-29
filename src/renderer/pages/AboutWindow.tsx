@@ -12,7 +12,7 @@ import {
     useTheme,
 } from '@mui/material'
 import iconPNG from '../static/icon.png'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import platform from '../platform'
 import * as remote from '../packages/remote'
 import { SponsorAboutBanner } from '../../shared/types'
@@ -21,6 +21,7 @@ import useVersion from '../hooks/useVersion'
 import * as atoms from '../stores/atoms'
 import { useAtomValue } from 'jotai'
 import Markdown from '@/components/Markdown'
+import { trackingEvent } from '@/packages/event'
 
 interface Props {
     open: boolean
@@ -36,7 +37,7 @@ export default function AboutWindow(props: Props) {
     useEffect(() => {
         if (props.open) {
             remote.listSponsorAboutBanner().then(setSponsorBanners)
-            platform.trackingEvent('about_window', { event_category: 'screen_view' })
+            trackingEvent('about_window', { event_category: 'screen_view' })
         } else {
             setSponsorBanners([])
         }

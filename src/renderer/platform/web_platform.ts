@@ -1,4 +1,4 @@
-import { Config } from "src/shared/types"
+import { Config, Settings } from "src/shared/types"
 import * as defaults from 'src/shared/defaults'
 import { Platform, PlatformType } from "./interfaces"
 import store from 'store'
@@ -55,6 +55,14 @@ export default class WebPlatform implements Platform {
         if (value === undefined || value === null) {
             value = defaults.newConfigs()
             store.set('configs', value)
+        }
+        return value
+    }
+    public async getSettings(): Promise<Settings> {
+        let value = store.get('settings')
+        if (value === undefined || value === null) {
+            value = defaults.settings()
+            store.set('settings', value)
         }
         return value
     }

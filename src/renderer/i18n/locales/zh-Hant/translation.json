@@ -207,5 +207,14 @@
     "This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices.": "此 license 授權密鑰已達到啟用限制，<a>點擊這裡</a>管理授權與設備以停用舊設備。",
     "Type your question here...": "在這裡輸入你的問題...",
     "View historical threads": "查看歷史話題",
-    "Customize settings for the current conversation": "為當前對話自定義設置"
+    "Customize settings for the current conversation": "為當前對話自定義設置",
+    "Enable optional anonymous reporting of crash and event data": "啟用選擇性的匿名崩潰和事件數據上報",
+    "Chatbox respects your privacy and only uploads anonymous error data and events when necessary. You can change your preferences at any time in the settings.": "Chatbox 尊重您的隱私，僅在必要時上傳匿名錯誤數據和事件。您可以隨時在設置中更改您的偏好。",
+    "Error Reporting": "錯誤上報",
+    "An easy-to-use AI client app": "一個簡單易用的 AI 客戶端應用程式",
+    "All data is stored locally, ensuring privacy and rapid access": "所有數據都存儲在本地，確保隱私和快速訪問",
+    "Supports a variety of advanced AI models": "支持多種先進的 AI 模型",
+    "Ideal for both work and educational scenarios": "適用於工作和教育場景",
+    "Select and configure an AI model provider": "選擇並配置 AI 模型提供者",
+    "Start Setup": "開始設置"
 }

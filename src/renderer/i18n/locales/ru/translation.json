@@ -206,5 +206,14 @@
     "This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices.": "Этот ключ лицензии достиг лимита активации, <a>нажмите здесь</a>, чтобы управлять лицензией и устройствами для деактивации старых устройств.",
     "Type your question here...": "Введите ваш вопрос здесь...",
     "View historical threads": "Просмотреть историю тем",
-    "Customize settings for the current conversation": "Настроить настройки для текущего разговора"
+    "Customize settings for the current conversation": "Настроить настройки для текущего разговора",
+    "Enable optional anonymous reporting of crash and event data": "Включить дополнительную анонимную отправку отчетов о сбоях и событиях",
+    "Chatbox respects your privacy and only uploads anonymous error data and events when necessary. You can change your preferences at any time in the settings.": "Chatbox уважает вашу конфиденциальность и загружает только анонимные данные об ошибках и событиях при необходимости. Вы можете изменить свои предпочтения в любое время в настройках.",
+    "Error Reporting": "Отчеты об ошибках",
+    "An easy-to-use AI client app": "Простое в использовании приложение для работы с искусственным интеллектом",
+    "All data is stored locally, ensuring privacy and rapid access": "Все данные хранятся локально, обеспечивая конфиденциальность и быстрый доступ",
+    "Supports a variety of advanced AI models": "Поддерживает различные передовые модели искусственного интеллекта",
+    "Ideal for both work and educational scenarios": "Идеально подходит как для рабочих, так и для учебных сценариев",
+    "Select and configure an AI model provider": "Выберите и настройте поставщика модели искусственного интеллекта",
+    "Start Setup": "Начать настройку"
 }

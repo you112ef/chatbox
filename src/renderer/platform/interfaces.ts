@@ -1,4 +1,4 @@
-import { Config, Language } from "src/shared/types"
+import { Config, Language, Settings } from "src/shared/types"
 
 export type PlatformType = 'web' | 'desktop'
 
@@ -22,6 +22,7 @@ export interface Platform {
     // 数据配置
 
     getConfig(): Promise<Config>
+    getSettings(): Promise<Settings>
 
     setStoreValue(key: string, value: any): Promise<void>
     getStoreValue(key: string): Promise<any>

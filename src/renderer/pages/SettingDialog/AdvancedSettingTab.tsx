@@ -27,6 +27,9 @@ import TextFieldReset from '../../components/TextFieldReset'
 import storage, { StorageKey } from '../../storage'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import * as exporter from '@/packages/exporter'
+import Link from '@/components/Link'
+import { useAtom } from 'jotai'
+import * as atoms from '../../stores/atoms'
 
 interface Props {
     settingsEdit: Settings
@@ -155,6 +158,14 @@ export default function AdvancedSettingTab(props: Props) {
                     <ExportAndImport onCancel={props.onCancel} />
                 </AccordionDetails>
             </Accordion>
+            <Accordion>
+                <AccordionSummary aria-controls="panel1a-content">
+                    <Typography>{t('Error Reporting')}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <AnalyticsSetting />
+                </AccordionDetails>
+            </Accordion>
         </Box>
     )
 }
@@ -180,13 +191,13 @@ function ExportAndImport(props: { onCancel: () => void }) {
     const onExport = async () => {
         const data = await storage.getAll()
         delete data[StorageKey.Configs] // 不导出 uuid
-        ;(data[StorageKey.Settings] as Settings).licenseDetail = undefined // 不导出license认证数据
-        ;(data[StorageKey.Settings] as Settings).licenseInstances = undefined // 不导出license设备数据，导入数据的新设备也应该计入设备数
+            ; (data[StorageKey.Settings] as Settings).licenseDetail = undefined // 不导出license认证数据
+            ; (data[StorageKey.Settings] as Settings).licenseInstances = undefined // 不导出license设备数据，导入数据的新设备也应该计入设备数
         if (!exportItems.includes(ExportDataItem.Key)) {
             delete (data[StorageKey.Settings] as Settings).licenseKey
-            ;(data[StorageKey.Settings] as Settings).openaiKey = ''
-            ;(data[StorageKey.Settings] as Settings).azureApikey = ''
-            ;(data[StorageKey.Settings] as Settings).claudeApiKey = ''
+                ; (data[StorageKey.Settings] as Settings).openaiKey = ''
+                ; (data[StorageKey.Settings] as Settings).azureApikey = ''
+                ; (data[StorageKey.Settings] as Settings).claudeApiKey = ''
         }
         if (!exportItems.includes(ExportDataItem.Setting)) {
             delete data[StorageKey.Settings]
@@ -211,7 +222,7 @@ function ExportAndImport(props: { onCancel: () => void }) {
         }
         const reader = new FileReader()
         reader.onload = (event) => {
-            ;(async () => {
+            ; (async () => {
                 setImportTips('')
                 try {
                     let result = event.target?.result
@@ -301,5 +312,38 @@ function ExportAndImport(props: { onCancel: () => void }) {
                 </Box>
             )}
         </Box>
+    )
+}
+
+export function AnalyticsSetting() {
+    const { t } = useTranslation()
+    return (
+        <Box>
+            <div>
+                <p className='opacity-70'>
+                    {t('Chatbox respects your privacy and only uploads anonymous error data and events when necessary. You can change your preferences at any time in the settings.')}
+                </p>
+            </div>
+            <div className='my-2'>
+                <AllowReportingAndTrackingCheckbox />
+            </div>
+        </Box>
+    )
+}
+
+export function AllowReportingAndTrackingCheckbox(props: {
+    className?: string
+}) {
+    const { t } = useTranslation()
+    const [allowReportingAndTracking, setAllowReportingAndTracking] = useAtom(atoms.allowReportingAndTrackingAtom)
+    return (
+        <span className={props.className}>
+            <input
+                type='checkbox'
+                checked={allowReportingAndTracking}
+                onChange={(e) => setAllowReportingAndTracking(e.target.checked)}
+            />
+            {t('Enable optional anonymous reporting of crash and event data')}
+        </span>
     )
 }

@@ -35,9 +35,9 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import * as atoms from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
 import { useAtomValue } from 'jotai'
-import storage from '../storage'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import platform from '../platform'
+import { trackingEvent } from '@/packages/event'
 
 interface Props {
     open: boolean
@@ -80,7 +80,7 @@ export default function CopilotWindow(props: Props) {
             starred: false,
             copilotId: copilot.id,
         })
-        platform.trackingEvent('create_copilot_conversation', { event_category: 'user' })
+        trackingEvent('create_copilot_conversation', { event_category: 'user' })
     }
 
     const useCopilot = (detail: CopilotDetail) => {
@@ -98,7 +98,7 @@ export default function CopilotWindow(props: Props) {
         if (!props.open) {
             setCopilotEdit(null)
         } else {
-            platform.trackingEvent('copilot_window', { event_category: 'screen_view' })
+            trackingEvent('copilot_window', { event_category: 'screen_view' })
         }
     }, [props.open])
 
@@ -436,7 +436,7 @@ function CopilotForm(props: CopilotFormProps) {
             return
         }
         props.save(copilotEdit)
-        platform.trackingEvent('create_copilot', { event_category: 'user' })
+        trackingEvent('create_copilot', { event_category: 'user' })
     }
     return (
         <Box

@@ -1,6 +1,6 @@
 import { ElectronIPC } from "src/shared/electron-types"
 import { Platform, PlatformType } from "./interfaces"
-import { Config } from "src/shared/types"
+import { Config, Settings } from "src/shared/types"
 import { getOS, getBrowser } from '../packages/navigator'
 import { parseLocale } from '@/i18n/parser'
 
@@ -50,6 +50,9 @@ export default class DesktopPlatform implements Platform {
 
     public async getConfig(): Promise<Config> {
         return this.ipc.invoke('getConfig')
+    }
+    public async getSettings(): Promise<Settings> {
+        return this.ipc.invoke('getSettings')
     }
 
     public async setStoreValue(key: string, value: any) {

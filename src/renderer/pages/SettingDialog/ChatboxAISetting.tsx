@@ -13,6 +13,7 @@ import { useState } from 'react'
 import * as remote from '@/packages/remote'
 import CircularProgress from '@mui/material/CircularProgress';
 import platform from '@/platform'
+import { trackingEvent } from '@/packages/event'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -149,7 +150,7 @@ function ActivedButtonGroup(props: { premium: ReturnType<typeof usePremium> }) {
                 sx={{ marginRight: '10px' }}
                 onClick={() => {
                     platform.openLink('https://chatboxai.app/redirect_app/manage_license')
-                    platform.trackingEvent('click_manage_license_button', { event_category: 'user' })
+                    trackingEvent('click_manage_license_button', { event_category: 'user' })
                 }}
             >
                 {t('Manage License and Devices')}
@@ -160,7 +161,7 @@ function ActivedButtonGroup(props: { premium: ReturnType<typeof usePremium> }) {
                 sx={{ marginRight: '10px' }}
                 onClick={() => {
                     premium.deactivate()
-                    platform.trackingEvent('click_deactivate_license_button', { event_category: 'user' })
+                    trackingEvent('click_deactivate_license_button', { event_category: 'user' })
                 }}
             >
                 {t('Deactivate')}
@@ -170,7 +171,7 @@ function ActivedButtonGroup(props: { premium: ReturnType<typeof usePremium> }) {
                 sx={{ marginRight: '10px' }}
                 onClick={() => {
                     platform.openLink('https://chatboxai.app/redirect_app/view_more_plans')
-                    platform.trackingEvent('click_view_more_plans_button', { event_category: 'user' })
+                    trackingEvent('click_view_more_plans_button', { event_category: 'user' })
                 }}
             >
                 {t('View More Plans')}
@@ -189,7 +190,7 @@ function InactivedButtonGroup() {
                 sx={{ marginRight: '10px' }}
                 onClick={() => {
                     platform.openLink('https://chatboxai.app/redirect_app/get_license')
-                    platform.trackingEvent('click_get_license_button', { event_category: 'user' })
+                    trackingEvent('click_get_license_button', { event_category: 'user' })
                 }}
             >
                 {t('Get License')}
@@ -199,7 +200,7 @@ function InactivedButtonGroup() {
                 sx={{ marginRight: '10px' }}
                 onClick={() => {
                     platform.openLink('https://chatboxai.app/redirect_app/manage_license')
-                    platform.trackingEvent('click_retrieve_license_button', { event_category: 'user' })
+                    trackingEvent('click_retrieve_license_button', { event_category: 'user' })
                 }}
             >
                 {t('Retrieve License')}
