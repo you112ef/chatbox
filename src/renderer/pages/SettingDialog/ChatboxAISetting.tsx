@@ -1,7 +1,6 @@
 import { Tooltip, Button, ButtonGroup, Card, Typography, Box } from '@mui/material'
 import { ChatboxAILicenseDetail, ModelSettings } from '../../../shared/types'
 import { Trans, useTranslation } from 'react-i18next'
-import { usePremium } from '../../hooks/usePremium'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import PasswordTextField from '../../components/PasswordTextField'
 import ChatboxAIModelSelect from '../../components/ChatboxAIModelSelect'
@@ -9,11 +8,12 @@ import { CHATBOX_BUILD_TARGET } from '@/variables'
 import LinearProgress, { LinearProgressProps, linearProgressClasses } from '@mui/material/LinearProgress';
 import { styled } from '@mui/material/styles';
 import { Accordion, AccordionSummary, AccordionDetails } from '../../components/Accordion'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import * as remote from '@/packages/remote'
 import CircularProgress from '@mui/material/CircularProgress';
 import platform from '@/platform'
 import { trackingEvent } from '@/packages/event'
+import * as premiumActions from '@/stores/premiumActions'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -23,56 +23,106 @@ interface ModelConfigProps {
 export default function ChatboxAISetting(props: ModelConfigProps) {
     const { settingsEdit, setSettingsEdit } = props
     const { t } = useTranslation()
-    const premium = usePremium()
+    const activated = premiumActions.useAutoValidate()
+    const [loading, setLoading] = useState(false)
+    const [tip, setTip] = useState<React.ReactNode | null>(null)
+
+    const onInputChange = (value: string) => {
+        setLoading(false)
+        setTip(null)
+        setSettingsEdit({ ...settingsEdit, licenseKey: value })
+    }
+
+    const activate = async () => {
+        setLoading(true)
+        try {
+            const result = await premiumActions.activate(settingsEdit.licenseKey || '')
+            if (!result.valid) {
+                switch (result.error) {
+                    case 'reached_activation_limit':
+                        setTip(
+                            <Box className='text-red-500'>
+                                <Trans i18nKey="This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices."
+                                    components={{ a: <a href='https://chatboxai.app/redirect_app/manage_license' target='_blank' rel='noreferrer' /> }}
+                                />
+                            </Box>
+                        )
+                        break;
+                    case 'not_found':
+                        setTip(
+                            <Box className='text-red-500'>
+                                {t('License not found, please check your license key')}
+                            </Box>
+                        )
+                        break;
+                    case 'expired':
+                        setTip(
+                            <Box className='text-red-500'>
+                                {t('License expired, please check your license key')}
+                            </Box>
+                        )
+                        break;
+                }
+            }
+        } catch (e) {
+            setTip(
+                <Box className='text-red-500'>
+                    {t('Failed to activate license, please check your license key and network connection')}
+                    <br />
+                    {(e as any).message}
+                </Box>
+            )
+        }
+        setLoading(false)
+    }
+
     return (
         <Box>
             <Box>
                 <PasswordTextField
                     label={t('Chatbox AI License')}
                     value={settingsEdit.licenseKey || ''}
-                    setValue={(value) => {
-                        setSettingsEdit({ ...settingsEdit, licenseKey: value })
-                    }}
+                    setValue={onInputChange}
                     placeholder="xxxxxxxxxxxxxxxxxxxxxxxx"
-                    disabled={premium.premiumActivated || premium.premiumIsLoading}
-                    helperText={
-                        <>
-                            <span style={{ color: 'green' }}>{premium.premiumActivated ? t('License Activated') : ''}</span>
-                            {
-                                !premium.premiumIsLoading && !premium.premiumActivated && premium.reachedActivationLimit && (
-                                    <Box className='text-red-500'>
-                                        <Trans i18nKey="This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices."
-                                            components={{ a: <a href='https://chatboxai.app/redirect_app/manage_license' target='_blank' rel='noreferrer' /> }}
-                                        />
-                                    </Box>
-                                )
-                            }
-                        </>
-                    }
+                    disabled={activated}
                 />
-                {!premium.premiumActivated && (
-                    <Box>
-                        <ButtonGroup
-                            disabled={premium.premiumIsLoading}
-                            aria-label="outlined primary button group"
-                            sx={{ display: 'block', marginBottom: '15px' }}
-                        >
-                            <Button variant="text" onClick={() => premium.activate(settingsEdit.licenseKey || '')}>
-                                {premium.premiumIsLoading ? t('Activating...') : t('Activate License')}
-                            </Button>
-                        </ButtonGroup>
-                    </Box>
-                )}
-                {premium.premiumActivated && (
+                <Box>
+                    <ButtonGroup
+                        disabled={loading}
+                        sx={{ display: 'block', marginBottom: '15px' }}
+                    >
+                        {
+                            activated && (
+                                <>
+                                    <span className='text-green-700 text-xs mr-2'>{t('License Activated')}</span>
+                                    <Button  variant='text' onClick={() => {
+                                        premiumActions.deactivate()
+                                        trackingEvent('click_deactivate_license_button', { event_category: 'user' })
+                                    }}>
+                                        {t('clean')}({t('Deactivate')})
+                                    </Button>
+                                </>
+                            )
+                        }
+                        {
+                            !activated && (
+                                <Button variant={settingsEdit.licenseKey ? 'outlined' : "text"} onClick={activate}>
+                                    {loading ? t('Activating...') : t('Activate License')}
+                                </Button>
+                            )
+                        }
+                    </ButtonGroup>
+                </Box>
+                {activated && (
                     <ChatboxAIModelSelect
                         settingsEdit={settingsEdit}
                         setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
                     />
                 )}
                 {CHATBOX_BUILD_TARGET === 'mobile_app' ? (
-                    <DetailCardForMobileApp licenseKey={settingsEdit.licenseKey} premium={premium} />
+                    <DetailCardForMobileApp licenseKey={settingsEdit.licenseKey} activated={activated} />
                 ) : (
-                    <DetailCard licenseKey={settingsEdit.licenseKey} premium={premium} />
+                    <DetailCard licenseKey={settingsEdit.licenseKey} activated={activated} />
                 )}
             </Box>
         </Box>
@@ -80,22 +130,22 @@ export default function ChatboxAISetting(props: ModelConfigProps) {
 }
 
 // 详细信息卡片
-function DetailCard(props: { licenseKey?: string, premium: ReturnType<typeof usePremium> }) {
-    const { licenseKey, premium } = props
+function DetailCard(props: { licenseKey?: string, activated: boolean }) {
+    const { licenseKey, activated } = props
     const { t } = useTranslation()
     return (
         <Card sx={{ marginTop: '20px', padding: '10px 14px' }} elevation={3}>
             {
-                premium.premiumActivated && (
+                activated && (
                     <Box>
                         <Box className='mb-4'>
-                            <ActivedButtonGroup premium={premium} />
+                            <ActivedButtonGroup />
                         </Box>
                         <LicenseDetail licenseKey={licenseKey} />
                     </Box>
                 )
             }
-            <Box className='mt-4' sx={{ opacity: premium.premiumActivated ? '0.5' : undefined }}>
+            <Box className='mt-4' sx={{ opacity: activated ? '0.5' : undefined }}>
                 <Typography>
                     {t('Chatbox AI offers a user-friendly AI solution to help you enhance productivity')}
                 </Typography>
@@ -103,7 +153,7 @@ function DetailCard(props: { licenseKey?: string, premium: ReturnType<typeof use
                     {[t('Fast access to AI services'), t('Hassle-free setup'), t('Ideal for work and study')].map(
                         (item) => (
                             <Box key={item} sx={{ display: 'flex', margin: '4px 0' }}>
-                                <CheckCircleOutlineIcon color={premium.premiumActivated ? 'success' : 'action'} />
+                                <CheckCircleOutlineIcon color={activated ? 'success' : 'action'} />
                                 <b style={{ marginLeft: '5px' }}>{item}</b>
                             </Box>
                         )
@@ -111,17 +161,17 @@ function DetailCard(props: { licenseKey?: string, premium: ReturnType<typeof use
                 </Box>
             </Box>
             {
-                !premium.premiumActivated && (<InactivedButtonGroup />)
+                !activated && (<InactivedButtonGroup />)
             }
         </Card>
     )
 }
 
 // 移动应用的详细信息卡片
-function DetailCardForMobileApp(props: { licenseKey?: string, premium: ReturnType<typeof usePremium> }) {
-    const { premium, licenseKey } = props
+function DetailCardForMobileApp(props: { licenseKey?: string, activated: boolean }) {
+    const { licenseKey, activated } = props
     const { t } = useTranslation()
-    return premium.premiumActivated ? (
+    return activated ? (
         <Card sx={{ marginTop: '20px', padding: '14px' }} elevation={3}>
             <span
                 style={{
@@ -133,15 +183,14 @@ function DetailCardForMobileApp(props: { licenseKey?: string, premium: ReturnTyp
             >
                 {t('License Activated')}!
             </span>
-            <ActivedButtonGroup premium={premium} />
+            <ActivedButtonGroup />
             <LicenseDetail licenseKey={licenseKey} />
         </Card>
     ) : null
 }
 
 // 激活后的按钮组
-function ActivedButtonGroup(props: { premium: ReturnType<typeof usePremium> }) {
-    const { premium } = props
+function ActivedButtonGroup() {
     const { t } = useTranslation()
     return (
         <Box sx={{ marginTop: '10px' }}>
@@ -160,7 +209,7 @@ function ActivedButtonGroup(props: { premium: ReturnType<typeof usePremium> }) {
                 // color='warning'
                 sx={{ marginRight: '10px' }}
                 onClick={() => {
-                    premium.deactivate()
+                    premiumActions.deactivate()
                     trackingEvent('click_deactivate_license_button', { event_category: 'user' })
                 }}
             >

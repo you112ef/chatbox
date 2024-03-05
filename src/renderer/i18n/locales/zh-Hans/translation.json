@@ -216,5 +216,7 @@
     "Supports a variety of advanced AI models": "支持多种先进的 AI 模型",
     "Ideal for both work and educational scenarios": "适用于工作和教育场景",
     "Select and configure an AI model provider": "选择并配置 AI 模型提供方",
-    "Start Setup": "开始设置"
+    "Start Setup": "开始设置",
+    "License not found, please check your license key": "未找到 license，请检查您的 license key",
+    "License expired, please check your license key": "license 已过期，请检查您的 license key"
 }

@@ -24,8 +24,9 @@ type ActivateResponse =
     }
 
 export async function activateLicense(key: string, instanceName: string): Promise<{
+    valid: boolean
     instanceId: string
-    reachedActivationLimit?: boolean
+    error?: 'reached_activation_limit' | 'expired' | 'not_found'
 }> {
     const res = await fetch('https://api.lemonsqueezy.com/v1/licenses/activate', {
         method: 'POST',
@@ -40,7 +41,11 @@ export async function activateLicense(key: string, instanceName: string): Promis
     const json: ActivateResponse = await res.json()
     if (!json.activated) {
         if (json.error.includes('This license key has reached the activation limit') && json.license_key) {
-            return { instanceId: '', reachedActivationLimit: true }
+            return { valid: false, instanceId: '', error: 'reached_activation_limit' }
+        } else if (json.error.includes('This license key is expired.')) {
+            return { valid: false, instanceId: '', error: 'expired' }
+        } else if (json.error.includes('license_key not found')) {
+            return { valid: false, instanceId: '', error: 'not_found' }
         } else {
             throw new Error(json.error)
         }
@@ -49,7 +54,7 @@ export async function activateLicense(key: string, instanceName: string): Promis
     if (!remoteConfig.product_ids.includes(json.meta.product_id)) {
         throw new Error('Unmatching product')
     }
-    return { instanceId: json.instance.id }
+    return { valid: true, instanceId: json.instance.id }
 }
 
 export async function deactivateLicense(key: string, instanceId: string) {

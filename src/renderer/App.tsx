@@ -15,7 +15,6 @@ import CopilotWindow from './pages/CopilotWindow'
 import { useI18nEffect } from './hooks/useI18nEffect'
 import Toasts from './components/Toasts'
 import * as settingActions from './stores/settingActions'
-import { usePremium } from './hooks/usePremium'
 import RemoteDialogWindow from './pages/RemoteDialogWindow'
 import { useSystemLanguageWhenInit } from './hooks/useDefaultSystemLanguage'
 import ClearConversationListWindow from './pages/ClearConversationListWindow'
@@ -29,6 +28,7 @@ import PictureDialog from './pages/PictureDialog'
 import MessageEditDialog from './pages/MessageEditDialog'
 import ThreadHistoryDrawer from './components/ThreadHistoryDrawer'
 import WelcomeDialog from './pages/WelcomeDialog'
+import * as premiumActions from './stores/premiumActions'
 
 function Main() {
     // 是否展示菜单栏
@@ -124,7 +124,7 @@ function Main() {
 
 export default function App() {
     useI18nEffect()
-    usePremium() // 每次启动都执行usePremium，防止用户在其他地方取消订阅
+    premiumActions.useAutoValidate() // 每次启动都执行 license 检查，防止用户在lemonsqueezy管理页面中取消了当前设备的激活
     useSystemLanguageWhenInit()
     useShortcut()
     useScreenChange()

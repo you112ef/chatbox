@@ -215,5 +215,7 @@
     "Supports a variety of advanced AI models": "다양한 고급 AI 모델을 지원합니다",
     "Ideal for both work and educational scenarios": "일과 교육적인 시나리오에 모두 이상적입니다",
     "Select and configure an AI model provider": "AI 모델 공급자를 선택하고 구성하세요",
-    "Start Setup": "설정 시작"
+    "Start Setup": "설정 시작",
+    "License not found, please check your license key": "라이선스를 찾을 수 없습니다. 라이선스 키를 확인하세요",
+    "License expired, please check your license key": "라이선스가 만료되었습니다. 라이선스 키를 확인하세요"
 }

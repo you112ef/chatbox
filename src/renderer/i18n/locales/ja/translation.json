@@ -215,5 +215,7 @@
     "Supports a variety of advanced AI models": "さまざまな先進的なAIモデルをサポート",
     "Ideal for both work and educational scenarios": "仕事と教育の両方のシナリオに最適",
     "Select and configure an AI model provider": "AIモデルプロバイダーを選択して設定",
-    "Start Setup": "セットアップを開始"
+    "Start Setup": "セットアップを開始",
+    "License not found, please check your license key": "ライセンスが見つかりません、ライセンスキーを確認してください",
+    "License expired, please check your license key": "ライセンスが期限切れです、ライセンスキーを確認してください"
 }

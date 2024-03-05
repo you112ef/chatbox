@@ -187,7 +187,7 @@ export interface Settings extends ModelSettings {
 
     proxy?: string // 代理地址
 
-    allowReportingAndTracking: boolean  // 是否允许错误报告和事件追踪
+    allowReportingAndTracking: boolean // 是否允许错误报告和事件追踪
 }
 
 export type Language = 'en' | 'zh-Hans' | 'zh-Hant' | 'ja' | 'ko' | 'ru' | 'de' | 'fr'

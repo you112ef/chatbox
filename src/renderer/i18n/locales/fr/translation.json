@@ -215,5 +215,7 @@
     "Supports a variety of advanced AI models": "Prend en charge une variété de modèles IA avancés",
     "Ideal for both work and educational scenarios": "Idéal pour les scénarios de travail et d'éducation",
     "Select and configure an AI model provider": "Sélectionnez et configurez un fournisseur de modèle IA",
-    "Start Setup": "Démarrer la configuration"
+    "Start Setup": "Démarrer la configuration",
+    "License not found, please check your license key": "Licence non trouvée, veuillez vérifier votre clé de licence",
+    "License expired, please check your license key": "Licence expirée, veuillez vérifier votre clé de licence"
 }
