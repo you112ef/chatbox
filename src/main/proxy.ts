@@ -1,5 +1,5 @@
 import { session } from 'electron'
-import * as store from './store'
+import * as store from './store-node'
 
 export function init() {
     const { proxy } = store.getSettings()

@@ -1,5 +1,5 @@
 import { BrowserWindow, globalShortcut } from 'electron'
-import * as store from './store'
+import * as store from './store-node'
 
 const shortcutMap = {
     'Alt+`': quickToggle,

@@ -1,4 +1,4 @@
-import * as store from './store'
+import * as store from './store-node'
 import { app } from 'electron'
 import { ofetch } from 'ofetch'
 

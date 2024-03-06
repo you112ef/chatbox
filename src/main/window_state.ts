@@ -2,7 +2,7 @@
 // /Users/benn/Documents/w/vscode/src/vs/platform/windows/electron-main/windowImpl.ts
 
 import { screen, Display, Rectangle } from 'electron'
-import { store } from './store'
+import { store } from './store-node'
 
 export interface IWindowState {
     width?: number
