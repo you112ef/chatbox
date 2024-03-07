@@ -37,7 +37,7 @@ export function getConfig(): Config {
 
 export async function backup() {
     const configPath = path.resolve(app.getPath('userData'), 'config.json')
-    if (! fs.existsSync(configPath)) {
+    if (!fs.existsSync(configPath)) {
         return
     }
     const now = new Date()
@@ -69,7 +69,7 @@ export async function needBackup() {
 
 export async function autoBackup() {
     if (await needBackup()) {
-        const filename =  await backup()
+        const filename = await backup()
         log.info('auto backup:', filename)
     }
 }

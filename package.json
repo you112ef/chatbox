@@ -131,6 +131,7 @@
         "webpack-obfuscator": "^3.5.1"
     },
     "dependencies": {
+        "@anthropic-ai/sdk": "^0.16.1",
         "@braintree/sanitize-url": "^6.0.4",
         "@capacitor/android": "^5.5.1",
         "@capacitor/core": "^5.5.1",

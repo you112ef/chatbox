@@ -1,23 +1,74 @@
 import { OpenAIMessage } from 'src/shared/types'
 import Base from './base'
-import { ApiError } from './errors'
 import { onResultChange } from './interfaces'
+import Anthropic from '@anthropic-ai/sdk'
+import { MessageParam } from '@anthropic-ai/sdk/resources'
+import { ApiError, NetworkError } from './errors'
 
-export type ClaudeModel = 'claude-instant-1' | 'claude-1' | 'claude-instant-1-100k' | 'claude-1-100k' | 'claude-2' | 'claude-2.1' | 'claude-instant-1.2'
+export type ClaudeModel = keyof typeof modelConfig
 
-export const claudeModels: ClaudeModel[] = [
-    'claude-instant-1',
-    'claude-instant-1.2',
-    'claude-2',
-    'claude-2.1',
-    'claude-1',
-    'claude-instant-1-100k',
-    'claude-1-100k',
-]
+// https://docs.anthropic.com/claude/docs/models-overview
+export const modelConfig = {
+    'claude-3-opus-20240229': {
+        contextWindow: 200_000,
+        maxOutput: 4096,
+        vision: true,
+    },
+    'claude-3-sonnet-20240229': {
+        contextWindow: 200_000,
+        maxOutput: 4096,
+        vision: true,
+    },
+    'claude-2.1': {
+        contextWindow: 200_000,
+        maxOutput: 4096,
+        vision: false,
+    },
+    'claude-2.0': {
+        contextWindow: 100_000,
+        maxOutput: 4096,
+        vision: false,
+    },
+    'claude-instant-1.2': {
+        contextWindow: 100_000,
+        maxOutput: 4096,
+        vision: false,
+    },
+
+    // 以下模型的配置待确认，因为文档中没有提到
+    'claude-2': {
+        contextWindow: 100_000,
+        maxOutput: 4096,
+        vision: false,
+    },
+    'claude-instant-1': {
+        contextWindow: 100_000,
+        maxOutput: 4096,
+        vision: false,
+    },
+    'claude-1': {
+        contextWindow: 100_000,
+        maxOutput: 4096,
+        vision: false,
+    },
+    'claude-instant-1-100k': {
+        contextWindow: 100_000,
+        maxOutput: 4096,
+        vision: false,
+    },
+    'claude-1-100k': {
+        contextWindow: 100_000,
+        maxOutput: 4096,
+        vision: false,
+    }
+}
+
+export const claudeModels: ClaudeModel[] = Object.keys(modelConfig) as ClaudeModel[]
 
 interface Options {
     claudeApiKey: string
-    claudeModel: string
+    claudeApiHost: string
+    claudeModel: ClaudeModel
 }
 
 export default class Claude extends Base {
@@ -29,42 +80,47 @@ export default class Claude extends Base {
         this.options = options
     }
 
-    async callChatCompletion(messages: OpenAIMessage[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
-        // "\n\nHuman: Hello, world!\n\nAssistant:"
-        let prompt = messages
-            .map((m) => (m.role !== 'assistant' ? `Human: ${m.content}` : `Assistant: ${m.content}`))
-            .join('\n\n')
-        prompt += '\n\nAssistant:'
-        const response = await this.post(
-            'https://api.anthropic.com/v1/complete',
-            {
-                'Content-Type': 'application/json',
-                'anthropic-version': '2023-06-01',
-                'x-api-key': this.options.claudeApiKey,
-            },
-            {
-                model: this.options.claudeModel,
-                prompt: prompt,
-                max_tokens_to_sample: 100_000,
-                stream: true,
-            },
-            signal
-        )
-        let result = ''
-        await this.handleSSE(response, (message) => {
-                const data = JSON.parse(message)
-                if (data.error) {
-                    throw new ApiError(`Error from Claude: ${JSON.stringify(data)}`)
-                }
-                let word: string = data.completion
-                if (word !== undefined) {
-                    result += word
-                    if (onResultChange) {
-                        onResultChange(result.trimStart())
-                    }
-                }
+    async callChatCompletion(rawMessages: OpenAIMessage[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+        const anthropic = new Anthropic({
+            baseURL: this.options.claudeApiHost,
+            apiKey: this.options.claudeApiKey,
+        })
+
+        let prompt = ''
+        const messages: MessageParam[] = []
+        for (const msg of rawMessages) {
+            if (msg.role === 'system') {
+                prompt += msg.content + '\n'
+            } else {
+                messages.push({ role: msg.role, content: msg.content })
             }
-        )
-        return result.trimStart()
+        }
+
+        try {
+            let result = ''
+            const stream = anthropic.messages
+                .stream({
+                    model: this.options.claudeModel,
+                    max_tokens: modelConfig[this.options.claudeModel]   // 兼容旧版本的问题（不一定存在）
+                        ? modelConfig[this.options.claudeModel].maxOutput
+                        : 4096,
+                    system: prompt,
+                    messages: messages,
+                }, { signal: signal }).on('text', (text) => {
+                    result += text
+                    if (onResultChange) {
+                        onResultChange(result)
+                    }
+                });
+            await stream.finalMessage();
+            // return message.content[0].text
+            return result
+        } catch (e) {
+            if (e instanceof Anthropic.APIConnectionError) {
+                throw new NetworkError(e.message, this.options.claudeApiHost)
+            } else {
+                throw new ApiError((e as any).message)
+            }
+        }
     }
 }
