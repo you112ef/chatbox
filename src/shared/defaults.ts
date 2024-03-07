@@ -24,7 +24,8 @@ export function settings(): Settings {
         // maxTokens: "2048",
 
         claudeApiKey: '',
-        claudeModel: 'claude-1',
+        claudeApiHost: 'https://api.anthropic.com',
+        claudeModel: 'claude-2.1',
 
         geminiAPIKey: '',
 
