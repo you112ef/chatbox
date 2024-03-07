@@ -17,10 +17,14 @@ import deleteSourceMaps from '../scripts/delete-source-maps'
 import JavaScriptObfuscator from 'webpack-obfuscator'
 
 checkNodeEnv('production')
-deleteSourceMaps()
+
+let enableSourceMap = false // 正式发布永远不能开启 sourceMap，否则代码会被轻易反编译。这个设置仅用于本地测试。
+if (! enableSourceMap) {
+    deleteSourceMaps()
+}
 
 const configuration: webpack.Configuration = {
-    devtool: false,
+    devtool: enableSourceMap ? 'source-map' : false,
 
     mode: 'production',
 
@@ -146,6 +150,7 @@ const configuration: webpack.Configuration = {
             // 保护前端代码不被偷到其他地方部署
             domainLock: ['localhost', ".chatboxai.app", "chatbox-pro.pages.dev"],
             domainLockRedirectUrl: 'https://chatboxai.app',
+            sourceMap: enableSourceMap,
         }),
     ],
 }
