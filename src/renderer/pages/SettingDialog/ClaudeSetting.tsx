@@ -5,7 +5,6 @@ import TemperatureSlider from '../../components/TemperatureSlider'
 import PasswordTextField from '../../components/PasswordTextField'
 import MaxContextMessageCountSlider from '../../components/MaxContextMessageCountSlider'
 import ClaudeModelSelect from '../../components/ClaudeModelSelect'
-import TextFieldReset from '@/components/TextFieldReset'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -22,23 +21,6 @@ export default function ClaudeSetting(props: ModelConfigProps) {
                 value={settingsEdit.claudeApiKey}
                 setValue={(value) => {
                     setSettingsEdit({ ...settingsEdit, claudeApiKey: value })
-                }}
-            />
-            <TextFieldReset
-                margin="dense"
-                label={t('api host')}
-                type="text"
-                fullWidth
-                variant="outlined"
-                value={settingsEdit.claudeApiHost}
-                placeholder="https://api.anthropic.com"
-                defaultValue='https://api.anthropic.com'
-                onValueChange={(value) => {
-                    value = value.trim()
-                    if (value.length > 4 && !value.startsWith('http')) {
-                        value = 'https://' + value
-                    }
-                    setSettingsEdit({ ...settingsEdit, claudeApiHost: value })
                 }}
             />
             <ClaudeModelSelect

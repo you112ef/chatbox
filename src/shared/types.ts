@@ -151,7 +151,6 @@ export interface ModelSettings {
 
     // claude
     claudeApiKey: string
-    claudeApiHost: string
     claudeModel: ClaudeModel
 
     // google gemini
