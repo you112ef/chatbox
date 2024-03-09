@@ -33,6 +33,15 @@ export function needEditSetting() {
     if (settings.aiProvider === 'chatglm-6b' && settings.chatglm6bUrl === '') {
         return true
     }
+    if (settings.aiProvider === 'claude' && !settings.claudeApiKey) {
+        return true
+    }
+    if (settings.aiProvider === 'gemini' && !settings.geminiAPIKey) {
+        return true
+    }
+    if (settings.aiProvider === 'ollama' && !settings.ollamaModel) {
+        return true
+    }
     return false
 }
 
