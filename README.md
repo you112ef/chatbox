@@ -69,6 +69,8 @@ npm run dev
 
 自动启动 Electorn 应用，也可以访问 `http://localhost:1212` 打开网页版。
 
+### 查看依赖大小
+
 查看依赖库导致的 JS 文件大小占比，运行：
 
 ```shell
