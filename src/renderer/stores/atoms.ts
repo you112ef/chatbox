@@ -42,6 +42,7 @@ export const showWordCountAtom = focusAtom(settingsAtom, (optic) => optic.prop('
 export const showTokenCountAtom = focusAtom(settingsAtom, (optic) => optic.prop('showTokenCount'))
 export const showTokenUsedAtom = focusAtom(settingsAtom, (optic) => optic.prop('showTokenUsed'))
 export const showModelNameAtom = focusAtom(settingsAtom, (optic) => optic.prop('showModelName'))
+export const showMessageTimestampAtom = focusAtom(settingsAtom, (optic) => optic.prop('showMessageTimestamp'))
 export const themeAtom = focusAtom(settingsAtom, (optic) => optic.prop('theme'))
 export const fontSizeAtom = focusAtom(settingsAtom, (optic) => optic.prop('fontSize'))
 export const spellCheckAtom = focusAtom(settingsAtom, (optic) => optic.prop('spellCheck'))

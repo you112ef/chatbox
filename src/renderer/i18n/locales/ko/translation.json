@@ -6,6 +6,7 @@
     "show message token count": "메시지 토큰 수 표시",
     "show message token usage": "메시지 토큰 사용량 표시",
     "show model name": "모델 이름 표시",
+    "show message timestamp": "메시지 타임스탬프 표시",
     "proxy": "프록시",
     "proxy warning": "API 키와 모든 메시지가 {{apiHost}}로 전송됩니다. 이 주소를 신뢰하는지 확인하십시오. 그렇지 않으면 API 키와 데이터 유출의 위험이 있습니다.",
     "reset": "재설정",

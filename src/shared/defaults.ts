@@ -36,6 +36,7 @@ export function settings(): Settings {
         showTokenCount: false,
         showTokenUsed: true,
         showModelName: true,
+        showMessageTimestamp: false,
         theme: ThemeMode.System,
         language: 'en',
         fontSize: 12,

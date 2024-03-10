@@ -120,6 +120,17 @@ export default function DisplaySettingTab(props: {
                         })
                     }
                 />
+                <FormControlLabel
+                    control={<Switch />}
+                    label={t('show message timestamp')}
+                    checked={settingsEdit.showMessageTimestamp}
+                    onChange={(e, checked) =>
+                        setSettingsEdit({
+                            ...settingsEdit,
+                            showMessageTimestamp: checked,
+                        })
+                    }
+                />
             </FormGroup>
         </Box>
     )

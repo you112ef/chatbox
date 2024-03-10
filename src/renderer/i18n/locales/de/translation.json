@@ -6,6 +6,7 @@
     "show message token count": "Tokenanzahl anzeigen",
     "show message token usage": "Token-Nutzung anzeigen",
     "show model name": "Modellname anzeigen",
+    "show message timestamp": "Zeitstempel anzeigen",
     "proxy": "Proxy",
     "proxy warning": "Ihr API-Schlüssel und alle Nachrichten werden an {{apiHost}} gesendet. Bitte bestätigen Sie, dass Sie dieser Adresse vertrauen. Andernfalls besteht das Risiko von API-Schlüssel- und Datenlecks.",
     "reset": "Zurücksetzen",

@@ -28,6 +28,7 @@ export type Message = OpenAIMessage & {
     wordCount?: number // 当前消息的字数
     tokenCount?: number // 当前消息的 token 数量
     tokensUsed?: number // 生成当前消息的 token 使用量
+    timestamp?: number // 当前消息的时间戳
 }
 
 export type SessionType = undefined | 'chat' | 'picture' // undefined 为了兼容老版本 chat
@@ -107,6 +108,7 @@ export function createMessage(role: OpenAIRoleEnumType = OpenAIRoleEnum.User, co
         id: uuidv4(),
         content: content,
         role: role,
+        timestamp: new Date().getTime(),
     }
 }
 
@@ -175,6 +177,7 @@ export interface Settings extends ModelSettings {
     showTokenCount?: boolean
     showTokenUsed?: boolean
     showModelName?: boolean
+    showMessageTimestamp?: boolean
 
     theme: ThemeMode
     language: Language

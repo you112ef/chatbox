@@ -6,6 +6,7 @@
     "show message token count": "Afficher le nombre de jetons du message",
     "show message token usage": "Afficher l'utilisation des jetons du message",
     "show model name": "Afficher le nom du modèle",
+    "show message timestamp": "Afficher l'horodatage du message",
     "proxy": "Proxy",
     "proxy warning": "Votre clé API et tous les messages seront envoyés à {{apiHost}}. Veuillez confirmer que vous faites confiance à cette adresse. Sinon, il y a un risque de fuite de clé API et de données.",
     "reset": "Réinitialiser",

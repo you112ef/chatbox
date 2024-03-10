@@ -6,6 +6,7 @@
     "show message token count": "メッセージのトークン数を表示",
     "show message token usage": "メッセージのトークン使用状況を表示",
     "show model name": "モデル名を表示",
+    "show message timestamp": "メッセージのタイムスタンプを表示",
     "proxy": "プロキシ",
     "proxy warning": "APIキーとすべてのメッセージは{{apiHost}}に送信されます。このアドレスを信頼できることを確認してください。そうでなければ、APIキーとデータ漏洩のリスクがあります。",
     "reset": "リセット",

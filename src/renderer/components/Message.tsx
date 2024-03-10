@@ -34,6 +34,7 @@ import {
     messageScrollingScrollPositionAtom,
     pictureShowAtom,
     quoteAtom,
+    showMessageTimestampAtom,
     showModelNameAtom,
     showTokenCountAtom,
     showWordCountAtom,
@@ -51,6 +52,7 @@ import ImageIcon from '@mui/icons-material/Image'
 import MessageErrTips from './MessageErrTips'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import * as dom from '@/hooks/dom'
+import * as dateFns from "date-fns"
 
 export interface Props {
     id?: string
@@ -63,6 +65,7 @@ function _Message(props: Props) {
     const { t } = useTranslation()
     const theme = useTheme()
 
+    const showMessageTimestamp = useAtomValue(showMessageTimestampAtom)
     const showModelName = useAtomValue(showModelNameAtom)
     const showTokenCount = useAtomValue(showTokenCountAtom)
     const showWordCount = useAtomValue(showWordCountAtom)
@@ -160,6 +163,24 @@ function _Message(props: Props) {
             tips.push(`model: ${props.msg.model || 'unknown'}`)
             tips.push(`style: ${props.msg.style || 'unknown'}`)
         }
+    }
+
+    // 消息时间戳
+    if (showMessageTimestamp && msg.timestamp !== undefined) {
+        let date = new Date(msg.timestamp)
+        let messageTimestamp: string
+        if (dateFns.isToday(date)) {
+            // - 当天，显示 HH:mm
+            messageTimestamp = dateFns.format(date, 'HH:mm')
+        } else if (dateFns.isThisYear(date)) {
+            // - 当年，显示 MM-dd HH:mm
+            messageTimestamp = dateFns.format(date, 'MM-dd HH:mm')
+        } else {
+            // - 其他年份：yyyy-MM-dd HH:mm
+            messageTimestamp = dateFns.format(date, 'yyyy-MM-dd HH:mm')
+        }
+
+        tips.push('time: ' + messageTimestamp)
     }
 
     let displayButtonGroup = false

@@ -6,6 +6,7 @@
     "show message token count": "Show message token count",
     "show message token usage": "Show message token usage",
     "show model name": "Show model name",
+    "show message timestamp": "Show message timestamp",
     "proxy": "Proxy",
     "proxy warning": "Your API Key and all messages will be sent to {{apiHost}}. Please confirm that you trust this address. Otherwise, there is a risk of API Key and data leakage.",
     "reset": "Reset",

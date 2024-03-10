@@ -6,6 +6,7 @@
     "show message token count": "显示消息的 token 数量",
     "show message token usage": "显示消息的 token 消耗",
     "show model name": "显示模型名称",
+    "show message timestamp": "显示消息的时间戳",
     "proxy": "代理",
     "proxy warning": "您的 API 密钥和所有的消息将发送到 {{apiHost}} 请确认您信任此地址。否则，存在 API 密钥和数据泄露的风险。",
     "reset": "重置",

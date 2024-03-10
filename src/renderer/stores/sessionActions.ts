@@ -371,6 +371,10 @@ export function modifyMessage(sessionId: string, updated: Message, refreshCounti
         updated.wordCount = utils.countWord(updated.content)
         updated.tokenCount = utils.estimateTokensFromMessages([updated])
     }
+
+    // 更新消息时间戳
+    updated.timestamp = new Date().getTime()
+
     let hasHandled = false
     const handle = (msgs: Message[]) => {
         return msgs.map((m) => {
