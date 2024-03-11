@@ -1,4 +1,12 @@
 const changelog = `
+### v1.3.0
+
+1. 支持向 AI 发送图片（Vision 功能）
+2. 支持 Claude 3 系列模型
+3. 重新设计了整个应用的布局
+4. 新增消息时间戳
+5. 修复了一些已知的小问题
+
 ### v1.2.6
 
 1. 新增 0125 版本系列模型 (gpt-3.5-turbo-0125, gpt-4-0125-preview, gpt-4-turbo-preview)

@@ -1,4 +1,12 @@
 const changelog = `
+### v1.3.0
+
+1. Introducing Vision feature: You can now send images to AI!
+2. Support for the latest Claude 3 series models.
+3. A complete redesign of the app layout for a fresh and intuitive user experience.
+4. Added message timestamps
+5. Fixed some known minor issues
+
 ### v1.2.6
 
 1. Added new model series for version 0125 (gpt-3.5-turbo-0125, gpt-4-0125-preview, gpt-4-turbo-preview).
