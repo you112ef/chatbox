@@ -1,7 +1,8 @@
-import { OpenAIMessage } from 'src/shared/types'
+import { Message } from 'src/shared/types'
 import Base from './base'
 import { ApiError } from './errors'
 import { onResultChange } from './interfaces'
+import { openaiModelConfigs, populateOpenAIMessage } from './openai'
 
 interface Options {
     azureEndpoint: string
@@ -9,7 +10,7 @@ interface Options {
     azureDalleDeploymentName: string // dall-e-3 的部署名称
     azureApikey: string
 
-    openaiMaxTokens: number
+    // openaiMaxTokens: number
     temperature: number
     topP: number
 
@@ -31,7 +32,9 @@ export default class AzureOpenAI extends Base {
         return apiVersion
     }
 
-    async callChatCompletion(messages: OpenAIMessage[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+    async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+        const messages = await populateOpenAIMessage(rawMessages, this.options.azureDeploymentName as any)
+
         // 解决 GPT-4 不认识自己的问题
         for (const message of messages) {
             if (message.role === 'system') {
@@ -49,7 +52,10 @@ export default class AzureOpenAI extends Base {
             {
                 messages,
                 model: this.options.azureDeploymentName,
-                max_tokens: this.options.openaiMaxTokens === 0 ? undefined : this.options.openaiMaxTokens,
+                // vision 模型的默认 max_tokens 极低，基本很难回答完整，因此手动设置为模型最大值
+                max_tokens: this.options.azureDalleDeploymentName.toLowerCase() === 'gpt-4-vision-preview'
+                    ? openaiModelConfigs['gpt-4-vision-preview'].maxTokens
+                    : undefined,
                 temperature: this.options.temperature,
                 top_p: this.options.topP,
                 stream: true,

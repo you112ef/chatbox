@@ -218,5 +218,7 @@
     "Select and configure an AI model provider": "AIモデルプロバイダーを選択して設定",
     "Start Setup": "セットアップを開始",
     "License not found, please check your license key": "ライセンスが見つかりません、ライセンスキーを確認してください",
-    "License expired, please check your license key": "ライセンスが期限切れです、ライセンスキーを確認してください"
+    "License expired, please check your license key": "ライセンスが期限切れです、ライセンスキーを確認してください",
+    "Current model does not support image input": "現在のモデルは画像入力をサポートしていません",
+    "Attach Image": "画像を添付"
 }

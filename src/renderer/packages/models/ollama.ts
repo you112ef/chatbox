@@ -1,4 +1,4 @@
-import { OpenAIMessage } from 'src/shared/types'
+import { Message } from 'src/shared/types'
 import Base from './base'
 import { ApiError } from './errors'
 import { onResultChange } from './interfaces'
@@ -29,8 +29,8 @@ export default class Ollama extends Base {
         return host
     }
 
-    async callChatCompletion(messages: OpenAIMessage[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
-        messages = messages.map(m => ({ role: m.role, content: m.content }))
+    async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+        const messages = rawMessages.map(m => ({ role: m.role, content: m.content }))
         const res = await this.post(
             `${this.getHost()}/api/chat`,
             { 'Content-Type': 'application/json' },

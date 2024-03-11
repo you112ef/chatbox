@@ -218,5 +218,7 @@
     "Select and configure an AI model provider": "AI 모델 공급자를 선택하고 구성하세요",
     "Start Setup": "설정 시작",
     "License not found, please check your license key": "라이선스를 찾을 수 없습니다. 라이선스 키를 확인하세요",
-    "License expired, please check your license key": "라이선스가 만료되었습니다. 라이선스 키를 확인하세요"
+    "License expired, please check your license key": "라이선스가 만료되었습니다. 라이선스 키를 확인하세요",
+    "Current model does not support image input": "현재 모델은 이미지 입력을 지원하지 않습니다",
+    "Attach Image": "이미지 첨부"
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Tooltip, Typography, useTheme } from '@mui/material'
-import { Message, SessionType, createMessage } from '../../shared/types'
+import { v4 as uuidv4 } from 'uuid'
+import { Typography, useTheme } from '@mui/material'
+import { Message, ModelProvider, SessionType, createMessage } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as atoms from '../stores/atoms'
 import { useAtom, useSetAtom } from 'jotai'
@@ -17,6 +18,11 @@ import { cn } from '@/lib/utils'
 import { scrollToMessage } from '@/stores/scrollActions'
 import icon from '../static/icon.png'
 import { trackingEvent } from '@/packages/event'
+import storage from '@/storage'
+import { ImageInStorage, ImageMiniCard } from './Image'
+import MiniButton from './MiniButton'
+import _ from 'lodash'
+import * as toastActions from '@/stores/toastActions'
 
 export interface Props {
     currentSessionId: string
@@ -31,6 +37,8 @@ export default function InputBox(props: Props) {
     const setChatConfigDialogSession = useSetAtom(atoms.chatConfigDialogAtom)
     const { t } = useTranslation()
     const [messageInput, setMessageInput] = useState('')
+    const [pictureKeys, setPictureKeys] = useState<string[]>([])
+    const pictureInputRef = useRef<HTMLInputElement | null>(null)
     const [showRollbackThreadButton, setShowRollbackThreadButton] = useState(false)
     const showRollbackThreadButtonTimerRef = useRef<null | NodeJS.Timeout>(null)
     const inputRef = useRef<HTMLTextAreaElement | null>(null)
@@ -38,6 +46,7 @@ export default function InputBox(props: Props) {
 
     useEffect(() => {
         if (quote !== '') {
+            // TODO: 支持引用消息中的图片
             setMessageInput(quote)
             setQuote('')
             setPreviousMessageQuickInputMark('')
@@ -67,8 +76,12 @@ export default function InputBox(props: Props) {
             return
         }
         const newMessage = createMessage('user', messageInput)
+        if (pictureKeys.length > 0) {
+            newMessage.pictures = pictureKeys.map(k => ({ storageKey: k }))
+        }
         submit(newMessage, needGenerating)
         setMessageInput('')
+        setPictureKeys([])
         trackingEvent('send_message', { event_category: 'user' })
         // 重置清理上下文按钮
         if (showRollbackThreadButton) {
@@ -131,6 +144,11 @@ export default function InputBox(props: Props) {
                 if (event.key === 'ArrowUp') {
                     const msg = historyMessages[historyMessages.length - 1]
                     setMessageInput(msg.content)
+                    setPictureKeys(
+                        msg.pictures
+                            ? _.compact(msg.pictures.map(p => p.storageKey))
+                            : []
+                    )
                     setPreviousMessageQuickInputMark(msg.id)
                     setTimeout(() => inputRef.current?.select(), 10)
                     return
@@ -145,6 +163,11 @@ export default function InputBox(props: Props) {
                 const msg = event.key === 'ArrowUp' ? historyMessages[ix - 1] : historyMessages[ix + 1]
                 if (msg) {
                     setMessageInput(msg.content)
+                    setPictureKeys(
+                        msg.pictures
+                            ? _.compact(msg.pictures.map(p => p.storageKey))
+                            : []
+                    )
                     setPreviousMessageQuickInputMark(msg.id)
                     setTimeout(() => inputRef.current?.select(), 10)
                 }
@@ -175,6 +198,47 @@ export default function InputBox(props: Props) {
             clearTimeout(showRollbackThreadButtonTimerRef.current)
         }
         sessionActions.rollbackStartNewThread(props.currentSessionId)
+    }
+
+    const onFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (!event.target.files) {
+            return
+        }
+        const files = event.target.files
+        for (const file of Array.from(files)) {
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader()
+                reader.onload = async (e) => {
+                    if (e.target && e.target.result) {
+                        const base64 = e.target.result as string
+                        const key = `picture:input-box:${uuidv4()}`
+                        await storage.setBlob(key, base64)
+                        setPictureKeys((keys) => [...keys, key])
+                    }
+                }
+                reader.readAsDataURL(file)
+            }
+        }
+        event.target.value = ''
+    }
+    const onImageUpload = () => {
+        const settings = sessionActions.getCurrentSessionMergedSettings()
+        if (
+            (settings.aiProvider === ModelProvider.ChatboxAI && settings.chatboxAIModel === 'chatboxai-4')
+            || (settings.aiProvider === ModelProvider.OpenAI && settings.model === 'gpt-4-vision-preview')
+            || (settings.aiProvider === ModelProvider.Azure && settings.azureDeploymentName === 'gpt-4-vision-preview')
+            || (settings.aiProvider === ModelProvider.Claude && settings.claudeModel.startsWith('claude-3'))
+        ) {
+            pictureInputRef.current?.click()
+            return
+        }
+        toastActions.add(t('Current model does not support image input'))
+        return
+    }
+    const onImageDelete = async (picKey: string) => {
+        setPictureKeys(keys => keys.filter(k => k !== picKey))
+        // 不删除图片数据，因为可能在其他地方引用，比如通过上下键盘的历史消息快捷输入、发送的消息中引用
+        // await storage.delBlob(picKey)
     }
 
     // 小彩蛋
@@ -238,6 +302,21 @@ export default function InputBox(props: Props) {
                         tooltipPlacement='top'
                     >
                         <MessagesSquare size='22' strokeWidth={1} />
+                    </MiniButton>
+                    <input type='file' ref={pictureInputRef} className='hidden' onChange={onFileInputChange}
+                        // accept="image/png, image/jpeg, image/gif" 
+                        accept="image/png, image/jpeg"
+                    />
+                    <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
+                        onClick={onImageUpload}
+                        tooltipTitle={
+                            <div className='text-center inline-block'>
+                                <span>{t('Attach Image')}</span>
+                            </div>
+                        }
+                        tooltipPlacement='top'
+                    >
+                        <Image size='22' strokeWidth={1} />
                     </MiniButton>
                     <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
                         onClick={() => setChatConfigDialogSession(sessionActions.getCurrentSession())}
@@ -311,41 +390,14 @@ export default function InputBox(props: Props) {
                     placeholder={t('Type your question here...') || ''}
                     {...{ enterKeyHint: 'send' } as any}
                 />
+                <div className='flex flex-row items-center' onClick={() => dom.focusMessageInput()} >
+                    {
+                        pictureKeys.map(picKey => (
+                            <ImageMiniCard storageKey={picKey} onDelete={() => onImageDelete(picKey)} />
+                        ))
+                    }
+                </div>
             </div>
         </div>
-    )
-}
-
-function MiniButton(props: {
-    children: React.ReactNode
-    onClick?: () => void
-    disabled?: boolean
-    className?: string
-    style?: React.CSSProperties
-    tooltipTitle?: React.ReactNode
-    tooltipPlacement?: "top" | "bottom" | "left" | "right" | "bottom-end" | "bottom-start" | "left-end" | "left-start" | "right-end" | "right-start" | "top-end" | "top-start"
-}) {
-    const { onClick, disabled, className, style, tooltipTitle, tooltipPlacement, children } = props
-    const button = (
-        <button onClick={onClick} disabled={disabled}
-            className={cn(
-                'bg-transparent hover:bg-slate-400/25',
-                'border-none rounded',
-                'h-8 w-8 p-1',
-                disabled ? '' : 'cursor-pointer',
-                className,
-            )}
-            style={style}
-        >
-            {children}
-        </button>
-    )
-    if (!tooltipTitle) {
-        return button
-    }
-    return (
-        <Tooltip title={tooltipTitle} placement={tooltipPlacement}>
-            {button}
-        </Tooltip>
     )
 }

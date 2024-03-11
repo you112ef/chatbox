@@ -1,8 +1,10 @@
-import { OpenAIMessage } from 'src/shared/types'
+import { Message } from 'src/shared/types'
 import Base from './base'
 import { onResultChange } from './interfaces'
 import { ApiError } from './errors'
 import { get } from 'lodash'
+import storage from '@/storage'
+import * as base64 from '@/packages/base64'
 
 // 官方 SDK 明确声明用于 Node.js，在浏览器中会导致页面白屏。
 // import Anthropic from '@anthropic-ai/sdk'
@@ -83,17 +85,48 @@ export default class Claude extends Base {
         this.options = options
     }
 
-    async callChatCompletion(rawMessages: OpenAIMessage[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+    async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
         let prompt = ''
-        const messages: Message[] = []
+        const messages: ClaudeMessage[] = []
         for (const msg of rawMessages) {
             if (msg.role === 'system') {
+                // 系统消息追加到 prompt 中
                 prompt += msg.content + '\n'
             } else {
-                messages.push({
-                    role: msg.role,
-                    content: [ { text: msg.content, type: 'text' } ]
-                })
+                // 用户消息追加到 messages 中
+                const newMessage: ClaudeMessage = { role: msg.role, content: [] }
+                // 构造图片
+                for (const [i, pic] of Object.entries(msg.pictures || [])) {
+                    if (!pic.storageKey) {
+                        continue
+                    }
+                    const picBase64 = await storage.getBlob(pic.storageKey)
+                    if (!picBase64) {
+                        continue
+                    }
+                    const picData = base64.parseImage(picBase64)
+                    if (!picData.type || !picData.data) {
+                        continue
+                    }
+                    // 先图片后文字可提高 claude 的识别效果；使用 Image-No. 的 prompt 技巧区分图片
+                    // https://docs.anthropic.com/claude/docs/vision#image-best-practices
+                    // https://docs.anthropic.com/claude/docs/vision#3-example-multiple-images-with-a-system-prompt
+                    newMessage.content.push({
+                        type: 'text',
+                        text: `Image ${parseInt(i) + 1}:`,
+                    })
+                    newMessage.content.push({
+                        type: 'image',
+                        source: {
+                            type: 'base64',
+                            media_type: picData.type,
+                            data: picData.data,
+                        },
+                    })
+                }
+                // 构造文本
+                newMessage.content.push({ type: 'text', text: msg.content })
+                messages.push(newMessage)
             }
         }
         const response = await this.post(
@@ -132,11 +165,17 @@ export default class Claude extends Base {
     }
 }
 
-export interface Message {
+export interface ClaudeMessage {
     role: 'assistant' | 'user'
-    content: {
+    content: ({
         text: string
         type: 'text'
-    }[]
-
+    } | {
+        type: "image",
+        source: {
+            type: "base64",
+            media_type: string
+            data: string
+        },
+    })[]
 }

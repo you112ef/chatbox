@@ -1,4 +1,4 @@
-import { OpenAIMessage } from 'src/shared/types'
+import { Message } from 'src/shared/types'
 import Base from './base'
 import { ApiError } from './errors'
 import { onResultChange } from './interfaces'
@@ -17,7 +17,7 @@ export default class Gemeni extends Base {
         this.options = options
     }
 
-    async callChatCompletion(messages: OpenAIMessage[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+    async callChatCompletion(messages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
         const contents: Content[] = []
         let previousContent: Content | null = null
         for (const msg of messages) {

@@ -218,5 +218,7 @@
     "Select and configure an AI model provider": "Выберите и настройте поставщика модели искусственного интеллекта",
     "Start Setup": "Начать настройку",
     "License not found, please check your license key": "Лицензия не найдена, пожалуйста, проверьте ваш ключ лицензии",
-    "License expired, please check your license key": "Лицензия истекла, пожалуйста, проверьте ваш ключ лицензии"
+    "License expired, please check your license key": "Лицензия истекла, пожалуйста, проверьте ваш ключ лицензии",
+    "Current model does not support image input": "Текущая модель не поддерживает ввод изображения",
+    "Attach Image": "Прикрепить изображение"
 }

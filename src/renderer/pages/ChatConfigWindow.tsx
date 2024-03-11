@@ -28,10 +28,10 @@ import { useAtomValue, useAtom } from 'jotai'
 import { Accordion, AccordionSummary, AccordionDetails } from '../components/Accordion'
 import ClaudeModelSelect from '../components/ClaudeModelSelect'
 import ChatboxAIModelSelect from '../components/ChatboxAIModelSelect'
-import { resetTokenConfig } from '../packages/token_config'
+// import { resetTokenConfig } from '../packages/token_config'
 import AIProviderSelect from '../components/AIProviderSelect'
 import OpenAIModelSelect from '../components/OpenAIModelSelect'
-import TokenConfig from './SettingDialog/TokenConfig'
+// import TokenConfig from './SettingDialog/TokenConfig'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import ImageCountSlider from '@/components/ImageCountSlider'
 import ImageStyleSelect from '@/components/ImageStyleSelect'
@@ -119,9 +119,9 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
     const licenseDetail = useAtomValue(atoms.licenseDetailAtom)
     const settingsEdit = dataEdit.settings
     const setSettingsEdit = (updated: SessionSettings) => {
-        if (settingsEdit?.aiProvider !== updated.aiProvider || settingsEdit?.model !== updated.model) {
-            updated = resetTokenConfig(updated)
-        }
+        // if (settingsEdit?.aiProvider !== updated.aiProvider || settingsEdit?.model !== updated.model) {
+        //     updated = resetTokenConfig(updated)
+        // }
         setDataEdit({ ...dataEdit, settings: updated })
     }
     return (
@@ -169,7 +169,7 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                                     {t('model')} & {t('token')}
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                    {/* <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} /> */}
                                     <TopPSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                                 </AccordionDetails>
                             </Accordion>
@@ -201,7 +201,7 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                                     {t('model')} & {t('token')}
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                    <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                    {/* <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} /> */}
                                     <TopPSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                                 </AccordionDetails>
                             </Accordion>

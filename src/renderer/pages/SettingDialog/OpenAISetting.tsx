@@ -8,7 +8,7 @@ import TopPSlider from '../../components/TopPSlider'
 import PasswordTextField from '../../components/PasswordTextField'
 import MaxContextMessageCountSlider from '../../components/MaxContextMessageCountSlider'
 import OpenAIModelSelect from '../../components/OpenAIModelSelect'
-import TokenConfig from './TokenConfig'
+// import TokenConfig from './TokenConfig'
 import TextFieldReset from '@/components/TextFieldReset'
 
 interface ModelConfigProps {
@@ -92,10 +92,10 @@ export default function OpenAISetting(props: ModelConfigProps) {
                         setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
                     />
 
-                    <TokenConfig
+                    {/* <TokenConfig
                         settingsEdit={settingsEdit}
                         setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
-                    />
+                    /> */}
                 </AccordionDetails>
             </Accordion>
         </Box>

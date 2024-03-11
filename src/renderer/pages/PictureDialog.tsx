@@ -31,12 +31,12 @@ export default function PictureDialog(props: Props) {
     }
 
     return (
-        <Dialog open={!!pictureShow} onClose={onClose} fullWidth classes={{ paper: 'h-4/5' }}>
+        <Dialog open={!!pictureShow} onClose={onClose} fullWidth >
             <DialogTitle></DialogTitle>
             <DialogContent>
                 <div className="w-full h-full text-center">
-                    {pictureShow?.storageKey && <ImageInStorage storageKey={pictureShow.storageKey} />}
-                    {pictureShow?.url && <Image src={pictureShow.url} />}
+                    {pictureShow?.storageKey && <ImageInStorage storageKey={pictureShow.storageKey} className='h-full w-full' /> }
+                    {pictureShow?.url && <Image src={pictureShow.url} className='h-full w-full' />}
                 </div>
             </DialogContent>
             <DialogActions>

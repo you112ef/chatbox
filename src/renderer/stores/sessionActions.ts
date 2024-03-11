@@ -82,7 +82,7 @@ export function createEmpty(type: 'chat' | 'picture') {
  * @param n 空消息数量
  * @returns 
  */
-export function createEmptyPictureMessages(n: number): MessagePicture[] {
+export function createLoadingPictures(n: number): MessagePicture[] {
     const ret: MessagePicture[] = []
     for (let i = 0; i < n; i++) {
         ret.push({ loading: true })
@@ -463,7 +463,9 @@ export async function generate(sessionId: string, targetMsg: Message) {
     targetMsg = {
         ...targetMsg,
         content: placeholder,
-        pictures: session.type === 'picture' ? createEmptyPictureMessages(settings.imageGenerateNum) : [],
+        pictures: session.type === 'picture'
+            ? createLoadingPictures(settings.imageGenerateNum)
+            : targetMsg.pictures,
         cancel: undefined,
         aiProvider: settings.aiProvider,
         model: getModelDisplayName(settings, session.type),
@@ -629,7 +631,10 @@ export function clearConversationList(keepNum: number) {
  * 从历史消息中生成 prompt 上下文
  */
 function genMessageContext(settings: Settings, msgs: Message[]) {
-    const { openaiMaxContextTokens, openaiMaxContextMessageCount } = settings
+    const {
+        // openaiMaxContextTokens,
+        openaiMaxContextMessageCount
+    } = settings
     if (msgs.length === 0) {
         throw new Error('No messages to replay')
     }
@@ -644,9 +649,9 @@ function genMessageContext(settings: Settings, msgs: Message[]) {
         const size = utils.estimateTokensFromMessages([msg]) + 20 // 20 作为预估的误差补偿
         // 只有 OpenAI 才支持上下文 tokens 数量限制
         if (settings.aiProvider === 'openai') {
-            if (size + totalLen > openaiMaxContextTokens) {
-                break
-            }
+            // if (size + totalLen > openaiMaxContextTokens) {
+            //     break
+            // }
         }
         if (
             openaiMaxContextMessageCount <= 20 && // 超过20表示不再限制
@@ -741,4 +746,11 @@ function omit(obj: any) {
         }
     }
     return ret
+}
+
+export function getCurrentSessionMergedSettings() {
+    const store = getDefaultStore()
+    const globalSettings = store.get(atoms.settingsAtom)
+    const session = store.get(atoms.currentSessionAtom)
+    return mergeSettings(globalSettings, session)
 }

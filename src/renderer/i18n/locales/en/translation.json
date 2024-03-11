@@ -218,5 +218,7 @@
     "Select and configure an AI model provider": "Select and configure an AI model provider",
     "Start Setup": "Start Setup",
     "License not found, please check your license key": "License not found, please check your license key",
-    "License expired, please check your license key": "License expired, please check your license key"
+    "License expired, please check your license key": "License expired, please check your license key",
+    "Current model does not support image input": "Current model does not support image input",
+    "Attach Image": "Attach Image"
 }

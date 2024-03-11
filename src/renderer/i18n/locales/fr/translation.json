@@ -218,5 +218,7 @@
     "Select and configure an AI model provider": "Sélectionnez et configurez un fournisseur de modèle IA",
     "Start Setup": "Démarrer la configuration",
     "License not found, please check your license key": "Licence non trouvée, veuillez vérifier votre clé de licence",
-    "License expired, please check your license key": "Licence expirée, veuillez vérifier votre clé de licence"
+    "License expired, please check your license key": "Licence expirée, veuillez vérifier votre clé de licence",
+    "Current model does not support image input": "Le modèle actuel ne prend pas en charge l'entrée d'image",
+    "Attach Image": "Joindre une Image"
 }

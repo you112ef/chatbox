@@ -1,7 +1,8 @@
-import { OpenAIMessage } from 'src/shared/types'
+import { Message, OpenAIMessage, OpenAIMessageVision } from 'src/shared/types'
 import Base from './base'
 import { ApiError } from './errors'
 import { onResultChange } from './interfaces'
+import storage from '@/storage'
 
 interface Options {
     openaiKey: string
@@ -9,7 +10,7 @@ interface Options {
     model: Model | 'custom-model'
     dalleStyle: 'vivid' | 'natural'
     openaiCustomModel?: string // OpenAI 自定义模型的 ID
-    openaiMaxTokens: number
+    // openaiMaxTokens: number
     temperature: number
     topP: number
 }
@@ -26,7 +27,9 @@ export default class OpenAI extends Base {
         }
     }
 
-    async callChatCompletion(messages: OpenAIMessage[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+    async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+        const messages = await populateOpenAIMessage(rawMessages, this.options.model)
+
         // 解决 GPT-4 不认识自己的问题
         const model = this.options.model === 'custom-model'
             ? this.options.openaiCustomModel || ''
@@ -44,7 +47,10 @@ export default class OpenAI extends Base {
             {
                 messages,
                 model,
-                max_tokens: this.options.openaiMaxTokens === 0 ? undefined : this.options.openaiMaxTokens,
+                // vision 模型的默认 max_tokens 极低，基本很难回答完整，因此手动设置为模型最大值
+                max_tokens: this.options.model === 'gpt-4-vision-preview'
+                    ? openaiModelConfigs['gpt-4-vision-preview'].maxTokens
+                    : undefined,
                 temperature: this.options.temperature,
                 top_p: this.options.topP,
                 stream: true,
@@ -67,8 +73,7 @@ export default class OpenAI extends Base {
                     onResultChange(result)
                 }
             }
-        }
-        )
+        })
         return result
     }
 
@@ -104,62 +109,111 @@ export default class OpenAI extends Base {
 }
 
 // Ref: https://platform.openai.com/docs/models/gpt-4
-export const modelConfigs = {
+export const openaiModelConfigs = {
     'gpt-3.5-turbo': {
         maxTokens: 4096, // 模型支持最大的token数
+        maxContextTokens: 16_385,
+    },
+    'gpt-3.5-turbo-16k': {
+        maxTokens: 4096,
+        maxContextTokens: 16_385,
+    },
+    'gpt-3.5-turbo-1106': {
+        maxTokens: 4096,
+        maxContextTokens: 16_385,
+    },
+    'gpt-3.5-turbo-0125': {
+        maxTokens: 4096,
+        maxContextTokens: 16_385,
     },
     'gpt-3.5-turbo-0613': {
         maxTokens: 4096,
-    },
-    'gpt-3.5-turbo-16k': {
-        maxTokens: 16384,
+        maxContextTokens: 4_096,
     },
     'gpt-3.5-turbo-16k-0613': {
-        maxTokens: 16384,
-    },
-    'gpt-3.5-turbo-1106': {
-        maxTokens: 16384,
-    },
-    'gpt-3.5-turbo-0125': {
-        maxTokens: 16384,
+        maxTokens: 4096,
+        maxContextTokens: 16_385,
     },
 
     'gpt-4': {
-        maxTokens: 8192,
+        maxTokens: 4_096,
+        maxContextTokens: 8_192,
     },
     'gpt-4-0613': {
-        maxTokens: 8192,
+        maxTokens: 4_096,
+        maxContextTokens: 8_192,
     },
     'gpt-4-32k': {
-        maxTokens: 32768,
+        maxTokens: 4_096,
+        maxContextTokens: 32_768,
     },
     'gpt-4-32k-0613': {
-        maxTokens: 32768,
+        maxTokens: 4_096,
+        maxContextTokens: 32_768,
     },
     'gpt-4-1106-preview': {
-        maxTokens: 128000,
+        maxTokens: 4_096,
+        maxContextTokens: 128_000,
     },
     'gpt-4-0125-preview': {
-        maxTokens: 128000,
+        maxTokens: 4_096,
+        maxContextTokens: 128_000,
     },
     'gpt-4-turbo-preview': {
-        maxTokens: 128000,
+        maxTokens: 4_096,
+        maxContextTokens: 128_000,
     },
-    // 'gpt-4-vision-preview': {
-    //     maxTokens: 128000,
-    // },
+    'gpt-4-vision-preview': {
+        maxTokens: 4_096,
+        maxContextTokens: 128_000,
+    },
 
     // 以下模型延长到了 2024 年 6 月
     // https://platform.openai.com/docs/models/continuous-model-upgrades
     'gpt-3.5-turbo-0301': {
         maxTokens: 4096,
+        maxContextTokens: 4096,
     },
     'gpt-4-0314': {
-        maxTokens: 8192,
+        maxTokens: 4096,
+        maxContextTokens: 8192,
     },
     'gpt-4-32k-0314': {
-        maxTokens: 32768,
+        maxTokens: 4096,
+        maxContextTokens: 32768,
     },
 }
-export type Model = keyof typeof modelConfigs
-export const models = Array.from(Object.keys(modelConfigs)).sort() as Model[]
+export type Model = keyof typeof openaiModelConfigs
+export const models = Array.from(Object.keys(openaiModelConfigs)).sort() as Model[]
+
+export async function populateOpenAIMessage(rawMessages: Message[], model: Model | 'custom-model'): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
+    if (model === 'gpt-4-vision-preview') {
+        const messages: OpenAIMessageVision[] = []
+        for (const m of rawMessages) {
+            const content: OpenAIMessageVision['content'] = [
+                { type: 'text', text: m.content }
+            ]
+            for (const pic of (m.pictures || [])) {
+                if (!pic.storageKey) {
+                    continue
+                }
+                const picBase64 = await storage.getBlob(pic.storageKey)
+                if (!picBase64) {
+                    continue
+                }
+                content.push({
+                    type: 'image_url',
+                    image_url: { url: picBase64 }
+                })
+            }
+            messages.push({ role: m.role, content } as OpenAIMessageVision)
+        }
+        return messages
+    } else {
+        const messages: OpenAIMessage[] = rawMessages.map((m) => ({
+            role: m.role,
+            content: m.content,
+        }))
+        return messages
+    }
+}

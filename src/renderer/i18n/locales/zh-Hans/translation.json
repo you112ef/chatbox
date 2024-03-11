@@ -219,5 +219,7 @@
     "Select and configure an AI model provider": "选择并配置 AI 模型提供方",
     "Start Setup": "开始设置",
     "License not found, please check your license key": "未找到 license，请检查您的 license key",
-    "License expired, please check your license key": "license 已过期，请检查您的 license key"
+    "License expired, please check your license key": "license 已过期，请检查您的 license key",
+    "Current model does not support image input": "当前模型不支持图片输入",
+    "Attach Image": "上传图片"
 }

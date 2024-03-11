@@ -353,14 +353,14 @@ function _Message(props: Props) {
                                     (msg.generating ? '...' : '')}
                             </Markdown>
                             {msg.pictures && (
-                                <div className='flex flex-row items-start justify-start'>
+                                <div className='flex flex-row items-start justify-start overflow-auto'>
                                     {
                                         msg.pictures.map((pic, index) => (
                                             <div
                                                 key={index}
-                                                className="w-[200px] h-[200px] p-2 m-1 inline-flex items-center justify-center
-                                                bg-white shadow-sm rounded-md
-                                                hover:shadow-lg hover:cursor-pointer hover:scale-105 transition-all duration-200"
+                                                className="min-w-[100px] min-h-[100px] max-w-[200px] max-h-[200px] p-2 m-1 inline-flex items-center justify-center
+                                                    bg-white shadow-sm rounded-md
+                                                    hover:shadow-lg hover:cursor-pointer hover:scale-105 transition-all duration-200"
                                                 onClick={() => setPictureShow(pic)}
                                             >
                                                 {

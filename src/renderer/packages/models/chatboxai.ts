@@ -1,8 +1,9 @@
-import { ChatboxAILicenseDetail, ChatboxAIModel, OpenAIMessage } from 'src/shared/types'
+import { ChatboxAILicenseDetail, ChatboxAIModel, Message, OpenAIRoleEnumType } from 'src/shared/types'
 import Base from './base'
 import { API_ORIGIN } from '../remote'
 import { ApiError } from './errors'
 import { onResultChange } from './interfaces'
+import storage from '@/storage'
 
 export const chatboxAIModels: ChatboxAIModel[] = ['chatboxai-3.5', 'chatboxai-4']
 
@@ -50,7 +51,8 @@ export default class ChatboxAI extends Base {
         return json['data'][0]['b64_json']
     }
 
-    async callChatCompletion(messages: OpenAIMessage[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+    async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+        const messages = await populateChatboxAIMessage(rawMessages)
         const response = await this.post(
             `${API_ORIGIN}/api/ai/chat`,
             this.getHeaders(),
@@ -95,4 +97,39 @@ export default class ChatboxAI extends Base {
         }
         return headers
     }
+}
+
+// Chatbox AI 服务接收的消息格式
+export interface ChatboxAIMessage {
+    role: OpenAIRoleEnumType
+    content: string
+    pictures?: {
+        base64?: string
+    }[]
+}
+
+export async function populateChatboxAIMessage(rawMessages: Message[]): Promise<ChatboxAIMessage[]> {
+    // 将 Message 转换为 OpenAIMessage，清理掉会报错的多余的字段
+    const messages: ChatboxAIMessage[] = []
+    for (const raw of rawMessages) {
+        const newMessage: ChatboxAIMessage = {
+            role: raw.role,
+            content: raw.content,
+        }
+        for (const p of (raw.pictures || [])) {
+            if (!p.storageKey) {
+                continue
+            }
+            const base64 = await storage.getBlob(p.storageKey)
+            if (!base64) {
+                continue
+            }
+            if (! newMessage.pictures) {
+                newMessage.pictures = []
+            }
+            newMessage.pictures.push({ base64 })
+        }
+        messages.push(newMessage)
+    }
+    return messages
 }

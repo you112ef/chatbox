@@ -1,5 +1,5 @@
-import { Message, OpenAIMessage } from 'src/shared/types'
-import { ApiError, NetworkError, AIProviderNoImplementedPaint, QuotaExhausted, BaseError, AIProviderNoImplementedChat } from './errors'
+import { Message } from 'src/shared/types'
+import { ApiError, NetworkError, AIProviderNoImplementedPaint as AIProviderNoImplementedPaintError, QuotaExhausted, BaseError, AIProviderNoImplementedChat as AIProviderNoImplementedChatError } from './errors'
 import IModel, { onResultChange } from './interfaces'
 import { createParser } from 'eventsource-parser'
 
@@ -10,14 +10,14 @@ export default class Base implements IModel {
     }
 
     async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
-        throw new AIProviderNoImplementedPaint(this.name)
+        throw new AIProviderNoImplementedPaintError(this.name)
     }
 
-    async callChatCompletion(messages: OpenAIMessage[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
-        throw new AIProviderNoImplementedChat(this.name)
+    async callChatCompletion(messages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+        throw new AIProviderNoImplementedChatError(this.name)
     }
 
-    async chat(messageContext: Message[], onResultUpdated?: (data: { text: string, cancel(): void }) => void): Promise<string> {
+    async chat(messages: Message[], onResultUpdated?: (data: { text: string, cancel(): void }) => void): Promise<string> {
         // 初始化 fetch 的取消机制
         let hasCancel = false // fetch has been canceled
         const controller = new AbortController() // abort signal for fetch
@@ -27,11 +27,6 @@ export default class Base implements IModel {
         }
         let result = ''
         try {
-            // 将 Message 转换为 OpenAIMessage，清理掉会报错的多余的字段
-            const messages: OpenAIMessage[] = messageContext.map((m) => ({
-                role: m.role,
-                content: m.content,
-            }))
             // 支持 onResultUpdated 回调
             let onResultChange: onResultChange | undefined = undefined
             if (onResultUpdated) {

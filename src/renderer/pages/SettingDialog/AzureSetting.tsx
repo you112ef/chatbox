@@ -6,7 +6,7 @@ import { Accordion, AccordionSummary, AccordionDetails } from '../../components/
 import TemperatureSlider from '../../components/TemperatureSlider'
 import TopPSlider from '../../components/TopPSlider'
 import PasswordTextField from '../../components/PasswordTextField'
-import TokenConfig from './TokenConfig'
+// import TokenConfig from './TokenConfig'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 interface ModelConfigProps {
@@ -89,7 +89,7 @@ export default function AzureSetting(props: ModelConfigProps) {
                                     ...settingsEdit,
                                     temperature: defaults.settings().temperature,
                                     topP: defaults.settings().topP,
-                                    openaiMaxTokens: defaults.settings().openaiMaxTokens,
+                                    // openaiMaxTokens: defaults.settings().openaiMaxTokens,
                                 })
                             }
                         >
@@ -105,10 +105,10 @@ export default function AzureSetting(props: ModelConfigProps) {
                         settingsEdit={settingsEdit}
                         setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
                     />
-                    <TokenConfig
+                    {/* <TokenConfig
                         settingsEdit={settingsEdit}
                         setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
-                    />
+                    /> */}
                 </AccordionDetails>
             </Accordion>
         </Box>
