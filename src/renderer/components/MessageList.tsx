@@ -29,17 +29,6 @@ export default function MessageList(props: Props) {
         setMessageScrollingAtom(virtuoso)
     }, [virtuoso])
 
-    // 当历史 threads 发生变化时，自动滚动到底部
-    const isSmallScreen = useIsSmallScreen()
-    useEffect(() => {
-        setTimeout(() => {
-            scrollActions.scrollToBottom() // 自动滚动到底部
-            if (! isSmallScreen) {
-                dom.focusMessageInput() // 除了在小屏幕，否则自动聚焦到输入框
-            }
-        }, 100);
-    }, [currentSession.threads])
-
     return (
         <div className='overflow-auto h-full pr-0 pl-1 sm:pl-0' ref={messageListRef}>
             <Virtuoso

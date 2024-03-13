@@ -22,6 +22,7 @@ import i18n from '../i18n'
 import { getModel, getModelDisplayName } from '@/packages/models'
 import { AIProviderNoImplementedPaint, NetworkError, ApiError, BaseError } from '@/packages/models/errors'
 import platform from '../platform'
+import * as dom from '@/hooks/dom'
 
 /**
  * 创建一个新的会话
@@ -237,6 +238,11 @@ export function startNewThread() {
     const store = getDefaultStore()
     const sessionId = store.get(atoms.currentSessionIdAtom)
     refreshContextAndCreateNewThread(sessionId)
+    // 自动滚动到底部并自动聚焦到输入框
+    setTimeout(() => {
+        scrollActions.scrollToBottom()
+        dom.focusMessageInput()
+    }, 100);
 }
 
 /**
@@ -434,7 +440,7 @@ export function removeMessage(sessionId: string, messageId: string) {
             }
             const lastThread = s.threads[s.threads.length - 1]
             s.messages = lastThread.messages
-            s.threads = s.threads.slice(0, s.threads.length-1)
+            s.threads = s.threads.slice(0, s.threads.length - 1)
             return { ...s }
         })
         return newSessions
