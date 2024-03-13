@@ -168,6 +168,7 @@ export default class Base implements IModel {
                     const origin = new URL(url).origin
                     requestError = new NetworkError(err.message, origin)
                 }
+                await new Promise((resolve) => setTimeout(resolve, 500))
             }
         }
         if (requestError) {
