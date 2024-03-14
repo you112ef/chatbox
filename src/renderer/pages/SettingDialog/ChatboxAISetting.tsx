@@ -95,7 +95,7 @@ export default function ChatboxAISetting(props: ModelConfigProps) {
                             activated && (
                                 <>
                                     <span className='text-green-700 text-xs mr-2'>{t('License Activated')}</span>
-                                    <Button  variant='text' onClick={() => {
+                                    <Button variant='text' onClick={() => {
                                         premiumActions.deactivate()
                                         trackingEvent('click_deactivate_license_button', { event_category: 'user' })
                                     }}>
@@ -326,19 +326,15 @@ function LicenseDetail(props: { licenseKey?: string }) {
                                             value={Math.floor(licenseDetail.remaining_quota_35 * 100)} />
                                     </Box>
                                 </Tooltip>
-                                {
-                                    licenseDetail.type === 'chatboxai-4' && (
-                                        <Tooltip title={`${(licenseDetail.remaining_quota_4 * 100).toFixed(2)} %`}>
-                                            <Box className='mr-4 mb-4' >
-                                                <Typography className=''>
-                                                    {t('Chatbox AI 4 Quota')}
-                                                </Typography>
-                                                <BorderLinearProgress className='mt-1' variant="determinate"
-                                                    value={Math.floor(licenseDetail.remaining_quota_4 * 100)} />
-                                            </Box>
-                                        </Tooltip>
-                                    )
-                                }
+                                <Tooltip title={`${(licenseDetail.remaining_quota_4 * 100).toFixed(2)} %`}>
+                                    <Box className='mr-4 mb-4' >
+                                        <Typography className=''>
+                                            {t('Chatbox AI 4 Quota')}
+                                        </Typography>
+                                        <BorderLinearProgress className='mt-1' variant="determinate"
+                                            value={Math.floor(licenseDetail.remaining_quota_4 * 100)} />
+                                    </Box>
+                                </Tooltip>
                                 <Tooltip title={`${licenseDetail.image_total_quota - licenseDetail.image_used_count} / ${licenseDetail.image_total_quota}`}>
                                     <Box className='mr-4 mb-4' >
                                         <Typography >
@@ -376,11 +372,7 @@ function LicenseDetail(props: { licenseKey?: string }) {
                                     </Typography>
                                     <Typography>
                                         <span className='font-bold'>
-                                            {{
-                                                [licenseDetail.type]: licenseDetail.type,   // 兼容未来的套餐
-                                                'chatboxai-4': 'Chatbox AI Pro',
-                                                'chatboxai-3.5': 'Chatbox AI Lite',
-                                            }[licenseDetail.type]}
+                                            {licenseDetail.name}
                                         </span>
                                     </Typography>
                                 </Box>

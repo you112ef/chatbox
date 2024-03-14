@@ -1,8 +1,7 @@
 import SimpleSelect from './SimpleSelect'
 import { SessionSettings, ChatboxAIModel } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
-import { useAtomValue } from 'jotai'
-import * as atoms from '../stores/atoms'
+import { chatboxAIModels } from '@/packages/models/chatboxai'
 
 export interface Props {
     settingsEdit: SessionSettings
@@ -12,7 +11,6 @@ export interface Props {
 export default function ChatboxAIModelSelect(props: Props) {
     const { t } = useTranslation()
     const { settingsEdit, setSettingsEdit } = props
-    const licenseDetail = useAtomValue(atoms.licenseDetailAtom)
     const chatboxAIModelLabelHash: Record<ChatboxAIModel, React.ReactNode> = {
         'chatboxai-3.5': (
             <span className="inline-flex items-center">
@@ -53,15 +51,11 @@ export default function ChatboxAIModelSelect(props: Props) {
             </span>
         ),
     }
-    let models: ChatboxAIModel[] = ['chatboxai-3.5']
-    if (licenseDetail?.type === 'chatboxai-4') {
-        models.push('chatboxai-4')
-    }
     return (
         <SimpleSelect
             label={t('model')}
             value={settingsEdit.chatboxAIModel || 'chatboxai-3.5'}
-            options={models.map((value) => ({ value, label: chatboxAIModelLabelHash[value] }))}
+            options={chatboxAIModels.map((value) => ({ value, label: chatboxAIModelLabelHash[value] }))}
             onChange={(value) => {
                 setSettingsEdit({ ...settingsEdit, chatboxAIModel: value })
             }}
