@@ -125,7 +125,9 @@ export default class Claude extends Base {
                     })
                 }
                 // 构造文本
-                newMessage.content.push({ type: 'text', text: msg.content })
+                if (msg.content) {
+                    newMessage.content.push({ type: 'text', text: msg.content })
+                }
                 messages.push(newMessage)
             }
         }
