@@ -1,4 +1,10 @@
 const changelog = `
+### v1.3.1
+
+1. Introduced support for the claude-3-sonnet-20240229 model.
+2. Fixed a bug that caused blank text blocks to appear in claude model requests.
+3. Fixed the auto-scroll bug in the message list that occurred when editing past messages.
+
 ### v1.3.0
 
 1. Introducing Vision feature: You can now send images to AI!
