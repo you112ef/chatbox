@@ -112,7 +112,7 @@ const createWindow = async () => {
         icon: getAssetPath('icon.png'),
         webPreferences: {
             spellcheck: true,
-            webSecurity: false,
+            webSecurity: false, // 其中一个作用是解决跨域问题
             allowRunningInsecureContent: false,
             preload: app.isPackaged
                 ? path.join(__dirname, 'preload.js')
