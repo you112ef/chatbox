@@ -279,8 +279,8 @@ export interface RemoteConfig {
 }
 
 export interface ChatboxAILicenseDetail {
-    type: ChatboxAIModel    // 弃用，存在于老版本中
-    name: string 
+    type: ChatboxAIModel // 弃用，存在于老版本中
+    name: string
     defaultModel: ChatboxAIModel
     remaining_quota_35: number
     remaining_quota_4: number

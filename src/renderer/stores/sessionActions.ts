@@ -20,7 +20,7 @@ import * as scrollActions from './scrollActions'
 import storage from '../storage'
 import i18n from '../i18n'
 import { getModel, getModelDisplayName } from '@/packages/models'
-import { AIProviderNoImplementedPaint, NetworkError, ApiError, BaseError } from '@/packages/models/errors'
+import { AIProviderNoImplementedPaintError, NetworkError, ApiError, BaseError } from '@/packages/models/errors'
 import platform from '../platform'
 import * as dom from '@/hooks/dom'
 
@@ -565,7 +565,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
         if (!(err instanceof Error)) {
             err = new Error(`${err}`)
         }
-        if (!(err instanceof ApiError || err instanceof NetworkError || err instanceof AIProviderNoImplementedPaint)) {
+        if (!(err instanceof ApiError || err instanceof NetworkError || err instanceof AIProviderNoImplementedPaintError)) {
             Sentry.captureException(err) // unexpected error should be reported
         }
         let errorCode: number | undefined = undefined

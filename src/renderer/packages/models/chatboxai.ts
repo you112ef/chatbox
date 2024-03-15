@@ -1,7 +1,7 @@
 import { ChatboxAILicenseDetail, ChatboxAIModel, Message, OpenAIRoleEnumType } from 'src/shared/types'
 import Base from './base'
 import { API_ORIGIN } from '../remote'
-import { ApiError } from './errors'
+import { BaseError, ApiError, NetworkError, ChatboxAIAPIError } from './errors'
 import { onResultChange } from './interfaces'
 import storage from '@/storage'
 
@@ -97,6 +97,94 @@ export default class ChatboxAI extends Base {
         }
         return headers
     }
+
+   async post(
+        url: string,
+        headers: Record<string, string>,
+        body: Record<string, any>,
+        signal?: AbortSignal,
+        retry = 3
+    ) {
+        let requestError: ApiError | NetworkError | null = null
+        for (let i = 0; i < retry + 1; i++) {
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify(body),
+                    signal,
+                })
+                // 状态码不在 200～299 之间，一般是接口报错了，这里也需要抛错后重试
+                if (!res.ok) {
+                    const response = await res.text().catch((e) => '')
+                    const errorCodeName = parseJSONObjectSafely(response)?.error?.code
+                    const chatboxAIError = ChatboxAIAPIError.fromCodeName(response, errorCodeName)
+                    if (chatboxAIError) {
+                        throw chatboxAIError
+                    }
+                    throw new ApiError(`Status Code ${res.status}, ${response}`)
+                }
+                return res
+            } catch (e) {
+                if (e instanceof BaseError) {
+                    requestError = e
+                } else {
+                    const err = e as Error
+                    const origin = new URL(url).origin
+                    requestError = new NetworkError(err.message, origin)
+                }
+                await new Promise((resolve) => setTimeout(resolve, 500))
+            }
+        }
+        if (requestError) {
+            throw requestError
+        } else {
+            throw new Error('Unknown error')
+        }
+    }
+
+    async get(
+        url: string,
+        headers: Record<string, string>,
+        signal?: AbortSignal,
+        retry = 3
+    ) {
+        let requestError: ApiError | NetworkError | null = null
+        for (let i = 0; i < retry + 1; i++) {
+            try {
+                const res = await fetch(url, {
+                    method: 'GET',
+                    headers,
+                    signal,
+                })
+                // 状态码不在 200～299 之间，一般是接口报错了，这里也需要抛错后重试
+                if (!res.ok) {
+                    const response = await res.text().catch((e) => '')
+                    const errorCodeName = parseJSONObjectSafely(response)?.error?.code
+                    const chatboxAIError = ChatboxAIAPIError.fromCodeName(response, errorCodeName)
+                    if (chatboxAIError) {
+                        throw chatboxAIError
+                    }
+                    throw new ApiError(`Status Code ${res.status}, ${response}`)
+                }
+                return res
+            } catch (e) {
+                if (e instanceof BaseError) {
+                    requestError = e
+                } else {
+                    const err = e as Error
+                    const origin = new URL(url).origin
+                    requestError = new NetworkError(err.message, origin)
+                }
+            }
+        }
+        if (requestError) {
+            throw requestError
+        } else {
+            throw new Error('Unknown error')
+        }
+    }
+
 }
 
 // Chatbox AI 服务接收的消息格式
@@ -132,4 +220,12 @@ export async function populateChatboxAIMessage(rawMessages: Message[]): Promise<
         messages.push(newMessage)
     }
     return messages
+}
+
+function parseJSONObjectSafely(json: string): any {
+    try {
+        return JSON.parse(json)
+    } catch (e) {
+        return {}
+    }
 }

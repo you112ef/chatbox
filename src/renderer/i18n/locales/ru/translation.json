@@ -127,6 +127,7 @@
     "Default Prompt for New Conversation": "Подсказка по умолчанию для нового разговора",
     "Specific model settings": "Специфические настройки модели",
     "Specific model settings configured for this conversation": "Специфические настройки модели, настроенные для этого разговора",
+    "The Image Creator plugin has been activated for the current conversation": "Плагин Image Creator был активирован для текущего разговора",
     "Conversation Settings": "Настройки разговора",
     "Description": "Описание",
     "Key Combination": "Комбинация клавиш",
@@ -187,7 +188,6 @@
     "Quota Reset": "Сброс квоты",
     "License Expiry": "Истечение лицензии",
     "Please wait about 20 seconds": "Пожалуйста, подождите примерно 20 секунд",
-    "quota exhausted error tips": "К сожалению, вы исчерпали лимит вашей текущей модели ({{model}}) на этот месяц. Вы можете <0>перейти в настройки</0>, чтобы узнать детали лимита или улучшить ваш план.",
     "Click to view license details and quota usage": "Нажмите, чтобы просмотреть детали лицензии и использование квоты",
     "License Plan Overview": "Обзор Лицензионных Планов",
     "Generate More Images Below": "Создать больше изображений ниже",
@@ -220,5 +220,12 @@
     "License not found, please check your license key": "Лицензия не найдена, пожалуйста, проверьте ваш ключ лицензии",
     "License expired, please check your license key": "Лицензия истекла, пожалуйста, проверьте ваш ключ лицензии",
     "Current model does not support image input": "Текущая модель не поддерживает ввод изображения",
-    "Attach Image": "Прикрепить изображение"
+    "Attach Image": "Прикрепить изображение",
+    "Your license has expired. Please check your subscription or purchase a new one.": "Ваша лицензия истекла. Пожалуйста, проверьте вашу подписку или приобретите новую.",
+    "You have reached your monthly quota for the {{model}} model. Please <OpenSettingButton>go to Settings</OpenSettingButton> to switch to a different model, view your quota usage, or upgrade your plan.": "Вы достигли своей месячной квоты для модели {{model}}. Пожалуйста, <OpenSettingButton>перейдите в Настройки</OpenSettingButton>, чтобы переключиться на другую модель, просмотреть использование квоты или обновить свой план.",
+    "Your current License (Chatbox AI Lite) does not support the {{model}} model. To use this model, please <OpenMorePlanButton>upgrade</OpenMorePlanButton> to Chatbox AI Pro or a higher-tier package. Alternatively, you can switch to a different model by <OpenSettingButton>accessing the settings</OpenSettingButton>.": "Ваша текущая лицензия (Chatbox AI Lite) не поддерживает модель {{model}}. Чтобы использовать эту модель, пожалуйста, <OpenMorePlanButton>обновитесь</OpenMorePlanButton> до Chatbox AI Pro или пакета более высокого уровня. В качестве альтернативы, вы можете переключиться на другую модель, <OpenSettingButton>перейдя в настройки</OpenSettingButton>.",
+    "You have selected Chatbox AI as the model provider, but a license key has not been entered yet. Please <OpenSettingButton>click here to open Settings</OpenSettingButton> and enter your license key, or choose a different model provider.": "Вы выбрали Chatbox AI в качестве поставщика модели, но ключ лицензии еще не введен. Пожалуйста, <OpenSettingButton>нажмите здесь, чтобы открыть Настройки</OpenSettingButton> и введите свой ключ лицензии, или выберите другого поставщика модели.",
+    "The license key you entered is invalid. Please check your license key and try again.": "Введенный вами ключ лицензии недействителен. Пожалуйста, проверьте ваш ключ лицензии и попробуйте снова.",
+    "You have exceeded the rate limit for the Chatbox AI service. Please try again later.": "Вы превысили лимит скорости для сервиса Chatbox AI. Пожалуйста, попробуйте снова позже.",
+    "Invalid request parameters detected. Please try again later. Persistent failures may indicate an outdated software version. Consider upgrading to access the latest performance improvements and features.": "Обнаружены недопустимые параметры запроса. Пожалуйста, попробуйте снова позже. Постоянные сбои могут указывать на устаревшую версию программного обеспечения. Рассмотрите возможность обновления для доступа к последним улучшениям производительности и функциям."
 }

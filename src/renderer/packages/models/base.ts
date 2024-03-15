@@ -1,5 +1,5 @@
 import { Message } from 'src/shared/types'
-import { ApiError, NetworkError, AIProviderNoImplementedPaint as AIProviderNoImplementedPaintError, QuotaExhausted, BaseError, AIProviderNoImplementedChat as AIProviderNoImplementedChatError } from './errors'
+import { ApiError, NetworkError, AIProviderNoImplementedPaintError, BaseError, AIProviderNoImplementedChatError } from './errors'
 import IModel, { onResultChange } from './interfaces'
 import { createParser } from 'eventsource-parser'
 
@@ -147,13 +147,6 @@ export default class Base implements IModel {
                     body: JSON.stringify(body),
                     signal,
                 })
-                // 配额用完了
-                if (res.status === 499) {
-                    const json = await res.json()
-                    if (json?.error?.code === 'token_quota_exhausted') {
-                        throw new QuotaExhausted()
-                    }
-                }
                 // 状态码不在 200～299 之间，一般是接口报错了，这里也需要抛错后重试
                 if (!res.ok) {
                     const err = await res.text().catch((e) => null)
@@ -192,13 +185,6 @@ export default class Base implements IModel {
                     headers,
                     signal,
                 })
-                // 配额用完了
-                if (res.status === 499) {
-                    const json = await res.json()
-                    if (json?.error?.code === 'token_quota_exhausted') {
-                        throw new QuotaExhausted()
-                    }
-                }
                 // 状态码不在 200～299 之间，一般是接口报错了，这里也需要抛错后重试
                 if (!res.ok) {
                     const err = await res.text().catch((e) => null)

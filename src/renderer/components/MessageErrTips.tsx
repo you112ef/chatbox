@@ -7,6 +7,9 @@ import * as atoms from '../stores/atoms'
 import * as settingActions from '../stores/settingActions'
 import { useSetAtom } from 'jotai'
 import { Link } from '@mui/material'
+import { ChatboxAIAPIError } from '@/packages/models/errors'
+import platform from '@/platform'
+import { trackingEvent } from '@/packages/event'
 
 export default function MessageErrTips(props: { msg: Message }) {
     const { msg } = props
@@ -55,18 +58,29 @@ export default function MessageErrTips(props: { msg: Message }) {
                 ]}
             />
         )
-    } else if (msg.errorCode === 10004) {
-        tips.push(
-            <Trans
-                i18nKey="quota exhausted error tips"
-                values={{
-                    model: msg.model,
-                }}
-                components={[
-                    <Link className="cursor-pointer font-bold" onClick={() => setOpenSettingDialogAtom('ai')}></Link>,
-                ]}
-            />
-        )
+    } else if (msg.errorCode && ChatboxAIAPIError.getDetail(msg.errorCode)) {
+        const chatboxAIErrorDetail = ChatboxAIAPIError.getDetail(msg.errorCode)
+        if (chatboxAIErrorDetail) {
+            tips.push(
+                <Trans
+                    i18nKey={chatboxAIErrorDetail.i18nKey}
+                    values={{
+                        model: msg.model,
+                    }}
+                    components={{
+                        OpenSettingButton: (
+                            <Link className="cursor-pointer italic" onClick={() => setOpenSettingDialogAtom('ai')}></Link>
+                        ),
+                        OpenMorePlanButton: (
+                            <Link className="cursor-pointer italic" onClick={() => {
+                                platform.openLink('https://chatboxai.app/redirect_app/view_more_plans')
+                                trackingEvent('click_view_more_plans_button_from_upgrade_error_tips', { event_category: 'user' })
+                            }}></Link>
+                        )
+                    }}
+                />
+            )
+        }
     } else {
         tips.push(
             <Trans
@@ -82,7 +96,7 @@ export default function MessageErrTips(props: { msg: Message }) {
     }
     return (
         <Alert icon={false} severity="error">
-            {tips}
+            {tips.map((tip, i) => (<b key={i}>{tip}</b>))}
             <br />
             <br />
             {msg.error}
