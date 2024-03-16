@@ -32,6 +32,12 @@ export default function MainPane(props: Props) {
     const atScrollBottom = useAtomValue(atoms.messageScrollingAtBottomAtom)
     const isSmallScreen = useIsSmallScreen()
 
+    useEffect(() => {
+        setTimeout(() => {
+            scrollActions.scrollToBottom('auto')    // 每次启动时自动滚动到底部
+        }, 200);
+    }, [])
+
     // 会话名称自动生成
     useEffect(() => {
         if (
