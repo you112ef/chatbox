@@ -15,6 +15,7 @@ import AdvancedSettingTab from './AdvancedSettingTab'
 // import { resetTokenConfig } from '../../packages/token_config'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { trackingEvent } from '@/packages/event'
+import storage from "@/storage";
 
 type Tab = 'ai' | 'display' | 'chat' | 'advanced'
 
@@ -55,9 +56,20 @@ export default function SettingWindow(props: Props) {
         _setSettingsEdit(settings)
     }, [settings])
 
+    const deleteUserAvatar = async (userAvatarKey: string) => {
+        if (userAvatarKey !== undefined) {
+            await storage.delBlob(userAvatarKey)
+        }
+    }
+
     const onSave = () => {
         setSettings(settingsEdit)
         props.close()
+
+        // 保存时如果修改过用户头像，则删除修改前的头像数据
+        if (settings.userAvatarKey !== undefined && settingsEdit.userAvatarKey !== settings.userAvatarKey) {
+            deleteUserAvatar(settings.userAvatarKey)
+        }
     }
 
     const onCancel = () => {
@@ -65,6 +77,11 @@ export default function SettingWindow(props: Props) {
         setSettingsEdit(settings)
         // need to restore the previous theme
         switchTheme(settings.theme ?? ThemeMode.System)
+
+        // 取消时如果修改过用户头像，则删除修改后的头像数据
+        if (settingsEdit.userAvatarKey !== undefined && settingsEdit.userAvatarKey !== settings.userAvatarKey) {
+            deleteUserAvatar(settingsEdit.userAvatarKey)
+        }
     }
 
     // preview theme

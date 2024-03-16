@@ -38,6 +38,7 @@ import {
     showModelNameAtom,
     showTokenCountAtom,
     showWordCountAtom,
+    userAvatarKeyAtom,
 } from '../stores/atoms'
 import { currsentSessionPicUrlAtom, showTokenUsedAtom } from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
@@ -65,6 +66,7 @@ function _Message(props: Props) {
     const { t } = useTranslation()
     const theme = useTheme()
 
+    const userAvatarKey = useAtomValue(userAvatarKeyAtom)
     const showMessageTimestamp = useAtomValue(showMessageTimestampAtom)
     const showModelName = useAtomValue(showModelNameAtom)
     const showTokenCount = useAtomValue(showTokenCountAtom)
@@ -316,7 +318,14 @@ function _Message(props: Props) {
                                             height: '28px',
                                         }}
                                     >
-                                        <PersonIcon fontSize='small' />
+                                        {
+                                            userAvatarKey ? (
+                                                <ImageInStorage storageKey={userAvatarKey}
+                                                                className='object-cover object-center w-full h-full' />
+                                            ) : (
+                                                <PersonIcon fontSize='small' />
+                                            )
+                                        }
                                     </Avatar>
                                 ),
                                 system:
