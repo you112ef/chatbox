@@ -4,7 +4,9 @@ import { onResultChange } from './interfaces'
 import { ApiError } from './errors'
 import { get } from 'lodash'
 import storage from '@/storage'
+import platform from '@/platform'
 import * as base64 from '@/packages/base64'
+import * as defaults from 'src/shared/defaults'
 
 // 官方 SDK 明确声明用于 Node.js，在浏览器中会导致页面白屏。
 // import Anthropic from '@anthropic-ai/sdk'
@@ -136,12 +138,24 @@ export default class Claude extends Base {
                 messages.push(newMessage)
             }
         }
+
+        let url = `${this.options.claudeApiHost}/v1/messages`
+        const extraHeaders: Record<string, string> = {}
+
+        // 网页版本的 Claude 会遇到 CORS 问题，需要使用代理
+        if (platform.type === 'web' && this.options.claudeApiHost === defaults.settings().claudeApiHost) {
+            url = 'https://proxy.ai-chatbox.com/proxy-api/claude'
+            extraHeaders['CHATBOX-PLATFORM'] = 'web'
+            extraHeaders['CHATBOX-VERSION'] = 'web'
+        }
+
         const response = await this.post(
-            `${this.options.claudeApiHost}/v1/messages`,
+            url,
             {
                 'Content-Type': 'application/json',
                 'anthropic-version': '2023-06-01',
                 'x-api-key': this.options.claudeApiKey,
+                ...extraHeaders,
             },
             {
                 model: this.options.claudeModel,
