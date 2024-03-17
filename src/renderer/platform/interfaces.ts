@@ -1,9 +1,11 @@
 import { Config, Language, Settings } from "src/shared/types"
 
-export type PlatformType = 'web' | 'desktop'
+export type PlatformType = 'web' | 'desktop' | 'mobile'
 
 export interface Platform {
     type: PlatformType
+
+    exporter: Exporter
 
     // 系统相关
 
@@ -41,4 +43,11 @@ export interface Platform {
 
     initTracking(): void
     trackingEvent(name: string, params: { [key: string]: string }): void
+}
+
+
+export interface Exporter {
+    exportTextFile: (filename: string, content: string) => Promise<void>
+    exportImageFile: (basename: string, base64: string) => Promise<void>
+    exportByUrl: (filename: string, url: string) => Promise<void>
 }

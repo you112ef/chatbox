@@ -3,9 +3,12 @@ import { Platform, PlatformType } from "./interfaces"
 import { Config, Settings } from "src/shared/types"
 import { getOS, getBrowser } from '../packages/navigator'
 import { parseLocale } from '@/i18n/parser'
+import WebExporter from "./web_exporter"
 
 export default class DesktopPlatform implements Platform {
     public type: PlatformType = 'desktop'
+
+    public exporter = new WebExporter()
 
     public ipc: ElectronIPC
     constructor(ipc: ElectronIPC) {

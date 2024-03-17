@@ -5,12 +5,12 @@ import store from 'store'
 import { getOS, getBrowser } from '../packages/navigator'
 import { parseLocale } from '@/i18n/parser'
 import localforage from 'localforage'
-import WebExporter from "./web_exporter"
+import MobileExporter from "./mobile_exporter"
 
-export default class WebPlatform implements Platform {
-    public type: PlatformType = 'web'
+export default class MobilePlatform implements Platform {
+    public type: PlatformType = 'mobile'
 
-    public exporter = new WebExporter()
+    public exporter = new MobileExporter()
 
     constructor() {
     }

@@ -26,8 +26,6 @@ import { Accordion, AccordionSummary, AccordionDetails } from '../../components/
 import TextFieldReset from '../../components/TextFieldReset'
 import storage, { StorageKey } from '../../storage'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
-import * as exporter from '@/packages/exporter'
-import Link from '@/components/Link'
 import { useAtom } from 'jotai'
 import * as atoms from '../../stores/atoms'
 
@@ -214,7 +212,7 @@ function ExportAndImport(props: { onCancel: () => void }) {
         data['__exported_items'] = exportItems
         data['__exported_at'] = date.toISOString()
         const dateStr = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
-        exporter.exportTextFile(`chatbox-exported-data-${dateStr}.json`, JSON.stringify(data))
+        platform.exporter.exportTextFile(`chatbox-exported-data-${dateStr}.json`, JSON.stringify(data))
     }
     const onImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const errTip = t('Import failed, unsupported data format')

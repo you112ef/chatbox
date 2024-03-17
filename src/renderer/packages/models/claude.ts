@@ -142,8 +142,11 @@ export default class Claude extends Base {
         let url = `${this.options.claudeApiHost}/v1/messages`
         const extraHeaders: Record<string, string> = {}
 
-        // 网页版本的 Claude 会遇到 CORS 问题，需要使用代理
-        if (platform.type === 'web' && this.options.claudeApiHost === defaults.settings().claudeApiHost) {
+        // 网页和移动版本的 Claude 会遇到 CORS 问题，需要使用代理
+        if (
+            platform.type !== 'desktop'
+            && this.options.claudeApiHost === defaults.settings().claudeApiHost
+        ) {
             url = 'https://proxy.ai-chatbox.com/proxy-api/claude'
             extraHeaders['CHATBOX-PLATFORM'] = 'web'
             extraHeaders['CHATBOX-VERSION'] = 'web'

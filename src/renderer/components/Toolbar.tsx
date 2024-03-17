@@ -13,7 +13,7 @@ import { MenuItem, Divider } from '@mui/material'
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import { Message } from 'src/shared/types'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
-import * as exporter from '@/packages/exporter'
+import platform from '@/platform'
 
 /**
  * 顶部标题工具栏（右侧）
@@ -50,7 +50,7 @@ export default function Toolbar() {
         const content = messageList
             .map((msg) => `**${msg.role}**:\n${msg.content}`)
             .join('\n\n--------------------\n\n')
-        exporter.exportTextFile('Export.md', content)
+        platform.exporter.exportTextFile('Export.md', content)
         handleMoreMenuClose()
     }
     const handleSessionClean = () => {

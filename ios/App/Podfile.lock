@@ -2,27 +2,45 @@ PODS:
   - Capacitor (5.5.1):
     - CapacitorCordova
   - CapacitorCordova (5.5.1)
+  - CapacitorFilesystem (5.2.1):
+    - Capacitor
   - CapacitorPluginSafeArea (2.0.5):
+    - Capacitor
+  - CapacitorShare (5.0.7):
+    - Capacitor
+  - CapacitorToast (5.0.7):
     - Capacitor
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorFilesystem (from `../../node_modules/@capacitor/filesystem`)"
   - CapacitorPluginSafeArea (from `../../node_modules/capacitor-plugin-safe-area`)
+  - "CapacitorShare (from `../../node_modules/@capacitor/share`)"
+  - "CapacitorToast (from `../../node_modules/@capacitor/toast`)"
 
 EXTERNAL SOURCES:
   Capacitor:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorCordova:
     :path: "../../node_modules/@capacitor/ios"
+  CapacitorFilesystem:
+    :path: "../../node_modules/@capacitor/filesystem"
   CapacitorPluginSafeArea:
     :path: "../../node_modules/capacitor-plugin-safe-area"
+  CapacitorShare:
+    :path: "../../node_modules/@capacitor/share"
+  CapacitorToast:
+    :path: "../../node_modules/@capacitor/toast"
 
 SPEC CHECKSUMS:
   Capacitor: 9da0a2415e3b6098511f8b5ffdb578d91ee79f8f
   CapacitorCordova: e128cc7688c070ca0bfa439898a5f609da8dbcfe
+  CapacitorFilesystem: 9f3e3c7fea2fff12f46dd5b07a2914f2103e4cfc
   CapacitorPluginSafeArea: bfdd714827dbd89fb44fea286beec996e1b0c5c4
+  CapacitorShare: c6a1ebbf0114ff9e863b966cd6052678fa25d480
+  CapacitorToast: c8bb89eeb59a23c1fc298f138cc06c8ff4d90ac1
 
-PODFILE CHECKSUM: b747dedbc8a3ab928e814470324e02f5bc7cd3f4
+PODFILE CHECKSUM: d0624fd8e523d01d8a8696523f0b0a10c73b6807
 
 COCOAPODS: 1.14.3

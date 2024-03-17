@@ -5,7 +5,7 @@ import { useAtom } from 'jotai'
 import { ImageInStorage, Image } from '@/components/Image'
 import storage from '@/storage'
 import SaveIcon from '@mui/icons-material/Save'
-import * as exporter from '@/packages/exporter'
+import platform from '@/platform'
 
 interface Props { }
 
@@ -23,10 +23,10 @@ export default function PictureDialog(props: Props) {
             if (!base64) {
                 return
             }
-            exporter.exportPngFile('export.png', base64)
+            platform.exporter.exportImageFile('export', base64)
         }
         if (pictureShow.url) {
-            exporter.exportByUrl('export.png', pictureShow.url)
+            platform.exporter.exportByUrl('export.png', pictureShow.url)
         }
     }
 
