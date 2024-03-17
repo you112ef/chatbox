@@ -60,7 +60,9 @@ export default function AdvancedSettingTab(props: Props) {
                         margin="dense"
                         variant="outlined"
                         disabled={platform.type === 'web'}
-                        inputProps={{ className: 'cursor-not-allowed' }}
+                        inputProps={{
+                            className: platform.type === 'web' ? 'cursor-not-allowed' : ''
+                        }}
                         helperText={
                             platform.type === 'web' ? <span className="text-red-600">{t('not available in browser')}</span> : null
                         }
