@@ -279,7 +279,7 @@ export default function InputBox(props: Props) {
                             <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
                                 tooltipTitle={
                                     <div className='text-center inline-block'>
-                                        <span>{t('Refresh Context, Start New Thread')}</span>
+                                        <span>{t('Refresh Context, Start a New Thread')}</span>
                                         <br />
                                         <Shortcut keys={['Option', 'R']} size='small' opacity={0.7} />
                                     </div>

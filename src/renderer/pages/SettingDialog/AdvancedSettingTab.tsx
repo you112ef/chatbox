@@ -84,7 +84,7 @@ export default function AdvancedSettingTab(props: Props) {
                             <TableBody>
                                 <TableRow>
                                     <TableCell component="th" scope="row">
-                                        {t('Show/Hide Application Window')}
+                                        {t('Show/Hide the Application Window')}
                                     </TableCell>
                                     <TableCell align="center">
                                         <Shortcut keys={['alt', '`']} />
@@ -103,33 +103,33 @@ export default function AdvancedSettingTab(props: Props) {
                                     </TableCell>
                                 </TableRow>
                                 {[
-                                    { description: t('Navigate to Next Conversation'), keys: ['Ctrl', 'Tab'] },
+                                    { description: t('Navigate to the Next Conversation'), keys: ['Ctrl', 'Tab'] },
                                     {
-                                        description: t('Navigate to Previous Conversation'),
+                                        description: t('Navigate to the Previous Conversation'),
                                         keys: ['Ctrl', 'Shift', 'Tab'],
                                     },
                                     {
-                                        description: t('Navigate to Specific Conversation'),
+                                        description: t('Navigate to the Specific Conversation'),
                                         keys: ['Ctrl', t('any number key')],
                                     },
-                                    { description: t('Create New Conversation'), keys: ['Ctrl', 'N'] },
+                                    { description: t('Create a New Conversation'), keys: ['Ctrl', 'N'] },
                                     {
-                                        description: t('Create New Image-Creator Conversation'),
+                                        description: t('Create a New Image-Creator Conversation'),
                                         keys: ['Ctrl', 'Shift', 'N'],
                                     },
-                                    { description: t('Focus on Input Box'), keys: ['Ctrl', 'I'] },
+                                    { description: t('Focus on the Input Box'), keys: ['Ctrl', 'I'] },
                                     { description: t('Send'), keys: ['enter'] },
-                                    { description: t('Insert New Line in Input Box'), keys: ['Shift', 'enter'] },
+                                    { description: t('Insert a New Line into the Input Box'), keys: ['Shift', 'enter'] },
                                     { description: t('Send Without Generating Response'), keys: ['Ctrl', 'enter'] },
-                                    { description: t('Refresh Context, Start New Thread'), keys: ['alt', 'R'] },
-                                    { description: t('Show/Hide Search Dialog'), keys: ['Ctrl', 'K'] },
+                                    { description: t('Refresh Context, Start a New Thread'), keys: ['alt', 'R'] },
+                                    { description: t('Show/Hide the Search Dialog'), keys: ['Ctrl', 'K'] },
                                     {
-                                        description: t('Navigate to previous option (within search dialog)'),
+                                        description: t('Navigate to the Previous Option (in search dialog)'),
                                         keys: ['↑'],
                                     },
-                                    { description: t('Navigate to next option (within search dialog)'), keys: ['↓'] },
+                                    { description: t('Navigate to the Next Option (in search dialog)'), keys: ['↓'] },
                                     {
-                                        description: t('Select current option (within search dialog)'),
+                                        description: t('Select the Current Option (in search dialog)'),
                                         keys: ['enter'],
                                     },
                                 ].map((item, ix) => (
