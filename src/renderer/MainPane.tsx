@@ -34,8 +34,8 @@ export default function MainPane(props: Props) {
 
     useEffect(() => {
         setTimeout(() => {
-            scrollActions.scrollToBottom('auto')    // 每次启动时自动滚动到底部
-        }, 200);
+            scrollActions.scrollToBottom('auto') // 每次启动时自动滚动到底部
+        }, 200)
     }, [])
 
     // 会话名称自动生成

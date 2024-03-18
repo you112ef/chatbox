@@ -25,13 +25,14 @@
         "test": "jest",
         "lint": "cross-env NODE_ENV=development eslint . --ext .js,.jsx,.ts,.tsx",
         "check": "npx tsc --noEmit",
-        "prettier": "cross-env prettier -w ./src/**/*.{js,jsx,ts,tsx,json,css}",
+        "prettier": "cross-env prettier -w ./src/**/*.{ts,tsx,json,css}",
         "mobile:sync": "npm run mobile:sync:ios && npm run mobile:sync:android",
         "mobile:sync:ios": "cross-env CHATBOX_BUILD_TARGET=mobile_app CHATBOX_BUILD_PLATFORM=ios npm run build:renderer && npx cap sync ios",
         "mobile:sync:android": "cross-env CHATBOX_BUILD_TARGET=mobile_app CHATBOX_BUILD_PLATFORM=android npm run build:renderer && npx cap sync android",
         "mobile:ios": "npm run mobile:sync:ios && npx cap open ios",
         "mobile:android": "npm run mobile:sync:android && npx cap open android",
-        "mobile:assets": "npx capacitor-assets generate --ios --android"
+        "mobile:assets": "npx capacitor-assets generate --ios --android",
+        "prepare": "husky"
     },
     "repository": {
         "type": "git",
@@ -100,6 +101,7 @@
         "file-loader": "^6.2.0",
         "fork-ts-checker-webpack-plugin": "^7.2.13",
         "html-webpack-plugin": "^5.5.1",
+        "husky": "^9.0.11",
         "identity-obj-proxy": "^3.0.0",
         "javascript-obfuscator": "^4.0.2",
         "jest": "^29.5.0",

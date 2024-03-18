@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/react'
 import { Tiktoken } from 'js-tiktoken/lite'
+// @ts-ignore
 import cl100k_base from 'js-tiktoken/ranks/cl100k_base'
 
 import { Message } from '../../shared/types'
