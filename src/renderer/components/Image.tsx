@@ -2,6 +2,7 @@ import storage from '@/storage'
 import { Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import MiniButton from './MiniButton'
+import { CircularProgress } from '@mui/material'
 
 export function ImageInStorage(props: {
     storageKey: string
@@ -16,7 +17,13 @@ export function ImageInStorage(props: {
         })
     }, [props.storageKey])
     if (!base64) {
-        return null
+        return (
+            <div className={`bg-slate-300/50 w-full h-full ${props.className || ''}`}>
+                <div className="w-full h-full flex items-center justify-center">
+                    <CircularProgress className='block max-w-full max-h-full opacity-50' color='secondary' />
+                </div>
+            </div>
+        )
     }
     const picBase64 = base64.startsWith('data:image/') ? base64 : `data:image/png;base64,${base64}`
     return <img src={picBase64} className={`max-w-full max-h-full ${props.className || ''}`} />
