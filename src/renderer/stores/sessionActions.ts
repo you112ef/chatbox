@@ -23,6 +23,7 @@ import { getModel, getModelDisplayName } from '@/packages/models'
 import { AIProviderNoImplementedPaintError, NetworkError, ApiError, BaseError } from '@/packages/models/errors'
 import platform from '../platform'
 import * as dom from '@/hooks/dom'
+import { throttle } from 'lodash'
 
 /**
  * 创建一个新的会话
@@ -512,10 +513,11 @@ export async function generate(sessionId: string, targetMsg: Message) {
             case 'chat':
             case undefined:
                 const promptMsgs = genMessageContext(settings, messages.slice(0, targetMsgIx))
-                await model.chat(promptMsgs, ({ text, cancel }) => {
+                const throttledModifyMessage = throttle(({text, cancel}: { text: string, cancel: () => void }) => {
                     targetMsg = { ...targetMsg, content: text, cancel }
                     modifyMessage(sessionId, targetMsg)
-                })
+                }, 100)
+                await model.chat(promptMsgs, throttledModifyMessage)
                 targetMsg = {
                     ...targetMsg,
                     generating: false,

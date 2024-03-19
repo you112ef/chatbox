@@ -236,15 +236,11 @@ function _Message(props: Props) {
             setAutoScrollId(null)
         }
     }, [msg.generating])
-    const throttledScroll = useCallback(
-        throttle(() => {
-            if (msg.generating && autoScrollId) {
-                scrollActions.tickAutoScroll(autoScrollId)
-            }
-        }, 100),
-        [msg.generating, autoScrollId]
-    )
-    useEffect(throttledScroll, [msg.content])
+    useEffect(() => {
+        if (msg.generating && autoScrollId) {
+            scrollActions.tickAutoScroll(autoScrollId)
+        }
+    }, [msg.content])
 
     return (
         <Box
