@@ -5,6 +5,7 @@ import { onResultChange } from './interfaces'
 
 interface Options {
     geminiAPIKey: string
+    geminiAPIHost: string
     temperature: number
 }
 
@@ -70,7 +71,7 @@ export default class Gemeni extends Base {
             contents.push(previousContent)
         }
         const res = await this.post(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${this.options.geminiAPIKey}`,
+            `${this.options.geminiAPIHost}/v1beta/models/gemini-pro:generateContent?key=${this.options.geminiAPIKey}`,
             {
                 'Content-Type': 'application/json',
             },

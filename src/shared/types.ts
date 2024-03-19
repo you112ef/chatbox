@@ -159,6 +159,7 @@ export interface ModelSettings {
 
     // google gemini
     geminiAPIKey: string
+    geminiAPIHost: string
 
     // ollama
     ollamaHost: string

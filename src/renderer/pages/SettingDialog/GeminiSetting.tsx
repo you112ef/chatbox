@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import PasswordTextField from '@/components/PasswordTextField'
 import TemperatureSlider from '@/components/TemperatureSlider'
 import platform from '@/platform'
+import TextFieldReset from "@/components/TextFieldReset";
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -29,6 +30,23 @@ export default function GeminiSetting(props: ModelConfigProps) {
                         {t('Get API key in Google AI Studio')}
                     </Link>
                 }
+            />
+            <TextFieldReset
+                margin="dense"
+                label={t('api host')}
+                type="text"
+                fullWidth
+                variant="outlined"
+                value={settingsEdit.geminiAPIHost}
+                placeholder="https://generativelanguage.googleapis.com"
+                defaultValue='https://generativelanguage.googleapis.com'
+                onValueChange={(value) => {
+                    value = value.trim()
+                    if (value.length > 4 && !value.startsWith('http')) {
+                        value = 'https://' + value
+                    }
+                    setSettingsEdit({ ...settingsEdit, geminiAPIHost: value })
+                }}
             />
             <TemperatureSlider
                 settingsEdit={settingsEdit}

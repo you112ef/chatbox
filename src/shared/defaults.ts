@@ -28,6 +28,7 @@ export function settings(): Settings {
         claudeModel: 'claude-2.1',
 
         geminiAPIKey: '',
+        geminiAPIHost: 'https://generativelanguage.googleapis.com',
 
         ollamaHost: 'http://localhost:11434',
         ollamaModel: '',
@@ -37,6 +38,7 @@ export function settings(): Settings {
         showTokenUsed: true,
         showModelName: true,
         showMessageTimestamp: false,
+        userAvatarKey: '',
         theme: ThemeMode.System,
         language: 'en',
         fontSize: 12,
