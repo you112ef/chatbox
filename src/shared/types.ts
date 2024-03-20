@@ -32,6 +32,8 @@ export type Message = OpenAIMessage & {
     timestamp?: number // 当前消息的时间戳
 }
 
+export type SettingWindowTab = 'ai' | 'display' | 'chat' | 'advanced'
+
 export type SessionType = undefined | 'chat' | 'picture' // undefined 为了兼容老版本 chat
 
 export function isChatSession(session: Session) {

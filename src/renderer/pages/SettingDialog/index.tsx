@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Button, Tabs, Tab, Dialog, DialogContent, DialogActions, DialogTitle, Box } from '@mui/material'
-import { Settings, ThemeMode } from '../../../shared/types'
+import { Settings, SettingWindowTab, ThemeMode } from '../../../shared/types'
 import { useTranslation } from 'react-i18next'
 import { useAtom } from 'jotai'
 import { settingsAtom } from '../../stores/atoms'
@@ -17,11 +17,9 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import { trackingEvent } from '@/packages/event'
 import storage from "@/storage";
 
-type Tab = 'ai' | 'display' | 'chat' | 'advanced'
-
 interface Props {
     open: boolean
-    targetTab?: Tab
+    targetTab?: SettingWindowTab
     close(): void
 }
 
@@ -30,7 +28,7 @@ export default function SettingWindow(props: Props) {
     const [settings, setSettings] = useAtom(settingsAtom)
 
     // 标签页控制
-    const [currentTab, setCurrentTab] = React.useState<Tab>('ai')
+    const [currentTab, setCurrentTab] = React.useState<SettingWindowTab>('ai')
     useEffect(() => {
         if (props.targetTab) {
             setCurrentTab(props.targetTab)

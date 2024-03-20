@@ -39,6 +39,7 @@ import {
     showTokenCountAtom,
     showWordCountAtom,
     userAvatarKeyAtom,
+    openSettingDialogAtom,
 } from '../stores/atoms'
 import { currsentSessionPicUrlAtom, showTokenUsedAtom } from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
@@ -76,6 +77,7 @@ function _Message(props: Props) {
     const messageScrollingScrollPosition = useAtomValue(messageScrollingScrollPositionAtom)
     const setPictureShow = useSetAtom(pictureShowAtom)
     const setMessageEditDialogShow = useSetAtom(messageEditDialogShowAtom)
+    const setOpenSettingWindow = useSetAtom(openSettingDialogAtom)
 
     const { msg } = props
 
@@ -313,6 +315,7 @@ function _Message(props: Props) {
                                             width: '28px',
                                             height: '28px',
                                         }}
+                                        onClick={() => setOpenSettingWindow('chat')}
                                     >
                                         {
                                             userAvatarKey ? (

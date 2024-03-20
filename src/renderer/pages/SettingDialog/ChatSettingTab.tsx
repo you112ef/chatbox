@@ -89,6 +89,7 @@ export default function ChatSettingTab(props: {
                                 width: '80px',
                                 height: '80px',
                             }}
+                            onClick={onUserAvatarUpload}
                         >
                             {
                                 settingsEdit.userAvatarKey ? (

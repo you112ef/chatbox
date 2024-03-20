@@ -1,6 +1,7 @@
 import { RefObject } from 'react'
 import { atom, SetStateAction } from 'jotai'
-import { Session, Toast, Settings, CopilotDetail, MessagePicture, Message, SessionThreadBrief } from '../../shared/types'
+import { Session, Toast, Settings, CopilotDetail, MessagePicture, Message, SessionThreadBrief, SettingWindowTab
+} from '../../shared/types'
 import { selectAtom, atomWithStorage } from 'jotai/utils'
 import { focusAtom } from 'jotai-optics'
 import * as defaults from '../../shared/defaults'
@@ -196,7 +197,7 @@ export const showThreadHistoryDrawerAtom = atom<boolean | string>(false)
 
 // 弹窗显示
 export const openSearchDialogAtom = atom(false)
-export const openSettingDialogAtom = atom<'ai' | 'display' | null>(null)
+export const openSettingDialogAtom = atom<SettingWindowTab | null>(null)
 export const sessionCleanDialogAtom = atom<Session | null>(null)  // 清空会话的弹窗
 export const chatConfigDialogAtom = atom<Session | null>(null)   // 会话配置窗口
 
