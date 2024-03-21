@@ -55,7 +55,7 @@ export default function OpenAISetting(props: ModelConfigProps) {
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <Alert severity="warning">
+                    {/* <Alert severity="warning">
                         {t('settings modify warning')}
                         {t('please make sure you know what you are doing.')}
                         {t('click here to')}
@@ -72,7 +72,7 @@ export default function OpenAISetting(props: ModelConfigProps) {
                             {t('reset')}
                         </Button>
                         {t('to default values.')}
-                    </Alert>
+                    </Alert> */}
 
                     <OpenAIModelSelect
                         settingsEdit={settingsEdit}
