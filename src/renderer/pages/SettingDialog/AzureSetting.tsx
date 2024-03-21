@@ -79,7 +79,7 @@ export default function AzureSetting(props: ModelConfigProps) {
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <Alert severity="warning">
+                    {/* <Alert severity="warning">
                         {t('settings modify warning')}
                         {t('please make sure you know what you are doing.')}
                         {t('click here to')}
@@ -96,7 +96,7 @@ export default function AzureSetting(props: ModelConfigProps) {
                             {t('reset')}
                         </Button>
                         {t('to default values.')}
-                    </Alert>
+                    </Alert> */}
                     <TemperatureSlider
                         settingsEdit={settingsEdit}
                         setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
