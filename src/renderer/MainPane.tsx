@@ -53,7 +53,7 @@ export default function MainPane(props: Props) {
                     <ButtonGroup
                         sx={{
                             position: 'absolute',
-                            right: '0.8rem',
+                            right: '0.4rem',
                             top: '-5.5rem',
                             opacity: 0.6,
                         }}
