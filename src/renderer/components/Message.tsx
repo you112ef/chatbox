@@ -315,6 +315,7 @@ function _Message(props: Props) {
                                             width: '28px',
                                             height: '28px',
                                         }}
+                                        className='cursor-pointer'
                                         onClick={() => setOpenSettingWindow('chat')}
                                     >
                                         {
