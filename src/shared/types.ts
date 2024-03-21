@@ -198,6 +198,9 @@ export interface Settings extends ModelSettings {
     allowReportingAndTracking: boolean // 是否允许错误报告和事件追踪
 
     userAvatarKey?: string // 用户头像的 key
+
+    enableMarkdownRendering: boolean
+    enableLaTeXRendering: boolean
 }
 
 export type Language = 'en' | 'zh-Hans' | 'zh-Hant' | 'ja' | 'ko' | 'ru' | 'de' | 'fr'

@@ -148,6 +148,32 @@ export default function ChatSettingTab(props: {
                     }}
                 />
             </FormGroup>
+            <FormGroup>
+                <FormControlLabel
+                    control={<Switch />}
+                    label={t('Markdown Rendering')}
+                    checked={settingsEdit.enableMarkdownRendering}
+                    onChange={(e, checked) => {
+                        settingsEdit.enableMarkdownRendering = checked
+                        settingsEdit.enableLaTeXRendering = checked
+                        setSettingsEdit({ ...settingsEdit })
+                    }}
+                />
+            </FormGroup>
+            <FormGroup>
+                <FormControlLabel
+                    control={<Switch />}
+                    label={t('LaTeX Rendering (Requires Markdown)')}
+                    checked={settingsEdit.enableLaTeXRendering}
+                    onChange={(e, checked) => {
+                        settingsEdit.enableLaTeXRendering = checked
+                        if (checked) {
+                            settingsEdit.enableMarkdownRendering = true
+                        }
+                        setSettingsEdit({ ...settingsEdit })
+                    }}
+                />
+            </FormGroup>
         </Box>
     )
 }

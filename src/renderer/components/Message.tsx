@@ -40,6 +40,8 @@ import {
     showWordCountAtom,
     userAvatarKeyAtom,
     openSettingDialogAtom,
+    enableMarkdownRenderingAtom,
+    enableLaTeXRenderingAtom,
 } from '../stores/atoms'
 import { currsentSessionPicUrlAtom, showTokenUsedAtom } from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
@@ -73,6 +75,8 @@ function _Message(props: Props) {
     const showTokenCount = useAtomValue(showTokenCountAtom)
     const showWordCount = useAtomValue(showWordCountAtom)
     const showTokenUsed = useAtomValue(showTokenUsedAtom)
+    const enableMarkdownRendering = useAtomValue(enableMarkdownRenderingAtom)
+    const enableLaTeXRendering = useAtomValue(enableLaTeXRenderingAtom)
     const currentSessionPicUrl = useAtomValue(currsentSessionPicUrlAtom)
     const messageScrollingScrollPosition = useAtomValue(messageScrollingScrollPositionAtom)
     const setPictureShow = useSetAtom(pictureShowAtom)
@@ -244,6 +248,13 @@ function _Message(props: Props) {
         }
     }, [msg.content])
 
+    const content = (
+        typeof msg.content === 'string'
+            ? msg.content
+            : JSON.stringify(msg.content)
+        )
+        + (msg.generating ? '...' : '')
+
     return (
         <Box
             ref={ref}
@@ -357,10 +368,15 @@ function _Message(props: Props) {
                 <Grid item xs sm container sx={{ width: '0px', paddingRight: '15px' }}>
                     <Grid item xs>
                         <Box className={'msg-content ' + (msg.role === 'system' ? 'msg-content-system' : '')}>
-                            <Markdown>
-                                {(typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)) +
-                                    (msg.generating ? '...' : '')}
-                            </Markdown>
+                            {
+                                enableMarkdownRendering ? (
+                                    <Markdown enableLaTeXRendering={enableLaTeXRendering}>
+                                        {content}
+                                    </Markdown>
+                                ) : (
+                                    <div>{content}</div>
+                                )
+                            }
                             {msg.pictures && (
                                 <div className='flex flex-row items-start justify-start overflow-x-auto overflow-y-hidden'>
                                     {

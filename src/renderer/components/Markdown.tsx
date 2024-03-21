@@ -16,10 +16,18 @@ import * as latex from '../packages/latex'
 
 import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for you
 
-export default function Markdown(props: { children: string }) {
-    return (
+export default function Markdown(props: {
+    children: string
+    enableLaTeXRendering?: boolean
+}) {
+    const { enableLaTeXRendering = true, children } = props
+    return useMemo(() => (
         <ReactMarkdown
-            remarkPlugins={[remarkGfm, remarkMath, remarkBreaks]}
+            remarkPlugins={
+                enableLaTeXRendering
+                    ? [remarkGfm, remarkMath, remarkBreaks]
+                    : [remarkGfm, remarkBreaks]
+            }
             rehypePlugins={[rehypeKatex]}
             className="break-words"
             // react-markdown 默认的 defaultUrlTransform 会错误地编码 URL 中的 Query，比如 & 会被编码成 &amp;
@@ -39,9 +47,13 @@ export default function Markdown(props: { children: string }) {
                 ),
             }}
         >
-            { latex.processLaTeX(props.children) }
+            {
+                enableLaTeXRendering
+                    ? latex.processLaTeX(children)
+                    : children
+            }
         </ReactMarkdown>
-    )
+    ), [children, enableLaTeXRendering])
 }
 
 export function CodeBlock(props: any) {
