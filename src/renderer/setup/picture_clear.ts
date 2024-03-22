@@ -18,12 +18,12 @@ export async function tickPictureClearTask() {
         return
     }
     const needDeletedSet = new Set<string>(pictureKeys)
+
     const store = getDefaultStore()
+
+    // 会话中还存在的图片不需要删除
     const sessions = store.get(atoms.sessionsAtom)
     for (const session of sessions) {
-        if (session.type !== 'picture') {
-            continue    // TODO: 如果未来普通会话也有图片，这里需要修改
-        }
         for (const msg of session.messages) {
             if (!msg.pictures) {
                 continue
@@ -38,6 +38,13 @@ export async function tickPictureClearTask() {
             }
         }
     }
+
+    // 用户头像不需要删除
+    const settings = store.get(atoms.settingsAtom)
+    if (settings.userAvatarKey) {
+        needDeletedSet.delete(settings.userAvatarKey)
+    }
+
     for (const key of needDeletedSet) {
         await storage.delBlob(key)
     }
