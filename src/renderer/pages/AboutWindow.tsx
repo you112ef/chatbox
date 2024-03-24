@@ -64,8 +64,8 @@ export default function AboutWindow(props: Props) {
                         justifyContent: 'center',
                         alignItems: 'center',
                         flexWrap: 'wrap',
-                        marginTop: '10px',
                     }}
+                    className='mt-1'
                 >
                     <Badge color="primary" variant="dot" invisible={!versionHook.needCheckUpdate}
                         sx={{ margin: '4px' }}
@@ -114,18 +114,18 @@ export default function AboutWindow(props: Props) {
                 </h4> */}
                 <Paper
                     elevation={2}
-                    className="font-light text-sm mx-2 my-6 py-2 px-4"
+                    className="font-light text-xs m-2 py-1 px-4"
                     sx={{
                         backgroundColor: 'paper',
                     }}
                 >
-                    <div className='my-2'>
+                    <div className='my-1'>
                         <b>Benn:</b>
                     </div>
-                    <div className='my-2'>
+                    <div className='my-1'>
                         <span>{t('Auther Message')}</span>
                     </div>
-                    <div className='my-2'>
+                    <div className='my-1'>
                         <a
                             className='underline font-normal cursor-pointer mr-4' style={{color: theme.palette.primary.main}}
                             onClick={() => platform.openLink(`https://chatboxai.app/redirect_app/donate/${language}`)}
@@ -211,7 +211,7 @@ export default function AboutWindow(props: Props) {
                     })}
                 </Box>
                 <Box>
-                    <h4 className="text-center mb-1 mt-8">{t('Changelog')}</h4>
+                    <h4 className="text-center mb-1 mt-2">{t('Changelog')}</h4>
                     <Box className="px-6">
                         <Markdown>{i18n.changelog()}</Markdown>
                     </Box>
