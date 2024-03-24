@@ -1,4 +1,14 @@
 const changelog = `
+### 1.3.2
+
+1. You can now set user avatars in messages.
+2. Added support for configuring a custom API host for Gemini.
+3. Implemented an option in settings to enable or disable Markdown and LaTeX rendering.
+4. Fixed issues with LaTeX rendering.
+5. Fixed potential stuttering and crashing issues during message generation.
+6. Fixed issues with redundant pop-up prompts during auto-updating.
+7. Fixed various minor bugs.
+
 ### v1.3.1
 
 1. Introduced support for the claude-3-sonnet-20240229 model.
