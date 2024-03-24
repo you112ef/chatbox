@@ -1,5 +1,5 @@
 const changelog = `
-### 1.3.2
+### 1.3.3
 
 1. You can now set user avatars in messages.
 2. Added support for configuring a custom API host for Gemini.

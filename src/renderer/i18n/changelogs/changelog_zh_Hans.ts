@@ -1,5 +1,5 @@
 const changelog = `
-### v1.3.2
+### v1.3.3
 
 1. 现在你可以设置在消息中的用户头像
 2. 支持设置 gemini 自定义 API Host
