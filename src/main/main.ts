@@ -33,29 +33,29 @@ if (process.platform === 'win32') {
 class AppUpdater {
     constructor() {
         log.transports.file.level = 'info'
-        const locale = new Locale()
+        // const locale = new Locale()
 
         autoUpdater.logger = log
         autoUpdater.setFeedURL('https://chatboxai.app/api/auto_upgrade')
         autoUpdater.checkForUpdatesAndNotify()
-        let hasDialog = false
-        autoUpdater.on('update-downloaded', (event) => {
-            if (hasDialog) {
-                return
-            }
-            hasDialog = true
-            dialog
-                .showMessageBox({
-                    type: 'info',
-                    buttons: [locale.t('Restart'), locale.t('Later')],
-                    title: locale.t('App_Update'),
-                    message: event.releaseName || locale.t('New_Version'),
-                    detail: locale.t('New_Version_Downloaded'),
-                })
-                .then((returnValue) => {
-                    if (returnValue.response === 0) autoUpdater.quitAndInstall()
-                })
-        })
+        // let hasDialog = false
+        // autoUpdater.on('update-downloaded', (event) => {
+        //     if (hasDialog) {
+        //         return
+        //     }
+        //     hasDialog = true
+        //     dialog
+        //         .showMessageBox({
+        //             type: 'info',
+        //             buttons: [locale.t('Restart'), locale.t('Later')],
+        //             title: locale.t('App_Update'),
+        //             message: event.releaseName || locale.t('New_Version'),
+        //             detail: locale.t('New_Version_Downloaded'),
+        //         })
+        //         .then((returnValue) => {
+        //             if (returnValue.response === 0) autoUpdater.quitAndInstall()
+        //         })
+        // })
     }
 }
 
