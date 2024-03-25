@@ -320,3 +320,12 @@ ipcMain.handle('getConfig', (event) => {
 ipcMain.handle('getSettings', (event) => {
     return getSettings()
 })
+
+ipcMain.handle('shouldShowAboutDialogWhenStartUp', (event) => {
+    const currentVersion = app.getVersion()
+    if (store.get('lastShownAboutDialogVersion', '') === currentVersion) {
+        return false
+    }
+    store.set('lastShownAboutDialogVersion', currentVersion)
+    return true
+})

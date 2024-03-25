@@ -29,6 +29,7 @@ import MessageEditDialog from './pages/MessageEditDialog'
 import ThreadHistoryDrawer from './components/ThreadHistoryDrawer'
 import WelcomeDialog from './pages/WelcomeDialog'
 import * as premiumActions from './stores/premiumActions'
+import platform from './platform'
 
 function Main() {
     // 是否展示菜单栏
@@ -42,24 +43,24 @@ function Main() {
     useEffect(() => {
         // 通过定时器延迟启动，防止处理状态底层存储的异步加载前错误的初始数据
         setTimeout(() => {
-            ;(async () => {
+            ; (async () => {
+                const remoteConfig = await remote.getRemoteConfig('setting_chatboxai_first').catch(
+                    () => ({ setting_chatboxai_first: false } as RemoteConfig)
+                )
+                // 是否需要弹出设置窗口
                 if (settingActions.needEditSetting()) {
-                    // 除了在手机移动端，其他环境都优先使用ChatboxAI
-                    if (CHATBOX_BUILD_TARGET !== 'mobile_app') {
-                        const remoteConfig = await remote.getRemoteConfig('setting_chatboxai_first').catch(
-                            () =>
-                                ({
-                                    setting_chatboxai_first: false,
-                                } as RemoteConfig)
-                        )
-                        if (remoteConfig.setting_chatboxai_first) {
-                            settingActions.modify({
-                                aiProvider: ModelProvider.ChatboxAI,
-                            })
-                        }
+                    if (remoteConfig.setting_chatboxai_first) {
+                        settingActions.modify({ aiProvider: ModelProvider.ChatboxAI })
                     }
-                    // setOpenSettingWindow('ai')
                     setOpenWelcomeDialog(true)
+                    return
+                }
+                // 是否需要弹出关于窗口（更新后首次启动）
+                // 目前仅在桌面版本更新后首次启动、且网络环境为“外网”的情况下才自动弹窗
+                const shouldShowAboutDialogWhenStartUp = await platform.shouldShowAboutDialogWhenStartUp()
+                if (shouldShowAboutDialogWhenStartUp && remoteConfig.setting_chatboxai_first) {
+                    setOpenAboutWindow(true)
+                    return
                 }
             })()
         }, 2000)

@@ -9,6 +9,7 @@ import * as fs from 'fs-extra'
 interface StoreType {
     settings: Settings
     configs: Config
+    lastShownAboutDialogVersion: string // 上次启动时自动弹出关于对话框的应用版本
 }
 
 export const store = new Store<StoreType>({

@@ -43,6 +43,9 @@ export interface Platform {
 
     initTracking(): void
     trackingEvent(name: string, params: { [key: string]: string }): void
+
+    // 通知
+    shouldShowAboutDialogWhenStartUp(): Promise<boolean>
 }
 
 

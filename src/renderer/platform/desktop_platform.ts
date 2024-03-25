@@ -101,4 +101,8 @@ export default class DesktopPlatform implements Platform {
         const dataJson = JSON.stringify({ name, params })
         this.ipc.invoke('analysticTrackingEvent', dataJson)
     }
+
+    public async shouldShowAboutDialogWhenStartUp(): Promise<boolean> {
+        return this.ipc.invoke('shouldShowAboutDialogWhenStartUp')
+    }
 }
