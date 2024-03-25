@@ -49,7 +49,6 @@ import * as toastActions from '../stores/toastActions'
 import * as scrollActions from '../stores/scrollActions'
 import Markdown from '@/components/Markdown'
 import '../static/Block.css'
-import { throttle } from 'lodash'
 import { ImageInStorage, Image } from './Image'
 import SouthIcon from '@mui/icons-material/South'
 import ImageIcon from '@mui/icons-material/Image'
@@ -57,12 +56,14 @@ import MessageErrTips from './MessageErrTips'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import * as dom from '@/hooks/dom'
 import * as dateFns from "date-fns"
+import { cn } from '@/lib/utils'
 
 export interface Props {
     id?: string
     sessionId: string
     sessionType: SessionType
     msg: Message
+    className?: string
 }
 
 function _Message(props: Props) {
@@ -83,7 +84,7 @@ function _Message(props: Props) {
     const setMessageEditDialogShow = useSetAtom(messageEditDialogShowAtom)
     const setOpenSettingWindow = useSetAtom(openSettingDialogAtom)
 
-    const { msg } = props
+    const { msg, className } = props
 
     const [isHovering, setIsHovering] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
@@ -252,7 +253,7 @@ function _Message(props: Props) {
         typeof msg.content === 'string'
             ? msg.content
             : JSON.stringify(msg.content)
-        )
+    )
         + (msg.generating ? '...' : '')
 
     return (
@@ -266,7 +267,7 @@ function _Message(props: Props) {
             onMouseLeave={() => {
                 setIsHovering(false)
             }}
-            className={[
+            className={cn(
                 'msg-block',
                 'px-2',
                 msg.generating ? 'rendering' : 'render-done',
@@ -275,11 +276,11 @@ function _Message(props: Props) {
                     system: 'system-msg',
                     assistant: 'assistant-msg',
                 }[msg?.role || 'user'],
-            ].join(' ')}
+                className,
+            )}
             sx={{
                 margin: '0',
-                paddingTop: '0.5rem',
-                paddingBottom: '0.2rem',
+                paddingBottom: '0.1rem',
                 paddingX: '1rem',
                 [theme.breakpoints.down('sm')]: {
                     paddingX: '0.3rem',
@@ -332,7 +333,7 @@ function _Message(props: Props) {
                                         {
                                             userAvatarKey ? (
                                                 <ImageInStorage storageKey={userAvatarKey}
-                                                                className='object-cover object-center w-full h-full' />
+                                                    className='object-cover object-center w-full h-full' />
                                             ) : (
                                                 <PersonIcon fontSize='small' />
                                             )

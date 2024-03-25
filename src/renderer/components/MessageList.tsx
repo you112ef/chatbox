@@ -73,6 +73,7 @@ export default function MessageList(props: Props) {
                                 msg={msg}
                                 sessionId={currentSession.id}
                                 sessionType={currentSession.type}
+                                className={index === 0 ? 'pt-4' : ''}
                             />
                         </>
                         // </div>
