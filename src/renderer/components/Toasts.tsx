@@ -10,6 +10,7 @@ function Toasts() {
         <>
             {toasts.map((toast) => (
                 <Snackbar
+                    className='Snackbar'
                     key={toast.id}
                     open
                     onClose={() => toastActions.remove(toast.id)}
