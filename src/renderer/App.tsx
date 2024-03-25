@@ -43,10 +43,10 @@ function Main() {
     useEffect(() => {
         // 通过定时器延迟启动，防止处理状态底层存储的异步加载前错误的初始数据
         setTimeout(() => {
-            ; (async () => {
-                const remoteConfig = await remote.getRemoteConfig('setting_chatboxai_first').catch(
-                    () => ({ setting_chatboxai_first: false } as RemoteConfig)
-                )
+            ;(async () => {
+                const remoteConfig = await remote
+                    .getRemoteConfig('setting_chatboxai_first')
+                    .catch(() => ({ setting_chatboxai_first: false } as RemoteConfig))
                 // 是否需要弹出设置窗口
                 if (settingActions.needEditSetting()) {
                     if (remoteConfig.setting_chatboxai_first) {
