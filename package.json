@@ -301,6 +301,10 @@
             ],
             "artifactName": "${productName}-${version}-Setup.${ext}"
         },
+        "nsis": {
+            "oneClick": false,
+            "allowToChangeInstallationDirectory": true
+        },
         "linux": {
             "target": [
                 {
