@@ -197,7 +197,7 @@ export default function InputBox(props: Props) {
         if (showRollbackThreadButtonTimerRef.current) {
             clearTimeout(showRollbackThreadButtonTimerRef.current)
         }
-        sessionActions.rollbackStartNewThread(props.currentSessionId)
+        sessionActions.removeCurrentThread(props.currentSessionId)
     }
 
     const onFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {

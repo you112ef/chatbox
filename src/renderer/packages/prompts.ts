@@ -5,7 +5,7 @@ export function nameConversation(msgs: Message[]): Message[] {
     return [
         {
             id: '1',
-            role: 'system',
+            role: 'user',
             content: `Name the conversation based on the chat records.
 Please provide a concise name, within 10 characters and without quotation marks.
 Please use the speak language in the conversation.

@@ -66,6 +66,21 @@ export function modifyName(sessionId: string, name: string) {
 }
 
 /**
+ * 修改会话的当前话题名称
+ */
+export function modifyThreadName(sessionId: string, threadName: string) {
+    const store = getDefaultStore()
+    store.set(atoms.sessionsAtom, (sessions) =>
+        sessions.map((s) => {
+            if (s.id === sessionId) {
+                return { ...s, threadName }
+            }
+            return s
+        })
+    )
+}
+
+/**
  * 创建一个空的会话
  */
 export function createEmpty(type: 'chat' | 'picture') {
@@ -153,6 +168,24 @@ export function remove(session: Session) {
 }
 
 /**
+ * 删除历史话题
+ * @param sessionId 会话 id
+ * @param threadId 历史话题 id
+ */
+export function removeThread(sessionId: string, threadId: string) {
+    const store = getDefaultStore()
+    store.set(atoms.sessionsAtom, (sessions) => sessions.map((s) => {
+        if (s.id === sessionId && s.threads) {
+            s = {
+                ...s,
+                threads: s.threads.filter((t) => t.id !== threadId)
+            }
+        }
+        return s
+    }))
+}
+
+/**
  * 清空会话中的所有消息，仅保留 system prompt
  * @param sessionId
  * @returns 
@@ -216,7 +249,7 @@ export function refreshContextAndCreateNewThread(sessionId: string) {
             }
             const newThread: SessionThread = {
                 id: uuidv4(),
-                name: s.name,
+                name: s.threadName || s.name,
                 messages: s.messages,
                 createdAt: Date.now(),
             }
@@ -230,6 +263,7 @@ export function refreshContextAndCreateNewThread(sessionId: string) {
                 messages: systemPrompt
                     ? [systemPrompt]
                     : [createMessage('system', defaults.getDefaultPrompt())],
+                threadName: '',
             }
         })
     })
@@ -271,7 +305,7 @@ export function switchThread(sessionId: string, threadId: string) {
             const newThreads = s.threads.filter(h => h.id !== threadId)
             newThreads.push({
                 id: uuidv4(),
-                name: s.name,
+                name: s.threadName || s.name,
                 messages: s.messages,
                 createdAt: Date.now(),
             })
@@ -279,27 +313,35 @@ export function switchThread(sessionId: string, threadId: string) {
                 ...s,
                 threads: newThreads,
                 messages: target.messages,
+                threadName: target.name,
             }
         })
     })
 }
 
-export function rollbackStartNewThread(sessionId: string) {
+/**
+ * 删除某个会话的当前话题。如果该会话存在历史话题，则会回退到上一个话题；如果该会话没有历史话题，则会清空当前会话
+ * @param sessionId
+ */
+export function removeCurrentThread(sessionId: string) {
     const store = getDefaultStore()
     store.set(atoms.sessionsAtom, (sessions) => {
         return sessions.map(s => {
             if (s.id !== sessionId) {
                 return s
             }
-            if (!s.threads || s.threads.length === 0) {
-                return s
-            }
-            const last = s.threads[s.threads.length - 1]
-            return {
+            const newSession: Session = {
                 ...s,
-                threads: s.threads.slice(0, s.threads.length - 1),
-                messages: last.messages,
+                messages: s.messages.filter(m => m.role === 'system').slice(0, 1),  // 仅保留一条系统提示
+                threadName: undefined,
             }
+            if (s.threads && s.threads.length > 0) {
+                const last = s.threads[s.threads.length - 1]
+                newSession.messages = last.messages
+                newSession.threadName = last.name
+                newSession.threads = s.threads.slice(0, s.threads.length - 1)
+            }
+            return newSession
         })
     })
 }
@@ -513,7 +555,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
             case 'chat':
             case undefined:
                 const promptMsgs = genMessageContext(settings, messages.slice(0, targetMsgIx))
-                const throttledModifyMessage = throttle(({text, cancel}: { text: string, cancel: () => void }) => {
+                const throttledModifyMessage = throttle(({ text, cancel }: { text: string, cancel: () => void }) => {
                     targetMsg = { ...targetMsg, content: text, cancel }
                     modifyMessage(sessionId, targetMsg)
                 }, 100)
@@ -600,7 +642,8 @@ export async function refreshMessage(sessionId: string, msg: Message, alwayInser
     }
 }
 
-export async function generateName(sessionId: string) {
+async function _generateName(sessionId: string, modifyName: (sessionId: string, name: string) => void,
+    start: number, end: number) {
     const store = getDefaultStore()
     const globalSettings = store.get(atoms.settingsAtom)
     const session = getSession(sessionId)
@@ -611,7 +654,7 @@ export async function generateName(sessionId: string) {
     const configs = await platform.getConfig()
     try {
         const model = getModel(settings, configs)
-        await model.chat(promptFormat.nameConversation(session.messages.slice(0, 3)), ({ text }) => {
+        await model.chat(promptFormat.nameConversation(session.messages.slice(start, end)), ({ text }) => {
             text = text.replace(/['"“”]/g, '')
             modifyName(session.id, text)
         })
@@ -620,6 +663,14 @@ export async function generateName(sessionId: string) {
             Sentry.captureException(e) // unexpected error should be reported
         }
     }
+}
+
+export async function generateName(sessionId: string) {
+    return _generateName(sessionId, modifyName, 0, 3)
+}
+
+export async function generateThreadName(sessionId: string) {
+    return _generateName(sessionId, modifyThreadName, 1, 3)
 }
 
 /**

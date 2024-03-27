@@ -1,13 +1,20 @@
-import { useEffect, useRef, useState } from 'react'
-import { currentThreadHistoryHashAtom, currentSessionIdAtom, showThreadHistoryDrawerAtom } from "@/stores/atoms"
-import { Tooltip, Box, Drawer, MenuList, MenuItem, ListItemText, Typography, ListItemIcon, IconButton } from "@mui/material"
+import React, { useEffect, useRef, useState } from 'react'
+import {
+    currentThreadHistoryHashAtom, currentSessionIdAtom, showThreadHistoryDrawerAtom, currentSessionAtom
+} from "@/stores/atoms"
+import {
+    Tooltip, Box, Drawer, MenuList, MenuItem, ListItemText, Typography, ListItemIcon, IconButton
+} from "@mui/material"
 import { useAtom, useAtomValue } from "jotai"
 import { scrollToMessage } from "@/stores/scrollActions";
 import { Virtuoso, VirtuosoHandle } from 'react-virtuoso'
 import { SessionThreadBrief } from 'src/shared/types';
-import AddCommentIcon from '@mui/icons-material/AddComment';
 import * as sessionActions from '../stores/sessionActions'
 import { useTranslation } from 'react-i18next';
+import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
+import SwapCallsIcon from '@mui/icons-material/SwapCalls';
+import DeleteIcon from "@mui/icons-material/Delete";
+import StyledMenu from "@/components/StyledMenu";
 
 interface Props {
 }
@@ -17,6 +24,7 @@ export default function ThreadHistoryDrawer(props: Props) {
     const [showDrawer, setShowDrawer] = useAtom(showThreadHistoryDrawerAtom)
     const currentThreadHistoryHash = useAtomValue(currentThreadHistoryHashAtom)
     const currentSessionId = useAtomValue(currentSessionIdAtom)
+    const currentSession = useAtomValue(currentSessionAtom)
 
     const threadList = Object.values(currentThreadHistoryHash)
 
@@ -39,6 +47,13 @@ export default function ThreadHistoryDrawer(props: Props) {
             }
         }, 100);
     }, [showDrawer, ref.current])
+
+    useEffect(() => {
+        if (!currentSession.threadName
+            && currentSession.messages.findIndex((msg) => msg.role === 'assistant' && !msg.generating) !== -1) {
+            sessionActions.generateThreadName(currentSession.id)
+        }
+    }, [currentSession.messages])
 
     const gotoThreadMessage = (threadId: string) => {
         const thread = threadList.find(t => t.id === threadId)
@@ -93,6 +108,7 @@ export default function ThreadHistoryDrawer(props: Props) {
                                 goto={gotoThreadMessage}
                                 showHistoryDrawer={showDrawer}
                                 switchThread={switchThread}
+                                lastOne={index === threadList.length - 1}
                             />
                         )}
                     />
@@ -107,56 +123,107 @@ function ThreadItem(props: {
     goto(threadId: string): void
     showHistoryDrawer: string | boolean
     switchThread(threadId: string): void
+    lastOne?: boolean
 }) {
     const { t } = useTranslation()
-    const { thread, goto, showHistoryDrawer, switchThread } = props
+    const { thread, goto, showHistoryDrawer, switchThread, lastOne } = props
     const [hovering, setHovering] = useState(false)
     const selected = thread.id === showHistoryDrawer
     const threadName = thread.name || t('New Thread')
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+    const open = Boolean(anchorEl)
+    const currentSessionId = useAtomValue(currentSessionIdAtom)
+
+    const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+        event.stopPropagation()
+        event.preventDefault()
+        setAnchorEl(event.currentTarget)
+    }
+
+    const handleMenuClose = () => {
+        setAnchorEl(null)
+    }
+
     return (
-        <MenuItem
-            key={thread.id}
-            selected={selected}
-            onClick={() => {
-                goto(thread.id)
-            }}
-            onMouseEnter={() => {
-                setHovering(true)
-            }}
-            onMouseOver={() => {
-                setHovering(true)
-            }}
-            onMouseLeave={() => {
-                setHovering(false)
-            }}
-            sx={{ padding: '0.1rem', margin: '0.1rem' }}
-        >
-            <ListItemIcon>
-                <span className='opacity-50 text-xs'>{thread.messageCount}</span>
-            </ListItemIcon>
-            <ListItemText>
-                <Tooltip title={`${threadName} ${(thread.createdAtLabel || '').toLocaleString()}`} placement="top">
-                    <Typography variant="inherit" noWrap>
-                        {threadName}
-                        {
-                            thread.createdAtLabel && (
-                                <span className="pl-1 opacity-70">
-                                    {thread.createdAtLabel}
-                                </span>
-                            )
-                        }
+        <>
+            <Tooltip
+                title={
+                    <Typography sx={{ fontSize: '0.9rem' }}>
+                        {`${threadName} ${(thread.createdAtLabel || '').toLocaleString()}`}
                     </Typography>
-                </Tooltip>
-            </ListItemText>
-            <ListItemIcon>
-                <Tooltip title={t('Continue this Thread')} placement="top">
-                    <IconButton onClick={() => switchThread(thread.id)}>
-                        <AddCommentIcon fontSize='small'
-                            sx={{ opacity: hovering || selected ? 1 : 0 }}
-                        />
-                    </IconButton>
-                </Tooltip>
-            </ListItemIcon>
-        </MenuItem>
+                }
+                placement="left"
+            >
+                <MenuItem
+                    key={thread.id}
+                    selected={selected}
+                    onClick={() => {
+                        goto(thread.id)
+                    }}
+                    onMouseEnter={() => {
+                        setHovering(true)
+                    }}
+                    onMouseOver={() => {
+                        setHovering(true)
+                    }}
+                    onMouseLeave={() => {
+                        setHovering(false)
+                    }}
+                    sx={{ padding: '0.1rem', margin: '0.1rem' }}
+                >
+                    <ListItemIcon>
+                        <span className='opacity-50 text-xs'>{thread.messageCount}</span>
+                    </ListItemIcon>
+                    <ListItemText>
+                        <Typography variant="inherit" noWrap>
+                            {threadName}
+                            {
+                                thread.createdAtLabel && (
+                                    <span className="pl-1 opacity-70">
+                                        {thread.createdAtLabel}
+                                    </span>
+                                )
+                            }
+                        </Typography>
+                    </ListItemText>
+                    <ListItemIcon>
+                        <IconButton onClick={handleMenuClick}>
+                            <MoreHorizOutlinedIcon fontSize="small" sx={{ opacity: hovering || selected ? 1 : 0 }} />
+                        </IconButton>
+                    </ListItemIcon>
+                </MenuItem>
+            </Tooltip>
+            <StyledMenu
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleMenuClose}
+                key={thread.id + 'menu'}
+            >
+                <MenuItem
+                    key={thread.id + 'switch'}
+                    onClick={() => switchThread(thread.id)}
+                    disableRipple
+                >
+                    <SwapCallsIcon fontSize="small" />
+                    {t('Switch')}
+                </MenuItem>
+                <MenuItem
+                    key={thread.id + 'del'}
+                    onClick={() => {
+                        setAnchorEl(null)
+                        handleMenuClose()
+                        if (lastOne) {
+                            sessionActions.removeCurrentThread(currentSessionId)
+                        } else {
+                            sessionActions.removeThread(currentSessionId, thread.id)
+                        }
+                    }}
+                    disableRipple
+                >
+                    <DeleteIcon fontSize="small" />
+                    {t('delete')}
+                </MenuItem>
+            </StyledMenu>
+        </>
     )
 }

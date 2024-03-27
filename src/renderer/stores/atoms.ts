@@ -161,7 +161,7 @@ export const currentThreadHistoryHashAtom = selectAtom(currentSessionAtom, (s) =
         if (s.messages && s.messages.length > 0) {
             ret[s.messages[0].id] = {
                 id: s.id,
-                name: '',
+                name: s.threadName || '',
                 firstMessageId: s.messages[0].id,
                 messageCount: s.messages.length,
             }

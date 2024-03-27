@@ -53,6 +53,7 @@ export interface Session {
     copilotId?: string
     settings?: SessionSettings
     threads?: SessionThread[] // 历史话题列表
+    threadName?: string // 当前话题名称
 }
 
 // 话题
