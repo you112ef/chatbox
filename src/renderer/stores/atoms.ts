@@ -103,11 +103,11 @@ const _currentSessionIdCachedAtom = atomWithStorage<string | null>('_currentSess
 export const currentSessionIdAtom = atom(
     (get) => {
         const idCached = get(_currentSessionIdCachedAtom)
-        const sessions = get(sessionsAtom)
+        const sessions = get(sortedSessionsAtom)
         if (idCached && sessions.some((session) => session.id === idCached)) {
             return idCached
         }
-        return sessions[sessions.length - 1].id // 当前会话不存在时，返回最后一个会话
+        return sessions[0].id // 当前会话不存在时，返回列表中第一个会话
     },
     (_get, set, update: string) => {
         set(_currentSessionIdCachedAtom, update)

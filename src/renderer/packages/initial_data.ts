@@ -1,11 +1,25 @@
 import { Session } from '../../shared/types'
 
-// TODO: 图片 demo
 export const defaultSessionsForEN: Session[] = [
+    {
+        id: 'justchat-b612-406a-985b-3ab4d2c482ff',
+        name: 'Just chat',
+        type: 'chat',
+        messages: [
+            {
+                id: 'a700be6c-cbdd-43a3-b572-49e7a921c059',
+                role: 'system',
+                content:
+                    'You are a helpful assistant. You can help me by answering my questions. You can also ask me questions.',
+            },
+        ],
+        starred: true,
+    },
     {
         id: '6dafa15e-c72f-4036-ac89-33c09e875bdc',
         name: 'Markdown 101 (Example)',
         type: 'chat',
+        starred: true,
         messages: [
             {
                 id: '83240028-9d8b-43f2-87f2-a0a2be4dbf08',
@@ -125,7 +139,7 @@ export const defaultSessionsForEN: Session[] = [
                 generating: false,
             },
         ],
-        starred: false,
+        starred: true,
         copilotId: 'chatbox-featured:35',
     },
     {
@@ -191,20 +205,6 @@ export const defaultSessionsForEN: Session[] = [
         ],
         starred: false,
         copilotId: 'chatbox-featured:56',
-    },
-    {
-        id: 'justchat-b612-406a-985b-3ab4d2c482ff',
-        name: 'Just chat',
-        type: 'chat',
-        messages: [
-            {
-                id: 'a700be6c-cbdd-43a3-b572-49e7a921c059',
-                role: 'system',
-                content:
-                    'You are a helpful assistant. You can help me by answering my questions. You can also ask me questions.',
-            },
-        ],
-        starred: true,
     },
 ]
 

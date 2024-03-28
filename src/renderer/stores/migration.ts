@@ -49,12 +49,18 @@ async function migrate_1_to_2() {
         if (sessions.find((session) => session.id === imageCreatorSessionForCN.id)) {
             return
         }
-        getDefaultStore().set(sessionsAtom, [imageCreatorSessionForCN, ...sessions])
+        getDefaultStore().set(sessionsAtom, [
+            ...sessions,
+            imageCreatorSessionForCN,
+        ])
     } else {
         if (sessions.find((session) => session.id === imageCreatorSessionForEN.id)) {
             return
         }
-        getDefaultStore().set(sessionsAtom, [imageCreatorSessionForEN, ...sessions])
+        getDefaultStore().set(sessionsAtom, [
+            ...sessions,
+            imageCreatorSessionForEN,
+        ])
     }
 }
 
