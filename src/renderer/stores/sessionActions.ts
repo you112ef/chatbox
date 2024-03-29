@@ -654,10 +654,9 @@ async function _generateName(sessionId: string, modifyName: (sessionId: string, 
     const configs = await platform.getConfig()
     try {
         const model = getModel(settings, configs)
-        await model.chat(promptFormat.nameConversation(session.messages.slice(start, end)), ({ text }) => {
-            text = text.replace(/['"“”]/g, '')
-            modifyName(session.id, text)
-        })
+        let name = await model.chat(promptFormat.nameConversation(session.messages.slice(start, end)))
+        name = name.replace(/['"“”]/g, '')
+        modifyName(session.id, name)
     } catch (e: any) {
         if (!(e instanceof ApiError || e instanceof NetworkError)) {
             Sentry.captureException(e) // unexpected error should be reported
