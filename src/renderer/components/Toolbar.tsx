@@ -2,6 +2,7 @@ import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import Button from '@mui/material/Button'
 import SearchIcon from '@mui/icons-material/Search'
+import HistoryIcon from '@mui/icons-material/History'
 import Save from '@mui/icons-material/Save'
 import { useAtomValue, useSetAtom } from 'jotai'
 import * as atoms from '../stores/atoms'
@@ -92,7 +93,7 @@ export default function Toolbar() {
                     </span>
                 </Button>
             )}
-            {/* <IconButton
+            <IconButton
                 edge="start"
                 color="inherit"
                 aria-label="thread-history-drawer-button"
@@ -100,7 +101,7 @@ export default function Toolbar() {
                 onClick={() => setThreadHistoryDrawerOpen(true)}
             >
                 <HistoryIcon />
-            </IconButton> */}
+            </IconButton>
             <IconButton
                 edge="start"
                 color="inherit"
