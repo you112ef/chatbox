@@ -656,6 +656,7 @@ async function _generateName(sessionId: string, modifyName: (sessionId: string, 
         const model = getModel(settings, configs)
         let name = await model.chat(promptFormat.nameConversation(session.messages.slice(start, end)))
         name = name.replace(/['"“”]/g, '')
+        name = name.slice(0, 10)    // 限制名字长度
         modifyName(session.id, name)
     } catch (e: any) {
         if (!(e instanceof ApiError || e instanceof NetworkError)) {
