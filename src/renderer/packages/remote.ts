@@ -14,12 +14,17 @@ import { ofetch } from 'ofetch'
 // const RELEASE_ORIGIN = 'https://releases.chatboxai.app'
 
 export let API_ORIGIN = 'https://chatboxai.app'
-
 const pool = [
     'https://chatboxai.app',
     'https://api.chatboxai.app',
     'https://api.ai-chatbox.com',
 ]
+
+// export let API_ORIGIN = 'http://localhost:8002'
+// const pool = [
+//     'http://localhost:8002'
+// ]
+
 async function testApiOrigins() {
     type Response = {
         data: {
