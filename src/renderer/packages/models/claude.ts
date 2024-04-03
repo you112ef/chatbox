@@ -93,6 +93,9 @@ export default class Claude extends Base {
     }
 
     async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+	    // 经过测试，Bedrock Claude 3 的消息必须以 user 角色开始，并且 user 和 assistant 角色必须交替出现，否则都会出现回答异常
+        rawMessages = this.sequenceMessages(rawMessages)
+
         let prompt = ''
         const messages: ClaudeMessage[] = []
         for (const msg of rawMessages) {
