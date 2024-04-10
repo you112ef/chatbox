@@ -139,6 +139,10 @@ export const openaiModelConfigs = {
         maxTokens: 4_096,
         maxContextTokens: 8_192,
     },
+    'gpt-4-turbo': {
+        maxTokens: 4_096,
+        maxContextTokens: 128_000,
+    },
     'gpt-4-0613': {
         maxTokens: 4_096,
         maxContextTokens: 8_192,
@@ -187,7 +191,7 @@ export type Model = keyof typeof openaiModelConfigs
 export const models = Array.from(Object.keys(openaiModelConfigs)).sort() as Model[]
 
 export async function populateOpenAIMessage(rawMessages: Message[], model: Model | 'custom-model'): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
-    if (model === 'gpt-4-vision-preview') {
+    if (['gpt-4-vision-preview', 'gpt-4-turbo'].includes(model)) {
         const messages: OpenAIMessageVision[] = []
         for (const m of rawMessages) {
             const content: OpenAIMessageVision['content'] = [
