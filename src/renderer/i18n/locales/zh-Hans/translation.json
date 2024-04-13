@@ -222,7 +222,8 @@
     "License not found, please check your license key": "未找到 license，请检查您的 license key",
     "License expired, please check your license key": "license 已过期，请检查您的 license key",
     "Current model does not support image input": "当前模型不支持图片输入",
-    "Attach Image": "上传图片",
+    "Attach Image": "添加图片",
+    "Select File": "选择文件",
     "Your license has expired. Please check your subscription or purchase a new one.": "您的 license 已过期。请检查您的订阅或重新购买。",
     "You have reached your monthly quota for the {{model}} model. Please <OpenSettingButton>go to Settings</OpenSettingButton> to switch to a different model, view your quota usage, or upgrade your plan.": "您已经用完 {{model}} 模型的月度配额。请<OpenSettingButton>前往设置</OpenSettingButton>切换到其他模型，查看您的配额使用情况，或升级您的套餐。",
     "Your current License (Chatbox AI Lite) does not support the {{model}} model. To use this model, please <OpenMorePlanButton>upgrade</OpenMorePlanButton> to Chatbox AI Pro or a higher-tier package. Alternatively, you can switch to a different model by <OpenSettingButton>accessing the settings</OpenSettingButton>.": "您当前的 License（Chatbox AI Lite）不支持 {{model}} 模型。要使用此模型，请<OpenMorePlanButton>升级</OpenMorePlanButton>到 Chatbox AI Pro 或更高级别的套餐。或者，您可以通过<OpenSettingButton>访问设置</OpenSettingButton>切换到其他模型。",
@@ -231,5 +232,12 @@
     "You have exceeded the rate limit for the Chatbox AI service. Please try again later.": "您已超过 Chatbox AI 服务的速率限制。请稍后重试。",
     "Invalid request parameters detected. Please try again later. Persistent failures may indicate an outdated software version. Consider upgrading to access the latest performance improvements and features.": "检测到无效的请求参数。请稍后重试。如果多次失败可能表明当前软件版本过低，请升级以获得最新的功能与性能增强。",
     "Markdown Rendering": "Markdown 渲染",
-    "LaTeX Rendering (Requires Markdown)": "LaTeX 渲染（需要 Markdown）"
+    "LaTeX Rendering (Requires Markdown)": "LaTeX 渲染（需要 Markdown）",
+    "File type not supported. Supported types include txt, md, html, doc, docx, pdf, excel, pptx, csv, and all text-based files, including code files.": "不支持的文件类型。支持的类型包括 txt、md、html、doc、docx、pdf、excel、pptx、csv 以及所有文本文件，包括代码文件。",
+    "The file you sent has expired. To protect your privacy, all file-related cache data has been cleared. You need to create a new conversation or refresh the context, and then send the file again.": "您发送的文件已过期。为了保护您的隐私，所有与文件相关的缓存数据已被清除。您需要创建一个新的对话或刷新上下文，然后重新发送文件。",
+    "The cache data for the file was not found. Please create a new conversation or refresh the context, and then send the file again.": "未找到文件的缓存数据。请创建一个新的对话或刷新上下文，然后重新发送文件。",
+    "The file size exceeds the limit of 50MB. Please reduce the file size and try again.": "文件大小超过了 50MB 的限制。请减小文件大小后重试。",
+    "The current model {{model}} does not support sending files. Currently supported models: Chatbox AI 4.": "当前模型 {{model}} 不支持发送文件。目前支持的模型：Chatbox AI 4。",
+    "The current model {{model}} does not support sending files.": "当前模型 {{model}} 不支持发送文件。",
+    "Reading file...": "正在读取文件..."
 }

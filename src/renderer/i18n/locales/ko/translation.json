@@ -223,6 +223,7 @@
     "License expired, please check your license key": "라이선스가 만료되었습니다. 라이선스 키를 확인하세요",
     "Current model does not support image input": "현재 모델은 이미지 입력을 지원하지 않습니다",
     "Attach Image": "이미지 첨부",
+    "Select File": "파일 선택",
     "Your license has expired. Please check your subscription or purchase a new one.": "라이선스가 만료되었습니다. 구독을 확인하거나 새로운 라이선스를 구매하세요.",
     "You have reached your monthly quota for the {{model}} model. Please <OpenSettingButton>go to Settings</OpenSettingButton> to switch to a different model, view your quota usage, or upgrade your plan.": "{{model}} 모델의 월간 할당량에 도달했습니다. 다른 모델로 전환하거나 할당량 사용 현황을 보거나 플랜을 업그레이드하려면 <OpenSettingButton>설정으로 이동</OpenSettingButton>하세요.",
     "Your current License (Chatbox AI Lite) does not support the {{model}} model. To use this model, please <OpenMorePlanButton>upgrade</OpenMorePlanButton> to Chatbox AI Pro or a higher-tier package. Alternatively, you can switch to a different model by <OpenSettingButton>accessing the settings</OpenSettingButton>.": "현재 라이선스(Chatbox AI Lite)는 {{model}} 모델을 지원하지 않습니다. 이 모델을 사용하려면 <OpenMorePlanButton>업그레이드</OpenMorePlanButton>하여 Chatbox AI Pro 또는 더 높은 티어 패키지로 전환하세요. 또는 <OpenSettingButton>설정에 접근</OpenSettingButton>하여 다른 모델로 전환할 수 있습니다.",
@@ -231,5 +232,12 @@
     "You have exceeded the rate limit for the Chatbox AI service. Please try again later.": "Chatbox AI 서비스의 요청 제한을 초과했습니다. 나중에 다시 시도하세요.",
     "Invalid request parameters detected. Please try again later. Persistent failures may indicate an outdated software version. Consider upgrading to access the latest performance improvements and features.": "잘못된 요청 매개변수가 감지되었습니다. 나중에 다시 시도하세요. 지속적인 실패는 오래된 소프트웨어 버전을 나타낼 수 있습니다. 최신 성능 향상 및 기능에 액세스하려면 업그레이드를 고려하세요.",
     "Markdown Rendering": "마크다운 렌더링",
-    "LaTeX Rendering (Requires Markdown)": "LaTeX 렌더링 (마크다운 필요)"
+    "LaTeX Rendering (Requires Markdown)": "LaTeX 렌더링 (마크다운 필요)",
+    "File type not supported. Supported types include txt, md, html, doc, docx, pdf, excel, pptx, csv, and all text-based files, including code files.": "지원되지 않는 파일 형식입니다. 지원되는 형식은 txt, md, html, doc, docx, pdf, excel, pptx, csv 및 모든 코드 파일을 포함한 모든 텍스트 기반 파일입니다.",
+    "The file you sent has expired. To protect your privacy, all file-related cache data has been cleared. You need to create a new conversation or refresh the context, and then send the file again.": "보낸 파일이 만료되었습니다. 개인 정보 보호를 위해 모든 파일 관련 캐시 데이터가 지워졌습니다. 새 대화를 만들거나 컨텍스트를 새로 고친 후 파일을 다시 보내야 합니다.",
+    "The cache data for the file was not found. Please create a new conversation or refresh the context, and then send the file again.": "파일의 캐시 데이터를 찾을 수 없습니다. 새 대화를 만들거나 컨텍스트를 새로 고친 후 파일을 다시 보내야 합니다.",
+    "The file size exceeds the limit of 50MB. Please reduce the file size and try again.": "파일 크기가 50MB 제한을 초과합니다. 파일 크기를 줄이고 다시 시도하세요.",
+    "The current model {{model}} does not support sending files. Currently supported models: Chatbox AI 4.": "현재 모델 {{model}}은 파일 전송을 지원하지 않습니다. 현재 지원되는 모델: Chatbox AI 4.",
+    "The current model {{model}} does not support sending files.": "현재 모델 {{model}}은 파일 전송을 지원하지 않습니다.",
+    "Reading file...": "파일 읽는 중..."
 }

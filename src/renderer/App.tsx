@@ -19,7 +19,7 @@ import RemoteDialogWindow from './pages/RemoteDialogWindow'
 import { useSystemLanguageWhenInit } from './hooks/useDefaultSystemLanguage'
 import ClearConversationListWindow from './pages/ClearConversationListWindow'
 import MainPane from './MainPane'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import * as atoms from './stores/atoms'
 import SearchDialog from './pages/SearchDialog'
 import Sidebar from './Sidebar'
@@ -40,6 +40,7 @@ function Main() {
     const [openSettingWindow, setOpenSettingWindow] = useAtom(atoms.openSettingDialogAtom)
     const [openWelcomeDialog, setOpenWelcomeDialog] = useState(false)
 
+    const setRemoteConfig = useSetAtom(atoms.remoteConfigAtom)
     useEffect(() => {
         // 通过定时器延迟启动，防止处理状态底层存储的异步加载前错误的初始数据
         setTimeout(() => {
@@ -47,6 +48,7 @@ function Main() {
                 const remoteConfig = await remote
                     .getRemoteConfig('setting_chatboxai_first')
                     .catch(() => ({ setting_chatboxai_first: false } as RemoteConfig))
+                setRemoteConfig((conf) => ({ ...conf, ...remoteConfig }))
                 // 是否需要弹出设置窗口
                 if (settingActions.needEditSetting()) {
                     if (remoteConfig.setting_chatboxai_first) {

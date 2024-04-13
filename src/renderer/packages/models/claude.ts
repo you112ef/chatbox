@@ -1,6 +1,5 @@
 import { Message } from 'src/shared/types'
-import Base from './base'
-import { onResultChange } from './interfaces'
+import Base, { onResultChange } from './base'
 import { ApiError } from './errors'
 import { get } from 'lodash'
 import storage from '@/storage'

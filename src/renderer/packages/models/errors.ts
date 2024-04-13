@@ -85,6 +85,41 @@ export class ChatboxAIAPIError extends BaseError {
             code: 20006,
             i18nKey: 'Invalid request parameters detected. Please try again later. Persistent failures may indicate an outdated software version. Consider upgrading to access the latest performance improvements and features.'
         },
+        // 文件类型不支持。支持的类型有 txt、md、html、doc、docx、pdf、excel、pptx、csv 以及所有文本类型的文件，包括代码文件
+        'file_type_not_supported': {
+            name: 'file_type_not_supported',
+            code: 20007,
+            i18nKey: 'File type not supported. Supported types include txt, md, html, doc, docx, pdf, excel, pptx, csv, and all text-based files, including code files.'
+        },
+        // 发送的文件已经超过七天，为了保护您的隐私，所有文件相关的缓存数据已经清理。您需要重新创建对话或刷新上下文，然后再次发送文件。
+        'file_expired': {
+            name: 'file_expired',
+            code: 20008,
+            i18nKey: 'The file you sent has expired. To protect your privacy, all file-related cache data has been cleared. You need to create a new conversation or refresh the context, and then send the file again.'
+        },
+        // 未找到文件的缓存数据。请重新创建对话或刷新上下文，然后再次发送文件。
+        'file_not_found': {
+            name: 'file_not_found',
+            code: 20009,
+            i18nKey: 'The cache data for the file was not found. Please create a new conversation or refresh the context, and then send the file again.'
+        },
+        // 文件大小超过 50MB
+        'file_too_large': {
+            name: 'file_too_large',
+            code: 20010,
+            i18nKey: 'The file size exceeds the limit of 50MB. Please reduce the file size and try again.'
+        },
+        // 当前模型不支持发送文件。目前支持的模型有 Chatbox AI 4
+        'model_not_support_file': {
+            name: 'model_not_support_file',
+            code: 20011,
+            i18nKey: 'The current model {{model}} does not support sending files. Currently supported models: Chatbox AI 4.'
+        },
+        'model_not_support_file_2': {
+            name: 'model_not_support_file_2',
+            code: 20012,
+            i18nKey: 'The current model {{model}} does not support sending files.'
+        },
     }
     static fromCodeName(response: string, codeName: string) {
         if (!codeName) {

@@ -223,6 +223,7 @@
     "License expired, please check your license key": "Licence expirée, veuillez vérifier votre clé de licence",
     "Current model does not support image input": "Le modèle actuel ne prend pas en charge l'entrée d'image",
     "Attach Image": "Joindre une Image",
+    "Select File": "Sélectionner un Fichier",
     "Your license has expired. Please check your subscription or purchase a new one.": "Votre licence a expiré. Veuillez vérifier votre abonnement ou en acheter un nouveau.",
     "You have reached your monthly quota for the {{model}} model. Please <OpenSettingButton>go to Settings</OpenSettingButton> to switch to a different model, view your quota usage, or upgrade your plan.": "Vous avez atteint votre quota mensuel pour le modèle {{model}}. Veuillez <OpenSettingButton>aller dans les paramètres</OpenSettingButton> pour passer à un autre modèle, consulter votre utilisation de quota ou mettre à niveau votre plan.",
     "Your current License (Chatbox AI Lite) does not support the {{model}} model. To use this model, please <OpenMorePlanButton>upgrade</OpenMorePlanButton> to Chatbox AI Pro or a higher-tier package. Alternatively, you can switch to a different model by <OpenSettingButton>accessing the settings</OpenSettingButton>.": "Votre licence actuelle (Chatbox AI Lite) ne prend pas en charge le modèle {{model}}. Pour utiliser ce modèle, veuillez <OpenMorePlanButton>mettre à niveau</OpenMorePlanButton> vers Chatbox AI Pro ou un forfait de niveau supérieur. Vous pouvez également passer à un autre modèle en <OpenSettingButton>accédant aux paramètres</OpenSettingButton>.",
@@ -231,5 +232,12 @@
     "You have exceeded the rate limit for the Chatbox AI service. Please try again later.": "Vous avez dépassé la limite de taux pour le service Chatbox AI. Veuillez réessayer plus tard.",
     "Invalid request parameters detected. Please try again later. Persistent failures may indicate an outdated software version. Consider upgrading to access the latest performance improvements and features.": "Des paramètres de requête invalides ont été détectés. Veuillez réessayer plus tard. Des échecs persistants peuvent indiquer une version obsolète du logiciel. Envisagez de mettre à niveau pour accéder aux dernières améliorations de performances et fonctionnalités.",
     "Markdown Rendering": "Rendu Markdown",
-    "LaTeX Rendering (Requires Markdown)": "Rendu LaTeX (nécessite Markdown)"
+    "LaTeX Rendering (Requires Markdown)": "Rendu LaTeX (nécessite Markdown)",
+    "File type not supported. Supported types include txt, md, html, doc, docx, pdf, excel, pptx, csv, and all text-based files, including code files.": "Type de fichier non pris en charge. Les types pris en charge incluent txt, md, html, doc, docx, pdf, excel, pptx, csv et tous les fichiers basés sur du texte, y compris les fichiers de code.",
+    "The file you sent has expired. To protect your privacy, all file-related cache data has been cleared. You need to create a new conversation or refresh the context, and then send the file again.": "Le fichier que vous avez envoyé a expiré. Pour protéger votre vie privée, toutes les données de cache liées aux fichiers ont été effacées. Vous devez créer une nouvelle conversation ou actualiser le contexte, puis renvoyer le fichier.",
+    "The cache data for the file was not found. Please create a new conversation or refresh the context, and then send the file again.": "Les données de cache pour le fichier n'ont pas été trouvées. Veuillez créer une nouvelle conversation ou actualiser le contexte, puis renvoyer le fichier.",
+    "The file size exceeds the limit of 50MB. Please reduce the file size and try again.": "La taille du fichier dépasse la limite de 50 Mo. Veuillez réduire la taille du fichier et réessayer.",
+    "The current model {{model}} does not support sending files. Currently supported models: Chatbox AI 4.": "Le modèle actuel {{model}} ne prend pas en charge l'envoi de fichiers. Modèles actuellement pris en charge : Chatbox AI 4.",
+    "The current model {{model}} does not support sending files.": "Le modèle actuel {{model}} ne prend pas en charge l'envoi de fichiers.",
+    "Reading file...": "Lecture du fichier..."
 }

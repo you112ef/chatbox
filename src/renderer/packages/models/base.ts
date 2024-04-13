@@ -1,9 +1,10 @@
 import { Message } from 'src/shared/types'
 import { ApiError, NetworkError, AIProviderNoImplementedPaintError, BaseError, AIProviderNoImplementedChatError } from './errors'
-import IModel, { onResultChange } from './interfaces'
 import { createParser } from 'eventsource-parser'
+import _ from 'lodash'
+import storage from '@/storage'
 
-export default class Base implements IModel {
+export default class Base {
     public name = 'Unknown'
 
     constructor() {
@@ -18,6 +19,11 @@ export default class Base implements IModel {
     }
 
     async chat(messages: Message[], onResultUpdated?: (data: { text: string, cancel(): void }) => void): Promise<string> {
+        messages = await this.preprocessMessage(messages)
+        return await this._chat(messages, onResultUpdated)
+    }
+
+    protected async _chat(messages: Message[], onResultUpdated?: (data: { text: string, cancel(): void }) => void): Promise<string> {
         // 初始化 fetch 的取消机制
         let hasCancel = false // fetch has been canceled
         const controller = new AbortController() // abort signal for fetch
@@ -50,6 +56,12 @@ export default class Base implements IModel {
             throw error
         }
         return result
+    }
+
+    async preprocessMessage(messages: Message[]): Promise<Message[]> {
+        // messages = _.cloneDeep(messages)    // 直接修改会影响到原始数据
+        // return this.populateMessagesWithFiles(messages)
+        return messages
     }
 
     async paint(prompt: string, num: number, callback?: (picBase64: string) => any, signal?: AbortSignal): Promise<string[]> {
@@ -208,6 +220,32 @@ export default class Base implements IModel {
         }
     }
 
+    // async populateMessagesWithFiles(messages: Message[]): Promise<Message[]> {
+    //     for (const message of messages) {
+    //         if (!message.files || message.files.length === 0) {
+    //             continue
+    //         }
+    //         for (const [i, file] of Object.entries(message.files)) {
+    //             if (!file.storageKey) {
+    //                 continue
+    //             }
+    //             const content = await storage.getBlob(file.storageKey)
+    //             if (! content) {
+    //                 continue
+    //             }
+    //             message.content += `\n\n<ATTACHMENT_FILE>\n`
+    //             message.content += `<FILE_INDEX>File ${i+1}</FILE_INDEX>\n`
+    //             message.content += `<FILE_NAME>${file.name}</FILE_NAME>\n`
+    //             message.content += '<FILE_CONTENT>\n'
+    //             message.content += content + '\n'
+    //             message.content += '</FILE_CONTENT>\n'
+    //             message.content += `</ATTACHMENT_FILE>\n`
+    //         }
+    //         console.log(message.content)
+    //     }
+    //     return messages
+    // }
+
     /**
      * SequenceMessages organizes and orders messages to follow the sequence: system -> user -> assistant -> user -> etc.
      * 这个方法只能用于 llm 接口请求前的参数构造，因为会过滤掉消息中的无关字段，所以不适用于其他消息存储的场景
@@ -286,3 +324,5 @@ export default class Base implements IModel {
         return ret
     }
 }
+
+export type onResultChange = (result: string) => void

@@ -3,28 +3,56 @@ import { v4 as uuidv4 } from 'uuid'
 import { Model } from '../renderer/packages/models/openai'
 import { ClaudeModel } from '../renderer/packages/models/claude'
 
+export interface MessageFile {
+    id: string
+    name: string
+    fileType: string
+    url?: string
+    storageKey?: string
+    chatboxAIFileUUID?: string
+}
+
 export interface MessagePicture {
     url?: string
     storageKey?: string
     loading?: boolean
 }
 
+export const MessageRoleEnum = {
+    System: 'system',
+    User: 'user',
+    Assistant: 'assistant',
+} as const
+
+export type MessageRole = (typeof MessageRoleEnum)[keyof typeof MessageRoleEnum]
+
 // Chatbox 应用的消息类型
-export type Message = OpenAIMessage & {
+export interface Message {
     id: string
+
+    role: MessageRole
+    content: string
+    name?: string
+
     cancel?: () => void
     generating?: boolean
+
     aiProvider?: ModelProvider
     model?: string
-    style?: string // image style
 
+    style?: string // image style
     pictures?: MessagePicture[]
+
+    files?: MessageFile[]
 
     errorCode?: number
     error?: string
     errorExtra?: {
         [key: string]: any
     }
+    status?: {
+        type: 'sending_file'
+    }[]
 
     wordCount?: number // 当前消息的字数
     tokenCount?: number // 当前消息的 token 数量
@@ -107,7 +135,7 @@ export function pickPictureSettings(settings: ModelSettings) {
     return pick(settings, ['dalleStyle', 'imageGenerateNum'])
 }
 
-export function createMessage(role: OpenAIRoleEnumType = OpenAIRoleEnum.User, content: string = ''): Message {
+export function createMessage(role: MessageRole = MessageRoleEnum.User, content: string = ''): Message {
     return {
         id: uuidv4(),
         content: content,
@@ -205,41 +233,6 @@ export interface Settings extends ModelSettings {
 }
 
 export type Language = 'en' | 'zh-Hans' | 'zh-Hant' | 'ja' | 'ko' | 'ru' | 'de' | 'fr'
-
-export const OpenAIRoleEnum = {
-    System: 'system',
-    User: 'user',
-    Assistant: 'assistant',
-} as const
-
-export type OpenAIRoleEnumType = (typeof OpenAIRoleEnum)[keyof typeof OpenAIRoleEnum]
-
-// OpenAIMessage OpenAI API 消息类型。（对于业务追加的字段，应该放到 Message 中）
-export interface OpenAIMessage {
-    role: OpenAIRoleEnumType
-    content: string
-    name?: string
-}
-
-// vision 版本的 OpenAI 消息类型
-export interface OpenAIMessageVision {
-    role: OpenAIRoleEnumType
-    content: (
-        | {
-              type: 'text'
-              text: string
-          }
-        | {
-              type: 'image_url'
-              image_url: {
-                  // 可以是 url，也可以是 base64
-                  // data:image/jpeg;base64,{base64_image}
-                  url: string
-                  detail?: 'auto' | 'low' | 'high' // default: auto
-              }
-          }
-    )[]
-}
 
 export interface Config {
     uuid: string

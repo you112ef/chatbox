@@ -1,8 +1,8 @@
 import { Typography, TextField, SelectChangeEvent, Avatar, MenuItem, Select, Button, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import * as atoms from '../stores/atoms'
-import { useAtom, useAtomValue } from 'jotai'
-import { OpenAIRoleEnum, OpenAIRoleEnumType } from 'src/shared/types'
+import { useAtom } from 'jotai'
+import { MessageRoleEnum, MessageRole } from 'src/shared/types'
 import * as sessionActions from '../stores/sessionActions'
 import PersonIcon from '@mui/icons-material/Person'
 import SmartToyIcon from '@mui/icons-material/SmartToy'
@@ -44,7 +44,7 @@ export default function MessageEditDialog(props: Props) {
             ...data,
             msg: {
                 ...data.msg,
-                role: e.target.value as OpenAIRoleEnumType,
+                role: e.target.value as MessageRole,
             }
         })
     }
@@ -97,17 +97,17 @@ export default function MessageEditDialog(props: Props) {
                     id={data.msg.id + 'select'}
                     className='mb-2'
                 >
-                    <MenuItem value={OpenAIRoleEnum.System}>
+                    <MenuItem value={MessageRoleEnum.System}>
                         <Avatar>
                             <SettingsIcon />
                         </Avatar>
                     </MenuItem>
-                    <MenuItem value={OpenAIRoleEnum.User}>
+                    <MenuItem value={MessageRoleEnum.User}>
                         <Avatar>
                             <PersonIcon />
                         </Avatar>
                     </MenuItem>
-                    <MenuItem value={OpenAIRoleEnum.Assistant}>
+                    <MenuItem value={MessageRoleEnum.Assistant}>
                         <Avatar>
                             <SmartToyIcon />
                         </Avatar>

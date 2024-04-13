@@ -9,6 +9,8 @@ import {
     ModelSettings,
     MessagePicture,
     SessionThread,
+    MessageFile,
+    ModelProvider,
 } from '../../shared/types'
 import * as atoms from './atoms'
 import * as promptFormat from '../packages/prompts'
@@ -20,10 +22,12 @@ import * as scrollActions from './scrollActions'
 import storage from '../storage'
 import i18n from '../i18n'
 import { getModel, getModelDisplayName } from '@/packages/models'
-import { AIProviderNoImplementedPaintError, NetworkError, ApiError, BaseError } from '@/packages/models/errors'
+import { AIProviderNoImplementedPaintError, NetworkError, ApiError, BaseError, ChatboxAIAPIError } from '@/packages/models/errors'
 import platform from '../platform'
 import * as dom from '@/hooks/dom'
+import * as remote from '@/packages/remote'
 import { throttle } from 'lodash'
+import * as settingActions from './settingActions'
 
 /**
  * 创建一个新的会话
@@ -429,7 +433,7 @@ export function modifyMessage(sessionId: string, updated: Message, refreshCounti
         return msgs.map((m) => {
             if (m.id === updated.id) {
                 hasHandled = true
-                return updated
+                return { ...updated }
             }
             return m
         })
@@ -491,6 +495,97 @@ export function removeMessage(sessionId: string, messageId: string) {
 }
 
 /**
+ * 在会话中发送新用户消息，并根据需要生成回复
+ * @param params
+ */
+export async function submitNewUserMessage(params: {
+    currentSessionId: string
+    newUserMsg: Message
+    needGenerating: boolean
+    attachments: File[]
+}) {
+    const { currentSessionId, newUserMsg, needGenerating, attachments } = params
+    // 如果存在附件，现在发送消息中构建空白的文件信息，用于占位，等待上传完成后再修改
+    if (attachments && attachments.length > 0) {
+        newUserMsg.files = attachments.map((f, ix) => ({
+            id: ix.toString(),
+            name: f.name,
+            fileType: f.type,
+        }))
+    }
+    // 先在聊天列表中插入发送的用户消息
+    insertMessage(currentSessionId, newUserMsg)
+    // 根据需要，插入空白的回复消息
+    let newAssistantMsg = createMessage('assistant', '')
+    if (attachments && attachments.length > 0) {
+        newAssistantMsg.status = [{ type: 'sending_file' }]
+    }
+    if (needGenerating) {
+        insertMessage(currentSessionId, newAssistantMsg)
+    }
+    // 如果本次发送消息携带了附件，应该在这次发送中上传文件并构造文件信息(file uuid)
+    if (attachments && attachments.length > 0) {
+        const licenseKey = settingActions.getLicenseKey()
+        const remoteConfig = settingActions.getRemoteConfig()
+        try {
+            // 检查模型。当前仅支持 Chatbox AI 4
+            const settings = getCurrentSessionMergedSettings()
+            if (settings.aiProvider !== ModelProvider.ChatboxAI) {
+                // 根据当前 IP，判断是否在错误中推荐 Chatbox AI 4
+                if (remoteConfig.setting_chatboxai_first) {
+                    throw ChatboxAIAPIError.fromCodeName('model_not_support_file', 'model_not_support_file')
+                } else {
+                    throw ChatboxAIAPIError.fromCodeName('model_not_support_file', 'model_not_support_file_2')
+                }
+            }
+            // 上传文件
+            const newFiles: MessageFile[] = []
+            for (const attachment of (attachments || [])) {
+                const fileUUID = await remote.uploadAndCreateUserFile(licenseKey || '', attachment)
+                newFiles.push({
+                    id: fileUUID,
+                    name: attachment.name,
+                    fileType: attachment.type,
+                    chatboxAIFileUUID: fileUUID,
+                })
+            }
+            modifyMessage(currentSessionId, { ...newUserMsg, files: newFiles }, false)
+        } catch (err: any) {
+            // 如果文件上传失败，一定会出现带有错误信息的回复消息
+            if (!(err instanceof Error)) {
+                err = new Error(`${err}`)
+            }
+            if (!(err instanceof ApiError || err instanceof NetworkError || err instanceof AIProviderNoImplementedPaintError)) {
+                Sentry.captureException(err) // unexpected error should be reported
+            }
+            let errorCode: number | undefined = undefined
+            if (err instanceof BaseError) {
+                errorCode = err.code
+            }
+            newAssistantMsg = {
+                ...newAssistantMsg,
+                generating: false,
+                cancel: undefined,
+                content: '',
+                errorCode,
+                error: `${err.message}`, // 这么写是为了避免类型问题
+                status: [],
+            }
+            if (needGenerating) {
+                modifyMessage(currentSessionId, newAssistantMsg)
+            } else {
+                insertMessage(currentSessionId, newAssistantMsg)
+            }
+            return  // 文件上传失败，不再继续生成回复
+        }
+    }
+    // 根据需要，生成这条回复消息
+    if (needGenerating) {
+        return generate(currentSessionId, newAssistantMsg)
+    }
+}
+
+/**
  * 执行消息生成，会修改消息的状态
  * @param sessionId
  * @param targetMsg
@@ -523,6 +618,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
         errorCode: undefined,
         error: undefined,
         errorExtra: undefined,
+        status: [],
     }
     modifyMessage(sessionId, targetMsg)
     setTimeout(() => {
@@ -627,6 +723,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
                 aiProvider: settings.aiProvider,
                 host: err['host'],
             },
+            status: [],
         }
         modifyMessage(sessionId, targetMsg, true)
     }
@@ -705,6 +802,10 @@ function genMessageContext(settings: Settings, msgs: Message[]) {
     let prompts: Message[] = []
     for (let i = msgs.length - 1; i >= 0; i--) {
         const msg = msgs[i]
+        // 跳过错误消息
+        if (msg.error || msg.errorCode) {
+            continue
+        }
         const size = utils.estimateTokensFromMessages([msg]) + 20 // 20 作为预估的误差补偿
         // 只有 OpenAI 才支持上下文 tokens 数量限制
         if (settings.aiProvider === 'openai') {

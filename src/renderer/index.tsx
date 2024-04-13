@@ -33,8 +33,8 @@ import './setup/mobile_browser_viewport_height'
 // 数据迁移
 migration.migrate()
 
-// 最后执行图片清理
-import './setup/picture_clear'
+// 最后执行 storage 清理
+import './setup/storage_clear'
 
 // ==========渲染节点==============
 

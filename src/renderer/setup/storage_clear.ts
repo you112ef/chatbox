@@ -8,22 +8,24 @@ import platform from '../platform'
 // 同时也避免了桌面端疑似出现的“图片丢失”问题（可能不是bug，与开发环境有关？）
 if (platform.type !== 'desktop') {
     setTimeout(() => {
-        tickPictureClearTask()
+        tickStorageTask()
     }, 10 * 1000);  // 防止水合状态
 }
 
-// 假设所有图片都需要删除，然后遍历会话列表，如果会话中有图片，就从待删除列表中删除
-export async function tickPictureClearTask() {
+export async function tickStorageTask() {
     const allBlobKeys = await storage.getBlobKeys()
-    const pictureKeys = allBlobKeys.filter(key => key.startsWith('picture'))
-    if (pictureKeys.length === 0) {
+    const storageKeys = [
+        ...allBlobKeys.filter(key => key.startsWith('picture:')),
+        ...allBlobKeys.filter(key => key.startsWith('file:')),
+    ]
+    if (storageKeys.length === 0) {
         return
     }
-    const needDeletedSet = new Set<string>(pictureKeys)
+    const needDeletedSet = new Set<string>(storageKeys)
 
     const store = getDefaultStore()
 
-    // 会话中还存在的图片不需要删除
+    // 会话中还存在的图片、文件不需要删除
     const sessions = store.get(atoms.sessionsAtom)
     for (const session of sessions) {
         for (const msg of session.messages) {
@@ -33,6 +35,11 @@ export async function tickPictureClearTask() {
             for (const pic of msg.pictures) {
                 if (pic.storageKey) {
                     needDeletedSet.delete(pic.storageKey)
+                }
+            }
+            for (const file of (msg.files || [])) {
+                if (file.storageKey) {
+                    needDeletedSet.delete(file.storageKey)
                 }
             }
             if (needDeletedSet.size === 0) {

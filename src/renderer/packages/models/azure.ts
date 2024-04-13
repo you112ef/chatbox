@@ -1,7 +1,6 @@
 import { Message } from 'src/shared/types'
-import Base from './base'
+import Base, { onResultChange } from './base'
 import { ApiError } from './errors'
-import { onResultChange } from './interfaces'
 import { openaiModelConfigs, populateOpenAIMessage } from './openai'
 
 interface Options {
