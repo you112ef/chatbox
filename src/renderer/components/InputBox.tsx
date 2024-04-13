@@ -250,6 +250,20 @@ export default function InputBox(props: Props) {
         // await storage.delBlob(picKey)
     }
 
+    const onPaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+        if (event.clipboardData && event.clipboardData.items) {
+            for (let item of event.clipboardData.items) {
+                if (item.kind === 'file') {
+                    event.preventDefault()
+                    const file = item.getAsFile();
+                    if (file) {
+                        insertFiles([file])
+                    }
+                }
+            }
+        }
+    }
+
     // 小彩蛋
     const [easterEgg, setEasterEgg] = useState(false)
 
@@ -409,6 +423,7 @@ export default function InputBox(props: Props) {
                         fontSize: theme.typography.body1.fontSize,
                     }}
                     placeholder={t('Type your question here...') || ''}
+                    onPaste={onPaste}
                     {...{ enterKeyHint: 'send' } as any}
                 />
                 <div className='flex flex-row items-center' onClick={() => dom.focusMessageInput()} >
