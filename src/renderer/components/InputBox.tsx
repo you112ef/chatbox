@@ -29,6 +29,7 @@ export interface Props {
 }
 
 export default function InputBox(props: Props) {
+    const { currentSessionType } = props
     const theme = useTheme()
     const [quote, setQuote] = useAtom(atoms.quoteAtom)
     const isSmallScreen = useIsSmallScreen()
@@ -239,6 +240,9 @@ export default function InputBox(props: Props) {
     }
 
     const onPaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+        if (currentSessionType !== 'chat') {
+            return
+        }
         if (event.clipboardData && event.clipboardData.items) {
             for (let item of event.clipboardData.items) {
                 if (item.kind === 'file') {
@@ -318,7 +322,9 @@ export default function InputBox(props: Props) {
                         // accept="image/png, image/jpeg, image/gif" 
                         accept="image/png, image/jpeg"
                     />
-                    <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
+                    <MiniButton
+                        className={cn('mr-1 sm:mr-2', currentSessionType === 'chat' ? '' : 'hidden')}
+                        style={{ color: theme.palette.text.primary }}
                         onClick={onImageUploadClick}
                         tooltipTitle={
                             <div className='text-center inline-block'>
@@ -330,7 +336,9 @@ export default function InputBox(props: Props) {
                         <Image size='22' strokeWidth={1} />
                     </MiniButton>
                     <input type='file' ref={fileInputRef} className='hidden' onChange={onFileInputChange} />
-                    <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
+                    <MiniButton
+                        className={cn('mr-1 sm:mr-2', currentSessionType === 'chat' ? '' : 'hidden')}
+                        style={{ color: theme.palette.text.primary }}
                         onClick={onFileUploadClick}
                         tooltipTitle={
                             <div className='text-center inline-block'>
