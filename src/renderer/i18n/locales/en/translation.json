@@ -220,7 +220,6 @@
     "Start Setup": "Start Setup",
     "License not found, please check your license key": "License not found, please check your license key",
     "License expired, please check your license key": "License expired, please check your license key",
-    "Current model does not support image input": "Current model does not support image input",
     "Attach Image": "Attach Image",
     "Select File": "Select File",
     "Your license has expired. Please check your subscription or purchase a new one.": "Your license has expired. Please check your subscription or purchase a new one.",
@@ -238,5 +237,7 @@
     "The file size exceeds the limit of 50MB. Please reduce the file size and try again.": "The file size exceeds the limit of 50MB. Please reduce the file size and try again.",
     "The current model {{model}} does not support sending files. Currently supported models: Chatbox AI 4.": "The current model {{model}} does not support sending files. Currently supported models: Chatbox AI 4.",
     "The current model {{model}} does not support sending files.": "The current model {{model}} does not support sending files.",
+    "The current model {{model}} does not support sending images. Recommended model: Chatbox AI 4.": "The current model {{model}} does not support sending images. Recommended model: Chatbox AI 4.",
+    "The current model {{model}} does not support sending images.": "The current model {{model}} does not support sending images.",
     "Reading file...": "Reading file..."
 }

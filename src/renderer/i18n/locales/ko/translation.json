@@ -221,7 +221,6 @@
     "Start Setup": "설정 시작",
     "License not found, please check your license key": "라이선스를 찾을 수 없습니다. 라이선스 키를 확인하세요",
     "License expired, please check your license key": "라이선스가 만료되었습니다. 라이선스 키를 확인하세요",
-    "Current model does not support image input": "현재 모델은 이미지 입력을 지원하지 않습니다",
     "Attach Image": "이미지 첨부",
     "Select File": "파일 선택",
     "Your license has expired. Please check your subscription or purchase a new one.": "라이선스가 만료되었습니다. 구독을 확인하거나 새로운 라이선스를 구매하세요.",
@@ -239,5 +238,7 @@
     "The file size exceeds the limit of 50MB. Please reduce the file size and try again.": "파일 크기가 50MB 제한을 초과합니다. 파일 크기를 줄이고 다시 시도하세요.",
     "The current model {{model}} does not support sending files. Currently supported models: Chatbox AI 4.": "현재 모델 {{model}}은 파일 전송을 지원하지 않습니다. 현재 지원되는 모델: Chatbox AI 4.",
     "The current model {{model}} does not support sending files.": "현재 모델 {{model}}은 파일 전송을 지원하지 않습니다.",
+    "The current model {{model}} does not support sending images. Recommended model: Chatbox AI 4.": "현재 모델 {{model}}은 이미지 전송을 지원하지 않습니다. 권장 모델: Chatbox AI 4.",
+    "The current model {{model}} does not support sending images.": "현재 모델 {{model}}은 이미지 전송을 지원하지 않습니다.",
     "Reading file...": "파일 읽는 중..."
 }

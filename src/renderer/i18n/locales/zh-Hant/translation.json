@@ -221,7 +221,6 @@
     "Start Setup": "開始設置",
     "License not found, please check your license key": "找不到 License，請檢查您的 License 密鑰",
     "License expired, please check your license key": "License 已過期，請檢查您的 License 密鑰",
-    "Current model does not support image input": "當前模型不支持圖片輸入",
     "Attach Image": "附加圖片",
     "Select File": "選擇文件",
     "Your license has expired. Please check your subscription or purchase a new one.": "您的 License 已過期。請檢查您的訂閱或購買新的 License。",
@@ -239,5 +238,7 @@
     "The file size exceeds the limit of 50MB. Please reduce the file size and try again.": "文件大小超過 50MB 的限制。請減小文件大小並重試。",
     "The current model {{model}} does not support sending files. Currently supported models: Chatbox AI 4.": "當前模型 {{model}} 不支持發送文件。目前支持的模型：Chatbox AI 4。",
     "The current model {{model}} does not support sending files.": "當前模型 {{model}} 不支持發送文件。",
+    "The current model {{model}} does not support sending images. Recommended model: Chatbox AI 4.": "當前模型 {{model}} 不支持發送圖片。建議使用的模型：Chatbox AI 4。",
+    "The current model {{model}} does not support sending images.": "當前模型 {{model}} 不支持發送圖片。",
     "Reading file...": "讀取文件中..."
 }

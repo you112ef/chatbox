@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { Typography, useTheme } from '@mui/material'
-import { Message, MessageFile, ModelProvider, SessionType, createMessage } from '../../shared/types'
+import { SessionType, createMessage } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as atoms from '../stores/atoms'
 import { useAtom, useSetAtom } from 'jotai'
@@ -22,7 +22,6 @@ import storage from '@/storage'
 import { FileMiniCard, ImageMiniCard } from './Attachments'
 import MiniButton from './MiniButton'
 import _ from 'lodash'
-import * as toastActions from '@/stores/toastActions'
 
 export interface Props {
     currentSessionId: string
@@ -227,18 +226,7 @@ export default function InputBox(props: Props) {
         dom.focusMessageInput()
     }
     const onImageUploadClick = () => {
-        const settings = sessionActions.getCurrentSessionMergedSettings()
-        if (
-            (settings.aiProvider === ModelProvider.ChatboxAI && settings.chatboxAIModel === 'chatboxai-4')
-            || (settings.aiProvider === ModelProvider.OpenAI && ['gpt-4-turbo', 'gpt-4-vision-preview'].includes(settings.model))
-            || (settings.aiProvider === ModelProvider.Azure && settings.azureDeploymentName === 'gpt-4-vision-preview')
-            || (settings.aiProvider === ModelProvider.Claude && settings.claudeModel.startsWith('claude-3'))
-        ) {
-            pictureInputRef.current?.click()
-            return
-        }
-        toastActions.add(t('Current model does not support image input'))
-        return
+        pictureInputRef.current?.click()
     }
     const onFileUploadClick = () => {
         fileInputRef.current?.click()

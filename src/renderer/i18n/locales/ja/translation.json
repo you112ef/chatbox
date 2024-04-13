@@ -221,7 +221,6 @@
     "Start Setup": "セットアップを開始",
     "License not found, please check your license key": "ライセンスが見つかりません、ライセンスキーを確認してください",
     "License expired, please check your license key": "ライセンスが期限切れです、ライセンスキーを確認してください",
-    "Current model does not support image input": "現在のモデルは画像入力をサポートしていません",
     "Attach Image": "画像を添付",
     "Select File": "ファイルを選択",
     "Your license has expired. Please check your subscription or purchase a new one.": "ライセンスが期限切れです。サブスクリプションを確認するか、新しいものを購入してください。",
@@ -239,5 +238,7 @@
     "The file size exceeds the limit of 50MB. Please reduce the file size and try again.": "ファイルサイズが50MBの制限を超えています。ファイルサイズを縮小してからもう一度お試しください。",
     "The current model {{model}} does not support sending files. Currently supported models: Chatbox AI 4.": "現在のモデル{{model}}はファイルの送信をサポートしていません。現在サポートされているモデル：Chatbox AI 4。",
     "The current model {{model}} does not support sending files.": "現在のモデル{{model}}はファイルの送信をサポートしていません。",
+    "The current model {{model}} does not support sending images. Recommended model: Chatbox AI 4.": "現在のモデル{{model}}は画像の送信をサポートしていません。推奨モデル：Chatbox AI 4。",
+    "The current model {{model}} does not support sending images.": "現在のモデル{{model}}は画像の送信をサポートしていません。",
     "Reading file...": "ファイルを読み込んでいます..."
 }

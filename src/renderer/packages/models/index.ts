@@ -122,3 +122,10 @@ export function getModelDisplayName(settings: SessionSettings, sessionType: Sess
             return 'unknown'
     }
 }
+
+export function isCurrentModelSupportImageInput(settings: SessionSettings) {
+    return (settings.aiProvider === ModelProvider.ChatboxAI && settings.chatboxAIModel === 'chatboxai-4')
+        || (settings.aiProvider === ModelProvider.OpenAI && ['gpt-4-turbo', 'gpt-4-vision-preview'].includes(settings.model))
+        || (settings.aiProvider === ModelProvider.Azure && settings.azureDeploymentName === 'gpt-4-vision-preview')
+        || (settings.aiProvider === ModelProvider.Claude && settings.claudeModel.startsWith('claude-3'))
+}

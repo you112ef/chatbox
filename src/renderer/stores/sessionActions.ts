@@ -21,7 +21,7 @@ import * as defaults from '../../shared/defaults'
 import * as scrollActions from './scrollActions'
 import storage from '../storage'
 import i18n from '../i18n'
-import { getModel, getModelDisplayName } from '@/packages/models'
+import { getModel, getModelDisplayName, isCurrentModelSupportImageInput } from '@/packages/models'
 import { AIProviderNoImplementedPaintError, NetworkError, ApiError, BaseError, ChatboxAIAPIError } from '@/packages/models/errors'
 import platform from '../platform'
 import * as dom from '@/hooks/dom'
@@ -523,13 +523,24 @@ export async function submitNewUserMessage(params: {
     if (needGenerating) {
         insertMessage(currentSessionId, newAssistantMsg)
     }
-    // 如果本次发送消息携带了附件，应该在这次发送中上传文件并构造文件信息(file uuid)
-    if (attachments && attachments.length > 0) {
-        const licenseKey = settingActions.getLicenseKey()
+    const settings = getCurrentSessionMergedSettings()
+    try {
         const remoteConfig = settingActions.getRemoteConfig()
-        try {
+        // 如果本次发送消息携带了图片，检查当前模型是否支持
+        if (newUserMsg.pictures && newUserMsg.pictures.length > 0) {
+            if (!isCurrentModelSupportImageInput(settings)) {
+                // 根据当前 IP，判断是否在错误中推荐 Chatbox AI 4
+                if (remoteConfig.setting_chatboxai_first) {
+                    throw ChatboxAIAPIError.fromCodeName('model_not_support_image', 'model_not_support_image')
+                } else {
+                    throw ChatboxAIAPIError.fromCodeName('model_not_support_image', 'model_not_support_image_2')
+                }
+            }
+        }
+        // 如果本次发送消息携带了附件，应该在这次发送中上传文件并构造文件信息(file uuid)
+        if (attachments && attachments.length > 0) {
+            const licenseKey = settingActions.getLicenseKey()
             // 检查模型。当前仅支持 Chatbox AI 4
-            const settings = getCurrentSessionMergedSettings()
             if (settings.aiProvider !== ModelProvider.ChatboxAI) {
                 // 根据当前 IP，判断是否在错误中推荐 Chatbox AI 4
                 if (remoteConfig.setting_chatboxai_first) {
@@ -550,34 +561,35 @@ export async function submitNewUserMessage(params: {
                 })
             }
             modifyMessage(currentSessionId, { ...newUserMsg, files: newFiles }, false)
-        } catch (err: any) {
-            // 如果文件上传失败，一定会出现带有错误信息的回复消息
-            if (!(err instanceof Error)) {
-                err = new Error(`${err}`)
-            }
-            if (!(err instanceof ApiError || err instanceof NetworkError || err instanceof AIProviderNoImplementedPaintError)) {
-                Sentry.captureException(err) // unexpected error should be reported
-            }
-            let errorCode: number | undefined = undefined
-            if (err instanceof BaseError) {
-                errorCode = err.code
-            }
-            newAssistantMsg = {
-                ...newAssistantMsg,
-                generating: false,
-                cancel: undefined,
-                content: '',
-                errorCode,
-                error: `${err.message}`, // 这么写是为了避免类型问题
-                status: [],
-            }
-            if (needGenerating) {
-                modifyMessage(currentSessionId, newAssistantMsg)
-            } else {
-                insertMessage(currentSessionId, newAssistantMsg)
-            }
-            return  // 文件上传失败，不再继续生成回复
         }
+    } catch (err: any) {
+        // 如果文件上传失败，一定会出现带有错误信息的回复消息
+        if (!(err instanceof Error)) {
+            err = new Error(`${err}`)
+        }
+        if (!(err instanceof ApiError || err instanceof NetworkError || err instanceof AIProviderNoImplementedPaintError)) {
+            Sentry.captureException(err) // unexpected error should be reported
+        }
+        let errorCode: number | undefined = undefined
+        if (err instanceof BaseError) {
+            errorCode = err.code
+        }
+        newAssistantMsg = {
+            ...newAssistantMsg,
+            generating: false,
+            cancel: undefined,
+            model: getModelDisplayName(settings, 'chat'),
+            content: '',
+            errorCode,
+            error: `${err.message}`, // 这么写是为了避免类型问题
+            status: [],
+        }
+        if (needGenerating) {
+            modifyMessage(currentSessionId, newAssistantMsg)
+        } else {
+            insertMessage(currentSessionId, newAssistantMsg)
+        }
+        return  // 文件上传失败，不再继续生成回复
     }
     // 根据需要，生成这条回复消息
     if (needGenerating) {

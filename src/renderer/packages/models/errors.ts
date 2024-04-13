@@ -120,6 +120,17 @@ export class ChatboxAIAPIError extends BaseError {
             code: 20012,
             i18nKey: 'The current model {{model}} does not support sending files.'
         },
+        // 当前模型不支持发送图片，推荐模型：Chatbox AI 4
+        'model_not_support_image': {
+            name: 'model_not_support_image',
+            code: 20013,
+            i18nKey: 'The current model {{model}} does not support sending images. Recommended model: Chatbox AI 4.'
+        },
+        'model_not_support_image_2': {
+            name: 'model_not_support_image_2',
+            code: 20014,
+            i18nKey: 'The current model {{model}} does not support sending images.'
+        },
     }
     static fromCodeName(response: string, codeName: string) {
         if (!codeName) {
