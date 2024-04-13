@@ -624,7 +624,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
             : targetMsg.pictures,
         cancel: undefined,
         aiProvider: settings.aiProvider,
-        model: getModelDisplayName(settings, session.type),
+        model: getModelDisplayName(settings, session.type || 'chat'),
         style: session.type === 'picture' ? settings.dalleStyle : undefined,
         generating: true,
         errorCode: undefined,

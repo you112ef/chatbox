@@ -29,7 +29,6 @@ export interface Props {
 }
 
 export default function InputBox(props: Props) {
-    const { currentSessionType } = props
     const theme = useTheme()
     const [quote, setQuote] = useAtom(atoms.quoteAtom)
     const isSmallScreen = useIsSmallScreen()
@@ -240,7 +239,7 @@ export default function InputBox(props: Props) {
     }
 
     const onPaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
-        if (currentSessionType !== 'chat') {
+        if (props.currentSessionType === 'picture') {
             return
         }
         if (event.clipboardData && event.clipboardData.items) {
@@ -323,7 +322,7 @@ export default function InputBox(props: Props) {
                         accept="image/png, image/jpeg"
                     />
                     <MiniButton
-                        className={cn('mr-1 sm:mr-2', currentSessionType === 'chat' ? '' : 'hidden')}
+                        className={cn('mr-1 sm:mr-2', props.currentSessionType !== 'picture' ? '' : 'hidden')}
                         style={{ color: theme.palette.text.primary }}
                         onClick={onImageUploadClick}
                         tooltipTitle={
@@ -337,7 +336,7 @@ export default function InputBox(props: Props) {
                     </MiniButton>
                     <input type='file' ref={fileInputRef} className='hidden' onChange={onFileInputChange} />
                     <MiniButton
-                        className={cn('mr-1 sm:mr-2', currentSessionType === 'chat' ? '' : 'hidden')}
+                        className={cn('mr-1 sm:mr-2', props.currentSessionType !== 'picture' ? '' : 'hidden')}
                         style={{ color: theme.palette.text.primary }}
                         onClick={onFileUploadClick}
                         tooltipTitle={

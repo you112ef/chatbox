@@ -55,7 +55,7 @@ export default function Header(props: Props) {
                     icon={<TuneIcon className="cursor-pointer" />}
                     label={
                         <span className="cursor-pointer">
-                            {getModelDisplayName(currentSession.settings, currentSession.type)}
+                            {getModelDisplayName(currentSession.settings, currentSession.type || 'chat')}
                         </span>
                     }
                 />

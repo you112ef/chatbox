@@ -77,7 +77,7 @@ export default function MainPane(props: Props) {
                         </IconButton>
                     </ButtonGroup>
                 </Box>
-                <InputBox currentSessionId={currentSession.id} currentSessionType={currentSession.type} />
+                <InputBox currentSessionId={currentSession.id} currentSessionType={currentSession.type || 'chat'} />
             </div>
         </Box>
     )

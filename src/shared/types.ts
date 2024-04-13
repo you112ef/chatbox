@@ -62,7 +62,7 @@ export interface Message {
 
 export type SettingWindowTab = 'ai' | 'display' | 'chat' | 'advanced'
 
-export type SessionType = undefined | 'chat' | 'picture' // undefined 为了兼容老版本 chat
+export type SessionType = 'chat' | 'picture'
 
 export function isChatSession(session: Session) {
     return session.type === 'chat' || !session.type
@@ -73,7 +73,7 @@ export function isPictureSession(session: Session) {
 
 export interface Session {
     id: string
-    type: SessionType
+    type?: SessionType // undefined 为了兼容老版本 chat
     name: string
     picUrl?: string
     messages: Message[]

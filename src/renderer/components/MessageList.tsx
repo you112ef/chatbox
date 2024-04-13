@@ -72,7 +72,7 @@ export default function MessageList(props: Props) {
                                 key={'msg-' + msg.id}
                                 msg={msg}
                                 sessionId={currentSession.id}
-                                sessionType={currentSession.type}
+                                sessionType={currentSession.type || 'chat'}
                                 className={index === 0 ? 'pt-4' : ''}
                             />
                         </>
