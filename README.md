@@ -70,6 +70,12 @@ brew uninstall --force vips
 npm run dev
 ```
 
+默认情况下，会直接使用线上 API，如果需要使用本地 API，可以设置环境变量 `USE_LOCAL_API`：
+
+```shell
+USE_LOCAL_API=true npm run dev
+```
+
 自动启动 Electorn 应用，也可以访问 `http://localhost:1212` 打开网页版。
 
 ### 查看依赖大小

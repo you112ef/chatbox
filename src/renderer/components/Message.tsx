@@ -25,7 +25,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import * as utils from '../packages/utils'
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote'
 import { useTranslation } from 'react-i18next'
-import { Message, OpenAIRoleEnum, OpenAIRoleEnumType, SessionType } from '../../shared/types'
+import { Message, SessionType } from '../../shared/types'
 import ReplayIcon from '@mui/icons-material/Replay'
 import CopyAllIcon from '@mui/icons-material/CopyAll'
 import { useAtomValue, useSetAtom } from 'jotai'
@@ -57,6 +57,8 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import * as dom from '@/hooks/dom'
 import * as dateFns from "date-fns"
 import { cn } from '@/lib/utils'
+import FileIcon from './FileIcon'
+import { Loader } from 'lucide-react'
 
 export interface Props {
     id?: string
@@ -368,6 +370,22 @@ function _Message(props: Props) {
                 </Grid>
                 <Grid item xs sm container sx={{ width: '0px', paddingRight: '15px' }}>
                     <Grid item xs>
+                        {
+                            msg.status && msg.status.length > 0 && msg.status[0].type === 'sending_file' && (
+                                <div className='flex flex-row items-start justify-start overflow-x-auto overflow-y-hidden'>
+                                            <div className='flex justify-start items-center mb-1 px-1 py-2
+                                                    border-solid border-blue-400/20 shadow-md rounded-lg
+                                                    bg-blue-100
+                                                    '
+                                            >
+                                                <Loader className='w-6 h-6 ml-1 mr-2 text-black animate-spin' />
+                                                <span className='mr-4 animate-pulse font-bold text-gray-800/70'>
+                                                    {t('Reading file...')}
+                                                </span>
+                                            </div>
+                                </div>
+                            )
+                        }
                         <Box className={'msg-content ' + (msg.role === 'system' ? 'msg-content-system' : '')}>
                             {
                                 enableMarkdownRendering ? (
@@ -378,41 +396,62 @@ function _Message(props: Props) {
                                     <div>{content}</div>
                                 )
                             }
-                            {msg.pictures && (
+                        </Box>
+                        {msg.pictures && (
+                            <div className='flex flex-row items-start justify-start overflow-x-auto overflow-y-hidden'>
+                                {
+                                    msg.pictures.map((pic, index) => (
+                                        <div
+                                            key={index}
+                                            className="w-[100px] min-w-[100px] h-[100px] min-h-[100px]
+                                                    md:w-[200px] md:min-w-[200px] md:h-[200px] md:min-h-[200px]
+                                                    p-2 mr-2 my-2 inline-flex items-center justify-center
+                                                    bg-white dark:bg-slate-800
+                                                    border-solid border-slate-400/20 rounded-md shadow
+                                                    hover:drop-shadow-2xl hover:cursor-pointer hover:border-slate-800/20 transition-all duration-200"
+                                            onClick={() => setPictureShow(pic)}
+                                        >
+                                            {
+                                                pic.loading && !pic.storageKey && !pic.url && (
+                                                    <CircularProgress className='block max-w-full max-h-full' color='secondary' />
+                                                )
+                                            }
+                                            {
+                                                pic.storageKey && (
+                                                    <ImageInStorage className='w-full' storageKey={pic.storageKey} />
+                                                )
+                                            }
+                                            {
+                                                pic.url && (
+                                                    <Image src={pic.url} className='w-full' />
+                                                )
+                                            }
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        )}
+                        {
+                            msg.files && (
                                 <div className='flex flex-row items-start justify-start overflow-x-auto overflow-y-hidden'>
                                     {
-                                        msg.pictures.map((pic, index) => (
-                                            <div
-                                                key={index}
-                                                className="w-[100px] min-w-[100px] h-[100px] min-h-[100px]
-                                                    md:w-[200px] md:min-w-[200px] md:h-[200px] md:min-h-[200px]
-                                                    p-2 m-1 inline-flex items-center justify-center
-                                                    bg-white shadow-sm rounded-md
-                                                    hover:shadow-lg hover:cursor-pointer hover:scale-105 transition-all duration-200"
-                                                onClick={() => setPictureShow(pic)}
+                                        msg.files.map((file, index) => (
+                                            <div key={index} className='flex justify-start items-center mb-1 px-1 py-2
+                                                    border-solid border-slate-400/20 shadow rounded 
+                                                    bg-white dark:bg-slate-800
+                                                    '
                                             >
-                                                {
-                                                    pic.loading && !pic.storageKey && !pic.url && (
-                                                        <CircularProgress className='block max-w-full max-h-full' color='secondary' />
-                                                    )
-                                                }
-                                                {
-                                                    pic.storageKey && (
-                                                        <ImageInStorage storageKey={pic.storageKey} />
-                                                    )
-                                                }
-                                                {
-                                                    pic.url && (
-                                                        <Image src={pic.url} />
-                                                    )
-                                                }
+                                                <FileIcon filename={file.name} className='w-6 h-6 ml-1 mr-2 text-black dark:text-white' />
+                                                <Typography className='w-32' noWrap>
+                                                    {file.name}
+                                                </Typography>
                                             </div>
                                         ))
                                     }
                                 </div>
-                            )}
-                            <MessageErrTips msg={msg} />
-                        </Box>
+                            )
+                        }
+                        <MessageErrTips msg={msg} />
                         <Typography variant="body2" sx={{ opacity: 0.5 }}>
                             {tips.join(', ')}
                         </Typography>

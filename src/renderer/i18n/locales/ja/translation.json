@@ -223,6 +223,7 @@
     "License expired, please check your license key": "ライセンスが期限切れです、ライセンスキーを確認してください",
     "Current model does not support image input": "現在のモデルは画像入力をサポートしていません",
     "Attach Image": "画像を添付",
+    "Select File": "ファイルを選択",
     "Your license has expired. Please check your subscription or purchase a new one.": "ライセンスが期限切れです。サブスクリプションを確認するか、新しいものを購入してください。",
     "You have reached your monthly quota for the {{model}} model. Please <OpenSettingButton>go to Settings</OpenSettingButton> to switch to a different model, view your quota usage, or upgrade your plan.": "あなたは{{model}}モデルの月間クオータに達しました。別のモデルに切り替えたり、クオータの使用状況を表示したり、プランをアップグレードしたりするには、<OpenSettingButton>設定に移動</OpenSettingButton>してください。",
     "Your current License (Chatbox AI Lite) does not support the {{model}} model. To use this model, please <OpenMorePlanButton>upgrade</OpenMorePlanButton> to Chatbox AI Pro or a higher-tier package. Alternatively, you can switch to a different model by <OpenSettingButton>accessing the settings</OpenSettingButton>.": "あなたの現在のライセンス（Chatbox AI Lite）は{{model}}モデルをサポートしていません。このモデルを使用するには、<OpenMorePlanButton>アップグレード</OpenMorePlanButton>してChatbox AI Proまたはより高いティアのパッケージにアップグレードしてください。または、<OpenSettingButton>設定にアクセス</OpenSettingButton>して別のモデルに切り替えることもできます。",
@@ -231,5 +232,12 @@
     "You have exceeded the rate limit for the Chatbox AI service. Please try again later.": "Chatbox AIサービスのレート制限を超過しました。後で再試行してください。",
     "Invalid request parameters detected. Please try again later. Persistent failures may indicate an outdated software version. Consider upgrading to access the latest performance improvements and features.": "無効なリクエストパラメータが検出されました。後で再試行してください。持続的な失敗は、古いソフトウェアバージョンを示す可能性があります。最新のパフォーマンスの向上と機能にアクセスするためにアップグレードを検討してください。",
     "Markdown Rendering": "Markdownレンダリング",
-    "LaTeX Rendering (Requires Markdown)": "LaTeXレンダリング（Markdownが必要）"
+    "LaTeX Rendering (Requires Markdown)": "LaTeXレンダリング（Markdownが必要）",
+    "File type not supported. Supported types include txt, md, html, doc, docx, pdf, excel, pptx, csv, and all text-based files, including code files.": "サポートされていないファイルタイプです。サポートされているタイプには、txt、md、html、doc、docx、pdf、excel、pptx、csv、およびすべてのテキストベースのファイル、コードファイルが含まれます。",
+    "The file you sent has expired. To protect your privacy, all file-related cache data has been cleared. You need to create a new conversation or refresh the context, and then send the file again.": "送信したファイルの有効期限が切れました。プライバシーを保護するため、すべてのファイル関連のキャッシュデータがクリアされました。新しい会話を作成するか、コンテキストをリフレッシュしてから、ファイルを再度送信する必要があります。",
+    "The cache data for the file was not found. Please create a new conversation or refresh the context, and then send the file again.": "ファイルのキャッシュデータが見つかりませんでした。新しい会話を作成するか、コンテキストをリフレッシュしてから、ファイルを再度送信してください。",
+    "The file size exceeds the limit of 50MB. Please reduce the file size and try again.": "ファイルサイズが50MBの制限を超えています。ファイルサイズを縮小してからもう一度お試しください。",
+    "The current model {{model}} does not support sending files. Currently supported models: Chatbox AI 4.": "現在のモデル{{model}}はファイルの送信をサポートしていません。現在サポートされているモデル：Chatbox AI 4。",
+    "The current model {{model}} does not support sending files.": "現在のモデル{{model}}はファイルの送信をサポートしていません。",
+    "Reading file...": "ファイルを読み込んでいます..."
 }

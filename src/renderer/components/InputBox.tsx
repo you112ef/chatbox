@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { Typography, useTheme } from '@mui/material'
-import { Message, ModelProvider, SessionType, createMessage } from '../../shared/types'
+import { Message, MessageFile, ModelProvider, SessionType, createMessage } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as atoms from '../stores/atoms'
 import { useAtom, useSetAtom } from 'jotai'
@@ -19,7 +19,7 @@ import { scrollToMessage } from '@/stores/scrollActions'
 import icon from '../static/icon.png'
 import { trackingEvent } from '@/packages/event'
 import storage from '@/storage'
-import { ImageInStorage, ImageMiniCard } from './Image'
+import { FileMiniCard, ImageMiniCard } from './Attachments'
 import MiniButton from './MiniButton'
 import _ from 'lodash'
 import * as toastActions from '@/stores/toastActions'
@@ -38,7 +38,9 @@ export default function InputBox(props: Props) {
     const { t } = useTranslation()
     const [messageInput, setMessageInput] = useState('')
     const [pictureKeys, setPictureKeys] = useState<string[]>([])
+    const [attachments, setAttachments] = useState<File[]>([])
     const pictureInputRef = useRef<HTMLInputElement | null>(null)
+    const fileInputRef = useRef<HTMLInputElement | null>(null)
     const [showRollbackThreadButton, setShowRollbackThreadButton] = useState(false)
     const showRollbackThreadButtonTimerRef = useRef<null | NodeJS.Timeout>(null)
     const inputRef = useRef<HTMLTextAreaElement | null>(null)
@@ -47,6 +49,7 @@ export default function InputBox(props: Props) {
     useEffect(() => {
         if (quote !== '') {
             // TODO: 支持引用消息中的图片
+            // TODO: 支持引用消息中的文件
             setMessageInput(quote)
             setQuote('')
             setPreviousMessageQuickInputMark('')
@@ -60,16 +63,6 @@ export default function InputBox(props: Props) {
         }
     }, [props.currentSessionId])
 
-    const submit = async (newUserMsg: Message, needGenerating = true) => {
-        if (needGenerating) {
-            sessionActions.insertMessage(props.currentSessionId, newUserMsg)
-            const newAssistantMsg = createMessage('assistant', '....')
-            sessionActions.insertMessage(props.currentSessionId, newAssistantMsg)
-            sessionActions.generate(props.currentSessionId, newAssistantMsg)
-        } else {
-            sessionActions.insertMessage(props.currentSessionId, newUserMsg)
-        }
-    }
     const handleSubmit = (needGenerating = true) => {
         setPreviousMessageQuickInputMark('')
         if (messageInput.trim() === '') {
@@ -79,9 +72,15 @@ export default function InputBox(props: Props) {
         if (pictureKeys.length > 0) {
             newMessage.pictures = pictureKeys.map(k => ({ storageKey: k }))
         }
-        submit(newMessage, needGenerating)
+        sessionActions.submitNewUserMessage({
+            currentSessionId: props.currentSessionId,
+            newUserMsg: newMessage,
+            needGenerating,
+            attachments
+        })
         setMessageInput('')
         setPictureKeys([])
+        setAttachments([])
         trackingEvent('send_message', { event_category: 'user' })
         // 重置清理上下文按钮
         if (showRollbackThreadButton) {
@@ -200,12 +199,9 @@ export default function InputBox(props: Props) {
         sessionActions.removeCurrentThread(props.currentSessionId)
     }
 
-    const onFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (!event.target.files) {
-            return
-        }
-        const files = event.target.files
-        for (const file of Array.from(files)) {
+    const insertFiles = async (files: File[]) => {
+        for (const file of files) {
+            // 文件和图片插入方法复用，会导致 svg、gif 这类不支持的图片也被插入，但暂时没看到有什么问题
             if (file.type.startsWith('image/')) {
                 const reader = new FileReader()
                 reader.onload = async (e) => {
@@ -217,11 +213,20 @@ export default function InputBox(props: Props) {
                     }
                 }
                 reader.readAsDataURL(file)
+            } else {
+                setAttachments(attachments => [...attachments, file].slice(-4)) // 最多插入 4 个附件
             }
         }
-        event.target.value = ''
     }
-    const onImageUpload = () => {
+    const onFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (!event.target.files) {
+            return
+        }
+        insertFiles(Array.from(event.target.files))
+        event.target.value = ''
+        dom.focusMessageInput()
+    }
+    const onImageUploadClick = () => {
         const settings = sessionActions.getCurrentSessionMergedSettings()
         if (
             (settings.aiProvider === ModelProvider.ChatboxAI && settings.chatboxAIModel === 'chatboxai-4')
@@ -235,7 +240,11 @@ export default function InputBox(props: Props) {
         toastActions.add(t('Current model does not support image input'))
         return
     }
-    const onImageDelete = async (picKey: string) => {
+    const onFileUploadClick = () => {
+        fileInputRef.current?.click()
+    }
+
+    const onImageDeleteClick = async (picKey: string) => {
         setPictureKeys(keys => keys.filter(k => k !== picKey))
         // 不删除图片数据，因为可能在其他地方引用，比如通过上下键盘的历史消息快捷输入、发送的消息中引用
         // await storage.delBlob(picKey)
@@ -308,7 +317,7 @@ export default function InputBox(props: Props) {
                         accept="image/png, image/jpeg"
                     />
                     <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
-                        onClick={onImageUpload}
+                        onClick={onImageUploadClick}
                         tooltipTitle={
                             <div className='text-center inline-block'>
                                 <span>{t('Attach Image')}</span>
@@ -317,6 +326,18 @@ export default function InputBox(props: Props) {
                         tooltipPlacement='top'
                     >
                         <Image size='22' strokeWidth={1} />
+                    </MiniButton>
+                    <input type='file' ref={fileInputRef} className='hidden' onChange={onFileInputChange} />
+                    <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
+                        onClick={onFileUploadClick}
+                        tooltipTitle={
+                            <div className='text-center inline-block'>
+                                <span>{t('Select File')}</span>
+                            </div>
+                        }
+                        tooltipPlacement='top'
+                    >
+                        <FolderClosed size='22' strokeWidth={1} />
                     </MiniButton>
                     <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
                         onClick={() => setChatConfigDialogSession(sessionActions.getCurrentSession())}
@@ -392,8 +413,22 @@ export default function InputBox(props: Props) {
                 />
                 <div className='flex flex-row items-center' onClick={() => dom.focusMessageInput()} >
                     {
-                        pictureKeys.map(picKey => (
-                            <ImageMiniCard storageKey={picKey} onDelete={() => onImageDelete(picKey)} />
+                        pictureKeys.map((picKey, ix) => (
+                            <ImageMiniCard
+                                key={ix}
+                                storageKey={picKey}
+                                onDelete={() => onImageDeleteClick(picKey)}
+                            />
+                        ))
+                    }
+                    {
+                        attachments.map((file, ix) => (
+                            <FileMiniCard
+                                key={ix}
+                                name={file.name}
+                                fileType={file.type}
+                                onDelete={() => setAttachments(files => files.filter(f => f.name != file.name))}
+                            />
                         ))
                     }
                 </div>

@@ -1,7 +1,6 @@
-import { Message, OpenAIMessage, OpenAIMessageVision } from 'src/shared/types'
-import Base from './base'
+import { Message } from 'src/shared/types'
 import { ApiError } from './errors'
-import { onResultChange } from './interfaces'
+import Base, { onResultChange } from './base'
 import storage from '@/storage'
 
 interface Options {
@@ -220,4 +219,31 @@ export async function populateOpenAIMessage(rawMessages: Message[], model: Model
         }))
         return messages
     }
+}
+
+// OpenAIMessage OpenAI API 消息类型。（对于业务追加的字段，应该放到 Message 中）
+export interface OpenAIMessage {
+    role: 'system' | 'user' | 'assistant'
+    content: string
+    name?: string
+}
+
+// vision 版本的 OpenAI 消息类型
+export interface OpenAIMessageVision {
+    role: 'system' | 'user' | 'assistant'
+    content: (
+        | {
+              type: 'text'
+              text: string
+          }
+        | {
+              type: 'image_url'
+              image_url: {
+                  // 可以是 url，也可以是 base64
+                  // data:image/jpeg;base64,{base64_image}
+                  url: string
+                  detail?: 'auto' | 'low' | 'high' // default: auto
+              }
+          }
+    )[]
 }

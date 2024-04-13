@@ -8,6 +8,7 @@ export enum StorageKey {
     Settings = 'settings',
     MyCopilots = 'myCopilots',
     ConfigVersion = 'configVersion',
+    RemoteConfig = 'remoteConfig',
 }
 
 export default class StoreStorage extends BaseStorage {

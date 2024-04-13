@@ -18,6 +18,7 @@ export default function MessageErrTips(props: { msg: Message }) {
         return null
     }
     const tips: React.ReactNode[] = []
+    let onlyShowTips = false // 是否只显示提示，不显示错误信息详情
     if (msg.error.startsWith('API Error')) {
         tips.push(
             <Trans
@@ -61,6 +62,7 @@ export default function MessageErrTips(props: { msg: Message }) {
     } else if (msg.errorCode && ChatboxAIAPIError.getDetail(msg.errorCode)) {
         const chatboxAIErrorDetail = ChatboxAIAPIError.getDetail(msg.errorCode)
         if (chatboxAIErrorDetail) {
+            onlyShowTips = true
             tips.push(
                 <Trans
                     i18nKey={chatboxAIErrorDetail.i18nKey}
@@ -97,9 +99,15 @@ export default function MessageErrTips(props: { msg: Message }) {
     return (
         <Alert icon={false} severity="error">
             {tips.map((tip, i) => (<b key={i}>{tip}</b>))}
-            <br />
-            <br />
-            {msg.error}
+            {
+                onlyShowTips
+                    ? <></>
+                    : <>
+                        <br />
+                        <br />
+                        {msg.error}
+                    </>
+            }
         </Alert>
     )
 }

@@ -1,9 +1,9 @@
-import { ChatboxAILicenseDetail, ChatboxAIModel, Message, OpenAIRoleEnumType } from 'src/shared/types'
-import Base from './base'
+import { ChatboxAILicenseDetail, ChatboxAIModel, Message, MessageRole } from 'src/shared/types'
+import Base, { onResultChange } from './base'
 import { API_ORIGIN } from '../remote'
 import { BaseError, ApiError, NetworkError, ChatboxAIAPIError } from './errors'
-import { onResultChange } from './interfaces'
 import storage from '@/storage'
+import { parseJsonOrEmpty } from '@/lib/utils'
 
 export const chatboxAIModels: ChatboxAIModel[] = ['chatboxai-3.5', 'chatboxai-4']
 
@@ -98,7 +98,7 @@ export default class ChatboxAI extends Base {
         return headers
     }
 
-   async post(
+    async post(
         url: string,
         headers: Record<string, string>,
         body: Record<string, any>,
@@ -117,7 +117,7 @@ export default class ChatboxAI extends Base {
                 // 状态码不在 200～299 之间，一般是接口报错了，这里也需要抛错后重试
                 if (!res.ok) {
                     const response = await res.text().catch((e) => '')
-                    const errorCodeName = parseJSONObjectSafely(response)?.error?.code
+                    const errorCodeName = parseJsonOrEmpty(response)?.error?.code
                     const chatboxAIError = ChatboxAIAPIError.fromCodeName(response, errorCodeName)
                     if (chatboxAIError) {
                         throw chatboxAIError
@@ -160,7 +160,7 @@ export default class ChatboxAI extends Base {
                 // 状态码不在 200～299 之间，一般是接口报错了，这里也需要抛错后重试
                 if (!res.ok) {
                     const response = await res.text().catch((e) => '')
-                    const errorCodeName = parseJSONObjectSafely(response)?.error?.code
+                    const errorCodeName = parseJsonOrEmpty(response)?.error?.code
                     const chatboxAIError = ChatboxAIAPIError.fromCodeName(response, errorCodeName)
                     if (chatboxAIError) {
                         throw chatboxAIError
@@ -189,10 +189,13 @@ export default class ChatboxAI extends Base {
 
 // Chatbox AI 服务接收的消息格式
 export interface ChatboxAIMessage {
-    role: OpenAIRoleEnumType
+    role: MessageRole
     content: string
     pictures?: {
         base64?: string
+    }[]
+    files?: {
+        uuid: string
     }[]
 }
 
@@ -212,20 +215,21 @@ export async function populateChatboxAIMessage(rawMessages: Message[]): Promise<
             if (!base64) {
                 continue
             }
-            if (! newMessage.pictures) {
+            if (!newMessage.pictures) {
                 newMessage.pictures = []
             }
             newMessage.pictures.push({ base64 })
         }
+        for (const file of (raw.files || [])) {
+            if (!file.chatboxAIFileUUID) {
+                continue
+            }
+            if (!newMessage.files) {
+                newMessage.files = []
+            }
+            newMessage.files.push({ uuid: file.chatboxAIFileUUID })
+        }
         messages.push(newMessage)
     }
     return messages
-}
-
-function parseJSONObjectSafely(json: string): any {
-    try {
-        return JSON.parse(json)
-    } catch (e) {
-        return {}
-    }
 }

@@ -56,3 +56,14 @@ export function getProxy() {
     const settings = store.get(atoms.settingsAtom)
     return settings.proxy
 }
+
+export function getLicenseKey() {
+    const store = getDefaultStore()
+    const settings = store.get(atoms.settingsAtom)
+    return settings.licenseKey
+}
+
+export function getRemoteConfig() {
+    const store = getDefaultStore()
+    return store.get(atoms.remoteConfigAtom)
+}

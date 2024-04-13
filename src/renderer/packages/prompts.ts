@@ -13,7 +13,9 @@ You only need to answer with the name.
 The following is the conversation:
 
 \`\`\`
-${format(msgs.map((msg) => msg.content))}
+${
+    format(msgs.map((msg) => msg.content.slice(0, 200)))    // 限制长度以节省 tokens
+}
 \`\`\`
 
 Please provide a concise name, within 10 characters and without quotation marks.

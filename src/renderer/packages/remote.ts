@@ -1,3 +1,4 @@
+import { USE_LOCAL_API } from '@/variables'
 import {
     Config,
     CopilotDetail,
@@ -8,22 +9,28 @@ import {
     Settings,
 } from '../../shared/types'
 import { ofetch } from 'ofetch'
+import { afetch, uploadFile } from './request'
 
 // ========== API ORIGIN 根据速度维护 ==========
 
 // const RELEASE_ORIGIN = 'https://releases.chatboxai.app'
 
 export let API_ORIGIN = 'https://chatboxai.app'
-const pool = [
+let pool = [
     'https://chatboxai.app',
     'https://api.chatboxai.app',
     'https://api.ai-chatbox.com',
 ]
 
-// export let API_ORIGIN = 'http://localhost:8002'
-// const pool = [
-//     'http://localhost:8002'
-// ]
+if (USE_LOCAL_API) {
+    console.log('==================')
+    console.log('Using local API')
+    console.log('==================')
+
+    API_ORIGIN = 'http://localhost:8002'
+    pool = ['http://localhost:8002']
+}
+
 
 async function testApiOrigins() {
     type Response = {
@@ -36,7 +43,7 @@ async function testApiOrigins() {
         return { origin, res }
     }))
     for (const newOrigin of fastest.res.data.api_origins) {
-        if (! pool.includes(newOrigin)) {
+        if (!pool.includes(newOrigin)) {
             pool.push(newOrigin)
         }
     }
@@ -172,4 +179,55 @@ export async function getLicenseDetailRealtime(params: { licenseKey: string }) {
         },
     })
     return res['data'] || null
+}
+
+export async function generateUploadUrl(params: { licenseKey: string, filename: string }) {
+    type Response = {
+        data: {
+            url: string
+            filename: string
+        }
+    }
+    const res = await afetch(`${API_ORIGIN}/api/files/generate-upload-url`, {
+        method: 'POST',
+        headers: {
+            Authorization: params.licenseKey,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(params),
+    }, { parseChatboxRemoteError: true })
+    const json: Response = await res.json()
+    return json['data']
+}
+
+export async function createUserFile(params: { licenseKey: string, filename: string, filetype: string }) {
+    type Response = {
+        data: {
+            uuid: string
+        }
+    }
+    const res = await afetch(`${API_ORIGIN}/api/files/create`, {
+        method: 'POST',
+        headers: {
+            Authorization: params.licenseKey,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(params),
+    }, { parseChatboxRemoteError: true })
+    const json: Response = await res.json()
+    return json['data']
+}
+
+export async function uploadAndCreateUserFile(licenseKey: string, file: File) {
+    const { url, filename } = await generateUploadUrl({
+        licenseKey,
+        filename: file.name,
+    });
+    await uploadFile(file, url)
+    const result = await createUserFile({
+        licenseKey,
+        filename,
+        filetype: file.type,
+    })
+    return result.uuid
 }
