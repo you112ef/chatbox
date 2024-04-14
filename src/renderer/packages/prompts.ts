@@ -14,7 +14,7 @@ The following is the conversation:
 
 \`\`\`
 ${
-    format(msgs.map((msg) => msg.content.slice(0, 200)))    // 限制长度以节省 tokens
+    format(msgs.map((msg) => msg.content.slice(0, 100)))    // 限制长度以节省 tokens
 }
 \`\`\`
 

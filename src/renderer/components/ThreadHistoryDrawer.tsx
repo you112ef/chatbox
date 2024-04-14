@@ -48,13 +48,6 @@ export default function ThreadHistoryDrawer(props: Props) {
         }, 100);
     }, [showDrawer, ref.current])
 
-    useEffect(() => {
-        if (!currentSession.threadName
-            && currentSession.messages.findIndex((msg) => msg.role === 'assistant' && !msg.generating) !== -1) {
-            sessionActions.generateThreadName(currentSession.id)
-        }
-    }, [currentSession.messages])
-
     const gotoThreadMessage = (threadId: string) => {
         const thread = threadList.find(t => t.id === threadId)
         if (!thread) {

@@ -57,12 +57,12 @@ export function modify(update: Session) {
 /**
  * 修改会话名称
  */
-export function modifyName(sessionId: string, name: string) {
+export function modifyNameAndThreadName(sessionId: string, name: string) {
     const store = getDefaultStore()
     store.set(atoms.sessionsAtom, (sessions) =>
         sessions.map((s) => {
             if (s.id === sessionId) {
-                return { ...s, name }
+                return { ...s, name, threadName: name }
             }
             return s
         })
@@ -752,8 +752,7 @@ export async function refreshMessage(sessionId: string, msg: Message, alwayInser
     }
 }
 
-async function _generateName(sessionId: string, modifyName: (sessionId: string, name: string) => void,
-    start: number, end: number) {
+async function _generateName(sessionId: string, modifyName: (sessionId: string, name: string) => void) {
     const store = getDefaultStore()
     const globalSettings = store.get(atoms.settingsAtom)
     const session = getSession(sessionId)
@@ -764,7 +763,10 @@ async function _generateName(sessionId: string, modifyName: (sessionId: string, 
     const configs = await platform.getConfig()
     try {
         const model = getModel(settings, configs)
-        let name = await model.chat(promptFormat.nameConversation(session.messages.slice(start, end)))
+        let name = await model.chat(promptFormat.nameConversation(
+            session.messages.filter(m => m.role !== 'system')
+                .slice(0, 4))
+        )
         name = name.replace(/['"“”]/g, '')
         name = name.slice(0, 10)    // 限制名字长度
         modifyName(session.id, name)
@@ -775,12 +777,12 @@ async function _generateName(sessionId: string, modifyName: (sessionId: string, 
     }
 }
 
-export async function generateName(sessionId: string) {
-    return _generateName(sessionId, modifyName, 0, 3)
+export async function generateNameAndThreadName(sessionId: string) {
+    return _generateName(sessionId, modifyNameAndThreadName)
 }
 
 export async function generateThreadName(sessionId: string) {
-    return _generateName(sessionId, modifyThreadName, 1, 3)
+    return _generateName(sessionId, modifyThreadName)
 }
 
 /**

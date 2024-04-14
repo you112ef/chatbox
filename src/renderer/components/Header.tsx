@@ -29,11 +29,17 @@ export default function Header(props: Props) {
     // 会话名称自动生成
     useEffect(() => {
         if (
-            currentSession.name === 'Untitled' &&
-            currentSession.messages.length > 2 &&
-            currentSession.messages.some((msg) => msg.role === 'assistant' && !msg.generating)
+            currentSession.name === 'Untitled'
+            && currentSession.messages.length >= 2
         ) {
-            sessionActions.generateName(currentSession.id)
+            sessionActions.generateNameAndThreadName(currentSession.id)
+            return  // 生成了会话名称，就不再生成 thread 名称
+        }
+        if (
+            !currentSession.threadName
+            && currentSession.messages.length >= 2
+        ) {
+            sessionActions.generateThreadName(currentSession.id)
         }
     }, [currentSession.messages.length])
 
