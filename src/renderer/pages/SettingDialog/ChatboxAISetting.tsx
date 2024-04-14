@@ -150,7 +150,12 @@ function DetailCard(props: { licenseKey?: string, activated: boolean }) {
                     {t('Chatbox AI offers a user-friendly AI solution to help you enhance productivity')}
                 </Typography>
                 <Box>
-                    {[t('Fast access to AI services'), t('Hassle-free setup'), t('Ideal for work and study')].map(
+                    {[
+                        t('Smartest AI-Powered Services for Rapid Access'),
+                        t('Vision, Drawing, File Understanding and more'),
+                        t('Hassle-free setup'),
+                        t('Ideal for work and study')
+                    ].map(
                         (item) => (
                             <Box key={item} sx={{ display: 'flex', margin: '4px 0' }}>
                                 <CheckCircleOutlineIcon color={activated ? 'success' : 'action'} />
