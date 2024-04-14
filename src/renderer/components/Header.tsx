@@ -30,11 +30,12 @@ export default function Header(props: Props) {
     useEffect(() => {
         if (
             currentSession.name === 'Untitled' &&
-            currentSession.messages.findIndex((msg) => msg.role === 'assistant' && !msg.generating) !== -1
+            currentSession.messages.length > 2 &&
+            currentSession.messages.some((msg) => msg.role === 'assistant' && !msg.generating)
         ) {
             sessionActions.generateName(currentSession.id)
         }
-    }, [currentSession.messages])
+    }, [currentSession.messages.length])
 
     const editCurrentSession = () => {
         setChatConfigDialogSession(currentSession)

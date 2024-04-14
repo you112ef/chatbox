@@ -521,6 +521,7 @@ export async function submitNewUserMessage(params: {
         newAssistantMsg.status = [{ type: 'sending_file' }]
     }
     if (needGenerating) {
+        newAssistantMsg.generating = true
         insertMessage(currentSessionId, newAssistantMsg)
     }
     const settings = getCurrentSessionMergedSettings()
