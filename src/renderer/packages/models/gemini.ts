@@ -2,9 +2,24 @@ import { Message } from 'src/shared/types'
 import Base, { onResultChange } from './base'
 import { ApiError } from './errors'
 
+export type GeminiModel = keyof typeof modelConfig
+
+// https://ai.google.dev/models/gemini?hl=zh-cn
+export const modelConfig = {
+    'gemini-1.5-pro-latest': {
+        vision: false,
+    },
+    'gemini-pro': {
+        vision: false,
+    },
+}
+
+export const geminiModels: GeminiModel[] = Object.keys(modelConfig) as GeminiModel[]
+
 interface Options {
     geminiAPIKey: string
     geminiAPIHost: string
+    geminiModel: GeminiModel
     temperature: number
 }
 
@@ -70,7 +85,7 @@ export default class Gemeni extends Base {
             contents.push(previousContent)
         }
         const res = await this.post(
-            `${this.options.geminiAPIHost}/v1beta/models/gemini-pro:generateContent?key=${this.options.geminiAPIKey}`,
+            `${this.options.geminiAPIHost}/v1beta/models/${this.options.geminiModel}:generateContent?key=${this.options.geminiAPIKey}`,
             {
                 'Content-Type': 'application/json',
             },

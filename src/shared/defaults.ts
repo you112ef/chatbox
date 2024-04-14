@@ -29,6 +29,7 @@ export function settings(): Settings {
 
         geminiAPIKey: '',
         geminiAPIHost: 'https://generativelanguage.googleapis.com',
+        geminiModel: 'gemini-pro',
 
         ollamaHost: 'http://localhost:11434',
         ollamaModel: '',

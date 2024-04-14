@@ -2,6 +2,7 @@ import pick from 'lodash/pick'
 import { v4 as uuidv4 } from 'uuid'
 import { Model } from '../renderer/packages/models/openai'
 import { ClaudeModel } from '../renderer/packages/models/claude'
+import { GeminiModel } from '@/packages/models/gemini'
 
 export interface MessageFile {
     id: string
@@ -128,6 +129,8 @@ export function settings2SessionSettings(settings: ModelSettings) {
 
         'ollamaHost',
         'ollamaModel',
+
+        'geminiModel',
     ])
 }
 
@@ -191,6 +194,7 @@ export interface ModelSettings {
     // google gemini
     geminiAPIKey: string
     geminiAPIHost: string
+    geminiModel: GeminiModel
 
     // ollama
     ollamaHost: string

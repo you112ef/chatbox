@@ -5,6 +5,7 @@ import PasswordTextField from '@/components/PasswordTextField'
 import TemperatureSlider from '@/components/TemperatureSlider'
 import platform from '@/platform'
 import TextFieldReset from "@/components/TextFieldReset";
+import GeminiModelSelect from '@/components/GeminiModelSelect'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -47,6 +48,10 @@ export default function GeminiSetting(props: ModelConfigProps) {
                     }
                     setSettingsEdit({ ...settingsEdit, geminiAPIHost: value })
                 }}
+            />
+            <GeminiModelSelect
+                settingsEdit={settingsEdit}
+                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
             />
             <TemperatureSlider
                 settingsEdit={settingsEdit}

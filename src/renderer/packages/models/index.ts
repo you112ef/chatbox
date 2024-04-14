@@ -115,7 +115,7 @@ export function getModelDisplayName(settings: SessionSettings, sessionType: Sess
         case ModelProvider.Claude:
             return settings.claudeModel
         case ModelProvider.Gemini:
-            return 'Google (gemini-pro)'
+            return `Google (${settings.geminiModel})`
         case ModelProvider.Ollama:
             return `Ollama (${settings.ollamaModel})`
         default:
