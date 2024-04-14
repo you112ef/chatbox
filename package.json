@@ -13,8 +13,10 @@
         "package": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --publish never",
         "package:all": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --publish never --win --mac --linux",
         "package:web": "bash package-web.sh",
-        "release": "bash release.sh",
-        "electron:publish": "ts-node ./.erb/scripts/clean.js dist && npm install && npm run postinstall && npm run build && electron-builder build --publish always --win --mac --linux",
+        "release:mac-linux": "bash release-mac-linux.sh",
+        "electron:publish-mac-linux": "ts-node ./.erb/scripts/clean.js dist && npm install && npm run postinstall && npm run build && electron-builder build --publish always --mac --linux",
+        "release:win": "bash release-win.sh",
+        "electron:publish-win": "ts-node ./.erb/scripts/clean.js dist && npm install && npm run postinstall && npm run build && electron-builder build --publish always --win",
         "rebuild": "electron-rebuild --parallel --types prod,dev,optional --module-dir release/app",
         "dev": "npm start",
         "start": "ts-node ./.erb/scripts/check-port-in-use.js && npm run start:renderer",
@@ -267,7 +269,10 @@
                     ]
                 }
             ],
-            "artifactName": "${productName}-${version}-Setup.${ext}"
+            "verifyUpdateCodeSignature": false,
+            "artifactName": "${productName}-${version}-Setup.${ext}",
+            "sign": "./custom_win_sign.js",
+            "signingHashAlgorithms": [ "sha256" ]
         },
         "nsis": {
             "oneClick": false,
