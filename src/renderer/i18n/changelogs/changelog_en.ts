@@ -1,4 +1,15 @@
 const changelog = `
+### v1.3.4
+
+1. You can now send files to AI, with support for PDF, DOC, PPT, XLS, TXT, and code files.
+2. The input box now allows you to insert images and files from the system clipboard.
+3. Added support for auto-generating thread titles.
+4. Now supporting the latest gpt-4-turbo model.
+5. You can change the installation path during setup in Windows.
+6. Your can switch Gemini model version, with support for the new Gemini 1.5 pro model.
+7. Fixed an issue with an abnormal message sequence in Claude causing API errors.
+8. Made some UI detail adjustments.
+
 ### 1.3.3
 
 1. You can now set user avatars in messages.
