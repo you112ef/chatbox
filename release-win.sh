@@ -17,6 +17,6 @@ sed -i.bak "s/\"version\": \".*\"/\"version\": \"$VERSION_NUMBER\"/" ./release/a
 
 echo release $VERSION_NUMBER
 
-npm run electron:publish
+npm run electron:publish-win
 
 mv ./release/app/package.json.bak ./release/app/package.json
