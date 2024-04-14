@@ -342,6 +342,8 @@ export default function InputBox(props: Props) {
                         tooltipTitle={
                             <div className='text-center inline-block'>
                                 <span>{t('Select File')}</span>
+                                <br />
+                                <span>{t('PDF, DOC, PPT, XLS, TXT, Code...')}</span>
                             </div>
                         }
                         tooltipPlacement='top'
