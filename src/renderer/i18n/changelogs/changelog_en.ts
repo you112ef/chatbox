@@ -1,4 +1,8 @@
 const changelog = `
+### v1.3.5
+
+1. Fixed a bug where text copied from Microsoft Word was inserted as an image.
+
 ### v1.3.4
 
 1. You can now send files to AI, with support for PDF, DOC, PPT, XLS, TXT, and code files.

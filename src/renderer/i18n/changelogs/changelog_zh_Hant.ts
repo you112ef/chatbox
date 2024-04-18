@@ -1,4 +1,8 @@
 const changelog = `
+### v1.3.5
+
+1. 修正了從 Microsoft Word 複製內容時，文本錯誤地以圖像格式插入的問題。
+
 ### v1.3.4
 
 1. 現在可以向 AI 發送檔案，支持包括 PDF、DOC、PPT、XLS、TXT 及程式碼等格式的檔案。
