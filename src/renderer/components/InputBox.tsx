@@ -250,6 +250,8 @@ export default function InputBox(props: Props) {
                     if (file) {
                         insertFiles([file])
                     }
+                } else {
+                    break
                 }
             }
         }
