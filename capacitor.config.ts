@@ -10,14 +10,14 @@ const config: CapacitorConfig = {
     ios: {
         scheme: 'Chatbox AI',
     },
-    plugins: {
-        // 激活对 fetch 和 XMLHttpRequest 的原生 http 补丁
-        // 理论上可以解决接口跨域、使用系统原生代理的能力
-        // https://capacitorjs.com/docs/apis/http
-        CapacitorHttp: {
-            enabled: true,
-        },
-    },
+    // 以下配置是为了解决 Claude 跨域问题，但是在实际使用中并没有生效，反而导致无法正常处理 SSE 数据流（响应不流式返回）
+    // plugins: {
+    //     // 激活对 fetch 和 XMLHttpRequest 的原生 http 补丁
+    //     // https://capacitorjs.com/docs/apis/http
+    //     CapacitorHttp: {
+    //         enabled: true,
+    //     },
+    // },
 }
 
 export default config
