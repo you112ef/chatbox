@@ -6,6 +6,7 @@ import ChatGLM from './chatglm'
 import Claude from './claude'
 import Gemini from './gemini'
 import Ollama from './ollama'
+import Groq from './groq'
 
 export function getModel(setting: Settings, config: Config) {
     switch (setting.aiProvider) {
@@ -23,6 +24,8 @@ export function getModel(setting: Settings, config: Config) {
             return new Gemini(setting)
         case ModelProvider.Ollama:
             return new Ollama(setting)
+        case ModelProvider.Groq:
+            return new Groq(setting)
         default:
             throw new Error('Cannot find model with provider: ' + setting.aiProvider)
     }
@@ -36,6 +39,7 @@ export const aiProviderNameHash = {
     [ModelProvider.Claude]: 'Claude',
     [ModelProvider.Gemini]: 'Google Gemini',
     [ModelProvider.Ollama]: 'Ollama',
+    [ModelProvider.Groq]: 'Groq',
 }
 
 export const AIModelProviderMenuOptionList = [
@@ -68,6 +72,11 @@ export const AIModelProviderMenuOptionList = [
     {
         value: ModelProvider.Ollama,
         label: aiProviderNameHash[ModelProvider.Ollama],
+        disabled: false,
+    },
+    {
+        value: ModelProvider.Groq,
+        label: aiProviderNameHash[ModelProvider.Groq],
         disabled: false,
     },
     {
@@ -118,6 +127,8 @@ export function getModelDisplayName(settings: SessionSettings, sessionType: Sess
             return `Google (${settings.geminiModel})`
         case ModelProvider.Ollama:
             return `Ollama (${settings.ollamaModel})`
+        case ModelProvider.Groq:
+            return `Groq (${settings.groqModel})`
         default:
             return 'unknown'
     }

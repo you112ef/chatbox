@@ -34,6 +34,9 @@ export function settings(): Settings {
         ollamaHost: 'http://localhost:11434',
         ollamaModel: '',
 
+        groqAPIKey: '',
+        groqModel: 'llama3-70b-8192',
+
         showWordCount: true,
         showTokenCount: false,
         showTokenUsed: true,

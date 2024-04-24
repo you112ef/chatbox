@@ -39,6 +39,7 @@ import OllamaSetting from './SettingDialog/OllamaSetting'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import { trackingEvent } from '@/packages/event'
 import GeminiModelSelect from '@/components/GeminiModelSelect'
+import GropModelSelect from '@/components/GroqModelSelect'
 
 interface Props {
 }
@@ -235,6 +236,14 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                     {
                         settingsEdit.aiProvider === ModelProvider.Gemini && (
                             <GeminiModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                        )
+                    }
+                    {
+                        settingsEdit.aiProvider === ModelProvider.Groq && (
+                            <>
+                            <GropModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                            <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                            </>
                         )
                     }
                 </>

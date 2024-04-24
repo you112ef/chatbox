@@ -8,6 +8,7 @@ import ChatGLM6BSetting from './ChatGLMSetting'
 import AIProviderSelect from '../../components/AIProviderSelect'
 import GeminiSetting from './GeminiSetting'
 import OllamaSetting from './OllamaSetting'
+import GroqSetting from './GroqSetting'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -40,6 +41,9 @@ export default function ModelSettingTab(props: ModelConfigProps) {
             )}
             {settingsEdit.aiProvider === ModelProvider.Gemini && (
                 <GeminiSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+            )}
+            {settingsEdit.aiProvider === ModelProvider.Groq && (
+                <GroqSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
             )}
             {settingsEdit.aiProvider === ModelProvider.Ollama && (
                 <OllamaSetting settingsEdit={settingsEdit} setSettingsEdit={(updated) => {

@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { Model } from '../renderer/packages/models/openai'
 import { ClaudeModel } from '../renderer/packages/models/claude'
 import { GeminiModel } from '@/packages/models/gemini'
+import { GroqModel } from '@/packages/models/groq'
 
 export interface MessageFile {
     id: string
@@ -131,6 +132,8 @@ export function settings2SessionSettings(settings: ModelSettings) {
         'ollamaModel',
 
         'geminiModel',
+
+        'groqModel',
     ])
 }
 
@@ -155,6 +158,7 @@ export enum ModelProvider {
     Claude = 'claude',
     Gemini = 'gemini',
     Ollama = 'ollama',
+    Groq = 'groq',
 }
 
 export interface ModelSettings {
@@ -199,6 +203,10 @@ export interface ModelSettings {
     // ollama
     ollamaHost: string
     ollamaModel: string
+
+    // groq
+    groqAPIKey: string
+    groqModel: GroqModel
 
     temperature: number
     topP: number
