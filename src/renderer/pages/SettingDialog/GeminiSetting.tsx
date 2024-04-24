@@ -6,6 +6,7 @@ import TemperatureSlider from '@/components/TemperatureSlider'
 import platform from '@/platform'
 import TextFieldReset from "@/components/TextFieldReset";
 import GeminiModelSelect from '@/components/GeminiModelSelect'
+import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -50,6 +51,10 @@ export default function GeminiSetting(props: ModelConfigProps) {
                 }}
             />
             <GeminiModelSelect
+                settingsEdit={settingsEdit}
+                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+            />
+            <MaxContextMessageCountSlider
                 settingsEdit={settingsEdit}
                 setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
             />

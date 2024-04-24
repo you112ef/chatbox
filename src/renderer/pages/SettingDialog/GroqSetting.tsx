@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import PasswordTextField from '@/components/PasswordTextField'
 import TemperatureSlider from '@/components/TemperatureSlider'
 import GropModelSelect from '@/components/GroqModelSelect'
+import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -23,6 +24,10 @@ export default function GroqSetting(props: ModelConfigProps) {
                 }}
             />
             <GropModelSelect
+                settingsEdit={settingsEdit}
+                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+            />
+            <MaxContextMessageCountSlider
                 settingsEdit={settingsEdit}
                 setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
             />

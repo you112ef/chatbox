@@ -3,6 +3,8 @@ import { ModelSettings } from '../../../shared/types'
 import { Trans, useTranslation } from 'react-i18next'
 import platform from '../../platform'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
+import TemperatureSlider from '@/components/TemperatureSlider'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -50,6 +52,14 @@ export default function ChatGLM6BSetting(props: ModelConfigProps) {
                         )}
                     </>
                 }
+            />
+            <MaxContextMessageCountSlider
+                settingsEdit={settingsEdit}
+                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+            />
+            <TemperatureSlider
+                settingsEdit={settingsEdit}
+                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
             />
         </Box>
     )

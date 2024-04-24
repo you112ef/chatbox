@@ -8,6 +8,7 @@ import TopPSlider from '../../components/TopPSlider'
 import PasswordTextField from '../../components/PasswordTextField'
 // import TokenConfig from './TokenConfig'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -97,6 +98,10 @@ export default function AzureSetting(props: ModelConfigProps) {
                         </Button>
                         {t('to default values.')}
                     </Alert> */}
+                    <MaxContextMessageCountSlider
+                        settingsEdit={settingsEdit}
+                        setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                    />
                     <TemperatureSlider
                         settingsEdit={settingsEdit}
                         setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}

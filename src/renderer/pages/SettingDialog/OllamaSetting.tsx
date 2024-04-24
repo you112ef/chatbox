@@ -6,6 +6,7 @@ import TextFieldReset from '@/components/TextFieldReset'
 import { useEffect, useState } from 'react'
 import Ollama from '@/packages/models/ollama'
 import platform from '@/platform'
+import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
 
 interface ModelConfigProps {
     settingsEdit: SessionSettings
@@ -64,6 +65,10 @@ export default function OllamaSetting(props: ModelConfigProps) {
                 </Select>
             </FormControl>
 
+            <MaxContextMessageCountSlider
+                settingsEdit={settingsEdit}
+                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+            />
             <TemperatureSlider
                 settingsEdit={settingsEdit}
                 setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}

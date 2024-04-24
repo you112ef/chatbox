@@ -151,20 +151,14 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                             {licenseDetail && (
                                 <ChatboxAIModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                             )}
-                            <MaxContextMessageCountSlider
-                                settingsEdit={settingsEdit}
-                                setSettingsEdit={setSettingsEdit}
-                            />
+                            <MaxContextMessageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                             <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                         </>
                     )}
                     {settingsEdit.aiProvider === ModelProvider.OpenAI && (
                         <>
                             <OpenAIModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                            <MaxContextMessageCountSlider
-                                settingsEdit={settingsEdit}
-                                setSettingsEdit={setSettingsEdit}
-                            />
+                            <MaxContextMessageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                             <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                             <Accordion>
                                 <AccordionSummary aria-controls="panel1a-content">
@@ -193,10 +187,7 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                                     })
                                 }
                             />
-                            <MaxContextMessageCountSlider
-                                settingsEdit={settingsEdit}
-                                setSettingsEdit={setSettingsEdit}
-                            />
+                            <MaxContextMessageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                             <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                             <Accordion>
                                 <AccordionSummary aria-controls="panel1a-content">
@@ -211,38 +202,41 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                     )}
                     {settingsEdit.aiProvider === ModelProvider.ChatGLM6B && (
                         <>
-                            <MaxContextMessageCountSlider
-                                settingsEdit={settingsEdit}
-                                setSettingsEdit={setSettingsEdit}
-                            />
+                            <MaxContextMessageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                             <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                         </>
                     )}
                     {settingsEdit.aiProvider === ModelProvider.Claude && (
                         <>
                             <ClaudeModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                            <MaxContextMessageCountSlider
-                                settingsEdit={settingsEdit}
-                                setSettingsEdit={setSettingsEdit}
-                            />
+                            <MaxContextMessageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                             <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                         </>
                     )}
                     {
                         settingsEdit.aiProvider === ModelProvider.Ollama && (
-                            <OllamaSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                            <>
+                                <OllamaSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                <MaxContextMessageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                            </>
                         )
                     }
                     {
                         settingsEdit.aiProvider === ModelProvider.Gemini && (
-                            <GeminiModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                            <>
+                                <GeminiModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                <MaxContextMessageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                            </>
                         )
                     }
                     {
                         settingsEdit.aiProvider === ModelProvider.Groq && (
                             <>
-                            <GropModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                            <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                <GropModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                <MaxContextMessageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+                                <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
                             </>
                         )
                     }
