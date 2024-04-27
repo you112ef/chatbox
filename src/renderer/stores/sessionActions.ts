@@ -11,6 +11,8 @@ import {
     SessionThread,
     MessageFile,
     ModelProvider,
+    ExportChatScope,
+    ExportChatFormat,
 } from '../../shared/types'
 import * as atoms from './atoms'
 import * as promptFormat from '../packages/prompts'
@@ -28,6 +30,7 @@ import * as dom from '@/hooks/dom'
 import * as remote from '@/packages/remote'
 import { throttle } from 'lodash'
 import * as settingActions from './settingActions'
+import { formatChatAsHtml, formatChatAsMarkdown, formatChatAsTxt } from "@/lib/format-chat";
 
 /**
  * 创建一个新的会话
@@ -928,4 +931,31 @@ export function getCurrentSessionMergedSettings() {
     const globalSettings = store.get(atoms.settingsAtom)
     const session = store.get(atoms.currentSessionAtom)
     return mergeSettings(globalSettings, session)
+}
+
+export async function exportChat(session: Session, scope: ExportChatScope, format: ExportChatFormat) {
+    const threads: SessionThread[] = scope == 'all_threads' ? session.threads || [] : []
+    threads.push({
+        id: session.id,
+        name: session.threadName || session.name,
+        messages: session.messages,
+        createdAt: Date.now(),
+    })
+
+    if (format == 'Markdown') {
+        const content = formatChatAsMarkdown(session.name, threads)
+        platform.exporter.exportTextFile(`${session.name}.md`, content)
+    } else if (format == 'TXT') {
+        const content = formatChatAsTxt(session.name, threads);
+        platform.exporter.exportTextFile(`${session.name}.txt`, content)
+    } else if (format == 'HTML') {
+        const content = await formatChatAsHtml(session.name, threads);
+        platform.exporter.exportTextFile(`${session.name}.html`, content)
+    }
+}
+
+export async function exportCurrentSessionChat(content: ExportChatScope, format: ExportChatFormat) {
+    const store = getDefaultStore()
+    const currentSession = store.get(atoms.currentSessionAtom)
+    await exportChat(currentSession, content, format)
 }

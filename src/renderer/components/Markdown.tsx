@@ -19,8 +19,9 @@ import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for 
 export default function Markdown(props: {
     children: string
     enableLaTeXRendering?: boolean
+    hiddenCodeCopyButton?: boolean
 }) {
-    const { enableLaTeXRendering = true, children } = props
+    const { enableLaTeXRendering = true, children, hiddenCodeCopyButton } = props
     return useMemo(() => (
         <ReactMarkdown
             remarkPlugins={
@@ -34,7 +35,7 @@ export default function Markdown(props: {
             // 这里改用 sanitizeUrl 库，同时也可以避免 XSS 攻击
             urlTransform={(url) => sanitizeUrl(url)}
             components={{
-                code: CodeBlock,
+                code: (props: any) => CodeBlock({ ...props, hiddenCodeCopyButton }),
                 a: ({ node, ...props }) => (
                     <a
                         {...props}
@@ -60,7 +61,7 @@ export function CodeBlock(props: any) {
     const { t } = useTranslation()
     const theme = useTheme()
     return useMemo(() => {
-        const { children, className, node, ...rest } = props
+        const { children, className, node, hiddenCodeCopyButton, ...rest } = props
         const match = /language-(\w+)/.exec(className || '')
         const language = match?.[1] || 'text'
         if (!String(children).includes('\n')) {
@@ -107,24 +108,28 @@ export function CodeBlock(props: any) {
                     >
                         {'<' + language.toUpperCase() + '>'}
                     </span>
-                    <ContentCopyIcon
-                        sx={{
-                            textDecoration: 'none',
-                            color: 'white',
-                            padding: '1px',
-                            margin: '2px 10px 0 10px',
-                            cursor: 'pointer',
-                            opacity: 0.5,
-                            ':hover': {
-                                backgroundColor: 'rgb(80, 80, 80)',
-                                opacity: 1,
-                            },
-                        }}
-                        onClick={() => {
-                            utils.copyToClipboard(String(children))
-                            toastActions.add(t('copied to clipboard'))
-                        }}
-                    />
+                    {
+                        !hiddenCodeCopyButton && (
+                            <ContentCopyIcon
+                                sx={{
+                                    textDecoration: 'none',
+                                    color: 'white',
+                                    padding: '1px',
+                                    margin: '2px 10px 0 10px',
+                                    cursor: 'pointer',
+                                    opacity: 0.5,
+                                    ':hover': {
+                                        backgroundColor: 'rgb(80, 80, 80)',
+                                        opacity: 1,
+                                    },
+                                }}
+                                onClick={() => {
+                                    utils.copyToClipboard(String(children))
+                                    toastActions.add(t('copied to clipboard'))
+                                }}
+                            />
+                        )
+                    }
                 </div>
                 <SyntaxHighlighter
                     //   {...rest}

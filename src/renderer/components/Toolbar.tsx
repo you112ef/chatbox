@@ -28,6 +28,7 @@ export default function Toolbar() {
     const setOpenSearchDialog = useSetAtom(atoms.openSearchDialogAtom)
     const setThreadHistoryDrawerOpen = useSetAtom(atoms.showThreadHistoryDrawerAtom)
     const setSessionCleanDialog = useSetAtom(atoms.sessionCleanDialogAtom)
+    const setOpenExportChatDialog = useSetAtom(atoms.openExportChatDialogAtom)
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
@@ -41,17 +42,7 @@ export default function Toolbar() {
         setAnchorEl(null)
     }
     const handleExportAndSave = () => {
-        const messageList: Message[] = []
-        if (currentSession.threads) {
-            for (const h of currentSession.threads) {
-                messageList.push(...h.messages)
-            }
-        }
-        messageList.push(...currentSession.messages)
-        const content = messageList
-            .map((msg) => `**${msg.role}**:\n${msg.content}`)
-            .join('\n\n--------------------\n\n')
-        platform.exporter.exportTextFile('Export.md', content)
+        setOpenExportChatDialog(true)
         handleMoreMenuClose()
     }
     const handleSessionClean = () => {

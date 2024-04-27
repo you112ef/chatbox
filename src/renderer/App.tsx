@@ -30,6 +30,7 @@ import ThreadHistoryDrawer from './components/ThreadHistoryDrawer'
 import WelcomeDialog from './pages/WelcomeDialog'
 import * as premiumActions from './stores/premiumActions'
 import platform from './platform'
+import ExportChatDialog from '@/pages/ExportChatDialog'
 
 function Main() {
     // 是否展示菜单栏
@@ -113,6 +114,7 @@ function Main() {
                 close={() => setOpenClearConversationListWindow(false)}
             />
             <SearchDialog />
+            <ExportChatDialog />
             <PictureDialog />
             <MessageEditDialog />
             <WelcomeDialog

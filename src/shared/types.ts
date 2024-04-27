@@ -64,6 +64,10 @@ export interface Message {
 
 export type SettingWindowTab = 'ai' | 'display' | 'chat' | 'advanced'
 
+export type ExportChatScope = 'all_threads' | 'current_thread'
+
+export type ExportChatFormat = 'Markdown' | 'TXT' | 'HTML'
+
 export type SessionType = 'chat' | 'picture'
 
 export function isChatSession(session: Session) {

@@ -272,7 +272,9 @@
             "verifyUpdateCodeSignature": false,
             "artifactName": "${productName}-${version}-Setup.${ext}",
             "sign": "./custom_win_sign.js",
-            "signingHashAlgorithms": [ "sha256" ]
+            "signingHashAlgorithms": [
+                "sha256"
+            ]
         },
         "nsis": {
             "oneClick": false,
