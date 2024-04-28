@@ -37,16 +37,6 @@ export default function OllamaSetting(props: ModelConfigProps) {
                 }}
                 fullWidth
             />
-            {
-                settingsEdit.ollamaHost && settingsEdit.ollamaHost.includes('http://localhost') && platform.type === 'web' && (
-                    <Alert severity="warning">
-                        {t('To access locally deployed model services, please install the Chatbox desktop version')}
-                        <Button onClick={() => platform.openLink('https://chatboxai.app/')}>
-                            {t('Download')}
-                        </Button>
-                    </Alert>
-                )
-            }
             <FormControl fullWidth variant="outlined" margin="dense">
                 <InputLabel htmlFor="ollama-model-select">{t('model')}</InputLabel>
                 <Select

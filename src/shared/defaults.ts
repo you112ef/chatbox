@@ -31,7 +31,7 @@ export function settings(): Settings {
         geminiAPIHost: 'https://generativelanguage.googleapis.com',
         geminiModel: 'gemini-pro',
 
-        ollamaHost: 'http://localhost:11434',
+        ollamaHost: 'http://127.0.0.1:11434',
         ollamaModel: '',
 
         groqAPIKey: '',

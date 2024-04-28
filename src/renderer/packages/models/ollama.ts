@@ -2,6 +2,9 @@ import { Message } from 'src/shared/types'
 import Base, { onResultChange } from './base'
 import { ApiError } from './errors'
 
+// 也可以考虑官方库
+// import ollama from 'ollama/browser'
+
 interface Options {
     ollamaHost: string
     ollamaModel: string
@@ -24,6 +27,9 @@ export default class Ollama extends Base {
         }
         if (!host.startsWith('http')) {
             host = 'http://' + host
+        }
+        if (host === 'http://localhost:11434') {
+            host = 'http://127.0.0.1:11434' // 让其在浏览器中也能访问
         }
         return host
     }
