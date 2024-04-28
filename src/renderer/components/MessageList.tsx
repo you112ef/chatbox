@@ -75,6 +75,7 @@ export default function MessageList(props: Props) {
                                 sessionId={currentSession.id}
                                 sessionType={currentSession.type || 'chat'}
                                 className={index === 0 ? 'pt-4' : ''}
+                                collapseThreshold={msg.role === 'system' ? 150 : undefined}
                             />
                         </>
                         // </div>

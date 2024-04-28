@@ -245,5 +245,7 @@
     "The current model {{model}} does not support sending files.": "The current model {{model}} does not support sending files.",
     "The current model {{model}} does not support sending images. Recommended model: Chatbox AI 4.": "The current model {{model}} does not support sending images. Recommended model: Chatbox AI 4.",
     "The current model {{model}} does not support sending images.": "The current model {{model}} does not support sending images.",
-    "Reading file...": "Reading file..."
+    "Reading file...": "Reading file...",
+    "Expand": "Expand",
+    "Collapse": "Collapse"
 }

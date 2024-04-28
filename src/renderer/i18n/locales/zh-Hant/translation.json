@@ -246,5 +246,7 @@
     "The current model {{model}} does not support sending files.": "當前模型 {{model}} 不支持發送文件。",
     "The current model {{model}} does not support sending images. Recommended model: Chatbox AI 4.": "當前模型 {{model}} 不支持發送圖片。建議使用的模型：Chatbox AI 4。",
     "The current model {{model}} does not support sending images.": "當前模型 {{model}} 不支持發送圖片。",
-    "Reading file...": "讀取文件中..."
+    "Reading file...": "讀取文件中...",
+    "Expand": "展開",
+    "Collapse": "收起"
 }

@@ -13,6 +13,7 @@ import {
     Tooltip,
     ButtonGroup,
     useTheme,
+    Button,
 } from '@mui/material'
 import PersonIcon from '@mui/icons-material/Person'
 import SmartToyIcon from '@mui/icons-material/SmartToy'
@@ -66,6 +67,7 @@ export interface Props {
     sessionType: SessionType
     msg: Message
     className?: string
+    collapseThreshold?: number  // 文本长度阀值, 超过这个长度则会被折叠
 }
 
 function _Message(props: Props) {
@@ -86,7 +88,12 @@ function _Message(props: Props) {
     const setMessageEditDialogShow = useSetAtom(messageEditDialogShowAtom)
     const setOpenSettingWindow = useSetAtom(openSettingDialogAtom)
 
-    const { msg, className } = props
+    const { msg, className, collapseThreshold } = props
+
+    const needCollapse = collapseThreshold
+        && (JSON.stringify(msg.content)).length > collapseThreshold
+        && (JSON.stringify(msg.content)).length - collapseThreshold > 50    // 只有折叠有明显效果才折叠，为了更好的用户体验
+    const [isCollapsed, setIsCollapsed] = useState(needCollapse)
 
     const [isHovering, setIsHovering] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
@@ -251,12 +258,32 @@ function _Message(props: Props) {
         }
     }, [msg.content])
 
-    const content = (
-        typeof msg.content === 'string'
-            ? msg.content
-            : JSON.stringify(msg.content)
+    let content = msg.content   // 消息正文
+    if (typeof msg.content !== 'string') {
+        content = JSON.stringify(msg.content)
+    }
+    if (msg.generating) {
+        content += '...'
+    }
+    if (needCollapse && isCollapsed) {
+        content = msg.content.slice(0, collapseThreshold) + '...'
+    }
+
+    const CollapseButton = (
+        <Typography
+            className='cursor-pointer inline-block'
+            sx={{
+                color: theme.palette.primary.main,
+                '&:hover': {
+                    color: theme.palette.background.paper,
+                    bgcolor: theme.palette.primary.main,
+                },
+            }}
+            onClick={() => setIsCollapsed(!isCollapsed)}
+        >
+            [{isCollapsed ? t('Expand') : t('Collapse')}]
+        </Typography>
     )
-        + (msg.generating ? '...' : '')
 
     return (
         <Box
@@ -388,12 +415,19 @@ function _Message(props: Props) {
                         }
                         <Box className={'msg-content ' + (msg.role === 'system' ? 'msg-content-system' : '')}>
                             {
-                                enableMarkdownRendering ? (
+                                enableMarkdownRendering && !isCollapsed ? (
                                     <Markdown enableLaTeXRendering={enableLaTeXRendering}>
                                         {content}
                                     </Markdown>
                                 ) : (
-                                    <div>{content}</div>
+                                        <div>
+                                            {content}
+                                            {
+                                                needCollapse && isCollapsed && (
+                                                    <span className='pl-2'>{CollapseButton}</span>
+                                                )
+                                            }
+                                        </div>
                                 )
                             }
                         </Box>
@@ -454,6 +488,9 @@ function _Message(props: Props) {
                         <MessageErrTips msg={msg} />
                         <Typography variant="body2" sx={{ opacity: 0.5 }}>
                             {tips.join(', ')}
+                            {
+                                needCollapse && !isCollapsed && CollapseButton
+                            }
                         </Typography>
                         <Box sx={{ height: '35px' }}>
                             <ButtonGroup
