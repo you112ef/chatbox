@@ -24,6 +24,9 @@ export default class OpenAI extends Base {
         if (this.options.apiHost && this.options.apiHost.trim().length === 0) {
             this.options.apiHost = 'https://api.openai.com'
         }
+        if (this.options.apiHost && this.options.apiHost.startsWith('https://openrouter.ai/api/v1')) {
+            this.options.apiHost = 'https://openrouter.ai/api'
+        }
     }
 
     async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
