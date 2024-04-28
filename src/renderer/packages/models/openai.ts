@@ -27,29 +27,12 @@ export default class OpenAI extends Base {
     }
 
     async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
-        const messages = await populateOpenAIMessage(rawMessages, this.options.model)
+        let messages = await populateOpenAIMessage(rawMessages, this.options.model)
 
-        // 解决 GPT-4 不认识自己的问题
         const model = this.options.model === 'custom-model'
             ? this.options.openaiCustomModel || ''
             : this.options.model
-        for (const message of messages) {
-            if (message.role === 'system') {
-                if (typeof message.content == 'string') {
-                    message.content = `Current model: ${model}\n\n` + message.content
-                } else if (typeof message.content == 'object') {
-                    for (let i = 0; i < message.content.length; i++) {
-                        const content = message.content[i]
-                        if (content.type === 'text') {
-                            content.text = `Current model: ${model}\n\n` + content.text
-                            message.content[i] = content
-                            break
-                        }
-                    }
-                }
-                break
-            }
-        }
+        messages = injectModelSystemPrompt(model, messages)
 
         const response = await this.post(
             `${this.options.apiHost}/v1/chat/completions`,
@@ -201,35 +184,75 @@ export type Model = keyof typeof openaiModelConfigs
 export const models = Array.from(Object.keys(openaiModelConfigs)).sort() as Model[]
 
 export async function populateOpenAIMessage(rawMessages: Message[], model: Model | 'custom-model'): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
-    if (['gpt-4-vision-preview', 'gpt-4-turbo'].includes(model)) {
-        const messages: OpenAIMessageVision[] = []
-        for (const m of rawMessages) {
-            const content: OpenAIMessageVision['content'] = [
-                { type: 'text', text: m.content }
-            ]
-            for (const pic of (m.pictures || [])) {
-                if (!pic.storageKey) {
-                    continue
-                }
-                const picBase64 = await storage.getBlob(pic.storageKey)
-                if (!picBase64) {
-                    continue
-                }
-                content.push({
-                    type: 'image_url',
-                    image_url: { url: picBase64 }
-                })
-            }
-            messages.push({ role: m.role, content } as OpenAIMessageVision)
-        }
-        return messages
+    if ([
+        'gpt-4-vision-preview',
+        'openai/gpt-4-vision-preview',
+        'gpt-4-turbo',
+        'openai/gpt-4-turbo',
+    ].includes(model)) {
+        return populateOpenAIMessageVision(rawMessages)
+    } else if (model === 'custom-model' && rawMessages.some((m) => m.pictures && m.pictures.length > 0)){
+        return populateOpenAIMessageVision(rawMessages)
     } else {
-        const messages: OpenAIMessage[] = rawMessages.map((m) => ({
-            role: m.role,
-            content: m.content,
-        }))
-        return messages
+        return populateOpenAIMessageText(rawMessages)
     }
+}
+
+export async function populateOpenAIMessageText(rawMessages: Message[]): Promise<OpenAIMessage[]> {
+    const messages: OpenAIMessage[] = rawMessages.map((m) => ({
+        role: m.role,
+        content: m.content,
+    }))
+    return messages
+}
+
+export async function populateOpenAIMessageVision(rawMessages: Message[]): Promise<OpenAIMessageVision[]> {
+    const messages: OpenAIMessageVision[] = []
+    for (const m of rawMessages) {
+        const content: OpenAIMessageVision['content'] = [
+            { type: 'text', text: m.content }
+        ]
+        for (const pic of (m.pictures || [])) {
+            if (!pic.storageKey) {
+                continue
+            }
+            const picBase64 = await storage.getBlob(pic.storageKey)
+            if (!picBase64) {
+                continue
+            }
+            content.push({
+                type: 'image_url',
+                image_url: { url: picBase64 }
+            })
+        }
+        messages.push({ role: m.role, content } as OpenAIMessageVision)
+    }
+    return messages
+}
+
+/**
+ * 在 system prompt 中注入模型信息
+ * @param model 
+ * @param messages 
+ * @returns 
+ */
+export function injectModelSystemPrompt(model: string, messages: OpenAIMessage[] | OpenAIMessageVision[]) {
+    for (const message of messages) {
+        if (message.role === 'system') {
+            if (typeof message.content == 'string') {
+                message.content = `Current model: ${model}\n\n` + message.content
+            } else if (typeof message.content == 'object') {
+                for (const content of message.content) {
+                    if (content.type === 'text') {
+                        content.text = `Current model: ${model}\n\n` + content.text
+                        break
+                    }
+                }
+            }
+            break
+        }
+    }
+    return messages
 }
 
 // OpenAIMessage OpenAI API 消息类型。（对于业务追加的字段，应该放到 Message 中）

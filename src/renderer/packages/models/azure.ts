@@ -1,7 +1,7 @@
 import { Message } from 'src/shared/types'
 import Base, { onResultChange } from './base'
 import { ApiError } from './errors'
-import { openaiModelConfigs, populateOpenAIMessage } from './openai'
+import { injectModelSystemPrompt, openaiModelConfigs, populateOpenAIMessage } from './openai'
 
 interface Options {
     azureEndpoint: string
@@ -32,15 +32,8 @@ export default class AzureOpenAI extends Base {
     }
 
     async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
-        const messages = await populateOpenAIMessage(rawMessages, this.options.azureDeploymentName as any)
-
-        // 解决 GPT-4 不认识自己的问题
-        for (const message of messages) {
-            if (message.role === 'system') {
-                message.content = `Current model: ${this.options.azureDeploymentName}\n\n` + message.content
-                break
-            }
-        }
+        let messages = await populateOpenAIMessage(rawMessages, this.options.azureDeploymentName as any)
+        messages = injectModelSystemPrompt(this.options.azureDeploymentName, messages)
 
         const origin = new URL((this.options.azureEndpoint || '').trim()).origin
         const apiVersion = this.getApiVersion()

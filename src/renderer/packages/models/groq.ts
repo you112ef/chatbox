@@ -1,7 +1,7 @@
 import { Message } from 'src/shared/types'
 import Base, { onResultChange } from './base'
 import { ApiError } from './errors'
-import { populateOpenAIMessage } from './openai'
+import { populateOpenAIMessageText } from './openai'
 
 // https://console.groq.com/docs/models
 export const modelConfig = {
@@ -42,7 +42,7 @@ export default class Groq extends Base {
     }
 
     async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
-        const messages = await populateOpenAIMessage(rawMessages, 'custom-model')
+        const messages = await populateOpenAIMessageText(rawMessages)
         const temperature =  this.options.temperature === 0
             ? 0.1   // Groq 不支持 temperature 为 0, https://console.groq.com/docs/openai
             : this.options.temperature
