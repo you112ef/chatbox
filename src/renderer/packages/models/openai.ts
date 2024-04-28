@@ -35,7 +35,18 @@ export default class OpenAI extends Base {
             : this.options.model
         for (const message of messages) {
             if (message.role === 'system') {
-                message.content = `Current model: ${model}\n\n` + message.content
+                if (typeof message.content == 'string') {
+                    message.content = `Current model: ${model}\n\n` + message.content
+                } else if (typeof message.content == 'object') {
+                    for (let i = 0; i < message.content.length; i++) {
+                        const content = message.content[i]
+                        if (content.type === 'text') {
+                            content.text = `Current model: ${model}\n\n` + content.text
+                            message.content[i] = content
+                            break
+                        }
+                    }
+                }
                 break
             }
         }
