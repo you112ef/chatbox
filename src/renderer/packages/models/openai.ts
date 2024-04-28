@@ -1,7 +1,8 @@
 import { Message } from 'src/shared/types'
-import { ApiError } from './errors'
+import { ApiError, ChatboxAIAPIError } from './errors'
 import Base, { onResultChange } from './base'
 import storage from '@/storage'
+import * as settingActions from '@/stores/settingActions'
 
 interface Options {
     openaiKey: string
@@ -30,6 +31,24 @@ export default class OpenAI extends Base {
     }
 
     async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+        try {
+            return await this._callChatCompletion(rawMessages, signal, onResultChange)
+        } catch (e) {
+            // 如果当前模型不支持图片输入，抛出对应的错误
+            if (e instanceof ApiError && e.message.includes('Invalid content type. image_url is only supported by certain models.')) {
+                // 根据当前 IP，判断是否在错误中推荐 Chatbox AI 4
+                const remoteConfig = settingActions.getRemoteConfig()
+                if (remoteConfig.setting_chatboxai_first) {
+                    throw ChatboxAIAPIError.fromCodeName('model_not_support_image', 'model_not_support_image')
+                } else {
+                    throw ChatboxAIAPIError.fromCodeName('model_not_support_image', 'model_not_support_image_2')
+                }
+            }
+            throw e
+        }
+    }
+
+    async _callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
         let messages = await populateOpenAIMessage(rawMessages, this.options.model)
 
         const model = this.options.model === 'custom-model'
