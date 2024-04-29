@@ -42,8 +42,6 @@ import { trackingEvent } from '@/packages/event'
 interface Props {
     open: boolean
     close(): void
-    // openPremiumPage(): void
-    // premiumActivated: boolean
 }
 
 export default function CopilotWindow(props: Props) {
@@ -121,8 +119,6 @@ export default function CopilotWindow(props: Props) {
                             store.addOrUpdate(detail)
                             setCopilotEdit(null)
                         }}
-                        // premiumActivated={props.premiumActivated}
-                        // openPremiumPage={props.openPremiumPage}
                     />
                 ) : (
                     <Button
@@ -138,7 +134,7 @@ export default function CopilotWindow(props: Props) {
                 <ScrollableTabsButtonAuto
                     values={[{ value: 'my', label: t('My Copilots') }]}
                     currentValue="my"
-                    onChange={() => {}}
+                    onChange={() => { }}
                 />
                 <div
                     style={{
@@ -180,7 +176,7 @@ export default function CopilotWindow(props: Props) {
                         },
                     ]}
                     currentValue="chatbox-featured"
-                    onChange={() => {}}
+                    onChange={() => { }}
                 />
                 <div
                     style={{
@@ -206,18 +202,18 @@ export default function CopilotWindow(props: Props) {
 
 type MiniItemProps =
     | {
-          mode: 'local'
-          detail: CopilotDetail
-          useMe(): void
-          switchStarred(): void
-          editMe(): void
-          deleteMe(): void
-      }
+        mode: 'local'
+        detail: CopilotDetail
+        useMe(): void
+        switchStarred(): void
+        editMe(): void
+        deleteMe(): void
+    }
     | {
-          mode: 'remote'
-          detail: CopilotDetail
-          useMe(): void
-      }
+        mode: 'remote'
+        detail: CopilotDetail
+        useMe(): void
+    }
 
 function MiniItem(props: MiniItemProps) {
     const { t } = useTranslation()
@@ -397,28 +393,26 @@ function CopilotForm(props: CopilotFormProps) {
         name: <></>,
         prompt: <></>,
     })
-    const inputHandler = (field: keyof CopilotDetail, trim = true) => {
+    const inputHandler = (field: keyof CopilotDetail) => {
         return (event: React.ChangeEvent<HTMLInputElement>) => {
             setHelperTexts({ name: <></>, prompt: <></> })
-            if (trim) {
-                setCopilotEdit({
-                    ...copilotEdit,
-                    [field]: event.target.value.trim(),
-                })
-            } else {
-                setCopilotEdit({ ...copilotEdit, [field]: event.target.value })
-            }
+            setCopilotEdit({ ...copilotEdit, [field]: event.target.value })
         }
     }
     const save = () => {
-        if (copilotEdit.name.trim().length === 0) {
+        copilotEdit.name = copilotEdit.name.trim()
+        copilotEdit.prompt = copilotEdit.prompt.trim()
+        if (copilotEdit.picUrl) {
+            copilotEdit.picUrl = copilotEdit.picUrl.trim()
+        }
+        if (copilotEdit.name.length === 0) {
             setHelperTexts({
                 ...helperTexts,
                 name: <p style={{ color: 'red' }}>{t('cannot be empty')}</p>,
             })
             return
         }
-        if (copilotEdit.prompt.trim().length === 0) {
+        if (copilotEdit.prompt.length === 0) {
             setHelperTexts({
                 ...helperTexts,
                 prompt: <p style={{ color: 'red' }}>{t('cannot be empty')}</p>,
@@ -454,9 +448,10 @@ function CopilotForm(props: CopilotFormProps) {
                 fullWidth
                 variant="outlined"
                 multiline
-                maxRows={4}
+                minRows={4}
+                maxRows={10}
                 value={copilotEdit.prompt}
-                onChange={inputHandler('prompt', false)}
+                onChange={inputHandler('prompt')}
                 helperText={helperTexts['prompt']}
             />
             <TextField
@@ -467,14 +462,6 @@ function CopilotForm(props: CopilotFormProps) {
                 variant="outlined"
                 value={copilotEdit.picUrl}
                 onChange={inputHandler('picUrl')}
-                // disabled={!props.premiumActivated}
-                // helperText={
-                //     props.premiumActivated ? (
-                //         <></>
-                //     ) : (
-                //         <Button onClick={props.openPremiumPage}>{t('Unlock Copilot Avatar by Upgrading to Premium Edition')}</Button>
-                //     )
-                // }
             />
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <FormGroup row>
