@@ -4,7 +4,7 @@ import { Typography, useTheme } from '@mui/material'
 import { SessionType, createMessage } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as atoms from '../stores/atoms'
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom, useSetAtom, useAtomValue } from 'jotai'
 import * as sessionActions from '../stores/sessionActions'
 import * as dom from '../hooks/dom'
 import { Shortcut } from './Shortcut'
@@ -44,6 +44,7 @@ export default function InputBox(props: Props) {
     const showRollbackThreadButtonTimerRef = useRef<null | NodeJS.Timeout>(null)
     const inputRef = useRef<HTMLTextAreaElement | null>(null)
     const [previousMessageQuickInputMark, setPreviousMessageQuickInputMark] = useState('')
+    const widthFull = useAtomValue(atoms.widthFullAtom)
 
     useEffect(() => {
         if (quote !== '') {
@@ -261,111 +262,112 @@ export default function InputBox(props: Props) {
     const [easterEgg, setEasterEgg] = useState(false)
 
     return (
-        <div className='flex flex-col pl-1 pr-2 sm:pl-2 sm:pr-4' id={dom.InputBoxID}
+        <div className='pl-1 pr-2 sm:pl-2 sm:pr-4' id={dom.InputBoxID}
             style={{
                 borderTopWidth: '1px',
                 borderTopStyle: 'solid',
                 borderTopColor: theme.palette.divider,
             }}
         >
-            <div className='flex flex-row flex-nowrap justify-between py-1'>
-                <div className='flex flex-row items-center'>
-                    <MiniButton className='mr-1 sm:mr-2 hover:bg-transparent' style={{ color: theme.palette.text.primary }}
-                        onClick={() => {
-                            setEasterEgg(true)
-                            setTimeout(() => setEasterEgg(false), 1000)
-                        }}
-                    >
-                        <img className={cn('w-5 h-5', easterEgg ? 'animate-spin' : '')} src={icon} />
-                    </MiniButton>
-                    {
-                        showRollbackThreadButton ? (
-                            <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
-                                tooltipTitle={
-                                    <div className='text-center inline-block'>
-                                        <span>{t('Back to Previous')}</span>
-                                    </div>
-                                }
-                                tooltipPlacement='top'
-                                onClick={rollbackThread}
-                            >
-                                <Undo2 size='22' strokeWidth={1} />
-                            </MiniButton>
-                        ) : (
-                            <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
-                                tooltipTitle={
-                                    <div className='text-center inline-block'>
-                                        <span>{t('Refresh Context, Start a New Thread')}</span>
-                                        <br />
-                                        <Shortcut keys={['Option', 'R']} size='small' opacity={0.7} />
-                                    </div>
-                                }
-                                tooltipPlacement='top'
-                                onClick={startNewThread}
-                            >
-                                {/* <ListRestart size='22' strokeWidth={1} /> */}
-                                <MessageSquareDashed size='22' strokeWidth={1} />
-                            </MiniButton>
-                        )
-                    }
-                    <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
-                        onClick={() => setThreadHistoryDrawerOpen(true)}
-                        tooltipTitle={
-                            <div className='text-center inline-block'>
-                                <span>{t('View historical threads')}</span>
-                            </div>
+            <div className={cn('w-full mx-auto flex flex-col', widthFull ? '' : 'max-w-5xl')}>
+                <div className='flex flex-row flex-nowrap justify-between py-1'>
+                    <div className='flex flex-row items-center'>
+                        <MiniButton className='mr-1 sm:mr-2 hover:bg-transparent' style={{ color: theme.palette.text.primary }}
+                            onClick={() => {
+                                setEasterEgg(true)
+                                setTimeout(() => setEasterEgg(false), 1000)
+                            }}
+                        >
+                            <img className={cn('w-5 h-5', easterEgg ? 'animate-spin' : '')} src={icon} />
+                        </MiniButton>
+                        {
+                            showRollbackThreadButton ? (
+                                <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
+                                    tooltipTitle={
+                                        <div className='text-center inline-block'>
+                                            <span>{t('Back to Previous')}</span>
+                                        </div>
+                                    }
+                                    tooltipPlacement='top'
+                                    onClick={rollbackThread}
+                                >
+                                    <Undo2 size='22' strokeWidth={1} />
+                                </MiniButton>
+                            ) : (
+                                <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
+                                    tooltipTitle={
+                                        <div className='text-center inline-block'>
+                                            <span>{t('Refresh Context, Start a New Thread')}</span>
+                                            <br />
+                                            <Shortcut keys={['Option', 'R']} size='small' opacity={0.7} />
+                                        </div>
+                                    }
+                                    tooltipPlacement='top'
+                                    onClick={startNewThread}
+                                >
+                                    {/* <ListRestart size='22' strokeWidth={1} /> */}
+                                    <MessageSquareDashed size='22' strokeWidth={1} />
+                                </MiniButton>
+                            )
                         }
-                        tooltipPlacement='top'
-                    >
-                        <MessagesSquare size='22' strokeWidth={1} />
-                    </MiniButton>
-                    <input type='file' ref={pictureInputRef} className='hidden' onChange={onFileInputChange}
-                        // accept="image/png, image/jpeg, image/gif" 
-                        accept="image/png, image/jpeg"
-                    />
-                    <MiniButton
-                        className={cn('mr-1 sm:mr-2', props.currentSessionType !== 'picture' ? '' : 'hidden')}
-                        style={{ color: theme.palette.text.primary }}
-                        onClick={onImageUploadClick}
-                        tooltipTitle={
-                            <div className='text-center inline-block'>
-                                <span>{t('Attach Image')}</span>
-                            </div>
-                        }
-                        tooltipPlacement='top'
-                    >
-                        <Image size='22' strokeWidth={1} />
-                    </MiniButton>
-                    <input type='file' ref={fileInputRef} className='hidden' onChange={onFileInputChange} />
-                    <MiniButton
-                        className={cn('mr-1 sm:mr-2', props.currentSessionType !== 'picture' ? '' : 'hidden')}
-                        style={{ color: theme.palette.text.primary }}
-                        onClick={onFileUploadClick}
-                        tooltipTitle={
-                            <div className='text-center inline-block'>
-                                <span>{t('Select File')}</span>
-                                <br />
-                                <span>{t('PDF, DOC, PPT, XLS, TXT, Code...')}</span>
-                            </div>
-                        }
-                        tooltipPlacement='top'
-                    >
-                        <FolderClosed size='22' strokeWidth={1} />
-                    </MiniButton>
-                    <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
-                        onClick={() => setChatConfigDialogSession(sessionActions.getCurrentSession())}
-                        tooltipTitle={
-                            <div className='text-center inline-block'>
-                                <span>{t('Customize settings for the current conversation')}</span>
-                            </div>
-                        }
-                        tooltipPlacement='top'
-                    >
-                        <Settings2 size='22' strokeWidth={1} />
-                    </MiniButton>
-                </div>
-                <div className='flex flex-row items-center'>
-                    {/* <MiniButton className='mr-2 w-auto flex items-center opacity-70'>
+                        <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
+                            onClick={() => setThreadHistoryDrawerOpen(true)}
+                            tooltipTitle={
+                                <div className='text-center inline-block'>
+                                    <span>{t('View historical threads')}</span>
+                                </div>
+                            }
+                            tooltipPlacement='top'
+                        >
+                            <MessagesSquare size='22' strokeWidth={1} />
+                        </MiniButton>
+                        <input type='file' ref={pictureInputRef} className='hidden' onChange={onFileInputChange}
+                            // accept="image/png, image/jpeg, image/gif" 
+                            accept="image/png, image/jpeg"
+                        />
+                        <MiniButton
+                            className={cn('mr-1 sm:mr-2', props.currentSessionType !== 'picture' ? '' : 'hidden')}
+                            style={{ color: theme.palette.text.primary }}
+                            onClick={onImageUploadClick}
+                            tooltipTitle={
+                                <div className='text-center inline-block'>
+                                    <span>{t('Attach Image')}</span>
+                                </div>
+                            }
+                            tooltipPlacement='top'
+                        >
+                            <Image size='22' strokeWidth={1} />
+                        </MiniButton>
+                        <input type='file' ref={fileInputRef} className='hidden' onChange={onFileInputChange} />
+                        <MiniButton
+                            className={cn('mr-1 sm:mr-2', props.currentSessionType !== 'picture' ? '' : 'hidden')}
+                            style={{ color: theme.palette.text.primary }}
+                            onClick={onFileUploadClick}
+                            tooltipTitle={
+                                <div className='text-center inline-block'>
+                                    <span>{t('Select File')}</span>
+                                    <br />
+                                    <span>{t('PDF, DOC, PPT, XLS, TXT, Code...')}</span>
+                                </div>
+                            }
+                            tooltipPlacement='top'
+                        >
+                            <FolderClosed size='22' strokeWidth={1} />
+                        </MiniButton>
+                        <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
+                            onClick={() => setChatConfigDialogSession(sessionActions.getCurrentSession())}
+                            tooltipTitle={
+                                <div className='text-center inline-block'>
+                                    <span>{t('Customize settings for the current conversation')}</span>
+                                </div>
+                            }
+                            tooltipPlacement='top'
+                        >
+                            <Settings2 size='22' strokeWidth={1} />
+                        </MiniButton>
+                    </div>
+                    <div className='flex flex-row items-center'>
+                        {/* <MiniButton className='mr-2 w-auto flex items-center opacity-70'>
                         <span className='text-sm' style={{ color: theme.palette.text.primary }}>
                             Chatbox AI 4
                         </span>
@@ -374,7 +376,7 @@ export default function InputBox(props: Props) {
                             className='opacity-50'
                         />
                     </MiniButton> */}
-                    {/* <MiniButton className='mr-2 w-auto flex items-center opacity-70'>
+                        {/* <MiniButton className='mr-2 w-auto flex items-center opacity-70'>
                         <span className='text-sm' style={{ color: theme.palette.text.primary }}>
                             严谨(0.7)
                         </span>
@@ -383,68 +385,69 @@ export default function InputBox(props: Props) {
                             className='opacity-50'
                         />
                     </MiniButton> */}
-                    <MiniButton className='w-8 ml-2'
-                        style={{
-                            color: theme.palette.getContrastText(theme.palette.primary.main),
-                            backgroundColor: props.currentSessionType === 'picture'
-                                ? theme.palette.secondary.main
-                                : theme.palette.primary.main,
-                        }}
-                        tooltipTitle={
-                            <Typography variant="caption">
-                                {t('[Enter] send, [Shift+Enter] line break, [Ctrl+Enter] send without generating')}
-                            </Typography>
-                        }
-                        tooltipPlacement='top'
-                        onClick={() => handleSubmit()}
-                    >
-                        <SendHorizontal size='22' strokeWidth={1} />
-                    </MiniButton>
+                        <MiniButton className='w-8 ml-2'
+                            style={{
+                                color: theme.palette.getContrastText(theme.palette.primary.main),
+                                backgroundColor: props.currentSessionType === 'picture'
+                                    ? theme.palette.secondary.main
+                                    : theme.palette.primary.main,
+                            }}
+                            tooltipTitle={
+                                <Typography variant="caption">
+                                    {t('[Enter] send, [Shift+Enter] line break, [Ctrl+Enter] send without generating')}
+                                </Typography>
+                            }
+                            tooltipPlacement='top'
+                            onClick={() => handleSubmit()}
+                        >
+                            <SendHorizontal size='22' strokeWidth={1} />
+                        </MiniButton>
+                    </div>
                 </div>
-            </div>
-            <div className='w-full pl-1 pb-2'>
-                <textarea id={dom.messageInputID}
-                    className={cn(
-                        `w-full max-h-[${maxTextareaHeight}px]`,
-                        'overflow-y resize-none border-none outline-none',
-                        'bg-slate-300/25 rounded-lg p-2',
-                        'sm:bg-transparent sm:p-1'
-                    )}
-                    value={messageInput} onChange={onMessageInput}
-                    onKeyDown={onKeyDown}
-                    ref={inputRef}
-                    autoFocus={!isSmallScreen}
-                    style={{
-                        height: 'auto',
-                        minHeight: minTextareaHeight + 'px',
-                        color: theme.palette.text.primary,
-                        fontFamily: theme.typography.fontFamily,
-                        fontSize: theme.typography.body1.fontSize,
-                    }}
-                    placeholder={t('Type your question here...') || ''}
-                    onPaste={onPaste}
-                    {...{ enterKeyHint: 'send' } as any}
-                />
-                <div className='flex flex-row items-center' onClick={() => dom.focusMessageInput()} >
-                    {
-                        pictureKeys.map((picKey, ix) => (
-                            <ImageMiniCard
-                                key={ix}
-                                storageKey={picKey}
-                                onDelete={() => onImageDeleteClick(picKey)}
-                            />
-                        ))
-                    }
-                    {
-                        attachments.map((file, ix) => (
-                            <FileMiniCard
-                                key={ix}
-                                name={file.name}
-                                fileType={file.type}
-                                onDelete={() => setAttachments(files => files.filter(f => f.name != file.name))}
-                            />
-                        ))
-                    }
+                <div className='w-full pl-1 pb-2'>
+                    <textarea id={dom.messageInputID}
+                        className={cn(
+                            `w-full max-h-[${maxTextareaHeight}px]`,
+                            'overflow-y resize-none border-none outline-none',
+                            'bg-slate-300/25 rounded-lg p-2',
+                            'sm:bg-transparent sm:p-1'
+                        )}
+                        value={messageInput} onChange={onMessageInput}
+                        onKeyDown={onKeyDown}
+                        ref={inputRef}
+                        autoFocus={!isSmallScreen}
+                        style={{
+                            height: 'auto',
+                            minHeight: minTextareaHeight + 'px',
+                            color: theme.palette.text.primary,
+                            fontFamily: theme.typography.fontFamily,
+                            fontSize: theme.typography.body1.fontSize,
+                        }}
+                        placeholder={t('Type your question here...') || ''}
+                        onPaste={onPaste}
+                        {...{ enterKeyHint: 'send' } as any}
+                    />
+                    <div className='flex flex-row items-center' onClick={() => dom.focusMessageInput()} >
+                        {
+                            pictureKeys.map((picKey, ix) => (
+                                <ImageMiniCard
+                                    key={ix}
+                                    storageKey={picKey}
+                                    onDelete={() => onImageDeleteClick(picKey)}
+                                />
+                            ))
+                        }
+                        {
+                            attachments.map((file, ix) => (
+                                <FileMiniCard
+                                    key={ix}
+                                    name={file.name}
+                                    fileType={file.type}
+                                    onDelete={() => setAttachments(files => files.filter(f => f.name != file.name))}
+                                />
+                            ))
+                        }
+                    </div>
                 </div>
             </div>
         </div>

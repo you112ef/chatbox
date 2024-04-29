@@ -4,17 +4,17 @@ import Button from '@mui/material/Button'
 import SearchIcon from '@mui/icons-material/Search'
 import HistoryIcon from '@mui/icons-material/History'
 import Save from '@mui/icons-material/Save'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import * as atoms from '../stores/atoms'
 import { useTranslation } from 'react-i18next'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import StyledMenu from './StyledMenu'
 import { useState } from 'react'
-import { MenuItem, Divider } from '@mui/material'
+import { MenuItem, Divider, useTheme } from '@mui/material'
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
-import { Message } from 'src/shared/types'
-import { useIsSmallScreen } from '@/hooks/useScreenChange'
-import platform from '@/platform'
+import WidthNormalIcon from '@mui/icons-material/WidthNormal';
+import WidthWideIcon from '@mui/icons-material/WidthWide';
+import { useIsLargeScreen, useIsSmallScreen } from '@/hooks/useScreenChange'
 
 /**
  * 顶部标题工具栏（右侧）
@@ -23,12 +23,15 @@ import platform from '@/platform'
 export default function Toolbar() {
     const { t } = useTranslation()
     const isSmallScreen = useIsSmallScreen()
+    const isLargeScreen = useIsLargeScreen()
+
     const currentSession = useAtomValue(atoms.currentSessionAtom)
 
     const setOpenSearchDialog = useSetAtom(atoms.openSearchDialogAtom)
     const setThreadHistoryDrawerOpen = useSetAtom(atoms.showThreadHistoryDrawerAtom)
     const setSessionCleanDialog = useSetAtom(atoms.sessionCleanDialogAtom)
     const setOpenExportChatDialog = useSetAtom(atoms.openExportChatDialogAtom)
+    const [widthFull, setWidthFull] = useAtom(atoms.widthFullAtom)
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
@@ -84,6 +87,21 @@ export default function Toolbar() {
                     </span>
                 </Button>
             )}
+            {
+                isLargeScreen && (
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="width-full-button"
+                        sx={{ mr: 2 }}
+                        onClick={() => setWidthFull(!widthFull)}
+                    >
+                        {
+                            widthFull ? <WidthWideIcon /> : <WidthNormalIcon />
+                        }
+                    </IconButton>
+                )
+            }
             <IconButton
                 edge="start"
                 color="inherit"

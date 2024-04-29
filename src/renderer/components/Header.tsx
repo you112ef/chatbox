@@ -21,6 +21,7 @@ export default function Header(props: Props) {
     const { t } = useTranslation()
     const theme = useTheme()
     const currentSession = useAtomValue(atoms.currentSessionAtom)
+    const widthFull = useAtomValue(atoms.widthFullAtom)
     const setChatConfigDialogSession = useSetAtom(atoms.chatConfigDialogAtom)
     const [showSidebar, setShowSidebar] = useAtom(atoms.showSidebarAtom)
 
@@ -92,47 +93,49 @@ export default function Header(props: Props) {
 
     return (
         <div
-            className="flex flex-row pt-3 pb-2 px-0.5 sm:px-4"
+            className="pt-3 pb-2 px-0.5 sm:px-4"
             style={{
                 borderBottomWidth: '1px',
                 borderBottomStyle: 'solid',
                 borderBottomColor: theme.palette.divider,
             }}
         >
-            {!showSidebar && (
-                <Box className="mr-1">
-                    <IconButton onClick={() => setShowSidebar(!showSidebar)}>
-                        <MenuOpenIcon className="text-xl" sx={{ transform: 'rotate(180deg)' }} />
-                    </IconButton>
-                </Box>
-            )}
-            <Typography
-                variant="h6"
-                color="inherit"
-                component="div"
-                noWrap
-                sx={{
-                    flex: 1,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                }}
-                className="flex items-center cursor-pointer"
-                onClick={() => {
-                    editCurrentSession()
-                }}
-            >
+            <div className={cn('w-full mx-auto flex flex-row', widthFull ? '' : 'max-w-5xl')}>
+                {!showSidebar && (
+                    <Box className="mr-1">
+                        <IconButton onClick={() => setShowSidebar(!showSidebar)}>
+                            <MenuOpenIcon className="text-xl" sx={{ transform: 'rotate(180deg)' }} />
+                        </IconButton>
+                    </Box>
+                )}
+                <Typography
+                    variant="h6"
+                    color="inherit"
+                    component="div"
+                    noWrap
+                    sx={{
+                        flex: 1,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                    }}
+                    className="flex items-center cursor-pointer"
+                    onClick={() => {
+                        editCurrentSession()
+                    }}
+                >
+                    {
+                        <Typography variant="h6" noWrap className={cn('max-w-56', showSidebar ? 'ml-3' : 'ml-1')}>
+                            {currentSession.name}
+                        </Typography>
+                    }
+                    {EditButton}
+                </Typography>
                 {
-                    <Typography variant="h6" noWrap className={cn('max-w-56', showSidebar ? 'ml-3' : 'ml-1')}>
-                        {currentSession.name}
-                    </Typography>
+                    // 大屏幕的广告UI
+                    !isSmallScreen && <SponsorChip sessionId={currentSession.id} />
                 }
-                {EditButton}
-            </Typography>
-            {
-                // 大屏幕的广告UI
-                !isSmallScreen && <SponsorChip sessionId={currentSession.id} />
-            }
-            <Toolbar />
+                <Toolbar />
+            </div>
         </div>
     )
 }

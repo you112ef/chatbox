@@ -212,3 +212,5 @@ export const pictureShowAtom = atom<MessagePicture | null>(null)
 
 // 会话编辑窗口
 export const messageEditDialogShowAtom = atom<{ msg: Message, sessionId: string } | null>(null)
+
+export const widthFullAtom = atomWithStorage<boolean>('widthFull', false)
