@@ -8,19 +8,14 @@ import {
     Divider,
     Typography,
     Grid,
-    Menu,
-    MenuProps,
     Tooltip,
-    ButtonGroup,
     useTheme,
-    Button,
 } from '@mui/material'
 import PersonIcon from '@mui/icons-material/Person'
 import SmartToyIcon from '@mui/icons-material/SmartToy'
 import SettingsIcon from '@mui/icons-material/Settings'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import EditIcon from '@mui/icons-material/Edit'
-import { styled, alpha } from '@mui/material/styles'
 import StopIcon from '@mui/icons-material/Stop'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import * as utils from '../packages/utils'
@@ -54,6 +49,7 @@ import { ImageInStorage, Image } from './Image'
 import SouthIcon from '@mui/icons-material/South'
 import ImageIcon from '@mui/icons-material/Image'
 import MessageErrTips from './MessageErrTips'
+import StyledMenu from './StyledMenu'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import * as dom from '@/hooks/dom'
 import * as dateFns from "date-fns"
@@ -95,7 +91,6 @@ function _Message(props: Props) {
         && (JSON.stringify(msg.content)).length - collapseThreshold > 50    // 只有折叠有明显效果才折叠，为了更好的用户体验
     const [isCollapsed, setIsCollapsed] = useState(needCollapse)
 
-    const [isHovering, setIsHovering] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
 
     const [autoScrollId, setAutoScrollId] = useState<null | string>(null)
@@ -144,12 +139,10 @@ function _Message(props: Props) {
         sessionActions.modifyMessage(props.sessionId, updated, true)
     }
     const onDelMsg = () => {
-        setIsHovering(false)
         setAnchorEl(null)
         sessionActions.removeMessage(props.sessionId, msg.id)
     }
     const onEditClick = () => {
-        setIsHovering(false)
         setAnchorEl(null)
         setMessageEditDialogShow({
             sessionId: props.sessionId,
@@ -199,14 +192,6 @@ function _Message(props: Props) {
         }
 
         tips.push('time: ' + messageTimestamp)
-    }
-
-    let displayButtonGroup = false
-    if (isHovering) {
-        displayButtonGroup = true // 鼠标悬停时，显示按钮组
-    }
-    if (msg.generating) {
-        displayButtonGroup = true // 消息生成中，显示按钮组
     }
 
     let fixedButtonGroup = false
@@ -290,13 +275,8 @@ function _Message(props: Props) {
             ref={ref}
             id={props.id}
             key={msg.id}
-            onMouseOver={() => {
-                setIsHovering(true)
-            }}
-            onMouseLeave={() => {
-                setIsHovering(false)
-            }}
             className={cn(
+                'group/message',
                 'msg-block',
                 'px-2',
                 msg.generating ? 'rendering' : 'render-done',
@@ -493,9 +473,14 @@ function _Message(props: Props) {
                             }
                         </Typography>
                         <Box sx={{ height: '35px' }}>
-                            <ButtonGroup
-                                sx={{
-                                    display: displayButtonGroup ? 'inline-flex' : 'none',
+                            <span
+                                className={cn(
+                                    'shadow-md rounded-md border-solid border-gray-200/50 dark:border-gray-200/20 bg-white dark:bg-slate-800',
+                                    !anchorEl && !msg.generating
+                                        ? 'hidden group-hover/message:inline-flex'
+                                        : 'inline-flex',
+                                )}
+                                style={{
                                     height: '35px',
                                     opacity: 1,
                                     ...(fixedButtonGroup
@@ -510,9 +495,6 @@ function _Message(props: Props) {
                                             ? theme.palette.grey[800]
                                             : theme.palette.background.paper,
                                 }}
-                                variant="contained"
-                                color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
-                                aria-label="outlined primary button group"
                             >
                                 {msg.generating && (
                                     <Tooltip title={t('stop generating')} placement="top">
@@ -607,7 +589,6 @@ function _Message(props: Props) {
                                     <MenuItem
                                         key={msg.id + 'quote'}
                                         onClick={() => {
-                                            setIsHovering(false)
                                             setAnchorEl(null)
                                             quoteMsg()
                                         }}
@@ -622,7 +603,7 @@ function _Message(props: Props) {
                                         {t('delete')}
                                     </MenuItem>
                                 </StyledMenu>
-                            </ButtonGroup>
+                            </span>
                         </Box>
                     </Grid>
                 </Grid>
@@ -630,47 +611,6 @@ function _Message(props: Props) {
         </Box>
     )
 }
-
-// <Divider variant="middle" light />
-const StyledMenu = styled((props: MenuProps) => (
-    <Menu
-        elevation={0}
-        anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-        }}
-        transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-        }}
-        {...props}
-    />
-))(({ theme }) => ({
-    '& .MuiPaper-root': {
-        borderRadius: 6,
-        marginTop: theme.spacing(1),
-        minWidth: 140,
-        color: theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
-        boxShadow:
-            'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
-        '& .MuiMenu-list': {
-            padding: '4px 0',
-        },
-        '& .MuiMenuItem-root': {
-            '& .MuiSvgIcon-root': {
-                fontSize: 18,
-                color: theme.palette.text.secondary,
-                marginRight: theme.spacing(1.5),
-            },
-            '&:active': {
-                backgroundColor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
-            },
-        },
-        '& hr': {
-            margin: '4px 0',
-        },
-    },
-}))
 
 export default function Message(props: Props) {
     return useMemo(() => {

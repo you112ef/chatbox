@@ -223,7 +223,6 @@ function MiniItem(props: MiniItemProps) {
     const { t } = useTranslation()
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
-    const [hovering, setHovering] = useState(false)
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         event.stopPropagation()
         event.preventDefault()
@@ -298,15 +297,6 @@ function MiniItem(props: MiniItemProps) {
                         anchorEl={anchorEl}
                         open={open}
                         onClose={handleClose}
-                        onMouseEnter={() => {
-                            setHovering(true)
-                        }}
-                        onMouseOver={() => {
-                            setHovering(true)
-                        }}
-                        onMouseLeave={() => {
-                            setHovering(false)
-                        }}
                     >
                         <MenuItem
                             key={'star'}

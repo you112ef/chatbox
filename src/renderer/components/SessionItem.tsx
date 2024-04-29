@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { useSetAtom } from 'jotai'
-import { ListItemText, MenuItem, Divider, Avatar, IconButton, Typography, ListItemIcon } from '@mui/material'
+import { ListItemText, MenuItem, Divider, Avatar, IconButton, Typography, ListItemIcon, useTheme } from '@mui/material'
 import { Session } from '../../shared/types'
 import CopyIcon from '@mui/icons-material/CopyAll'
 import EditIcon from '@mui/icons-material/Edit'
@@ -14,6 +14,7 @@ import StarOutlineIcon from '@mui/icons-material/StarOutline'
 import ImageIcon from '@mui/icons-material/Image'
 import * as sessionActions from '../stores/sessionActions'
 import * as atoms from '@/stores/atoms'
+import { cn } from '@/lib/utils'
 
 export interface Props {
     session: Session
@@ -24,7 +25,6 @@ function _SessionItem(props: Props) {
     const { session, selected } = props
     const { t } = useTranslation()
     const setChatConfigDialogSession = useSetAtom(atoms.chatConfigDialogAtom)
-    const [hovering, setHovering] = useState(false)
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
     const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -38,27 +38,22 @@ function _SessionItem(props: Props) {
     const onClick = () => {
         sessionActions.switchCurrentSession(session.id)
     }
+    const theme = useTheme()
+    const medianSize = theme.typography.pxToRem(24)
+    // const smallSize = theme.typography.pxToRem(20)
     return (
         <>
             <MenuItem
                 key={session.id}
                 selected={selected}
                 onClick={onClick}
-                onMouseEnter={() => {
-                    setHovering(true)
-                }}
-                onMouseOver={() => {
-                    setHovering(true)
-                }}
-                onMouseLeave={() => {
-                    setHovering(false)
-                }}
                 sx={{ padding: '0.1rem', margin: '0.1rem' }}
+                className='group/session-item'
             >
                 <ListItemIcon>
                     <IconButton color={session.type === 'picture' ? 'secondary' : 'inherit'} onClick={onClick}>
                         {session.picUrl ? (
-                            <Avatar sizes="20px" sx={{ width: '20px', height: '20px' }} src={session.picUrl} />
+                            <Avatar sizes={medianSize} sx={{ width: medianSize, height: medianSize }} src={session.picUrl} />
                         ) : session.type === 'picture' ? (
                             <ImageIcon fontSize="small" />
                         ) : (
@@ -71,15 +66,15 @@ function _SessionItem(props: Props) {
                         {session.name}
                     </Typography>
                 </ListItemText>
-                {
+                <span className={cn(session.starred || anchorEl ? 'inline-flex' : 'hidden group-hover/session-item:inline-flex')}>
                     <IconButton onClick={handleMenuClick} sx={{ color: 'primary.main' }}>
                         {session.starred ? (
                             <StarIcon fontSize="small" />
                         ) : (
-                            hovering && <MoreHorizOutlinedIcon fontSize="small" />
+                            <MoreHorizOutlinedIcon fontSize="small" />
                         )}
                     </IconButton>
-                }
+                </span>
             </MenuItem>
             <StyledMenu
                 MenuListProps={{

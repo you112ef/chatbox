@@ -15,6 +15,7 @@ import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 import SwapCallsIcon from '@mui/icons-material/SwapCalls';
 import DeleteIcon from "@mui/icons-material/Delete";
 import StyledMenu from "@/components/StyledMenu";
+import { cn } from '@/lib/utils';
 
 interface Props {
 }
@@ -120,7 +121,6 @@ function ThreadItem(props: {
 }) {
     const { t } = useTranslation()
     const { thread, goto, showHistoryDrawer, switchThread, lastOne } = props
-    const [hovering, setHovering] = useState(false)
     const selected = thread.id === showHistoryDrawer
     const threadName = thread.name || t('New Thread')
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
@@ -153,16 +153,8 @@ function ThreadItem(props: {
                     onClick={() => {
                         goto(thread.id)
                     }}
-                    onMouseEnter={() => {
-                        setHovering(true)
-                    }}
-                    onMouseOver={() => {
-                        setHovering(true)
-                    }}
-                    onMouseLeave={() => {
-                        setHovering(false)
-                    }}
                     sx={{ padding: '0.1rem', margin: '0.1rem' }}
+                    className='group/thread-item'
                 >
                     <ListItemIcon>
                         <span className='opacity-50 text-xs'>{thread.messageCount}</span>
@@ -179,9 +171,9 @@ function ThreadItem(props: {
                             }
                         </Typography>
                     </ListItemText>
-                    <ListItemIcon>
+                    <ListItemIcon className={cn(selected || anchorEl ? 'opacity-100' : 'opacity-0 group-hover/thread-item:opacity-100')}>
                         <IconButton onClick={handleMenuClick}>
-                            <MoreHorizOutlinedIcon fontSize="small" sx={{ opacity: hovering || selected ? 1 : 0 }} />
+                            <MoreHorizOutlinedIcon fontSize="small" />
                         </IconButton>
                     </ListItemIcon>
                 </MenuItem>
