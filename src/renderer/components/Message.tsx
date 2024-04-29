@@ -9,6 +9,7 @@ import {
     Typography,
     Grid,
     Tooltip,
+    ButtonGroup,
     useTheme,
 } from '@mui/material'
 import PersonIcon from '@mui/icons-material/Person'
@@ -380,16 +381,16 @@ function _Message(props: Props) {
                         {
                             msg.status && msg.status.length > 0 && msg.status[0].type === 'sending_file' && (
                                 <div className='flex flex-row items-start justify-start overflow-x-auto overflow-y-hidden'>
-                                            <div className='flex justify-start items-center mb-1 px-1 py-2
+                                    <div className='flex justify-start items-center mb-1 px-1 py-2
                                                     border-solid border-blue-400/20 shadow-md rounded-lg
                                                     bg-blue-100
                                                     '
-                                            >
-                                                <Loader className='w-6 h-6 ml-1 mr-2 text-black animate-spin' />
-                                                <span className='mr-4 animate-pulse font-bold text-gray-800/70'>
-                                                    {t('Reading file...')}
-                                                </span>
-                                            </div>
+                                    >
+                                        <Loader className='w-6 h-6 ml-1 mr-2 text-black animate-spin' />
+                                        <span className='mr-4 animate-pulse font-bold text-gray-800/70'>
+                                            {t('Reading file...')}
+                                        </span>
+                                    </div>
                                 </div>
                             )
                         }
@@ -400,14 +401,14 @@ function _Message(props: Props) {
                                         {content}
                                     </Markdown>
                                 ) : (
-                                        <div>
-                                            {content}
-                                            {
-                                                needCollapse && isCollapsed && (
-                                                    <span className='pl-2'>{CollapseButton}</span>
-                                                )
-                                            }
-                                        </div>
+                                    <div>
+                                        {content}
+                                        {
+                                            needCollapse && isCollapsed && (
+                                                <span className='pl-2'>{CollapseButton}</span>
+                                            )
+                                        }
+                                    </div>
                                 )
                             }
                         </Box>
@@ -473,136 +474,135 @@ function _Message(props: Props) {
                             }
                         </Typography>
                         <Box sx={{ height: '35px' }}>
-                            <span
-                                className={cn(
-                                    'shadow-md rounded-md border-solid border-gray-200/50 dark:border-gray-200/20 bg-white dark:bg-slate-800',
-                                    !anchorEl && !msg.generating
-                                        ? 'hidden group-hover/message:inline-flex'
-                                        : 'inline-flex',
-                                )}
-                                style={{
-                                    height: '35px',
-                                    opacity: 1,
-                                    ...(fixedButtonGroup
-                                        ? {
-                                            position: 'fixed',
-                                            bottom: dom.getInputBoxHeight() + 4 + 'px',
-                                            zIndex: 100,
-                                        }
-                                        : {}),
-                                    backgroundColor:
-                                        theme.palette.mode === 'dark'
-                                            ? theme.palette.grey[800]
-                                            : theme.palette.background.paper,
-                                }}
-                            >
-                                {msg.generating && (
-                                    <Tooltip title={t('stop generating')} placement="top">
-                                        <IconButton aria-label="edit" color="warning" onClick={onStop}>
-                                            <StopIcon fontSize="small" />
-                                        </IconButton>
-                                    </Tooltip>
-                                )}
-                                {
-                                    // 生成中的消息不显示刷新按钮，必须是助手消息
-                                    !msg.generating && msg.role === 'assistant' &&
-                                    (
-                                        <Tooltip title={t('Reply Again')} placement="top">
+                            <span className={cn(!anchorEl && !msg.generating ? 'hidden group-hover/message:inline-flex' : 'inline-flex')} >
+                                <ButtonGroup
+                                    sx={{
+                                        height: '35px',
+                                        opacity: 1,
+                                        ...(fixedButtonGroup
+                                            ? {
+                                                position: 'fixed',
+                                                bottom: dom.getInputBoxHeight() + 4 + 'px',
+                                                zIndex: 100,
+                                            }
+                                            : {}),
+                                        backgroundColor:
+                                            theme.palette.mode === 'dark'
+                                                ? theme.palette.grey[800]
+                                                : theme.palette.background.paper,
+                                    }}
+                                    variant="contained"
+                                    color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
+                                    aria-label="message button group"
+                                >
+                                    {msg.generating && (
+                                        <Tooltip title={t('stop generating')} placement="top">
+                                            <IconButton aria-label="edit" color="warning" onClick={onStop}>
+                                                <StopIcon fontSize="small" />
+                                            </IconButton>
+                                        </Tooltip>
+                                    )}
+                                    {
+                                        // 生成中的消息不显示刷新按钮，必须是助手消息
+                                        !msg.generating && msg.role === 'assistant' &&
+                                        (
+                                            <Tooltip title={t('Reply Again')} placement="top">
+                                                <IconButton
+                                                    aria-label="Reply Again"
+                                                    onClick={onRefresh}
+                                                    color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
+                                                >
+                                                    <ReplayIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )
+                                    }
+                                    {!msg.generating && msg.role === 'user' && (
+                                        <Tooltip title={t('Reply Again Below')} placement="top">
                                             <IconButton
-                                                aria-label="Reply Again"
+                                                aria-label="Reply Again Below"
                                                 onClick={onRefresh}
                                                 color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
                                             >
-                                                <ReplayIcon fontSize="small" />
+                                                <SouthIcon fontSize="small" />
                                             </IconButton>
                                         </Tooltip>
-                                    )
-                                }
-                                {!msg.generating && msg.role === 'user' && (
-                                    <Tooltip title={t('Reply Again Below')} placement="top">
-                                        <IconButton
-                                            aria-label="Reply Again Below"
-                                            onClick={onRefresh}
-                                            color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
-                                        >
-                                            <SouthIcon fontSize="small" />
-                                        </IconButton>
-                                    </Tooltip>
-                                )}
-                                {
-                                    // Chatbox-AI 模型不支持编辑消息
-                                    !msg.model?.startsWith('Chatbox-AI') &&
-                                    // 图片会话中，助手消息无需编辑
-                                    !(msg.role === 'assistant' && props.sessionType === 'picture') &&
-                                    (
-                                        <Tooltip title={t('edit')} placement="top">
-                                            <IconButton
-                                                aria-label="edit"
-                                                color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
-                                                onClick={onEditClick}
-                                            >
-                                                <EditIcon fontSize="small" />
-                                            </IconButton>
-                                        </Tooltip>
-                                    )
-                                }
-                                {!(props.sessionType === 'picture' && msg.role === 'assistant') && (
-                                    <Tooltip title={t('copy')} placement="top">
-                                        <IconButton
-                                            aria-label="copy"
-                                            onClick={onCopyMsg}
-                                            color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
-                                        >
-                                            <CopyAllIcon fontSize="small" />
-                                        </IconButton>
-                                    </Tooltip>
-                                )}
-                                {
-                                    !msg.generating && props.sessionType === 'picture' && msg.role === 'assistant' && (
-                                        <Tooltip title={t('Generate More Images Below')} placement="top">
+                                    )}
+                                    {
+                                        // Chatbox-AI 模型不支持编辑消息
+                                        !msg.model?.startsWith('Chatbox-AI') &&
+                                        // 图片会话中，助手消息无需编辑
+                                        !(msg.role === 'assistant' && props.sessionType === 'picture') &&
+                                        (
+                                            <Tooltip title={t('edit')} placement="top">
+                                                <IconButton
+                                                    aria-label="edit"
+                                                    color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
+                                                    onClick={onEditClick}
+                                                >
+                                                    <EditIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )
+                                    }
+                                    {!(props.sessionType === 'picture' && msg.role === 'assistant') && (
+                                        <Tooltip title={t('copy')} placement="top">
                                             <IconButton
                                                 aria-label="copy"
-                                                onClick={onGenerateMore}
-                                                color='secondary'
+                                                onClick={onCopyMsg}
+                                                color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
                                             >
-                                                <AddPhotoAlternateIcon className='mr-1' fontSize="small" />
-                                                <Typography fontSize="small">{t('More Images')}</Typography>
+                                                <CopyAllIcon fontSize="small" />
                                             </IconButton>
                                         </Tooltip>
-                                    )
-                                }
-                                <IconButton
-                                    onClick={handleClick}
-                                    color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
-                                >
-                                    <MoreVertIcon fontSize="small" />
-                                </IconButton>
-                                <StyledMenu
-                                    MenuListProps={{
-                                        'aria-labelledby': 'demo-customized-button',
-                                    }}
-                                    anchorEl={anchorEl}
-                                    open={open}
-                                    onClose={handleClose}
-                                    key={msg.id + 'menu'}
-                                >
-                                    <MenuItem
-                                        key={msg.id + 'quote'}
-                                        onClick={() => {
-                                            setAnchorEl(null)
-                                            quoteMsg()
-                                        }}
-                                        disableRipple
+                                    )}
+                                    {
+                                        !msg.generating && props.sessionType === 'picture' && msg.role === 'assistant' && (
+                                            <Tooltip title={t('Generate More Images Below')} placement="top">
+                                                <IconButton
+                                                    aria-label="copy"
+                                                    onClick={onGenerateMore}
+                                                    color='secondary'
+                                                >
+                                                    <AddPhotoAlternateIcon className='mr-1' fontSize="small" />
+                                                    <Typography fontSize="small">{t('More Images')}</Typography>
+                                                </IconButton>
+                                            </Tooltip>
+                                        )
+                                    }
+                                    <IconButton
+                                        onClick={handleClick}
+                                        color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
                                     >
-                                        <FormatQuoteIcon fontSize="small" />
-                                        {t('quote')}
-                                    </MenuItem>
-                                    <Divider sx={{ my: 0.5 }} />
-                                    <MenuItem key={msg.id + 'del'} onClick={onDelMsg} disableRipple>
-                                        <DeleteForeverIcon fontSize="small" />
-                                        {t('delete')}
-                                    </MenuItem>
-                                </StyledMenu>
+                                        <MoreVertIcon fontSize="small" />
+                                    </IconButton>
+                                    <StyledMenu
+                                        MenuListProps={{
+                                            'aria-labelledby': 'demo-customized-button',
+                                        }}
+                                        anchorEl={anchorEl}
+                                        open={open}
+                                        onClose={handleClose}
+                                        key={msg.id + 'menu'}
+                                    >
+                                        <MenuItem
+                                            key={msg.id + 'quote'}
+                                            onClick={() => {
+                                                setAnchorEl(null)
+                                                quoteMsg()
+                                            }}
+                                            disableRipple
+                                        >
+                                            <FormatQuoteIcon fontSize="small" />
+                                            {t('quote')}
+                                        </MenuItem>
+                                        <Divider sx={{ my: 0.5 }} />
+                                        <MenuItem key={msg.id + 'del'} onClick={onDelMsg} disableRipple>
+                                            <DeleteForeverIcon fontSize="small" />
+                                            {t('delete')}
+                                        </MenuItem>
+                                    </StyledMenu>
+                                </ButtonGroup>
                             </span>
                         </Box>
                     </Grid>

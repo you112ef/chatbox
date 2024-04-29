@@ -15,12 +15,13 @@ const StyledMenu = styled((props: MenuProps) => (
         }}
         PopoverClasses={{
             root: '',
-            paper: 'shadow-md rounded-md border-solid border-gray-200/40 bg-white dark:bg-slate-800'
+            paper: 'bg-white dark:bg-slate-800'
         }}
         {...props}
     />
 ))(({ theme }) => ({
     '& .MuiPaper-root': {
+        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[800] : theme.palette.grey[100],
         borderRadius: 6,
         marginTop: theme.spacing(1),
         minWidth: 140,
