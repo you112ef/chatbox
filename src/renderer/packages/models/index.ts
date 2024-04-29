@@ -34,8 +34,8 @@ export function getModel(setting: Settings, config: Config) {
 export const aiProviderNameHash = {
     [ModelProvider.OpenAI]: 'OpenAI API',
     [ModelProvider.Azure]: 'Azure OpenAI API',
-    [ModelProvider.ChatGLM6B]: 'ChatGLM-6B',
-    [ModelProvider.ChatboxAI]: 'Chatbox-AI',
+    [ModelProvider.ChatGLM6B]: 'ChatGLM',
+    [ModelProvider.ChatboxAI]: 'Chatbox AI',
     [ModelProvider.Claude]: 'Claude',
     [ModelProvider.Gemini]: 'Google Gemini',
     [ModelProvider.Ollama]: 'Ollama',
@@ -113,7 +113,7 @@ export function getModelDisplayName(settings: SessionSettings, sessionType: Sess
                 return `Azure OpenAI (${settings.azureDeploymentName})`
             }
         case ModelProvider.ChatGLM6B:
-            return 'ChatGLM-6B'
+            return 'ChatGLM'
         case ModelProvider.ChatboxAI:
             if (sessionType === 'picture') {
                 return `Chatbox AI (DALL-E-3)`
