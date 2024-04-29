@@ -248,5 +248,6 @@
     "The current model {{model}} does not support sending images.": "当前模型 {{model}} 不支持发送图片。",
     "Reading file...": "正在读取文件...",
     "Expand": "展开",
-    "Collapse": "折叠"
+    "Collapse": "折叠",
+    "Instruction (System Prompt)": "系统提示（角色设定）"
 }

@@ -247,5 +247,6 @@
     "The current model {{model}} does not support sending images.": "The current model {{model}} does not support sending images.",
     "Reading file...": "Reading file...",
     "Expand": "Expand",
-    "Collapse": "Collapse"
+    "Collapse": "Collapse",
+    "Instruction (System Prompt)": "Instruction (System Prompt)"
 }

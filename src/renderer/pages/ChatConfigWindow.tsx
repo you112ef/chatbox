@@ -17,6 +17,7 @@ import {
     settings2SessionSettings,
     isChatSession,
     isPictureSession,
+    createMessage,
 } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as sessionActions from '../stores/sessionActions'
@@ -63,6 +64,16 @@ export default function ChatConfigWindow(props: Props) {
         }
     }, [chatConfigDialogSession])
 
+    const [systemPrompt, setSystemPrompt] = React.useState('')
+    useEffect(() => {
+        if (!chatConfigDialogSession) {
+            setSystemPrompt('')
+        } else {
+            const systemMessage = chatConfigDialogSession.messages.find((m) => m.role === 'system')
+            setSystemPrompt(systemMessage?.content || '')
+        }
+    }, [chatConfigDialogSession])
+
     useEffect(() => {
         if (chatConfigDialogSession) {
             trackingEvent('chat_config_window', { event_category: 'screen_view' })
@@ -81,6 +92,16 @@ export default function ChatConfigWindow(props: Props) {
             editingData.name = chatConfigDialogSession.name
         }
         editingData.name = editingData.name.trim()
+        if (systemPrompt === '') {
+            editingData.messages = editingData.messages.filter((m) => m.role !== 'system')
+        } else {
+            const systemMessage = editingData.messages.find((m) => m.role === 'system')
+            if (systemMessage) {
+                systemMessage.content = systemPrompt.trim()
+            } else {
+                editingData.messages.unshift(createMessage('system', systemPrompt.trim()))
+            }
+        }
         sessionActions.modify(editingData)
         setChatConfigDialogSession(null)
     }
@@ -102,6 +123,18 @@ export default function ChatConfigWindow(props: Props) {
                     variant="outlined"
                     value={editingData.name}
                     onChange={(e) => setEditingData({ ...editingData, name: e.target.value })}
+                />
+                <TextField
+                    margin="dense"
+                    label={t('Instruction (System Prompt)')}
+                    placeholder={t('Copilot Prompt Demo') || ''}
+                    fullWidth
+                    variant="outlined"
+                    multiline
+                    minRows={4}
+                    maxRows={10}
+                    value={systemPrompt}
+                    onChange={(event) => setSystemPrompt(event.target.value)}
                 />
                 {isChatSession(chatConfigDialogSession) && <ChatConfig dataEdit={editingData} setDataEdit={setEditingData} />}
                 {isPictureSession(chatConfigDialogSession) && <PictureConfig dataEdit={editingData} setDataEdit={setEditingData} />}

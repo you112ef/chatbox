@@ -248,5 +248,6 @@
     "The current model {{model}} does not support sending images.": "현재 모델 {{model}}은 이미지 전송을 지원하지 않습니다.",
     "Reading file...": "파일 읽는 중...",
     "Expand": "확장",
-    "Collapse": "축소"
+    "Collapse": "축소",
+    "Instruction (System Prompt)": "지시 (시스템 프롬프트)"
 }

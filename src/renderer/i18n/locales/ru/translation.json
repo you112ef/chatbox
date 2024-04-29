@@ -248,5 +248,6 @@
     "The current model {{model}} does not support sending images.": "Текущая модель {{model}} не поддерживает отправку изображений.",
     "Reading file...": "Чтение файла...",
     "Expand": "Развернуть",
-    "Collapse": "Свернуть"
+    "Collapse": "Свернуть",
+    "Instruction (System Prompt)": "Инструкция (Системная подсказка)"
 }
