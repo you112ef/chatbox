@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { ModelSettings } from '../../../shared/types'
 import { useTranslation } from 'react-i18next'
 import TemperatureSlider from '../../components/TemperatureSlider'
@@ -6,6 +6,7 @@ import PasswordTextField from '../../components/PasswordTextField'
 import MaxContextMessageCountSlider from '../../components/MaxContextMessageCountSlider'
 import ClaudeModelSelect from '../../components/ClaudeModelSelect'
 import TextFieldReset from '@/components/TextFieldReset'
+import { Accordion, AccordionSummary, AccordionDetails } from '../../components/Accordion'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -42,17 +43,26 @@ export default function ClaudeSetting(props: ModelConfigProps) {
                 }}
             />
             <ClaudeModelSelect
-                settingsEdit={settingsEdit}
-                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                value={settingsEdit.claudeModel}
+                onChange={(value) => setSettingsEdit({ ...settingsEdit, claudeModel: value })}
             />
-            <MaxContextMessageCountSlider
-                settingsEdit={settingsEdit}
-                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
-            />
-            <TemperatureSlider
-                settingsEdit={settingsEdit}
-                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
-            />
+            <Accordion>
+                <AccordionSummary aria-controls="panel1a-content">
+                    <Typography>
+                        {t('model')} & {t('token')}{' '}
+                    </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <MaxContextMessageCountSlider
+                        value={settingsEdit.openaiMaxContextMessageCount}
+                        onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
+                    />
+                    <TemperatureSlider
+                        value={settingsEdit.temperature}
+                        onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
+                    />
+                </AccordionDetails>
+            </Accordion>
         </Box>
     )
 }

@@ -7,8 +7,10 @@ import ClaudeSetting from './ClaudeSetting'
 import ChatGLM6BSetting from './ChatGLMSetting'
 import AIProviderSelect from '../../components/AIProviderSelect'
 import GeminiSetting from './GeminiSetting'
-import OllamaSetting from './OllamaSetting'
 import GroqSetting from './GroqSetting'
+import { OllamaHostInput, OllamaModelSelect } from './OllamaSetting'
+import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
+import TemperatureSlider from '@/components/TemperatureSlider'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -20,8 +22,8 @@ export default function ModelSettingTab(props: ModelConfigProps) {
     return (
         <Box>
             <AIProviderSelect
-                settingsEdit={settingsEdit}
-                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                value={settingsEdit.aiProvider}
+                onChange={(v) => setSettingsEdit({ ...settingsEdit, aiProvider: v })}
             />
             <Divider sx={{ margin: '12px 0' }} />
             {settingsEdit.aiProvider === ModelProvider.OpenAI && (
@@ -46,9 +48,25 @@ export default function ModelSettingTab(props: ModelConfigProps) {
                 <GroqSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
             )}
             {settingsEdit.aiProvider === ModelProvider.Ollama && (
-                <OllamaSetting settingsEdit={settingsEdit} setSettingsEdit={(updated) => {
-                    setSettingsEdit({ ...settingsEdit, ...updated })
-                }} />
+                <>
+                    <OllamaHostInput
+                        ollamaHost={settingsEdit.ollamaHost}
+                        setOllamaHost={(v) => setSettingsEdit({ ...settingsEdit, ollamaHost: v })}
+                    />
+                    <OllamaModelSelect
+                        ollamaModel={settingsEdit.ollamaModel}
+                        setOlamaModel={(v) => setSettingsEdit({ ...settingsEdit, ollamaModel: v })}
+                        ollamaHost={settingsEdit.ollamaHost}
+                    />
+                    <MaxContextMessageCountSlider
+                        value={settingsEdit.openaiMaxContextMessageCount}
+                        onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
+                    />
+                    <TemperatureSlider
+                        value={settingsEdit.temperature}
+                        onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
+                    />
+                </>
             )}
         </Box>
     )

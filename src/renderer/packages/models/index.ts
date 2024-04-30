@@ -1,5 +1,5 @@
 import OpenAI from './openai'
-import { Settings, Config, ModelProvider, SessionSettings, SessionType } from '../../../shared/types'
+import { Settings, Config, ModelProvider, SessionType, ModelSettings, Session } from '../../../shared/types'
 import ChatboxAI from './chatboxai'
 import AzureOpenAI from './azure'
 import ChatGLM from './chatglm'
@@ -91,7 +91,10 @@ export const AIModelProviderMenuOptionList = [
     // },
 ]
 
-export function getModelDisplayName(settings: SessionSettings, sessionType: SessionType) {
+export function getModelDisplayName(settings: Session['settings'], sessionType: SessionType): string {
+    if (!settings) {
+        return 'unknown'
+    }
     switch (settings.aiProvider) {
         case ModelProvider.OpenAI:
             if (sessionType === 'picture') {
@@ -104,7 +107,7 @@ export function getModelDisplayName(settings: SessionSettings, sessionType: Sess
                     }
                     return `OpenAI Custom Model (${name})`
                 }
-                return settings.model
+                return settings.model || 'unknown'
             }
         case ModelProvider.Azure:
             if (sessionType === 'picture') {
@@ -122,7 +125,7 @@ export function getModelDisplayName(settings: SessionSettings, sessionType: Sess
                 return model.replace('chatboxai-', 'Chatbox AI ')
             }
         case ModelProvider.Claude:
-            return settings.claudeModel
+            return settings.claudeModel || 'unknown'
         case ModelProvider.Gemini:
             return `Google (${settings.geminiModel})`
         case ModelProvider.Ollama:
@@ -134,7 +137,7 @@ export function getModelDisplayName(settings: SessionSettings, sessionType: Sess
     }
 }
 
-export function isCurrentModelSupportImageInput(settings: SessionSettings) {
+export function isCurrentModelSupportImageInput(settings: ModelSettings) {
     return (settings.aiProvider === ModelProvider.ChatboxAI && settings.chatboxAIModel === 'chatboxai-4')
         || (settings.aiProvider === ModelProvider.OpenAI && ['gpt-4-turbo', 'gpt-4-vision-preview', 'custom-model'].includes(settings.model))
         || (settings.aiProvider === ModelProvider.Azure && settings.azureDeploymentName === 'gpt-4-vision-preview')

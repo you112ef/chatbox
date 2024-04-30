@@ -249,5 +249,6 @@
     "Reading file...": "ファイルを読み込んでいます...",
     "Expand": "展開",
     "Collapse": "折りたたむ",
-    "Instruction (System Prompt)": "指示（システムプロンプト）"
+    "Instruction (System Prompt)": "指示（システムプロンプト）",
+    "Reset to Global Settings": "グローバル設定にリセット"
 }

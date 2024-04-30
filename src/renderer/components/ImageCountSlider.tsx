@@ -1,17 +1,16 @@
 import { TextField, Slider, Typography, Box } from '@mui/material'
-import { SessionSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 
 export interface Props {
-    settingsEdit: SessionSettings
-    setSettingsEdit: (settings: SessionSettings) => void
+    value: number
+    onChange(value: number): void
+    className?: string
 }
 
 export default function ImageCountSlider(props: Props) {
     const { t } = useTranslation()
-    const { settingsEdit, setSettingsEdit } = props
     return (
-        <Box sx={{ margin: '10px' }}>
+        <Box sx={{ margin: '10px' }} className={props.className}>
             <Box>
                 <Typography gutterBottom>{t('Number of Images per Reply')}</Typography>
             </Box>
@@ -24,10 +23,10 @@ export default function ImageCountSlider(props: Props) {
             >
                 <Box sx={{ width: '92%' }}>
                     <Slider
-                        value={settingsEdit.imageGenerateNum}
+                        value={props.value}
                         onChange={(_event, value) => {
                             const v = Array.isArray(value) ? value[0] : value
-                            setSettingsEdit({ ...settingsEdit, imageGenerateNum: v })
+                            props.onChange(v)
                         }}
                         aria-labelledby="discrete-slider"
                         valueLabelDisplay="auto"
@@ -39,14 +38,17 @@ export default function ImageCountSlider(props: Props) {
                 </Box>
                 <TextField
                     sx={{ marginLeft: 2, width: '100px' }}
-                    value={settingsEdit.imageGenerateNum}
+                    value={props.value.toString()}
                     onChange={(event) => {
                         const s = event.target.value.trim()
                         const v = parseInt(s)
                         if (isNaN(v)) {
                             return
                         }
-                        setSettingsEdit({ ...settingsEdit, imageGenerateNum: v })
+                        if (v < 0) {
+                            return
+                        }
+                        props.onChange(v)
                     }}
                     type="text"
                     size="small"

@@ -1,24 +1,23 @@
 import SimpleSelect from './SimpleSelect'
-import { SessionSettings } from '../../shared/types'
+import { ModelSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import { geminiModels } from '@/packages/models/gemini'
 
 export interface Props {
-    settingsEdit: SessionSettings
-    setSettingsEdit: (settings: SessionSettings) => void
+    value: ModelSettings['geminiModel']
+    onChange(value: ModelSettings['geminiModel']): void
+    className?: string
 }
 
 export default function GeminiModelSelect(props: Props) {
     const { t } = useTranslation()
-    const { settingsEdit, setSettingsEdit } = props
     return (
         <SimpleSelect
             label={t('model')}
-            value={settingsEdit.geminiModel}
+            value={props.value}
             options={geminiModels.map((value) => ({ value, label: value }))}
-            onChange={(value) => {
-                setSettingsEdit({ ...settingsEdit, geminiModel: value })
-            }}
+            onChange={props.onChange}
+            className={props.className}
         />
     )
 }

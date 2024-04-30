@@ -249,5 +249,6 @@
     "Reading file...": "讀取文件中...",
     "Expand": "展開",
     "Collapse": "收起",
-    "Instruction (System Prompt)": "指令（系統提示）"
+    "Instruction (System Prompt)": "指令（系統提示）",
+    "Reset to Global Settings": "重置為全局設置"
 }

@@ -1,28 +1,24 @@
 import { useEffect, useState } from 'react'
 import { TextField, Slider, Typography, Box } from '@mui/material'
-import { SessionSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 
 export interface Props {
-    settingsEdit: SessionSettings
-    setSettingsEdit: (settings: SessionSettings) => void
+    topP: number
+    setTopP: (topP: number) => void
+    className?: string
 }
 
 export default function TopPSlider(props: Props) {
-    const { settingsEdit, setSettingsEdit } = props
     const { t } = useTranslation()
     const [input, setInput] = useState('1')
     useEffect(() => {
-        setInput(`${settingsEdit.topP}`)
-    }, [settingsEdit.topP])
+        setInput(`${props.topP}`)
+    }, [props.topP])
     const handleChange = (event: Event, newValue: number | number[], activeThumb: number) => {
         if (typeof newValue === 'number') {
-            setSettingsEdit({ ...settingsEdit, topP: newValue })
+            props.setTopP(newValue)
         } else {
-            setSettingsEdit({
-                ...settingsEdit,
-                topP: newValue[activeThumb],
-            })
+            props.setTopP(newValue[activeThumb])
         }
     }
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,20 +29,20 @@ export default function TopPSlider(props: Props) {
         }
         let num = parseFloat(value)
         if (isNaN(num)) {
-            setInput(`${settingsEdit.topP}`)
+            setInput(`${props.topP}`)
             return
         }
         if (num < 0 || num > 1) {
-            setInput(`${settingsEdit.topP}`)
+            setInput(`${props.topP}`)
             return
         }
         // 保留一位小数
         num = Math.round(num * 100) / 100
         setInput(num.toString())
-        setSettingsEdit({ ...settingsEdit, topP: num })
+        props.setTopP(num)
     }
     return (
-        <Box sx={{ margin: '10px' }}>
+        <Box sx={{ margin: '10px' }} className={props.className}>
             <Box>
                 <Typography id="discrete-slider" gutterBottom>
                     {t('Top P')}
@@ -61,11 +57,11 @@ export default function TopPSlider(props: Props) {
             >
                 <Box sx={{ width: '92%' }}>
                     <Slider
-                        value={settingsEdit.topP}
+                        value={props.topP}
                         onChange={handleChange}
                         aria-labelledby="discrete-slider"
                         valueLabelDisplay="auto"
-                        defaultValue={settingsEdit.topP}
+                        defaultValue={props.topP}
                         step={0.01}
                         min={0}
                         max={1}

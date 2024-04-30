@@ -1,16 +1,16 @@
 import SimpleSelect from './SimpleSelect'
-import { SessionSettings, ChatboxAIModel } from '../../shared/types'
+import { ChatboxAIModel } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import { chatboxAIModels } from '@/packages/models/chatboxai'
 
 export interface Props {
-    settingsEdit: SessionSettings
-    setSettingsEdit: (settings: SessionSettings) => void
+    value?: ChatboxAIModel
+    onChange(value?: ChatboxAIModel): void
+    className?: string
 }
 
 export default function ChatboxAIModelSelect(props: Props) {
     const { t } = useTranslation()
-    const { settingsEdit, setSettingsEdit } = props
     const chatboxAIModelLabelHash: Record<ChatboxAIModel, React.ReactNode> = {
         'chatboxai-3.5': (
             <span className="inline-flex items-center">
@@ -54,11 +54,10 @@ export default function ChatboxAIModelSelect(props: Props) {
     return (
         <SimpleSelect
             label={t('model')}
-            value={settingsEdit.chatboxAIModel || 'chatboxai-3.5'}
+            value={props.value || 'chatboxai-3.5'}
             options={chatboxAIModels.map((value) => ({ value, label: chatboxAIModelLabelHash[value] }))}
-            onChange={(value) => {
-                setSettingsEdit({ ...settingsEdit, chatboxAIModel: value })
-            }}
+            onChange={props.onChange}
+            className={props.className}
         />
     )
 }

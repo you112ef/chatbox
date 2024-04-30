@@ -54,12 +54,12 @@ export default function ChatGLM6BSetting(props: ModelConfigProps) {
                 }
             />
             <MaxContextMessageCountSlider
-                settingsEdit={settingsEdit}
-                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                value={settingsEdit.openaiMaxContextMessageCount}
+                onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
             />
             <TemperatureSlider
-                settingsEdit={settingsEdit}
-                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                value={settingsEdit.temperature}
+                onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
             />
         </Box>
     )

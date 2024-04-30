@@ -50,25 +50,34 @@ export default function Header(props: Props) {
 
     let EditButton: React.ReactNode | null = null
     if (isChatSession(currentSession) && currentSession.settings) {
-        EditButton = (
-            <Tooltip
-                title={t('Current conversation configured with specific model settings')}
-                className="cursor-pointer"
-            >
-                <Chip
-                    className="ml-2 cursor-pointer"
-                    variant="outlined"
-                    color="warning"
-                    size="small"
-                    icon={<TuneIcon className="cursor-pointer" />}
-                    label={
-                        <span className="cursor-pointer">
-                            {getModelDisplayName(currentSession.settings, currentSession.type || 'chat')}
-                        </span>
-                    }
+        const modelName = getModelDisplayName(currentSession.settings, currentSession.type || 'chat')
+        if (modelName === '' || modelName === 'unknown') {
+            EditButton = (
+                <Pencil className="ml-1 cursor-pointer w-4 h-4" fontSize="small"
+                    style={{ color: theme.palette.warning.main }}
                 />
-            </Tooltip>
-        )
+            )
+        } else {
+            EditButton = (
+                <Tooltip
+                    title={t('Current conversation configured with specific model settings')}
+                    className="cursor-pointer"
+                >
+                    <Chip
+                        className="ml-2 cursor-pointer"
+                        variant="outlined"
+                        color="warning"
+                        size="small"
+                        icon={<TuneIcon className="cursor-pointer" />}
+                        label={
+                            <span className="cursor-pointer">
+                                {modelName}
+                            </span>
+                        }
+                    />
+                </Tooltip>
+            )
+        }
     } else if (isPictureSession(currentSession)) {
         EditButton = (
             <Tooltip

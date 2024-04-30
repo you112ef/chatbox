@@ -1,13 +1,13 @@
-import React from 'react'
-import { TextField, Slider, Typography, Box } from '@mui/material'
-import { useTranslation } from 'react-i18next'
+// import React from 'react'
+// import { TextField, Slider, Typography, Box } from '@mui/material'
+// import { useTranslation } from 'react-i18next'
 // import { getTokenLimits } from '../../packages/token_config'
-import { SessionSettings } from '../../../shared/types'
+// import { SessionSettings } from '../../../shared/types'
 
-interface ModelConfigProps {
-    settingsEdit: SessionSettings
-    setSettingsEdit: (settings: SessionSettings) => void
-}
+// interface ModelConfigProps {
+//     settingsEdit: SessionSettings
+//     setSettingsEdit: (settings: SessionSettings) => void
+// }
 
 // export default function TokenConfig(props: ModelConfigProps) {
 //     const { settingsEdit, setSettingsEdit } = props

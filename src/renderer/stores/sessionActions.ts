@@ -616,7 +616,9 @@ export async function generate(sessionId: string, targetMsg: Message) {
     if (!session) {
         return
     }
-    const settings = mergeSettings(globalSettings, session)
+    const settings = session.settings
+        ? mergeSettings(globalSettings, session.settings, session.type)
+        : globalSettings
 
     // 将消息的状态修改成初始状态
     const placeholder = session.type === 'picture' ? `[${i18n.t('Please wait about 20 seconds')}]` : '...'
@@ -762,7 +764,9 @@ async function _generateName(sessionId: string, modifyName: (sessionId: string, 
     if (!session) {
         return
     }
-    const settings = mergeSettings(globalSettings, session)
+    const settings = session.settings
+        ? mergeSettings(globalSettings, session.settings, session.type)
+        : globalSettings
     const configs = await platform.getConfig()
     try {
         const model = getModel(settings, configs)
@@ -893,13 +897,10 @@ export function getCurrentMessages() {
     return store.get(atoms.currentMessageListAtom)
 }
 
-function mergeSettings(globalSettings: Settings, session: Session): Settings {
-    if (!session.settings) {
-        return globalSettings
-    }
-    let specialSettings: Partial<ModelSettings> = session.settings
+export function mergeSettings(globalSettings: Settings, sessionSetting: Partial<ModelSettings>, sessionType?: 'picture' | 'chat'): Settings {
+    let specialSettings = sessionSetting
     // 过滤掉会话专属设置中不应该存在的设置项，为了兼容旧版本数据和防止疏漏
-    switch (session.type) {
+    switch (sessionType) {
         case 'picture':
             specialSettings = pickPictureSettings(specialSettings as Settings)
             break
@@ -930,7 +931,10 @@ export function getCurrentSessionMergedSettings() {
     const store = getDefaultStore()
     const globalSettings = store.get(atoms.settingsAtom)
     const session = store.get(atoms.currentSessionAtom)
-    return mergeSettings(globalSettings, session)
+    if (!session.settings) {
+        return globalSettings
+    }
+    return mergeSettings(globalSettings, session.settings, session.type)
 }
 
 export async function exportChat(session: Session, scope: ExportChatScope, format: ExportChatFormat) {

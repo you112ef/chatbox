@@ -249,5 +249,6 @@
     "Reading file...": "正在读取文件...",
     "Expand": "展开",
     "Collapse": "折叠",
-    "Instruction (System Prompt)": "系统提示（角色设定）"
+    "Instruction (System Prompt)": "系统提示（角色设定）",
+    "Reset to Global Settings": "重置为全局设置"
 }

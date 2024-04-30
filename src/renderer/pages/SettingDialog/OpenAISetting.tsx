@@ -75,21 +75,24 @@ export default function OpenAISetting(props: ModelConfigProps) {
                     </Alert> */}
 
                     <OpenAIModelSelect
-                        settingsEdit={settingsEdit}
-                        setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                        model={settingsEdit.model}
+                        openaiCustomModel={settingsEdit.openaiCustomModel}
+                        onChange={(model, openaiCustomModel) =>
+                            setSettingsEdit({ ...settingsEdit, model, openaiCustomModel })
+                        }
                     />
 
                     <TemperatureSlider
-                        settingsEdit={settingsEdit}
-                        setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                        value={settingsEdit.temperature}
+                        onChange={(value) => setSettingsEdit({ ...settingsEdit, temperature: value })}
                     />
                     <TopPSlider
-                        settingsEdit={settingsEdit}
-                        setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                        topP={settingsEdit.topP}
+                        setTopP={(v) => setSettingsEdit({ ...settingsEdit, topP: v })}
                     />
                     <MaxContextMessageCountSlider
-                        settingsEdit={settingsEdit}
-                        setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                        value={settingsEdit.openaiMaxContextMessageCount}
+                        onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
                     />
 
                     {/* <TokenConfig

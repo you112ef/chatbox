@@ -1,30 +1,26 @@
 import { useEffect, useState } from 'react'
 import { Chip, TextField, Slider, Typography, Box } from '@mui/material'
-import { SessionSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle'
 import LightbulbCircleIcon from '@mui/icons-material/LightbulbCircle'
 
 export interface Props {
-    settingsEdit: SessionSettings
-    setSettingsEdit: (settings: SessionSettings) => void
+    value: number
+    onChange(value: number): void
+    className?: string
 }
 
 export default function TemperatureSlider(props: Props) {
-    const { settingsEdit, setSettingsEdit } = props
     const { t } = useTranslation()
     const [input, setInput] = useState('0.70')
     useEffect(() => {
-        setInput(`${settingsEdit.temperature}`)
-    }, [settingsEdit.temperature])
+        setInput(`${props.value}`)
+    }, [props.value])
     const handleTemperatureChange = (event: Event, newValue: number | number[], activeThumb: number) => {
         if (typeof newValue === 'number') {
-            setSettingsEdit({ ...settingsEdit, temperature: newValue })
+            props.onChange(newValue)
         } else {
-            setSettingsEdit({
-                ...settingsEdit,
-                temperature: newValue[activeThumb],
-            })
+            props.onChange(newValue[activeThumb])
         }
     }
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,20 +31,20 @@ export default function TemperatureSlider(props: Props) {
         }
         let num = parseFloat(value)
         if (isNaN(num)) {
-            setInput(`${settingsEdit.temperature}`)
+            setInput(`${value}`)
             return
         }
         if (num < 0 || num > 1) {
-            setInput(`${settingsEdit.temperature}`)
+            setInput(`${value}`)
             return
         }
         // 保留一位小数
         num = Math.round(num * 100) / 100
         setInput(num.toString())
-        setSettingsEdit({ ...settingsEdit, temperature: num })
+        props.onChange(num)
     }
     return (
-        <Box sx={{ margin: '10px' }}>
+        <Box sx={{ margin: '10px' }} className={props.className}>
             <Box>
                 <Typography gutterBottom>{t('temperature')}</Typography>
             </Box>
@@ -61,11 +57,10 @@ export default function TemperatureSlider(props: Props) {
             >
                 <Box sx={{ width: '92%' }}>
                     <Slider
-                        value={settingsEdit.temperature}
+                        value={props.value}
                         onChange={handleTemperatureChange}
                         aria-labelledby="discrete-slider"
                         valueLabelDisplay="auto"
-                        defaultValue={settingsEdit.temperature}
                         step={0.01}
                         min={0}
                         max={1}

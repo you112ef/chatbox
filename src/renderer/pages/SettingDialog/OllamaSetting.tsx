@@ -1,68 +1,66 @@
-import { Alert, Box, Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material'
-import { SessionSettings } from '../../../shared/types'
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
+import { ModelSettings } from '../../../shared/types'
 import { useTranslation } from 'react-i18next'
-import TemperatureSlider from '@/components/TemperatureSlider'
 import TextFieldReset from '@/components/TextFieldReset'
 import { useEffect, useState } from 'react'
 import Ollama from '@/packages/models/ollama'
-import platform from '@/platform'
-import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
 
-interface ModelConfigProps {
-    settingsEdit: SessionSettings
-    setSettingsEdit: (settings: SessionSettings) => void
+export function OllamaHostInput(props: {
+    ollamaHost: string
+    setOllamaHost: (host: string) => void
+    className?: string
+}) {
+    const { t } = useTranslation()
+    return (
+        <TextFieldReset
+            label={t('api host')}
+            value={props.ollamaHost}
+            defaultValue='http://localhost:11434'
+            onValueChange={props.setOllamaHost}
+            fullWidth
+            className={props.className}
+        />
+    )
 }
 
-export default function OllamaSetting(props: ModelConfigProps) {
-    const { settingsEdit, setSettingsEdit } = props
+export function OllamaModelSelect(props: {
+    ollamaModel: ModelSettings['ollamaModel']
+    setOlamaModel: (model: ModelSettings['ollamaModel']) => void
+    ollamaHost: string
+    className?: string
+}) {
     const { t } = useTranslation()
     const [models, setModels] = useState<string[]>([])
     useEffect(() => {
-        const model = new Ollama(settingsEdit)
+        const model = new Ollama({
+            ollamaHost: props.ollamaHost,
+            ollamaModel: props.ollamaModel,
+            temperature: 0.5,
+        })
         model.listModels().then((models) => {
             setModels(models)
         })
-        if (settingsEdit.ollamaModel && models.length > 0 && !models.includes(settingsEdit.ollamaModel)) {
-            setSettingsEdit({ ...settingsEdit, ollamaModel: models[0] })
+        if (props.ollamaModel && models.length > 0 && !models.includes(props.ollamaModel)) {
+            props.setOlamaModel(models[0])
         }
-    }, [settingsEdit.ollamaHost])
+    }, [props.ollamaHost])
     return (
-        <Box>
-            <TextFieldReset
-                label={t('api host')}
-                value={settingsEdit.ollamaHost}
-                defaultValue='http://localhost:11434'
-                onValueChange={(value) => {
-                    setSettingsEdit({ ...settingsEdit, ollamaHost: value })
-                }}
-                fullWidth
-            />
-            <FormControl fullWidth variant="outlined" margin="dense">
-                <InputLabel htmlFor="ollama-model-select">{t('model')}</InputLabel>
-                <Select
-                    label={t('model')}
-                    id="ollama-model-select"
-                    value={settingsEdit.ollamaModel}
-                    onChange={(e) =>
-                        setSettingsEdit({ ...settingsEdit, ollamaModel: e.target.value as any })
-                    }
-                >
-                    {models.map((model) => (
-                        <MenuItem key={model} value={model}>
-                            {model}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-
-            <MaxContextMessageCountSlider
-                settingsEdit={settingsEdit}
-                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
-            />
-            <TemperatureSlider
-                settingsEdit={settingsEdit}
-                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
-            />
-        </Box>
+        <FormControl fullWidth variant="outlined" margin="dense" className={props.className}>
+            <InputLabel htmlFor="ollama-model-select">{t('model')}</InputLabel>
+            <Select
+                label={t('model')}
+                id="ollama-model-select"
+                value={props.ollamaModel}
+                onChange={(e) =>
+                    props.setOlamaModel(e.target.value)
+                }
+            >
+                {models.map((model) => (
+                    <MenuItem key={model} value={model}>
+                        {model}
+                    </MenuItem>
+                ))}
+            </Select>
+        </FormControl>
     )
 }

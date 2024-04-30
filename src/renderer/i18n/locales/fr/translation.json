@@ -249,5 +249,6 @@
     "Reading file...": "Lecture du fichier...",
     "Expand": "Développer",
     "Collapse": "Réduire",
-    "Instruction (System Prompt)": "Instruction (Invite Système)"
+    "Instruction (System Prompt)": "Instruction (Invite Système)",
+    "Reset to Global Settings": "Réinitialiser aux Paramètres Globaux"
 }

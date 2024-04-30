@@ -249,5 +249,6 @@
     "Reading file...": "Чтение файла...",
     "Expand": "Развернуть",
     "Collapse": "Свернуть",
-    "Instruction (System Prompt)": "Инструкция (Системная подсказка)"
+    "Instruction (System Prompt)": "Инструкция (Системная подсказка)",
+    "Reset to Global Settings": "Сбросить к глобальным настройкам"
 }

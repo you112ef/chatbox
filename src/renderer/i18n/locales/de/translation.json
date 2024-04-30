@@ -249,5 +249,6 @@
     "Reading file...": "Datei wird gelesen...",
     "Expand": "Erweitern",
     "Collapse": "Reduzieren",
-    "Instruction (System Prompt)": "Anweisung (Systemeingabeaufforderung)"
+    "Instruction (System Prompt)": "Anweisung (Systemeingabeaufforderung)",
+    "Reset to Global Settings": "Auf globale Einstellungen zurücksetzen"
 }

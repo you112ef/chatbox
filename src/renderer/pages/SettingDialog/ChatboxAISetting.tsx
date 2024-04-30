@@ -115,8 +115,8 @@ export default function ChatboxAISetting(props: ModelConfigProps) {
                 </Box>
                 {activated && (
                     <ChatboxAIModelSelect
-                        settingsEdit={settingsEdit}
-                        setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                        value={settingsEdit.chatboxAIModel}
+                        onChange={(v) => setSettingsEdit({ ...settingsEdit, chatboxAIModel: v })}
                     />
                 )}
                 {CHATBOX_BUILD_TARGET === 'mobile_app' ? (

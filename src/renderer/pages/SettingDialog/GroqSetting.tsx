@@ -24,16 +24,16 @@ export default function GroqSetting(props: ModelConfigProps) {
                 }}
             />
             <GropModelSelect
-                settingsEdit={settingsEdit}
-                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                value={settingsEdit.groqModel}
+                onChange={(value) => setSettingsEdit({ ...settingsEdit, groqModel: value })}
             />
             <MaxContextMessageCountSlider
-                settingsEdit={settingsEdit}
-                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                value={settingsEdit.openaiMaxContextMessageCount}
+                onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
             />
             <TemperatureSlider
-                settingsEdit={settingsEdit}
-                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                value={settingsEdit.temperature}
+                onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
             />
         </Box>
     )

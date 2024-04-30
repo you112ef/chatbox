@@ -99,21 +99,17 @@ export default function AzureSetting(props: ModelConfigProps) {
                         {t('to default values.')}
                     </Alert> */}
                     <MaxContextMessageCountSlider
-                        settingsEdit={settingsEdit}
-                        setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                        value={settingsEdit.openaiMaxContextMessageCount}
+                        onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
                     />
                     <TemperatureSlider
-                        settingsEdit={settingsEdit}
-                        setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                        value={settingsEdit.temperature}
+                        onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
                     />
                     <TopPSlider
-                        settingsEdit={settingsEdit}
-                        setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                        topP={settingsEdit.topP}
+                        setTopP={(v) => setSettingsEdit({ ...settingsEdit, topP: v })}
                     />
-                    {/* <TokenConfig
-                        settingsEdit={settingsEdit}
-                        setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
-                    /> */}
                 </AccordionDetails>
             </Accordion>
         </Box>

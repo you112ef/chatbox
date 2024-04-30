@@ -1,17 +1,16 @@
 import { TextField, Slider, Typography, Box } from '@mui/material'
-import { SessionSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 
 export interface Props {
-    settingsEdit: SessionSettings
-    setSettingsEdit: (settings: SessionSettings) => void
+    value: number
+    onChange(value: number): void
+    className?: string
 }
 
 export default function MaxContextMessageCountSlider(props: Props) {
     const { t } = useTranslation()
-    const { settingsEdit, setSettingsEdit } = props
     return (
-        <Box sx={{ margin: '10px' }}>
+        <Box sx={{ margin: '10px' }} className={props.className}>
             <Box>
                 <Typography id="discrete-slider" gutterBottom>
                     {t('Max Message Count in Context')}
@@ -26,13 +25,10 @@ export default function MaxContextMessageCountSlider(props: Props) {
             >
                 <Box sx={{ width: '92%' }}>
                     <Slider
-                        value={settingsEdit.openaiMaxContextMessageCount}
+                        value={props.value}
                         onChange={(_event, value) => {
                             const v = Array.isArray(value) ? value[0] : value
-                            setSettingsEdit({
-                                ...settingsEdit,
-                                openaiMaxContextMessageCount: v,
-                            })
+                            props.onChange(v)
                         }}
                         aria-labelledby="discrete-slider"
                         valueLabelDisplay="auto"
@@ -50,21 +46,14 @@ export default function MaxContextMessageCountSlider(props: Props) {
                 </Box>
                 <TextField
                     sx={{ marginLeft: 2, width: '100px' }}
-                    value={
-                        settingsEdit.openaiMaxContextMessageCount > 20
-                            ? t('No Limit')
-                            : settingsEdit.openaiMaxContextMessageCount
-                    }
+                    value={props.value > 20 ? t('No Limit') : props.value}
                     onChange={(event) => {
                         const s = event.target.value.trim()
                         const v = parseInt(s)
                         if (isNaN(v)) {
                             return
                         }
-                        setSettingsEdit({
-                            ...settingsEdit,
-                            openaiMaxContextMessageCount: v,
-                        })
+                        props.onChange(v)
                     }}
                     type="text"
                     size="small"

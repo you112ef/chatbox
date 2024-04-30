@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import {
-    Switch,
     Divider,
     Button,
     Dialog,
@@ -9,15 +8,15 @@ import {
     DialogTitle,
     DialogContentText,
     TextField,
+    Typography,
 } from '@mui/material'
 import {
     Session,
     ModelProvider,
-    SessionSettings,
-    settings2SessionSettings,
     isChatSession,
     isPictureSession,
     createMessage,
+    ModelSettings,
 } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as sessionActions from '../stores/sessionActions'
@@ -29,18 +28,15 @@ import { useAtomValue, useAtom } from 'jotai'
 import { Accordion, AccordionSummary, AccordionDetails } from '../components/Accordion'
 import ClaudeModelSelect from '../components/ClaudeModelSelect'
 import ChatboxAIModelSelect from '../components/ChatboxAIModelSelect'
-// import { resetTokenConfig } from '../packages/token_config'
 import AIProviderSelect from '../components/AIProviderSelect'
 import OpenAIModelSelect from '../components/OpenAIModelSelect'
-// import TokenConfig from './SettingDialog/TokenConfig'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import ImageCountSlider from '@/components/ImageCountSlider'
 import ImageStyleSelect from '@/components/ImageStyleSelect'
-import OllamaSetting from './SettingDialog/OllamaSetting'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import { trackingEvent } from '@/packages/event'
 import GeminiModelSelect from '@/components/GeminiModelSelect'
 import GropModelSelect from '@/components/GroqModelSelect'
+import { OllamaHostInput, OllamaModelSelect } from './SettingDialog/OllamaSetting'
 
 interface Props {
 }
@@ -73,6 +69,17 @@ export default function ChatConfigWindow(props: Props) {
             setSystemPrompt(systemMessage?.content || '')
         }
     }, [chatConfigDialogSession])
+
+    const onReset = (event: React.MouseEvent) => {
+        event.stopPropagation()
+        event.preventDefault()
+        if (chatConfigDialogSession) {
+            setEditingData({
+                ...chatConfigDialogSession,
+                settings: undefined,
+            })
+        }
+    }
 
     useEffect(() => {
         if (chatConfigDialogSession) {
@@ -124,20 +131,40 @@ export default function ChatConfigWindow(props: Props) {
                     value={editingData.name}
                     onChange={(e) => setEditingData({ ...editingData, name: e.target.value })}
                 />
-                <TextField
-                    margin="dense"
-                    label={t('Instruction (System Prompt)')}
-                    placeholder={t('Copilot Prompt Demo') || ''}
-                    fullWidth
-                    variant="outlined"
-                    multiline
-                    minRows={4}
-                    maxRows={10}
-                    value={systemPrompt}
-                    onChange={(event) => setSystemPrompt(event.target.value)}
-                />
-                {isChatSession(chatConfigDialogSession) && <ChatConfig dataEdit={editingData} setDataEdit={setEditingData} />}
-                {isPictureSession(chatConfigDialogSession) && <PictureConfig dataEdit={editingData} setDataEdit={setEditingData} />}
+                <div className='mt-1'>
+                    <TextField
+                        margin="dense"
+                        label={t('Instruction (System Prompt)')}
+                        placeholder={t('Copilot Prompt Demo') || ''}
+                        fullWidth
+                        variant="outlined"
+                        multiline
+                        minRows={2}
+                        maxRows={8}
+                        value={systemPrompt}
+                        onChange={(event) => setSystemPrompt(event.target.value)}
+                    />
+                </div>
+                <Accordion defaultExpanded={!!editingData.settings} className='mt-2'>
+                    <AccordionSummary aria-controls="panel1a-content">
+                        <div className='flex flex-row w-full justify-between items-center'>
+                            <Typography>
+                                {t('Specific model settings')}
+                            </Typography>
+                            {
+                                editingData.settings && (
+                                    <Button size='small' variant='text' color='warning' onClick={onReset}>
+                                        {t('Reset to Global Settings')}
+                                    </Button>
+                                )
+                            }
+                        </div>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        {isChatSession(chatConfigDialogSession) && <ChatConfig dataEdit={editingData} setDataEdit={setEditingData} />}
+                        {isPictureSession(chatConfigDialogSession) && <PictureConfig dataEdit={editingData} setDataEdit={setEditingData} />}
+                    </AccordionDetails>
+                </Accordion>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onCancel}>{t('cancel')}</Button>
@@ -150,147 +177,249 @@ export default function ChatConfigWindow(props: Props) {
 function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => void }) {
     const { dataEdit, setDataEdit } = props
     const { t } = useTranslation()
-    const settings = useAtomValue(atoms.settingsAtom)
     const licenseDetail = useAtomValue(atoms.licenseDetailAtom)
-    const settingsEdit = dataEdit.settings
-    const setSettingsEdit = (updated: SessionSettings) => {
-        // if (settingsEdit?.aiProvider !== updated.aiProvider || settingsEdit?.model !== updated.model) {
-        //     updated = resetTokenConfig(updated)
-        // }
-        setDataEdit({ ...dataEdit, settings: updated })
+    const globalSettings = useAtomValue(atoms.settingsAtom)
+    const sessionSettings = sessionActions.mergeSettings(globalSettings, dataEdit.settings || {}, dataEdit.type || 'chat')
+    const updateSettingsEdit = (updated: Partial<ModelSettings>) => {
+        setDataEdit({
+            ...dataEdit,
+            settings: {
+                ...(dataEdit.settings || {}),
+                ...updated,
+            },
+        })
     }
+    const specificSettings = dataEdit.settings || {}
     return (
         <>
-            <FormControlLabel
+            {/* <FormControlLabel
                 control={<Switch size="medium" />}
                 label={t('Specific model settings')}
                 checked={!!dataEdit.settings}
                 onChange={(e, checked) => {
                     if (checked) {
-                        dataEdit.settings = settings2SessionSettings(settings)
+                        dataEdit.settings = settings2SessionSettings(globalSettings)
                     } else {
                         dataEdit.settings = undefined
                     }
                     setDataEdit({ ...dataEdit })
                 }}
                 sx={{ margin: '12px 0' }}
+            /> */}
+            <AIProviderSelect
+                value={sessionSettings.aiProvider}
+                onChange={(v) => updateSettingsEdit({ aiProvider: v })}
+                className={specificSettings.aiProvider === undefined ? 'opacity-50' : ''}
             />
-            {settingsEdit && (
+            <Divider sx={{ margin: '16px 0' }} />
+            {sessionSettings.aiProvider === ModelProvider.ChatboxAI && (
                 <>
-                    <AIProviderSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                    <Divider sx={{ margin: '16px 0' }} />
-                    {settingsEdit.aiProvider === ModelProvider.ChatboxAI && (
-                        <>
-                            {licenseDetail && (
-                                <ChatboxAIModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                            )}
-                            <MaxContextMessageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                            <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                        </>
+                    {licenseDetail && (
+                        <ChatboxAIModelSelect
+                            value={sessionSettings.chatboxAIModel}
+                            onChange={(v) => updateSettingsEdit({ chatboxAIModel: v })}
+                            className={specificSettings.chatboxAIModel === undefined ? 'opacity-50' : ''}
+                        />
                     )}
-                    {settingsEdit.aiProvider === ModelProvider.OpenAI && (
-                        <>
-                            <OpenAIModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                            <MaxContextMessageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                            <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                            <Accordion>
-                                <AccordionSummary aria-controls="panel1a-content">
-                                    {t('model')} & {t('token')}
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    {/* <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} /> */}
-                                    <TopPSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                                </AccordionDetails>
-                            </Accordion>
-                        </>
-                    )}
-                    {settingsEdit.aiProvider === ModelProvider.Azure && (
-                        <>
-                            <TextField
-                                margin="dense"
-                                label={t('Azure Deployment Name')}
-                                type="text"
-                                fullWidth
-                                variant="outlined"
-                                value={settingsEdit.azureDeploymentName}
-                                onChange={(e) =>
-                                    setSettingsEdit({
-                                        ...settingsEdit,
-                                        azureDeploymentName: e.target.value.trim(),
-                                    })
-                                }
-                            />
-                            <MaxContextMessageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                            <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                            <Accordion>
-                                <AccordionSummary aria-controls="panel1a-content">
-                                    {t('model')} & {t('token')}
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    {/* <TokenConfig settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} /> */}
-                                    <TopPSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                                </AccordionDetails>
-                            </Accordion>
-                        </>
-                    )}
-                    {settingsEdit.aiProvider === ModelProvider.ChatGLM6B && (
-                        <>
-                            <MaxContextMessageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                            <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                        </>
-                    )}
-                    {settingsEdit.aiProvider === ModelProvider.Claude && (
-                        <>
-                            <ClaudeModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                            <MaxContextMessageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                            <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                        </>
-                    )}
-                    {
-                        settingsEdit.aiProvider === ModelProvider.Ollama && (
-                            <>
-                                <OllamaSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                                <MaxContextMessageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                                <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                            </>
-                        )
-                    }
-                    {
-                        settingsEdit.aiProvider === ModelProvider.Gemini && (
-                            <>
-                                <GeminiModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                                <MaxContextMessageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                                <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                            </>
-                        )
-                    }
-                    {
-                        settingsEdit.aiProvider === ModelProvider.Groq && (
-                            <>
-                                <GropModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                                <MaxContextMessageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                                <TemperatureSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-                            </>
-                        )
-                    }
+                    <MaxContextMessageCountSlider
+                        value={sessionSettings.openaiMaxContextMessageCount}
+                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
+                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
+                    />
+                    <TemperatureSlider
+                        value={sessionSettings.temperature}
+                        onChange={(v) => updateSettingsEdit({ temperature: v })}
+                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
+                    />
                 </>
             )}
+            {sessionSettings.aiProvider === ModelProvider.OpenAI && (
+                <>
+                    <OpenAIModelSelect
+                        model={sessionSettings.model}
+                        openaiCustomModel={sessionSettings.openaiCustomModel}
+                        onChange={(model, openaiCustomModel) => updateSettingsEdit({ model, openaiCustomModel })}
+                        className={specificSettings.model === undefined ? 'opacity-50' : ''}
+                    />
+                    <MaxContextMessageCountSlider
+                        value={sessionSettings.openaiMaxContextMessageCount}
+                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
+                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
+                    />
+                    <TemperatureSlider
+                        value={sessionSettings.temperature}
+                        onChange={(v) => updateSettingsEdit({ temperature: v })}
+                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
+                    />
+                    <TopPSlider
+                        topP={sessionSettings.topP}
+                        setTopP={(v) => updateSettingsEdit({ topP: v })}
+                        className={specificSettings.topP === undefined ? 'opacity-50' : ''}
+                    />
+                </>
+            )}
+            {sessionSettings.aiProvider === ModelProvider.Azure && (
+                <>
+                    <TextField
+                        margin="dense"
+                        label={t('Azure Deployment Name')}
+                        type="text"
+                        fullWidth
+                        variant="outlined"
+                        value={sessionSettings.azureDeploymentName}
+                        onChange={(e) =>
+                            updateSettingsEdit({ azureDeploymentName: e.target.value.trim() })
+                        }
+                        className={specificSettings.azureDeploymentName === undefined ? 'opacity-50' : ''}
+                    />
+                    <MaxContextMessageCountSlider
+                        value={sessionSettings.openaiMaxContextMessageCount}
+                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
+                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
+                    />
+                    <TemperatureSlider
+                        value={sessionSettings.temperature}
+                        onChange={(v) => updateSettingsEdit({ temperature: v })}
+                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
+                    />
+                    <TopPSlider
+                        topP={sessionSettings.topP}
+                        setTopP={(v) => updateSettingsEdit({ topP: v })}
+                        className={specificSettings.topP === undefined ? 'opacity-50' : ''}
+                    />
+                </>
+            )}
+            {sessionSettings.aiProvider === ModelProvider.ChatGLM6B && (
+                <>
+                    <MaxContextMessageCountSlider
+                        value={sessionSettings.openaiMaxContextMessageCount}
+                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
+                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
+                    />
+                    <TemperatureSlider
+                        value={sessionSettings.temperature}
+                        onChange={(v) => updateSettingsEdit({ temperature: v })}
+                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
+                    />
+                </>
+            )}
+            {sessionSettings.aiProvider === ModelProvider.Claude && (
+                <>
+                    <ClaudeModelSelect
+                        value={sessionSettings.claudeModel}
+                        onChange={(v) => updateSettingsEdit({ claudeModel: v })}
+                        className={specificSettings.claudeModel === undefined ? 'opacity-50' : ''}
+                    />
+                    <MaxContextMessageCountSlider
+                        value={sessionSettings.openaiMaxContextMessageCount}
+                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
+                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
+                    />
+                    <TemperatureSlider
+                        value={sessionSettings.temperature}
+                        onChange={(v) => updateSettingsEdit({ temperature: v })}
+                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
+                    />
+                </>
+            )}
+            {
+                sessionSettings.aiProvider === ModelProvider.Ollama && (
+                    <>
+                        <OllamaHostInput
+                            ollamaHost={sessionSettings.ollamaHost}
+                            setOllamaHost={(v) => updateSettingsEdit({ ollamaHost: v })}
+                            className={specificSettings.ollamaHost === undefined ? 'opacity-50' : ''}
+                        />
+                        <OllamaModelSelect
+                            ollamaHost={sessionSettings.ollamaHost}
+                            ollamaModel={sessionSettings.ollamaModel}
+                            setOlamaModel={(v) => updateSettingsEdit({ ollamaModel: v })}
+                            className={specificSettings.ollamaModel === undefined ? 'opacity-50' : ''}
+                        />
+                        <MaxContextMessageCountSlider
+                            value={sessionSettings.openaiMaxContextMessageCount}
+                            onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
+                            className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
+                        />
+                        <TemperatureSlider
+                            value={sessionSettings.temperature}
+                            onChange={(v) => updateSettingsEdit({ temperature: v })}
+                            className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
+                        />
+                    </>
+                )
+            }
+            {
+                sessionSettings.aiProvider === ModelProvider.Gemini && (
+                    <>
+                        <GeminiModelSelect
+                            value={sessionSettings.geminiModel}
+                            onChange={(v) => updateSettingsEdit({ geminiModel: v })}
+                            className={specificSettings.geminiModel === undefined ? 'opacity-50' : ''}
+                        />
+                        <MaxContextMessageCountSlider
+                            value={sessionSettings.openaiMaxContextMessageCount}
+                            onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
+                            className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
+                        />
+                        <TemperatureSlider
+                            value={sessionSettings.temperature}
+                            onChange={(v) => updateSettingsEdit({ temperature: v })}
+                            className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
+                        />
+                    </>
+                )
+            }
+            {
+                sessionSettings.aiProvider === ModelProvider.Groq && (
+                    <>
+                        <GropModelSelect
+                            value={sessionSettings.groqModel}
+                            onChange={(v) => updateSettingsEdit({ groqModel: v })}
+                            className={specificSettings.groqModel === undefined ? 'opacity-50' : ''}
+                        />
+                        <MaxContextMessageCountSlider
+                            value={sessionSettings.openaiMaxContextMessageCount}
+                            onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
+                            className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
+                        />
+                        <TemperatureSlider
+                            value={sessionSettings.temperature}
+                            onChange={(v) => updateSettingsEdit({ temperature: v })}
+                            className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
+                        />
+                    </>
+                )
+            }
         </>
     )
 }
 
 function PictureConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => void }) {
     const { dataEdit, setDataEdit } = props
-    const { t } = useTranslation()
-    const settings = useAtomValue(atoms.settingsAtom)
-    const settingsEdit = dataEdit.settings || settings2SessionSettings(settings)
-    const setSettingsEdit = (updated: SessionSettings) => {
-        setDataEdit({ ...dataEdit, settings: updated })
+    const globalSettings = useAtomValue(atoms.settingsAtom)
+    const sessionSettings = sessionActions.mergeSettings(globalSettings, dataEdit.settings || {}, dataEdit.type || 'chat')
+    const updateSettingsEdit = (updated: Partial<ModelSettings>) => {
+        setDataEdit({
+            ...dataEdit,
+            settings: {
+                ...(dataEdit.settings || {}),
+                ...updated,
+            },
+        })
     }
     return (
         <div className="mt-8">
-            <ImageStyleSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-            <ImageCountSlider settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+            <ImageStyleSelect
+                value={sessionSettings.dalleStyle}
+                onChange={(v) => updateSettingsEdit({ dalleStyle: v })}
+                className={sessionSettings.dalleStyle === undefined ? 'opacity-50' : ''}
+            />
+            <ImageCountSlider
+                value={sessionSettings.imageGenerateNum}
+                onChange={(v) => updateSettingsEdit({ imageGenerateNum: v })}
+                className={sessionSettings.imageGenerateNum === undefined ? 'opacity-50' : ''}
+            />
         </div>
     )
 }

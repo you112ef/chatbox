@@ -1,31 +1,27 @@
 import { Select, MenuItem, FormControl, InputLabel, TextField } from '@mui/material'
-import { SessionSettings } from '../../shared/types'
+import { ModelSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import { models } from '../packages/models/openai'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 export interface Props {
-    settingsEdit: SessionSettings
-    setSettingsEdit: (settings: SessionSettings) => void
+    model: ModelSettings['model']
+    openaiCustomModel: ModelSettings['openaiCustomModel']
+    onChange(model: ModelSettings['model'], openaiCustomModel: ModelSettings['openaiCustomModel']): void
+    className?: string
 }
 
 export default function OpenAIModelSelect(props: Props) {
-    const { settingsEdit, setSettingsEdit } = props
     const { t } = useTranslation()
     const isSmallScreen = useIsSmallScreen()
     return (
-        <FormControl fullWidth variant="outlined" margin="dense">
+        <FormControl fullWidth variant="outlined" margin="dense" className={props.className}>
             <InputLabel htmlFor="model-select">{t('model')}</InputLabel>
             <Select
                 label={t('model')}
                 id="model-select"
-                value={settingsEdit.model}
-                onChange={(e) =>
-                    setSettingsEdit({
-                        ...settingsEdit,
-                        model: e.target.value as any,
-                    })
-                }
+                value={props.model}
+                onChange={(e) => props.onChange(e.target.value as ModelSettings['model'], props.openaiCustomModel)}
             >
                 {models.map((model) => (
                     <MenuItem key={model} value={model}>
@@ -36,7 +32,7 @@ export default function OpenAIModelSelect(props: Props) {
                     {t('Custom Model')}
                 </MenuItem>
             </Select>
-            {settingsEdit.model === 'custom-model' && (
+            {props.model === 'custom-model' && (
                 <TextField
                     autoFocus={!isSmallScreen}
                     margin="dense"
@@ -44,12 +40,9 @@ export default function OpenAIModelSelect(props: Props) {
                     type="text"
                     fullWidth
                     variant="outlined"
-                    value={settingsEdit.openaiCustomModel || ''}
+                    value={props.openaiCustomModel || ''}
                     onChange={(e) =>
-                        setSettingsEdit({
-                            ...settingsEdit,
-                            openaiCustomModel: e.target.value.trim(),
-                        })
+                        props.onChange(props.model, e.target.value.trim())
                     }
                 />
             )}

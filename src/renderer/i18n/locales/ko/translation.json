@@ -249,5 +249,6 @@
     "Reading file...": "파일 읽는 중...",
     "Expand": "확장",
     "Collapse": "축소",
-    "Instruction (System Prompt)": "지시 (시스템 프롬프트)"
+    "Instruction (System Prompt)": "지시 (시스템 프롬프트)",
+    "Reset to Global Settings": "전역 설정으로 재설정"
 }

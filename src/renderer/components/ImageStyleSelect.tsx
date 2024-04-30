@@ -1,19 +1,20 @@
 import SimpleSelect from './SimpleSelect'
-import { SessionSettings } from '../../shared/types'
+import { ModelSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 
 export interface Props {
-    settingsEdit: SessionSettings
-    setSettingsEdit: (settings: SessionSettings) => void
+    value: ModelSettings['dalleStyle']
+    onChange(value: ModelSettings['dalleStyle']): void
+    className?: string
 }
 
 export default function ImageStyleSelect(props: Props) {
     const { t } = useTranslation()
-    const { settingsEdit, setSettingsEdit } = props
     return (
         <SimpleSelect
+            className={props.className}
             label={t('Image Style')}
-            value={settingsEdit.dalleStyle}
+            value={props.value}
             options={[
                 {
                     value: 'vivid',
@@ -60,9 +61,7 @@ export default function ImageStyleSelect(props: Props) {
                     ),
                 },
             ]}
-            onChange={(value) => {
-                setSettingsEdit({ ...settingsEdit, dalleStyle: value })
-            }}
+            onChange={props.onChange}
         />
     )
 }

@@ -51,16 +51,16 @@ export default function GeminiSetting(props: ModelConfigProps) {
                 }}
             />
             <GeminiModelSelect
-                settingsEdit={settingsEdit}
-                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                value={settingsEdit.geminiModel}
+                onChange={(value) => setSettingsEdit({ ...settingsEdit, geminiModel: value })}
             />
             <MaxContextMessageCountSlider
-                settingsEdit={settingsEdit}
-                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                value={settingsEdit.openaiMaxContextMessageCount}
+                onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
             />
             <TemperatureSlider
-                settingsEdit={settingsEdit}
-                setSettingsEdit={(updated) => setSettingsEdit({ ...settingsEdit, ...updated })}
+                value={settingsEdit.temperature}
+                onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
             />
         </Box>
     )

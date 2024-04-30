@@ -85,7 +85,7 @@ export interface Session {
     messages: Message[]
     starred?: boolean
     copilotId?: string
-    settings?: SessionSettings
+    settings?: Partial<ReturnType<typeof settings2SessionSettings>>
     threads?: SessionThread[] // 历史话题列表
     threadName?: string // 当前话题名称
 }
@@ -106,10 +106,6 @@ export interface SessionThreadBrief {
     firstMessageId: string
     messageCount: number
 }
-
-export type SessionSettings = ReturnType<typeof settings2SessionSettings>
-// TODO: 这里值得简单重构，将会话设置应该假定所有字段可能为空，在设置层面做好默认值的处理。这样可以防止字段覆盖冲突。
-// export type SessionSettings = Partial<ModelSettings>
 
 export function settings2SessionSettings(settings: ModelSettings) {
     return pick(settings, [

@@ -6,15 +6,15 @@ export interface Props<T extends string> {
     value: T
     options: { value: T; label: React.ReactNode }[]
     onChange: (value: T) => void
+    className?: string
 }
 
 export default function SimpleSelect<T extends string>(props: Props<T>) {
-    const { label, value, options, onChange } = props
     return (
-        <FormControl fullWidth variant="outlined" margin="dense">
-            <InputLabel>{label}</InputLabel>
-            <Select label={label} value={value} onChange={(e) => onChange(e.target.value as T)}>
-                {options.map((option) => (
+        <FormControl fullWidth variant="outlined" margin="dense" className={props.className}>
+            <InputLabel>{props.label}</InputLabel>
+            <Select label={props.label} value={props.value} onChange={(e) => props.onChange(e.target.value as T)}>
+                {props.options.map((option) => (
                     <MenuItem key={option.value} value={option.value}>
                         {option.label}
                     </MenuItem>
