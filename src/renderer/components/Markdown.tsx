@@ -20,8 +20,9 @@ export default function Markdown(props: {
     children: string
     enableLaTeXRendering?: boolean
     hiddenCodeCopyButton?: boolean
+    className?: string
 }) {
-    const { enableLaTeXRendering = true, children, hiddenCodeCopyButton } = props
+    const { enableLaTeXRendering = true, children, hiddenCodeCopyButton, className } = props
     return useMemo(() => (
         <ReactMarkdown
             remarkPlugins={
@@ -30,7 +31,7 @@ export default function Markdown(props: {
                     : [remarkGfm, remarkBreaks]
             }
             rehypePlugins={[rehypeKatex]}
-            className="break-words"
+            className={`break-words ${className || ''}`}
             // react-markdown 默认的 defaultUrlTransform 会错误地编码 URL 中的 Query，比如 & 会被编码成 &amp;
             // 这里改用 sanitizeUrl 库，同时也可以避免 XSS 攻击
             urlTransform={(url) => sanitizeUrl(url)}

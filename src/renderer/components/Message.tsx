@@ -88,6 +88,7 @@ function _Message(props: Props) {
     const { msg, className, collapseThreshold } = props
 
     const needCollapse = collapseThreshold
+        && props.sessionType !== 'picture'  // 绘图会话不折叠
         && (JSON.stringify(msg.content)).length > collapseThreshold
         && (JSON.stringify(msg.content)).length - collapseThreshold > 50    // 只有折叠有明显效果才折叠，为了更好的用户体验
     const [isCollapsed, setIsCollapsed] = useState(needCollapse)
@@ -256,19 +257,12 @@ function _Message(props: Props) {
     }
 
     const CollapseButton = (
-        <Typography
-            className='cursor-pointer inline-block'
-            sx={{
-                color: theme.palette.primary.main,
-                '&:hover': {
-                    color: theme.palette.background.paper,
-                    bgcolor: theme.palette.primary.main,
-                },
-            }}
+        <span
+            className='cursor-pointer inline-block font-bold text-blue-500 hover:text-white hover:bg-blue-500'
             onClick={() => setIsCollapsed(!isCollapsed)}
         >
             [{isCollapsed ? t('Expand') : t('Collapse')}]
-        </Typography>
+        </span>
     )
 
     return (
@@ -394,7 +388,7 @@ function _Message(props: Props) {
                                 </div>
                             )
                         }
-                        <Box className={'msg-content ' + (msg.role === 'system' ? 'msg-content-system' : '')}>
+                        <Box className={'msg-content'}>
                             {
                                 enableMarkdownRendering && !isCollapsed ? (
                                     <Markdown enableLaTeXRendering={enableLaTeXRendering}>
@@ -467,11 +461,11 @@ function _Message(props: Props) {
                             )
                         }
                         <MessageErrTips msg={msg} />
+                        {
+                            needCollapse && !isCollapsed && CollapseButton
+                        }
                         <Typography variant="body2" sx={{ opacity: 0.5 }}>
                             {tips.join(', ')}
-                            {
-                                needCollapse && !isCollapsed && CollapseButton
-                            }
                         </Typography>
                         <Box sx={{ height: '35px' }}>
                             <span className={cn(!anchorEl && !msg.generating ? 'hidden group-hover/message:inline-flex' : 'inline-flex')} >
