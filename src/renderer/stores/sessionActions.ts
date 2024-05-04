@@ -324,6 +324,7 @@ export function switchThread(sessionId: string, threadId: string) {
             }
         })
     })
+    setTimeout(() => scrollActions.scrollToBottom(), 300)
 }
 
 /**
