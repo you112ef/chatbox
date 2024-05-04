@@ -1,4 +1,28 @@
 const changelog = `
+### v1.3.6 - 2024.05.04
+
+**New Features:**
+- Enhanced conversation-specific settings with an easy-to-use interface for modifying system prompts.
+- Added the ability to export chat logs from conversations in various formats including HTML, TXT, and MD.
+- Introduced image sending capabilities for Custom Models.
+- Integrated support for Groq.
+
+**Improvements:**
+- Implemented automatic collapsing of lengthy system prompts with an option for manual expansion.
+- Reworked conversation-specific settings with a new button to revert to global defaults.
+- Adjusted the maximum width of message bodies for an improved reading experience, with a toggle button for width adjustments.
+- Optimized the display performance of floating menus and button groups.
+
+**Fixes:**
+- Fixed an issue where spaces could not be entered when creating a copilot.
+- Resolved System Prompt issues with the GPT-4-Turbo model.
+- Addressed display issues for messages with very low height.
+
+**Miscellaneous:**
+- After switching between historical topics, the message list now automatically scrolls to the bottom.
+- Enabled access to local Ollama services within the Chatbox web version.
+
+
 ### v1.3.5
 
 1. Fixed a bug where text copied from Microsoft Word was inserted as an image.
