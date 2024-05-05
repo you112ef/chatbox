@@ -253,7 +253,7 @@ function _Message(props: Props) {
         content += '...'
     }
     if (needCollapse && isCollapsed) {
-        content = msg.content.slice(0, collapseThreshold) + '...'
+        content = msg.content.slice(0, collapseThreshold) + '... '
     }
 
     const CollapseButton = (
@@ -399,7 +399,7 @@ function _Message(props: Props) {
                                         {content}
                                         {
                                             needCollapse && isCollapsed && (
-                                                <span className='pl-2'>{CollapseButton}</span>
+                                                CollapseButton
                                             )
                                         }
                                     </div>
