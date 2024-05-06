@@ -15,6 +15,7 @@ import ImageIcon from '@mui/icons-material/Image'
 import * as sessionActions from '../stores/sessionActions'
 import * as atoms from '@/stores/atoms'
 import { cn } from '@/lib/utils'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 export interface Props {
     session: Session
@@ -40,6 +41,7 @@ function _SessionItem(props: Props) {
     }
     const theme = useTheme()
     const medianSize = theme.typography.pxToRem(24)
+    const isSmallScreen = useIsSmallScreen()
     // const smallSize = theme.typography.pxToRem(20)
     return (
         <>
@@ -66,7 +68,7 @@ function _SessionItem(props: Props) {
                         {session.name}
                     </Typography>
                 </ListItemText>
-                <span className={cn(session.starred || anchorEl ? 'inline-flex' : 'hidden group-hover/session-item:inline-flex')}>
+                <span className={cn(session.starred || anchorEl || isSmallScreen ? 'inline-flex' : 'hidden group-hover/session-item:inline-flex')}>
                     <IconButton onClick={handleMenuClick} sx={{ color: 'primary.main' }}>
                         {session.starred ? (
                             <StarIcon fontSize="small" />

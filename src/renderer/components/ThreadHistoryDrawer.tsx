@@ -16,6 +16,7 @@ import SwapCallsIcon from '@mui/icons-material/SwapCalls';
 import DeleteIcon from "@mui/icons-material/Delete";
 import StyledMenu from "@/components/StyledMenu";
 import { cn } from '@/lib/utils';
+import { useIsSmallScreen } from '@/hooks/useScreenChange';
 
 interface Props {
 }
@@ -126,6 +127,7 @@ function ThreadItem(props: {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
     const currentSessionId = useAtomValue(currentSessionIdAtom)
+    const isSmallScreen = useIsSmallScreen()
 
     const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
         event.stopPropagation()
@@ -171,8 +173,8 @@ function ThreadItem(props: {
                             }
                         </Typography>
                     </ListItemText>
-                    <ListItemIcon className={cn(selected || anchorEl ? 'opacity-100' : 'opacity-0 group-hover/thread-item:opacity-100')}>
-                        <IconButton onClick={handleMenuClick}>
+                    <ListItemIcon className={cn(selected || anchorEl || isSmallScreen ? 'opacity-100' : 'opacity-0 group-hover/thread-item:opacity-100')}>
+                        <IconButton onClick={handleMenuClick} sx={{ color: 'primary.main' }}>
                             <MoreHorizOutlinedIcon fontSize="small" />
                         </IconButton>
                     </ListItemIcon>
