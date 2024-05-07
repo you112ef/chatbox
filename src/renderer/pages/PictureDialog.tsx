@@ -19,15 +19,16 @@ export default function PictureDialog(props: Props) {
         if (!pictureShow) {
             return
         }
+        const basename = `export_${Math.random().toString(36).substring(7)}`
         if (pictureShow.storageKey) {
             const base64 = await storage.getBlob(pictureShow.storageKey)
             if (!base64) {
                 return
             }
-            platform.exporter.exportImageFile('export', base64)
+            platform.exporter.exportImageFile(basename, base64)
         }
         if (pictureShow.url) {
-            platform.exporter.exportByUrl('export.png', pictureShow.url)
+            platform.exporter.exportByUrl(`${basename}.png`, pictureShow.url)
         }
     }
 
