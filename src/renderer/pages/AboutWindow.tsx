@@ -50,7 +50,7 @@ export default function AboutWindow(props: Props) {
                     <img src={iconPNG} style={{ width: '100px', margin: 0, display: 'inline-block' }} />
                     <h3 style={{ margin: '4px 0 5px 0' }}>Chatbox
                         {
-                            versionHook.version !== ""
+                            /\d/.test(versionHook.version)
                                 ? `(v${versionHook.version})`
                                 : ''
                         }
@@ -127,13 +127,13 @@ export default function AboutWindow(props: Props) {
                     </div>
                     <div className='my-1'>
                         <a
-                            className='underline font-normal cursor-pointer mr-4' style={{color: theme.palette.primary.main}}
+                            className='underline font-normal cursor-pointer mr-4' style={{ color: theme.palette.primary.main }}
                             onClick={() => platform.openLink(`https://chatboxai.app/redirect_app/donate/${language}`)}
                         >
                             {t('Donate')}
                         </a>
                         <a
-                            className='underline font-normal cursor-pointer mr-4' style={{color: theme.palette.primary.main}}
+                            className='underline font-normal cursor-pointer mr-4' style={{ color: theme.palette.primary.main }}
                             onClick={() => platform.openLink(`https://chatboxai.app/redirect_app/author/${language}`)}
                         >
                             {t('Follow me on Twitter(X)')}

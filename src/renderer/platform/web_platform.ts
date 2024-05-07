@@ -16,7 +16,7 @@ export default class WebPlatform implements Platform {
     }
 
     public async getVersion(): Promise<string> {
-        return ''
+        return 'web'
     }
     public async getPlatform(): Promise<string> {
         return 'web'
