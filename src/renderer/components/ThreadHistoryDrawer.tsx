@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import {
     currentThreadHistoryHashAtom, currentSessionIdAtom, showThreadHistoryDrawerAtom, currentSessionAtom
 } from "@/stores/atoms"
@@ -190,6 +190,7 @@ function ThreadItem(props: {
                     key={thread.id + 'switch'}
                     onClick={() => switchThread(thread.id)}
                     disableRipple
+                    divider
                 >
                     <SwapCallsIcon fontSize="small" />
                     {t('Switch')}
@@ -206,6 +207,11 @@ function ThreadItem(props: {
                         }
                     }}
                     disableRipple
+                    sx={{
+                        '&:hover': {
+                            backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                        },
+                    }}
                 >
                     <DeleteIcon fontSize="small" />
                     {t('delete')}

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { useSetAtom } from 'jotai'
-import { ListItemText, MenuItem, Divider, Avatar, IconButton, Typography, ListItemIcon, useTheme } from '@mui/material'
+import { ListItemText, MenuItem, Avatar, IconButton, Typography, ListItemIcon, useTheme } from '@mui/material'
 import { Session } from '../../shared/types'
 import CopyIcon from '@mui/icons-material/CopyAll'
 import EditIcon from '@mui/icons-material/Edit'
@@ -119,6 +119,7 @@ function _SessionItem(props: Props) {
                         handleMenuClose()
                     }}
                     disableRipple
+                    divider
                 >
                     {session.starred ? (
                         <>
@@ -133,8 +134,6 @@ function _SessionItem(props: Props) {
                     )}
                 </MenuItem>
 
-                <Divider sx={{ my: 0.5 }} />
-
                 <MenuItem
                     key={session.id + 'del'}
                     onClick={() => {
@@ -143,6 +142,11 @@ function _SessionItem(props: Props) {
                         sessionActions.remove(session)
                     }}
                     disableRipple
+                    sx={{
+                        '&:hover': {
+                            backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                        },
+                    }}
                 >
                     <DeleteIcon fontSize="small" />
                     {t('delete')}
