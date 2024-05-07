@@ -22,7 +22,7 @@ export default function useVersion() {
             }
         }
         handler()
-        updateCheckTimer.current = setInterval(handler, 10 * 60 * 1000)
+        updateCheckTimer.current = setInterval(handler, 2 * 60 * 60 * 1000)
         return () => {
             if (updateCheckTimer.current) {
                 clearInterval(updateCheckTimer.current)
