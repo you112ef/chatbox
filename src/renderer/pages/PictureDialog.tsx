@@ -6,6 +6,7 @@ import { ImageInStorage, Image } from '@/components/Image'
 import storage from '@/storage'
 import SaveIcon from '@mui/icons-material/Save'
 import platform from '@/platform'
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch"
 
 interface Props { }
 
@@ -35,8 +36,12 @@ export default function PictureDialog(props: Props) {
             <DialogTitle></DialogTitle>
             <DialogContent>
                 <div className="w-full h-full text-center">
-                    {pictureShow?.storageKey && <ImageInStorage storageKey={pictureShow.storageKey} className='h-full w-full' /> }
-                    {pictureShow?.url && <Image src={pictureShow.url} className='h-full w-full' />}
+                    <TransformWrapper>
+                        <TransformComponent>
+                            {pictureShow?.storageKey && <ImageInStorage storageKey={pictureShow.storageKey} className='h-full w-full' />}
+                            {pictureShow?.url && <Image src={pictureShow.url} className='h-full w-full' />}
+                        </TransformComponent>
+                    </TransformWrapper>
                 </div>
             </DialogContent>
             <DialogActions>
