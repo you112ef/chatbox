@@ -586,12 +586,18 @@ function _Message(props: Props) {
                                                 quoteMsg()
                                             }}
                                             disableRipple
+                                            divider
                                         >
                                             <FormatQuoteIcon fontSize="small" />
                                             {t('quote')}
                                         </MenuItem>
-                                        <Divider sx={{ my: 0.5 }} />
-                                        <MenuItem key={msg.id + 'del'} onClick={onDelMsg} disableRipple>
+                                        <MenuItem key={msg.id + 'del'} onClick={onDelMsg} disableRipple
+                                            sx={{
+                                                '&:hover': {
+                                                    backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                                                },
+                                            }}
+                                        >
                                             <DeleteForeverIcon fontSize="small" />
                                             {t('delete')}
                                         </MenuItem>

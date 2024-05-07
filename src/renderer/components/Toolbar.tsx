@@ -125,12 +125,20 @@ export default function Toolbar() {
                 open={open}
                 onClose={handleMoreMenuClose}
             >
-                <MenuItem onClick={handleExportAndSave} disableRipple >
+                <MenuItem onClick={handleExportAndSave}
+                    disableRipple
+                    divider
+                >
                     <Save fontSize='small' />
                     {t('Export Chat')}
                 </MenuItem>
-                <Divider sx={{ my: 0.5 }} />
-                <MenuItem onClick={handleSessionClean} disableRipple >
+                <MenuItem onClick={handleSessionClean} disableRipple
+                    sx={{
+                        '&:hover': {
+                            backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                        },
+                    }}
+                >
                     <CleaningServicesIcon fontSize="small" />
                     {t('Clear All Messages')}
                 </MenuItem>
