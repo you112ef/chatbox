@@ -233,13 +233,9 @@ function MiniItem(props: MiniItemProps) {
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'center',
-                border: '1px solid #ccc',
                 padding: '5px',
                 margin: '5px',
                 cursor: 'pointer',
-                '&:hover': {
-                    backgroundColor: '#eee',
-                },
                 '.edit-icon': {
                     opacity: 0,
                 },
@@ -247,7 +243,7 @@ function MiniItem(props: MiniItemProps) {
                     opacity: 1,
                 },
             }}
-            className='w-full sm:w-48'
+            className='w-full sm:w-48 hover:bg-slate-400/25 border-solid border-slate-400/20 rounded-md'
         >
             <Avatar
                 onClick={props.useMe}
