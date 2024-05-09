@@ -390,7 +390,7 @@ function _Message(props: Props) {
                                 </div>
                             )
                         }
-                        <Box className={'msg-content'} sx={
+                        <Box className={cn('msg-content', { 'msg-content-small': small })} sx={
                             small ? { fontSize: theme.typography.body2.fontSize } : {}
                         }>
                             {
