@@ -888,6 +888,11 @@ export function getSessions() {
     return store.get(atoms.sessionsAtom)
 }
 
+export function getSortedSessions() {
+    const store = getDefaultStore()
+    return store.get(atoms.sortedSessionsAtom)
+}
+
 export function getCurrentSession() {
     const store = getDefaultStore()
     return store.get(atoms.currentSessionAtom)

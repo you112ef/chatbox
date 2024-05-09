@@ -5,14 +5,15 @@ import * as sessionAction from '../stores/sessionActions'
 import * as scrollActions from '../stores/scrollActions'
 import { ScanSearch, Loader2 } from 'lucide-react'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
-import { Session } from 'src/shared/types'
-import { Marker } from 'react-mark.js'
+import { Message as MessageType, Session } from 'src/shared/types'
 import { cn } from '@/lib/utils'
 import { useAtom } from 'jotai'
 import * as atoms from '@/stores/atoms'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import Message from '@/components/Message'
+import Mark from '@/components/Mark'
 
-interface Props {}
+interface Props { }
 
 export default function SearchDialog(props: Props) {
     const isSmallScreen = useIsSmallScreen()
@@ -41,27 +42,41 @@ export default function SearchDialog(props: Props) {
     const onSearchClick = (flag: 'current-session' | 'global') => {
         setMode('search-result')
         setLoading(Math.random())
-        const searchSessions: Session[] =
-            flag === 'current-session' ? [sessionAction.getCurrentSession()] : sessionAction.getSessions()
+        const needSearchSessions: Session[] = flag === 'current-session'
+            ? [sessionAction.getCurrentSession()]
+            : sessionAction.getSortedSessions()
 
         const safeInput = searchInput.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
         const regexp = new RegExp(safeInput, 'i')
         const result: Session[] = []
-        for (const session of searchSessions) {
+        let matchedMessageTotal = 0
+        for (const session of needSearchSessions) {
             // 搜索会话的当前主题
-            const matchedMessages = session.messages.filter((message) => {
-                return regexp.test(message.content)
-            })
+            const matchedMessages: MessageType[] = []
+            for (let i = session.messages.length - 1; i >= 0; i--) {
+                const message = session.messages[i]
+                if (regexp.test(message.content)) {
+                    matchedMessages.push(message)
+                }
+            }
             // 搜索会话的历史主题
             if (session.threads) {
-                for (const thread of session.threads) {
-                    matchedMessages.push(
-                        ...thread.messages.filter((message) => regexp.test(message.content))
-                    )
+                for (let i = session.threads.length - 1; i >= 0; i--) {
+                    const thread = session.threads[i]
+                    for (let j = thread.messages.length - 1; j >= 0; j--) {
+                        const message = thread.messages[j]
+                        if (regexp.test(message.content)) {
+                            matchedMessages.push(message)
+                        }
+                    }
                 }
             }
             if (matchedMessages.length > 0) {
                 result.push({ ...session, messages: matchedMessages })
+                matchedMessageTotal += matchedMessages.length
+            }
+            if (matchedMessageTotal >= 100) {
+                break
             }
         }
         // result = result.sort((a, b) => {
@@ -79,9 +94,9 @@ export default function SearchDialog(props: Props) {
             open={true}
             onClose={() => setOpen(false)}
             fullWidth
-            maxWidth="sm"
+            maxWidth={mode === 'search-result' ? 'md' : 'sm'}
         >
-            <DialogContent>
+            <DialogContent sx={{ padding: '0.5rem' }}>
                 <Command shouldFilter={false} filter={(value, search) => 1}>
                     <CommandInput
                         ref={ref}
@@ -91,7 +106,7 @@ export default function SearchDialog(props: Props) {
                         className={cn(
                             'border-none',
                             'shadow-none',
-                            theme.palette.mode === 'dark' ? 'text-white' : 'text-black'
+                            theme.palette.mode === 'dark' ? 'text-white' : 'text-black',
                         )}
                         placeholder={t('Type a command or search') + '...'}
                     />
@@ -164,49 +179,60 @@ export default function SearchDialog(props: Props) {
                         </div>
                     )}
                     {mode === 'search-result' && !loading && (
-                        <CommandList>
-                            <CommandEmpty>{t('No results found')}</CommandEmpty>
-                            {searchResult.map((result, i) => (
-                                <CommandGroup
-                                    key={i}
-                                    heading={`${t('chat')} "${result.name}":`}
-                                    className={cn(
-                                        '[&_[cmdk-group-heading]]:font-bold',
-                                        '[&_[cmdk-group-heading]]:opacity-50'
-                                    )}
-                                >
-                                    {result.messages.map((message, j) => (
-                                        <CommandItem
-                                            key={`${i}-${j}`}
-                                            className={cn(
-                                                theme.palette.mode === 'dark' ? 'bg-slate-600' : 'bg-slate-50',
-                                                theme.palette.mode === 'dark'
-                                                    ? 'aria-selected:bg-slate-500'
-                                                    : 'aria-selected:bg-slate-200',
-                                                'my-1',
-                                                'cursor-pointer',
-                                                'bg-opacity-50'
-                                            )}
-                                            onSelect={() => {
-                                                sessionAction.switchCurrentSession(result.id)
-                                                setTimeout(() => {
-                                                    scrollActions.scrollToMessage(message.id)
-                                                }, 200)
-                                                setOpen(false)
-                                            }}
-                                        >
-                                            {/* 下面这个隐藏元素，是为了避免这个问题：
+                        <Mark marks={[searchInput]}>
+                            <CommandList>
+                                <CommandEmpty>{t('No results found')}</CommandEmpty>
+                                {searchResult.map((result, i) => (
+                                    <CommandGroup
+                                        key={i}
+                                        heading={`${t('chat')} "${result.name}":`}
+                                        className={cn(
+                                            '[&_[cmdk-group-heading]]:font-bold',
+                                            '[&_[cmdk-group-heading]]:opacity-50'
+                                        )}
+                                    >
+                                        {result.messages.map((message, j) => (
+                                            <CommandItem
+                                                key={`${i}-${j}`}
+                                                className={cn(
+                                                    theme.palette.mode === 'dark' ? 'bg-slate-600' : 'bg-slate-50',
+                                                    theme.palette.mode === 'dark'
+                                                        ? 'aria-selected:bg-slate-500'
+                                                        : 'aria-selected:bg-slate-200',
+                                                    'my-1',
+                                                    'cursor-pointer',
+                                                    'bg-opacity-50'
+                                                )}
+                                                onSelect={() => {
+                                                    sessionAction.switchCurrentSession(result.id)
+                                                    setTimeout(() => {
+                                                        scrollActions.scrollToMessage(message.id)
+                                                    }, 200)
+                                                    setOpen(false)
+                                                }}
+                                            >
+                                                {/* 下面这个隐藏元素，是为了避免这个问题：
                                                         当搜索结果列表中出现重复的元素（相同的消息），此时键盘上下键选中第二条重复消息，继续按向下键会错误切换到第一条重复消息；并且当选中其中一条消息时，重复的消息同样会有选中的显示样式。
                                                         这些异常都会影响使用。我猜测可能和默认行为是根据元素内容进行判断的，因此加上这个唯一的隐藏元素可以规避问题。 */}
-                                            <span className="hidden">
-                                                {result.id}-{message.id}-{i}-{j}
-                                            </span>
-                                            <Marker mark={searchResultMarks}>{message.content}</Marker>
-                                        </CommandItem>
-                                    ))}
-                                </CommandGroup>
-                            ))}
-                        </CommandList>
+                                                <span className="hidden">
+                                                    {result.id}-{message.id}-{i}-{j}
+                                                </span>
+                                                <Message
+                                                    id={message.id}
+                                                    key={'msg-' + message.id}
+                                                    sessionId={result.id}
+                                                    sessionType={result.type || 'chat'}
+                                                    msg={message}
+                                                    className='w-full'
+                                                    hiddenButtonGroup
+                                                    small
+                                                />
+                                            </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                                ))}
+                            </CommandList>
+                        </Mark>
                     )}
                 </Command>
             </DialogContent>
