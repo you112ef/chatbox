@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import * as remote from '../packages/remote'
 import { getDefaultStore, useAtom } from 'jotai'
 import { settingsAtom } from '../stores/atoms'
-import { activateLicense, deactivateLicense, validateLicense } from '../packages/lemonsqueezy'
 import platform from '../platform'
 import { FetchError } from 'ofetch'
 import omit from 'lodash/omit'
@@ -36,7 +35,10 @@ export function useAutoValidate() {
             }
             try {
                 // 在 lemonsqueezy 检查 license 是否有效，主要检查是否过期、被禁用的情况。若无效则清除相关数据
-                const result = await validateLicense(settings.licenseKey, instanceId)
+                const result = await remote.validateLicense({
+                    licenseKey: settings.licenseKey,
+                    instanceId: instanceId,
+                })
                 if (!result.valid) {
                     clearValidatedData()
                     return
@@ -78,7 +80,10 @@ export async function deactivate() {
     const licenseKey = settings.licenseKey || ''
     const licenseInstances = settings.licenseInstances || {}
     if (licenseKey && licenseInstances[licenseKey]) {
-        await deactivateLicense(licenseKey, licenseInstances[licenseKey])
+        await remote.deactivateLicense({
+            licenseKey,
+            instanceId: licenseInstances[licenseKey],
+        })
     }
 }
 
@@ -95,8 +100,11 @@ export async function activate(licenseKey: string) {
         await deactivate()
     }
     // 激活新的 license key，获取 instanceId
-    const result = await activateLicense(licenseKey, await platform.getInstanceName())
-    if (! result.valid) {
+    const result = await remote.activateLicense({
+        licenseKey,
+        instanceName: await platform.getInstanceName(),
+    })
+    if (!result.valid) {
         return result
     }
     // 获取 license 详情

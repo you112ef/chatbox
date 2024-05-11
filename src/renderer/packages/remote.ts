@@ -231,3 +231,58 @@ export async function uploadAndCreateUserFile(licenseKey: string, file: File) {
     })
     return result.uuid
 }
+
+export async function activateLicense(params: {
+    licenseKey: string,
+    instanceName: string
+}) {
+    type Response = {
+        data: {
+            valid: boolean
+            instanceId: string
+            error: string
+        }
+    }
+    const res = await afetch(`${API_ORIGIN}/api/license/activate`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(params),
+    }, { parseChatboxRemoteError: true })
+    const json: Response = await res.json()
+    return json['data']
+}
+
+export async function deactivateLicense(params: {
+    licenseKey: string,
+    instanceId: string
+}) {
+    await afetch(`${API_ORIGIN}/api/license/deactivate`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(params),
+    }, { parseChatboxRemoteError: true })
+}
+
+export async function validateLicense(params: {
+    licenseKey: string,
+    instanceId: string
+}) {
+    type Response = {
+        data: {
+            valid: boolean
+        }
+    }
+    const res = await afetch(`${API_ORIGIN}/api/license/validate`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(params),
+    }, { parseChatboxRemoteError: true })
+    const json: Response = await res.json()
+    return json['data']
+}
