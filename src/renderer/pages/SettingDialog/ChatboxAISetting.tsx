@@ -138,14 +138,17 @@ function DetailCard(props: { licenseKey?: string, activated: boolean }) {
             {
                 activated && (
                     <Box>
-                        <Box className='mb-4'>
+                        <Box className='mb-2'>
                             <ActivedButtonGroup />
                         </Box>
                         <LicenseDetail licenseKey={licenseKey} />
                     </Box>
                 )
             }
-            <Box className='mt-4' sx={{ opacity: activated ? '0.5' : undefined }}>
+            {
+                !activated && (<InactivedButtonGroup />)
+            }
+            <Box className='mt-2' sx={{ opacity: activated ? '0.5' : undefined }}>
                 <Typography>
                     {t('Chatbox AI offers a user-friendly AI solution to help you enhance productivity')}
                 </Typography>
@@ -165,9 +168,6 @@ function DetailCard(props: { licenseKey?: string, activated: boolean }) {
                     )}
                 </Box>
             </Box>
-            {
-                !activated && (<InactivedButtonGroup />)
-            }
         </Card>
     )
 }
