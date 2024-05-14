@@ -121,6 +121,10 @@ export default class OpenAI extends Base {
         }
         return headers
     }
+
+    static isSupportVision(model: Model | 'custom-model'): boolean {
+        return isSupportVision(model)
+    }
 }
 
 // Ref: https://platform.openai.com/docs/models/gpt-4
@@ -148,6 +152,15 @@ export const openaiModelConfigs = {
     'gpt-3.5-turbo-16k-0613': {
         maxTokens: 4096,
         maxContextTokens: 16_385,
+    },
+
+    'gpt-4o': {
+        maxTokens: 4_096,
+        maxContextTokens: 128_000,
+    },
+    'gpt-4o-2024-05-13': {
+        maxTokens: 4_096,
+        maxContextTokens: 128_000,
     },
 
     'gpt-4': {
@@ -205,15 +218,20 @@ export const openaiModelConfigs = {
 export type Model = keyof typeof openaiModelConfigs
 export const models = Array.from(Object.keys(openaiModelConfigs)).sort() as Model[]
 
-export async function populateOpenAIMessage(rawMessages: Message[], model: Model | 'custom-model'): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
-    if ([
-        'gpt-4-vision-preview',
-        'openai/gpt-4-vision-preview',
+export function isSupportVision(model: Model | 'custom-model'): boolean {
+    return [
         'gpt-4-turbo',
-        'openai/gpt-4-turbo',
-    ].includes(model)) {
+        'gpt-4-vision-preview',
+        'gpt-4o',
+        'gpt-4o-2024-05-13',
+        'custom-model',
+    ].includes(model)
+}
+
+export async function populateOpenAIMessage(rawMessages: Message[], model: Model | 'custom-model'): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
+    if (isSupportVision(model)) {
         return populateOpenAIMessageVision(rawMessages)
-    } else if (model === 'custom-model' && rawMessages.some((m) => m.pictures && m.pictures.length > 0)){
+    } else if (model === 'custom-model' && rawMessages.some((m) => m.pictures && m.pictures.length > 0)) {
         return populateOpenAIMessageVision(rawMessages)
     } else {
         return populateOpenAIMessageText(rawMessages)
@@ -289,17 +307,17 @@ export interface OpenAIMessageVision {
     role: 'system' | 'user' | 'assistant'
     content: (
         | {
-              type: 'text'
-              text: string
-          }
+            type: 'text'
+            text: string
+        }
         | {
-              type: 'image_url'
-              image_url: {
-                  // 可以是 url，也可以是 base64
-                  // data:image/jpeg;base64,{base64_image}
-                  url: string
-                  detail?: 'auto' | 'low' | 'high' // default: auto
-              }
-          }
+            type: 'image_url'
+            image_url: {
+                // 可以是 url，也可以是 base64
+                // data:image/jpeg;base64,{base64_image}
+                url: string
+                detail?: 'auto' | 'low' | 'high' // default: auto
+            }
+        }
     )[]
 }
