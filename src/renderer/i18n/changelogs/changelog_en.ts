@@ -1,5 +1,5 @@
 const changelog = `
-### v1.3.8 - 2024-05-14
+### v1.3.9 - 2024-05-14
 
 1. Added support for the new GPT-4o model.
 2. Refined the UI for global message search.
