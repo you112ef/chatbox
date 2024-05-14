@@ -229,9 +229,7 @@ export function isSupportVision(model: Model | 'custom-model'): boolean {
 }
 
 export async function populateOpenAIMessage(rawMessages: Message[], model: Model | 'custom-model'): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
-    if (isSupportVision(model)) {
-        return populateOpenAIMessageVision(rawMessages)
-    } else if (model === 'custom-model' && rawMessages.some((m) => m.pictures && m.pictures.length > 0)) {
+    if (isSupportVision(model) && rawMessages.some((m) => m.pictures && m.pictures.length > 0)) {
         return populateOpenAIMessageVision(rawMessages)
     } else {
         return populateOpenAIMessageText(rawMessages)
