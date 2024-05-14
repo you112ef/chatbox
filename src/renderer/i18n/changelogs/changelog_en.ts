@@ -1,4 +1,11 @@
 const changelog = `
+### v1.3.8 - 2024-05-14
+
+1. Added support for the new GPT-4o model.
+2. Refined the UI for global message search.
+3. Image detail window now supports image zoom.
+4. Enhanced various other UI details.
+
 ### v1.3.6 - 2024.05.04
 
 **New Features:**
