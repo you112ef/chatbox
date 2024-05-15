@@ -50,6 +50,14 @@ function keyboardShortcut(e: KeyboardEvent) {
         sessionActions.startNewThread()
         return
     }
+    if (platform.type === 'desktop') {
+        // 桌面版本中，CMD+R 也可以归档当前会话的上下文
+        if (e.code === 'KeyR' && ctrlOrCmd) {
+            e.preventDefault()
+            sessionActions.startNewThread()
+            return
+        }
+    }
 
     if (e.key === 'Tab' && ctrlOrCmd && !shift) {
         sessionActions.switchToNext()
