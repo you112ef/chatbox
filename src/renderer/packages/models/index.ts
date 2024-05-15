@@ -142,4 +142,5 @@ export function isCurrentModelSupportImageInput(settings: ModelSettings) {
         || (settings.aiProvider === ModelProvider.OpenAI && OpenAI.isSupportVision(settings.model))
         || (settings.aiProvider === ModelProvider.Azure && settings.azureDeploymentName === 'gpt-4-vision-preview')
         || (settings.aiProvider === ModelProvider.Claude && settings.claudeModel.startsWith('claude-3'))
+        || (settings.aiProvider === ModelProvider.Gemini && Gemini.isSupportVision(settings.geminiModel))
 }
