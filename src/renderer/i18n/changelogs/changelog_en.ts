@@ -1,9 +1,14 @@
 const changelog = `
+### v1.3.10 - 2024.05.15
+
+1. Added support for the new Gemini-1.5-Flash model 
+2. You can now send images to the Gemini model series
+
 ### v1.3.9 - 2024-05-14
 
 1. Added support for the new GPT-4o model.
 2. Refined the UI for global message search.
-3. Image detail window now supports image zoom.
+3. Image detail dialog now supports image zoom.
 4. Enhanced various other UI details.
 
 ### v1.3.6 - 2024.05.04
