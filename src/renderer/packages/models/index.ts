@@ -138,7 +138,7 @@ export function getModelDisplayName(settings: Session['settings'], sessionType: 
 }
 
 export function isCurrentModelSupportImageInput(settings: ModelSettings) {
-    return (settings.aiProvider === ModelProvider.ChatboxAI && settings.chatboxAIModel === 'chatboxai-4')
+    return (settings.aiProvider === ModelProvider.ChatboxAI)
         || (settings.aiProvider === ModelProvider.OpenAI && OpenAI.isSupportVision(settings.model))
         || (settings.aiProvider === ModelProvider.Azure && settings.azureDeploymentName === 'gpt-4-vision-preview')
         || (settings.aiProvider === ModelProvider.Claude && settings.claudeModel.startsWith('claude-3'))
