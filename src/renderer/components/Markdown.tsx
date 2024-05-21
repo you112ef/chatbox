@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/material'
 import { useMemo } from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { a11yDark, atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import * as utils from '../packages/utils'
 import * as toastActions from '../stores/toastActions'
@@ -136,11 +136,16 @@ export function CodeBlock(props: any) {
                     //   {...rest}
                     // showLineNumbers
                     children={String(children).replace(/\n$/, '')}
-                    style={a11yDark}
+                    style={
+                        theme.palette.mode === 'dark'
+                            ? atomDark
+                            : a11yDark
+                    }
                     language={language}
                     PreTag="div"
                     customStyle={{
                         marginTop: '0',
+                        margin: '0',
                         borderTopLeftRadius: '0',
                         borderTopRightRadius: '0',
                         borderBottomLeftRadius: '0.3rem',
