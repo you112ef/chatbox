@@ -219,12 +219,19 @@ function MiniItem(props: MiniItemProps) {
     const { t } = useTranslation()
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    const useCopilot = (event: React.MouseEvent<HTMLElement>) => {
+        event.preventDefault()
+        if (open) {
+            return
+        }
+        props.useMe()
+    }
+    const openMenu = (event: React.MouseEvent<HTMLElement>) => {
         event.stopPropagation()
         event.preventDefault()
         setAnchorEl(event.currentTarget)
     }
-    const handleClose = () => {
+    const closeMenu = () => {
         setAnchorEl(null)
     }
     return (
@@ -244,15 +251,14 @@ function MiniItem(props: MiniItemProps) {
                 },
             }}
             className='w-full sm:w-48 hover:bg-slate-400/25 border-solid border-slate-400/20 rounded-md'
+            onClick={useCopilot}
         >
             <Avatar
-                onClick={props.useMe}
                 sizes="30px"
                 sx={{ width: '30px', height: '30px' }}
                 src={props.detail.picUrl}
             ></Avatar>
             <div
-                onClick={props.useMe}
                 style={{
                     marginLeft: '5px',
                 }}
@@ -274,7 +280,7 @@ function MiniItem(props: MiniItemProps) {
                             alignItems: 'center',
                         }}
                     >
-                        <IconButton onClick={handleClick}>
+                        <IconButton onClick={openMenu}>
                             {props.detail.starred ? (
                                 <StarIcon color="primary" fontSize="small" />
                             ) : (
@@ -288,13 +294,13 @@ function MiniItem(props: MiniItemProps) {
                         }}
                         anchorEl={anchorEl}
                         open={open}
-                        onClose={handleClose}
+                        onClose={closeMenu}
                     >
                         <MenuItem
                             key={'star'}
                             onClick={() => {
                                 props.switchStarred()
-                                handleClose()
+                                closeMenu()
                             }}
                             disableRipple
                         >
@@ -315,7 +321,7 @@ function MiniItem(props: MiniItemProps) {
                             key={'edit'}
                             onClick={() => {
                                 props.editMe()
-                                handleClose()
+                                closeMenu()
                             }}
                             disableRipple
                         >
@@ -329,7 +335,7 @@ function MiniItem(props: MiniItemProps) {
                             key={'del'}
                             onClick={() => {
                                 setAnchorEl(null)
-                                handleClose()
+                                closeMenu()
                                 props.deleteMe()
                             }}
                             disableRipple
