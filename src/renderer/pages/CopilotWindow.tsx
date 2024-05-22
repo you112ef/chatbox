@@ -262,7 +262,7 @@ function MiniItem(props: MiniItemProps) {
                 style={{
                     marginLeft: '5px',
                 }}
-                className='w-full sm:w-36'
+                className='w-full sm:w-28'
             >
                 <Typography variant="body1" noWrap>
                     {props.detail.name}
@@ -339,6 +339,11 @@ function MiniItem(props: MiniItemProps) {
                                 props.deleteMe()
                             }}
                             disableRipple
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                                },
+                            }}
                         >
                             <DeleteForeverIcon />
                             {t('delete')}
