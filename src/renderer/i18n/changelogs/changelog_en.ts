@@ -1,4 +1,10 @@
 const changelog = `
+### v1.3.11 - 2024-05-26
+
+1. Chatbox AI 3.5 now supports sending images.
+2. Enhanced the interaction experience of the partner list.
+3. Improved code block color scheme in night mode.
+
 ### v1.3.10 - 2024.05.15
 
 1. Added support for the new Gemini-1.5-Flash model 
