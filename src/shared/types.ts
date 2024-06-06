@@ -134,6 +134,8 @@ export function settings2SessionSettings(settings: ModelSettings) {
         'geminiModel',
 
         'groqModel',
+
+        'selectedCustomProviderId',
     ])
 }
 
@@ -159,6 +161,7 @@ export enum ModelProvider {
     Gemini = 'gemini',
     Ollama = 'ollama',
     Groq = 'groq',
+    Custom = 'custom',
 }
 
 export interface ModelSettings {
@@ -208,6 +211,10 @@ export interface ModelSettings {
     groqAPIKey: string
     groqModel: GroqModel
 
+    // custom provider
+    selectedCustomProviderId?: string // 选中的自定义提供者 ID，仅当 aiProvider 为 custom 时有效
+    customProviders: CustomProvider[]
+
     temperature: number
     topP: number
     // openaiMaxTokens: number // 生成消息的最大限制，是传入 OpenAI 接口的参数。0 代表不限制（不传递）
@@ -215,6 +222,16 @@ export interface ModelSettings {
     openaiMaxContextMessageCount: number // 聊天消息上下文的消息数量限制。超过20表示不限制
     // maxContextSize: string 弃用，字段名永远不在使用，避免老版本报错
     // maxTokens: string 弃用，字段名永远不在使用，避免老版本报错
+}
+
+export interface CustomProvider {
+    id: string
+    name: string
+    api: 'openai'
+    host: string
+    path: string
+    key: string
+    model: string
 }
 
 export interface Settings extends ModelSettings {

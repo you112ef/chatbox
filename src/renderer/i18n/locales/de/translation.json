@@ -250,5 +250,13 @@
     "Expand": "Erweitern",
     "Collapse": "Reduzieren",
     "Instruction (System Prompt)": "Anweisung (Systemeingabeaufforderung)",
-    "Reset to Global Settings": "Auf globale Einstellungen zurücksetzen"
+    "Reset to Global Settings": "Auf globale Einstellungen zurücksetzen",
+    "Model Provider": "Modellanbieter",
+    "Untitled": "Unbenannt",
+    "Add Custom Provider": "Benutzerdefinierten Anbieter hinzufügen",
+    "Here you can add and manage various custom model providers. As long as the provider's API is compatible with the selected API mode, you can seamlessly connect and use it within Chatbox.": "Hier können Sie verschiedene benutzerdefinierte Modellanbieter hinzufügen und verwalten. Solange die API des Anbieters mit dem ausgewählten API-Modus kompatibel ist, können Sie sie nahtlos mit Chatbox verbinden und verwenden.",
+    "Please note that as a client tool, Chatbox cannot guarantee the quality of service and data privacy of the model providers. If you are looking for a stable, reliable, and privacy-protecting model service, consider <a>Chatbox AI</a>.": "Bitte beachten Sie, dass Chatbox als Client-Tool die Servicequalität und den Datenschutz der Modellanbieter nicht garantieren kann. Wenn Sie einen stabilen, zuverlässigen und datenschutzfreundlichen Modellservice suchen, sollten Sie <a>Chatbox AI</a> in Betracht ziehen.",
+    "API Mode": "API-Modus",
+    "OpenAI API Compatible": "OpenAI-API-kompatibel",
+    "api path": "API-Pfad"
 }

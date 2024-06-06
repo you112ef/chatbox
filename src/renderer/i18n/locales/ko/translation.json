@@ -250,5 +250,13 @@
     "Expand": "확장",
     "Collapse": "축소",
     "Instruction (System Prompt)": "지시 (시스템 프롬프트)",
-    "Reset to Global Settings": "전역 설정으로 재설정"
+    "Reset to Global Settings": "전역 설정으로 재설정",
+    "Model Provider": "모델 공급자",
+    "Untitled": "제목 없음",
+    "Add Custom Provider": "사용자 정의 공급자 추가",
+    "Here you can add and manage various custom model providers. As long as the provider's API is compatible with the selected API mode, you can seamlessly connect and use it within Chatbox.": "여기에서 다양한 사용자 정의 모델 공급자를 추가하고 관리할 수 있습니다. 공급자의 API가 선택한 API 모드와 호환되는 한 Chatbox 내에서 원활하게 연결하고 사용할 수 있습니다.",
+    "Please note that as a client tool, Chatbox cannot guarantee the quality of service and data privacy of the model providers. If you are looking for a stable, reliable, and privacy-protecting model service, consider <a>Chatbox AI</a>.": "클라이언트 도구로서 Chatbox는 모델 공급자의 서비스 품질과 데이터 개인 정보 보호를 보장할 수 없습니다. 안정적이고 신뢰할 수 있으며 개인 정보를 보호하는 모델 서비스를 찾고 있다면 <a>Chatbox AI</a>를 고려해 보세요.",
+    "API Mode": "API 모드",
+    "OpenAI API Compatible": "OpenAI API 호환",
+    "api path": "API 경로"
 }

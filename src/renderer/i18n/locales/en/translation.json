@@ -249,5 +249,13 @@
     "Expand": "Expand",
     "Collapse": "Collapse",
     "Instruction (System Prompt)": "Instruction (System Prompt)",
-    "Reset to Global Settings": "Reset to Global Settings"
+    "Reset to Global Settings": "Reset to Global Settings",
+    "Model Provider": "Model Provider",
+    "Untitled": "Untitled",
+    "Add Custom Provider": "Add Custom Provider",
+    "Here you can add and manage various custom model providers. As long as the provider's API is compatible with the selected API mode, you can seamlessly connect and use it within Chatbox.": "Here you can add and manage various custom model providers. As long as the provider's API is compatible with the selected API mode, you can seamlessly connect and use it within Chatbox.",
+    "Please note that as a client tool, Chatbox cannot guarantee the quality of service and data privacy of the model providers. If you are looking for a stable, reliable, and privacy-protecting model service, consider <a>Chatbox AI</a>.": "Please note that as a client tool, Chatbox cannot guarantee the quality of service and data privacy of the model providers. If you are looking for a stable, reliable, and privacy-protecting model service, consider <a>Chatbox AI</a>.",
+    "API Mode": "API Mode",
+    "OpenAI API Compatible": "OpenAI API Compatible",
+    "api path": "API Path"
 }

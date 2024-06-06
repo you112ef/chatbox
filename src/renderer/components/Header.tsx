@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Box, IconButton, Typography, Chip, Tooltip, useTheme } from '@mui/material'
 import { isChatSession, isPictureSession } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
@@ -24,6 +24,7 @@ export default function Header(props: Props) {
     const widthFull = useAtomValue(atoms.widthFullAtom)
     const setChatConfigDialogSession = useSetAtom(atoms.chatConfigDialogAtom)
     const [showSidebar, setShowSidebar] = useAtom(atoms.showSidebarAtom)
+    const selectedCustomProviderId = useAtomValue(atoms.selectedCustomProviderIdAtom)
 
     const isSmallScreen = useIsSmallScreen()
 
@@ -48,9 +49,13 @@ export default function Header(props: Props) {
         setChatConfigDialogSession(currentSession)
     }
 
+    const currentSessionMergeSettings = useMemo(() => {
+        return sessionActions.getCurrentSessionMergedSettings()
+    }, [currentSession.id, currentSession.settings, selectedCustomProviderId])
+
     let EditButton: React.ReactNode | null = null
-    if (isChatSession(currentSession) && currentSession.settings) {
-        const modelName = getModelDisplayName(currentSession.settings, currentSession.type || 'chat')
+    if (isChatSession(currentSession) && (currentSession.settings || currentSessionMergeSettings.selectedCustomProviderId)) {
+        const modelName = getModelDisplayName(currentSessionMergeSettings, currentSession.type || 'chat')
         if (modelName === '' || modelName === 'unknown') {
             EditButton = (
                 <Pencil className="ml-1 cursor-pointer w-4 h-4" fontSize="small"

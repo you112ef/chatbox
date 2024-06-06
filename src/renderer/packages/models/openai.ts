@@ -7,6 +7,7 @@ import * as settingActions from '@/stores/settingActions'
 interface Options {
     openaiKey: string
     apiHost: string
+    apiPath?: string
     model: Model | 'custom-model'
     dalleStyle: 'vivid' | 'natural'
     openaiCustomModel?: string // OpenAI 自定义模型的 ID
@@ -27,6 +28,9 @@ export default class OpenAI extends Base {
         }
         if (this.options.apiHost && this.options.apiHost.startsWith('https://openrouter.ai/api/v1')) {
             this.options.apiHost = 'https://openrouter.ai/api'
+        }
+        if (this.options.apiPath && !this.options.apiPath.startsWith('/')) {
+            this.options.apiPath = '/' + this.options.apiPath
         }
     }
 
@@ -56,8 +60,9 @@ export default class OpenAI extends Base {
             : this.options.model
         messages = injectModelSystemPrompt(model, messages)
 
+        const apiPath = this.options.apiPath || '/v1/chat/completions'
         const response = await this.post(
-            `${this.options.apiHost}/v1/chat/completions`,
+            `${this.options.apiHost}${apiPath}`,
             this.getHeaders(),
             {
                 messages,

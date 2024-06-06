@@ -37,6 +37,8 @@ export function settings(): Settings {
         groqAPIKey: '',
         groqModel: 'llama3-70b-8192',
 
+        customProviders: [],
+
         showWordCount: true,
         showTokenCount: false,
         showTokenUsed: true,

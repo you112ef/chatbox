@@ -250,5 +250,13 @@
     "Expand": "展開",
     "Collapse": "折りたたむ",
     "Instruction (System Prompt)": "指示（システムプロンプト）",
-    "Reset to Global Settings": "グローバル設定にリセット"
+    "Reset to Global Settings": "グローバル設定にリセット",
+    "Model Provider": "モデルプロバイダー",
+    "Untitled": "無題",
+    "Add Custom Provider": "カスタムプロバイダーを追加",
+    "Here you can add and manage various custom model providers. As long as the provider's API is compatible with the selected API mode, you can seamlessly connect and use it within Chatbox.": "ここでは、さまざまなカスタムモデルプロバイダーを追加および管理できます。プロバイダーのAPIが選択したAPIモードと互換性がある限り、Chatbox内でシームレスに接続して使用できます。",
+    "Please note that as a client tool, Chatbox cannot guarantee the quality of service and data privacy of the model providers. If you are looking for a stable, reliable, and privacy-protecting model service, consider <a>Chatbox AI</a>.": "クライアントツールとして、Chatboxはモデルプロバイダーのサービス品質とデータプライバシーを保証できません。安定した、信頼性の高い、プライバシーを保護するモデルサービスをお探しの場合は、<a>Chatbox AI</a>を検討してください。",
+    "API Mode": "APIモード",
+    "OpenAI API Compatible": "OpenAI API互換",
+    "api path": "APIパス"
 }

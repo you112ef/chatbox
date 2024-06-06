@@ -26,6 +26,22 @@ export function getModel(setting: Settings, config: Config) {
             return new Ollama(setting)
         case ModelProvider.Groq:
             return new Groq(setting)
+        case ModelProvider.Custom:
+            const customProvider = setting.customProviders.find((provider) => provider.id === setting.selectedCustomProviderId)
+            if (!customProvider) {
+                throw new Error('Cannot find the custom provider')
+            }
+            return new OpenAI({
+                openaiKey: customProvider.key,
+                apiHost: customProvider.host,
+                apiPath: customProvider.path,
+                model: 'custom-model',
+                openaiCustomModel: customProvider.model,
+                dalleStyle: 'vivid',
+                // openaiMaxTokens: number
+                temperature: setting.temperature,
+                topP: setting.topP,
+            })
         default:
             throw new Error('Cannot find model with provider: ' + setting.aiProvider)
     }
@@ -40,6 +56,7 @@ export const aiProviderNameHash = {
     [ModelProvider.Gemini]: 'Google Gemini',
     [ModelProvider.Ollama]: 'Ollama',
     [ModelProvider.Groq]: 'Groq',
+    [ModelProvider.Custom]: 'Custom Provider',
 }
 
 export const AIModelProviderMenuOptionList = [
@@ -91,7 +108,7 @@ export const AIModelProviderMenuOptionList = [
     // },
 ]
 
-export function getModelDisplayName(settings: Session['settings'], sessionType: SessionType): string {
+export function getModelDisplayName(settings: Settings, sessionType: SessionType): string {
     if (!settings) {
         return 'unknown'
     }
@@ -132,6 +149,12 @@ export function getModelDisplayName(settings: Session['settings'], sessionType: 
             return `Ollama (${settings.ollamaModel})`
         case ModelProvider.Groq:
             return `Groq (${settings.groqModel})`
+        case ModelProvider.Custom:
+            const customProvider = settings.customProviders?.find((provider) => provider.id === settings.selectedCustomProviderId)
+            if (!customProvider) {
+                return 'unknown'
+            }
+            return `${customProvider.name}(${customProvider.model})`
         default:
             return 'unknown'
     }
@@ -143,4 +166,5 @@ export function isCurrentModelSupportImageInput(settings: ModelSettings) {
         || (settings.aiProvider === ModelProvider.Azure && settings.azureDeploymentName === 'gpt-4-vision-preview')
         || (settings.aiProvider === ModelProvider.Claude && settings.claudeModel.startsWith('claude-3'))
         || (settings.aiProvider === ModelProvider.Gemini && Gemini.isSupportVision(settings.geminiModel))
+        || settings.aiProvider === ModelProvider.Custom
 }

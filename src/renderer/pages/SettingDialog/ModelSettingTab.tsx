@@ -11,6 +11,7 @@ import GroqSetting from './GroqSetting'
 import { OllamaHostInput, OllamaModelSelect } from './OllamaSetting'
 import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
 import TemperatureSlider from '@/components/TemperatureSlider'
+import CustomProviderSetting from './CustomProviderSetting'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -22,10 +23,10 @@ export default function ModelSettingTab(props: ModelConfigProps) {
     return (
         <Box>
             <AIProviderSelect
-                value={settingsEdit.aiProvider}
-                onChange={(v) => setSettingsEdit({ ...settingsEdit, aiProvider: v })}
+                settings={settingsEdit}
+                setSettings={setSettingsEdit}
             />
-            <Divider sx={{ margin: '12px 0' }} />
+            <Divider sx={{ marginTop: '10px', marginBottom: '24px' }} />
             {settingsEdit.aiProvider === ModelProvider.OpenAI && (
                 <OpenAISetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
             )}
@@ -67,6 +68,9 @@ export default function ModelSettingTab(props: ModelConfigProps) {
                         onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
                     />
                 </>
+            )}
+            {settingsEdit.aiProvider === ModelProvider.Custom && (
+                <CustomProviderSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
             )}
         </Box>
     )

@@ -250,5 +250,13 @@
     "Expand": "展開",
     "Collapse": "收起",
     "Instruction (System Prompt)": "指令（系統提示）",
-    "Reset to Global Settings": "重置為全局設置"
+    "Reset to Global Settings": "重置為全局設置",
+    "Model Provider": "模型提供方",
+    "Untitled": "未命名",
+    "Add Custom Provider": "添加自定義提供方",
+    "Here you can add and manage various custom model providers. As long as the provider's API is compatible with the selected API mode, you can seamlessly connect and use it within Chatbox.": "在這裡，您可以添加和管理各種自定義模型提供方。只要提供方的 API 與所選的 API 模式兼容，您就可以在 Chatbox 中無縫連接和使用它。",
+    "Please note that as a client tool, Chatbox cannot guarantee the quality of service and data privacy of the model providers. If you are looking for a stable, reliable, and privacy-protecting model service, consider <a>Chatbox AI</a>.": "請注意，作為客戶端工具，Chatbox 不能保證模型提供方的服務質量和數據隱私。如果您正在尋找穩定、可靠且保護隱私的模型服務，請考慮使用<a>Chatbox AI</a>。",
+    "API Mode": "API 模式",
+    "OpenAI API Compatible": "OpenAI API 兼容",
+    "api path": "API 路徑"
 }

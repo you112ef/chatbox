@@ -250,5 +250,13 @@
     "Expand": "Развернуть",
     "Collapse": "Свернуть",
     "Instruction (System Prompt)": "Инструкция (Системная подсказка)",
-    "Reset to Global Settings": "Сбросить к глобальным настройкам"
+    "Reset to Global Settings": "Сбросить к глобальным настройкам",
+    "Model Provider": "Поставщик модели",
+    "Untitled": "Без названия",
+    "Add Custom Provider": "Добавить пользовательский поставщик",
+    "Here you can add and manage various custom model providers. As long as the provider's API is compatible with the selected API mode, you can seamlessly connect and use it within Chatbox.": "Здесь вы можете добавлять и управлять различными пользовательскими поставщиками моделей. Пока API-интерфейс поставщика совместим с выбранным режимом API, вы можете без проблем подключиться и использовать его в Chatbox.",
+    "Please note that as a client tool, Chatbox cannot guarantee the quality of service and data privacy of the model providers. If you are looking for a stable, reliable, and privacy-protecting model service, consider <a>Chatbox AI</a>.": "Обратите внимание, что в качестве клиентского инструмента Chatbox не может гарантировать качество обслуживания и конфиденциальность данных поставщиков моделей. Если вы ищете стабильный, надежный и защищающий конфиденциальность сервис моделей, рассмотрите <a>Chatbox AI</a>.",
+    "API Mode": "Режим API",
+    "OpenAI API Compatible": "Совместимо с API OpenAI",
+    "api path": "путь API"
 }

@@ -192,24 +192,11 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
     const specificSettings = dataEdit.settings || {}
     return (
         <>
-            {/* <FormControlLabel
-                control={<Switch size="medium" />}
-                label={t('Specific model settings')}
-                checked={!!dataEdit.settings}
-                onChange={(e, checked) => {
-                    if (checked) {
-                        dataEdit.settings = settings2SessionSettings(globalSettings)
-                    } else {
-                        dataEdit.settings = undefined
-                    }
-                    setDataEdit({ ...dataEdit })
-                }}
-                sx={{ margin: '12px 0' }}
-            /> */}
             <AIProviderSelect
-                value={sessionSettings.aiProvider}
-                onChange={(v) => updateSettingsEdit({ aiProvider: v })}
+                settings={sessionSettings}
+                setSettings={updateSettingsEdit}
                 className={specificSettings.aiProvider === undefined ? 'opacity-50' : ''}
+                hideCustomProviderManage
             />
             <Divider sx={{ margin: '16px 0' }} />
             {sessionSettings.aiProvider === ModelProvider.ChatboxAI && (
