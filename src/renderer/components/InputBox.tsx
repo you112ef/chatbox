@@ -425,7 +425,7 @@ export default function InputBox(props: Props) {
                         }}
                         placeholder={t('Type your question here...') || ''}
                         onPaste={onPaste}
-                        {...{ enterKeyHint: 'send' } as any}
+                        // {...{ enterKeyHint: 'send' } as any}
                     />
                     <div className='flex flex-row items-center' onClick={() => dom.focusMessageInput()} >
                         {
