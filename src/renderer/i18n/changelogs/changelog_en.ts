@@ -1,5 +1,11 @@
 const changelog = `
-### v1.3.11 - 2024-05-26
+### v1.3.12 - 2024.06.11
+
+1. Added support for an unlimited number of custom model providers, allowing for easy integration and switching between various API-compatible models.
+2. Enhanced the keyboard experience on mobile devices.
+3. Fixed several minor known issues.
+
+### v1.3.11 - 2024.05.26
 
 1. Chatbox AI 3.5 now supports sending images.
 2. Enhanced the interaction experience of the partner list.
@@ -10,7 +16,7 @@ const changelog = `
 1. Added support for the new Gemini-1.5-Flash model 
 2. You can now send images to the Gemini model series
 
-### v1.3.9 - 2024-05-14
+### v1.3.9 - 2024.05.14
 
 1. Added support for the new GPT-4o model.
 2. Refined the UI for global message search.
