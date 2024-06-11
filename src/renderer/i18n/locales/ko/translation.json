@@ -258,5 +258,8 @@
     "Please note that as a client tool, Chatbox cannot guarantee the quality of service and data privacy of the model providers. If you are looking for a stable, reliable, and privacy-protecting model service, consider <a>Chatbox AI</a>.": "클라이언트 도구로서 Chatbox는 모델 공급자의 서비스 품질과 데이터 개인 정보 보호를 보장할 수 없습니다. 안정적이고 신뢰할 수 있으며 개인 정보를 보호하는 모델 서비스를 찾고 있다면 <a>Chatbox AI</a>를 고려해 보세요.",
     "API Mode": "API 모드",
     "OpenAI API Compatible": "OpenAI API 호환",
-    "api path": "API 경로"
+    "api path": "API 경로",
+    "Follow System": "시스템 따름",
+    "Light Mode": "라이트 모드",
+    "Dark Mode": "다크 모드"
 }

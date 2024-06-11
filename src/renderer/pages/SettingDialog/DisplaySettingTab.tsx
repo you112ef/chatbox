@@ -1,9 +1,9 @@
 import { FormGroup, FormControlLabel, Switch, Select, MenuItem, FormControl, InputLabel, Box } from '@mui/material'
 import { Settings, ThemeMode } from '../../../shared/types'
-import ThemeChangeButton from '../../theme/ThemeChangeIcon'
 import { useTranslation } from 'react-i18next'
 import { languageNameMap, languages } from '../../i18n/locales'
 import TranslateIcon from '@mui/icons-material/Translate'
+import SimpleSelect from '@/components/SimpleSelect'
 
 export default function DisplaySettingTab(props: {
     settingsEdit: Settings
@@ -14,67 +14,33 @@ export default function DisplaySettingTab(props: {
     const { t } = useTranslation()
     return (
         <Box>
-            <FormControl fullWidth variant="outlined" margin="dense">
-                <InputLabel htmlFor="language-select">
+            <SimpleSelect
+                label={(
                     <span className="inline-flex items-center justify-center">
                         <TranslateIcon fontSize="small" />
                         {t('language')}
                     </span>
-                </InputLabel>
-                <Select
-                    label={
-                        <span className="inline-flex items-center justify-center">
-                            <TranslateIcon fontSize="small" />
-                            {t('language')}
-                        </span>
-                    }
-                    id="language-select"
-                    value={settingsEdit.language}
-                    onChange={(e) => {
-                        setSettingsEdit({
-                            ...settingsEdit,
-                            language: e.target.value as any,
-                        })
-                    }}
-                >
-                    {languages.map((language) => (
-                        <MenuItem key={language} value={language}>
-                            {languageNameMap[language]}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-            <FormControl fullWidth variant="outlined" margin="dense">
-                <InputLabel>{t('Font Size')}</InputLabel>
-                <Select
-                    labelId="select-font-size"
-                    value={settingsEdit.fontSize}
-                    label={t('Font Size')}
-                    onChange={(event) => {
-                        setSettingsEdit({
-                            ...settingsEdit,
-                            fontSize: event.target.value as number,
-                        })
-                    }}
-                >
-                    {[10, 11, 12, 13, 14, 15, 16, 17, 18].map((size) => (
-                        <MenuItem key={size} value={size}>
-                            {size}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-            <FormControl
-                sx={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    paddingTop: 1,
-                    paddingBottom: 1,
-                }}
-            >
-                <span style={{ marginRight: 10 }}>{t('theme')}</span>
-                <ThemeChangeButton value={settingsEdit.theme} onChange={(theme) => changeModeWithPreview(theme)} />
-            </FormControl>
+                )}
+                value={settingsEdit.language}
+                onChange={(language) => setSettingsEdit({ ...settingsEdit, language: language })}
+                options={languages.map((language) => ({ value: language, label: languageNameMap[language] }))}
+            />
+            <SimpleSelect
+                label={t('Font Size')}
+                value={settingsEdit.fontSize}
+                onChange={(fontSize) => setSettingsEdit({ ...settingsEdit, fontSize: fontSize })}
+                options={[10, 11, 12, 13, 14, 15, 16, 17, 18].map((size) => ({ value: size, label: size }))}
+            />
+            <SimpleSelect
+                label={t('theme')}
+                value={settingsEdit.theme}
+                onChange={(theme) => changeModeWithPreview(theme)}
+                options={[
+                    { value: ThemeMode.System, label: t('Follow System') },
+                    { value: ThemeMode.Light, label: t('Light Mode') },
+                    { value: ThemeMode.Dark, label: t('Dark Mode') },
+                ]}
+            />
             <FormGroup>
                 <FormControlLabel
                     control={<Switch />}
