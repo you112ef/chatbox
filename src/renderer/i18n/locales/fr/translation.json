@@ -261,5 +261,6 @@
     "api path": "Chemin de l'API",
     "Follow System": "Suivre le Système",
     "Light Mode": "Mode Clair",
-    "Dark Mode": "Mode Sombre"
+    "Dark Mode": "Mode Sombre",
+    "Please ensure that the Remote Ollama Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "Veuillez vous assurer que le service Ollama distant peut se connecter à distance. Pour plus de détails, consultez <a>ce tutoriel</a>."
 }
