@@ -1,6 +1,22 @@
+import * as Sentry from '@sentry/react'
+import copyToClipboardFallback from 'copy-to-clipboard'
+
+export function copyToClipboard(text: string) {
+    try {
+        navigator?.clipboard?.writeText(text)
+    } catch (e) {
+        Sentry.captureException(e)
+    }
+    try {
+        copyToClipboardFallback(text)
+    } catch (e) {
+        Sentry.captureException(e)
+    }
+}
+
 const ua = navigator.userAgent
 
-const getBrowser = (): 'Opera' | 'Chrome' | 'Firefox' | 'Safari' | 'IE' | 'Edge' | 'Unknown' | undefined => {
+export const getBrowser = (): 'Opera' | 'Chrome' | 'Firefox' | 'Safari' | 'IE' | 'Edge' | 'Unknown' | undefined => {
     if (ua.indexOf('Opera') > -1) {
         return 'Opera'
     }
@@ -25,7 +41,7 @@ const getBrowser = (): 'Opera' | 'Chrome' | 'Firefox' | 'Safari' | 'IE' | 'Edge'
     return 'Unknown'
 }
 
-const getOS = (): 'Windows' | 'Mac' | 'Linux' | 'Android' | 'iOS' | 'Unknown' => {
+export const getOS = (): 'Windows' | 'Mac' | 'Linux' | 'Android' | 'iOS' | 'Unknown' => {
     if (ua.indexOf('Windows') > -1) {
         return 'Windows'
     }
@@ -49,5 +65,3 @@ const getOS = (): 'Windows' | 'Mac' | 'Linux' | 'Android' | 'iOS' | 'Unknown' =>
     }
     return 'Unknown'
 }
-
-export { getBrowser, getOS }

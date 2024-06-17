@@ -9,12 +9,12 @@ import { useMemo } from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { a11yDark, atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import * as utils from '../packages/utils'
 import * as toastActions from '../stores/toastActions'
 import { sanitizeUrl } from '@braintree/sanitize-url'
 import * as latex from '../packages/latex'
 
 import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for you
+import { copyToClipboard } from '@/packages/navigator'
 
 export default function Markdown(props: {
     children: string
@@ -125,7 +125,7 @@ export function CodeBlock(props: any) {
                                     },
                                 }}
                                 onClick={() => {
-                                    utils.copyToClipboard(String(children))
+                                    copyToClipboard(String(children))
                                     toastActions.add(t('copied to clipboard'))
                                 }}
                             />

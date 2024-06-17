@@ -17,7 +17,6 @@ import {
 import * as atoms from './atoms'
 import * as promptFormat from '../packages/prompts'
 import * as Sentry from '@sentry/react'
-import * as utils from '../packages/utils'
 import { v4 as uuidv4 } from 'uuid'
 import * as defaults from '../../shared/defaults'
 import * as scrollActions from './scrollActions'
@@ -31,6 +30,8 @@ import * as remote from '@/packages/remote'
 import { throttle } from 'lodash'
 import * as settingActions from './settingActions'
 import { formatChatAsHtml, formatChatAsMarkdown, formatChatAsTxt } from "@/lib/format-chat";
+import { countWord } from '@/packages/word-count'
+import { estimateTokensFromMessages } from '@/packages/token'
 
 /**
  * 创建一个新的会话
@@ -361,8 +362,8 @@ export function removeCurrentThread(sessionId: string) {
  */
 export function insertMessage(sessionId: string, msg: Message) {
     const store = getDefaultStore()
-    msg.wordCount = utils.countWord(msg.content)
-    msg.tokenCount = utils.estimateTokensFromMessages([msg])
+    msg.wordCount = countWord(msg.content)
+    msg.tokenCount = estimateTokensFromMessages([msg])
     store.set(atoms.sessionsAtom, (sessions) =>
         sessions.map((s) => {
             if (s.id === sessionId) {
@@ -386,8 +387,8 @@ export function insertMessage(sessionId: string, msg: Message) {
  */
 export function insertMessageAfter(sessionId: string, msg: Message, afterMsgId: string) {
     const store = getDefaultStore()
-    msg.wordCount = utils.countWord(msg.content)
-    msg.tokenCount = utils.estimateTokensFromMessages([msg])
+    msg.wordCount = countWord(msg.content)
+    msg.tokenCount = estimateTokensFromMessages([msg])
     let hasHandled = false
     const handle = (msgs: Message[]) => {
         const index = msgs.findIndex((m) => m.id === afterMsgId)
@@ -425,8 +426,8 @@ export function insertMessageAfter(sessionId: string, msg: Message, afterMsgId: 
 export function modifyMessage(sessionId: string, updated: Message, refreshCounting?: boolean) {
     const store = getDefaultStore()
     if (refreshCounting) {
-        updated.wordCount = utils.countWord(updated.content)
-        updated.tokenCount = utils.estimateTokensFromMessages([updated])
+        updated.wordCount = countWord(updated.content)
+        updated.tokenCount = estimateTokensFromMessages([updated])
     }
 
     // 更新消息时间戳
@@ -679,7 +680,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
                     ...targetMsg,
                     generating: false,
                     cancel: undefined,
-                    tokensUsed: utils.estimateTokensFromMessages([...promptMsgs, targetMsg]),
+                    tokensUsed: estimateTokensFromMessages([...promptMsgs, targetMsg]),
                 }
                 modifyMessage(sessionId, targetMsg, true)
                 break
@@ -821,7 +822,7 @@ function genMessageContext(settings: Settings, msgs: Message[]) {
     if (head) {
         msgs = msgs.slice(1)
     }
-    let totalLen = head ? utils.estimateTokensFromMessages([head]) : 0
+    let totalLen = head ? estimateTokensFromMessages([head]) : 0
     let prompts: Message[] = []
     for (let i = msgs.length - 1; i >= 0; i--) {
         const msg = msgs[i]
@@ -829,7 +830,7 @@ function genMessageContext(settings: Settings, msgs: Message[]) {
         if (msg.error || msg.errorCode) {
             continue
         }
-        const size = utils.estimateTokensFromMessages([msg]) + 20 // 20 作为预估的误差补偿
+        const size = estimateTokensFromMessages([msg]) + 20 // 20 作为预估的误差补偿
         // 只有 OpenAI 才支持上下文 tokens 数量限制
         if (settings.aiProvider === 'openai') {
             // if (size + totalLen > openaiMaxContextTokens) {

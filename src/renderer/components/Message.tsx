@@ -19,7 +19,6 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import EditIcon from '@mui/icons-material/Edit'
 import StopIcon from '@mui/icons-material/Stop'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import * as utils from '../packages/utils'
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote'
 import { useTranslation } from 'react-i18next'
 import { Message, SessionType } from '../../shared/types'
@@ -57,6 +56,9 @@ import * as dateFns from "date-fns"
 import { cn } from '@/lib/utils'
 import FileIcon from './FileIcon'
 import { Loader } from 'lucide-react'
+import { copyToClipboard } from '@/packages/navigator'
+import { estimateTokensFromMessages } from '@/packages/token'
+import { countWord } from '@/packages/word-count'
 
 export interface Props {
     id?: string
@@ -134,7 +136,7 @@ function _Message(props: Props) {
     }
 
     const onCopyMsg = () => {
-        utils.copyToClipboard(msg.content)
+        copyToClipboard(msg.content)
         toastActions.add(t('copied to clipboard'))
         setAnchorEl(null)
     }
@@ -158,12 +160,12 @@ function _Message(props: Props) {
     if (props.sessionType === 'chat' || !props.sessionType) {
         if (showWordCount && !msg.generating) {
             // 兼容旧版本没有提前计算的消息
-            tips.push(`word count: ${msg.wordCount !== undefined ? msg.wordCount : utils.countWord(msg.content)}`)
+            tips.push(`word count: ${msg.wordCount !== undefined ? msg.wordCount : countWord(msg.content)}`)
         }
         if (showTokenCount && !msg.generating) {
             // 兼容旧版本没有提前计算的消息
             if (msg.tokenCount === undefined) {
-                msg.tokenCount = utils.estimateTokensFromMessages([msg])
+                msg.tokenCount = estimateTokensFromMessages([msg])
             }
             tips.push(`token count: ${msg.tokenCount}`)
         }
