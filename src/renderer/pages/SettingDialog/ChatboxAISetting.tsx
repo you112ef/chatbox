@@ -14,6 +14,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import platform from '@/platform'
 import { trackingEvent } from '@/packages/event'
 import * as premiumActions from '@/stores/premiumActions'
+import { useAtomValue } from 'jotai'
+import { languageAtom } from '@/stores/atoms'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -26,6 +28,7 @@ export default function ChatboxAISetting(props: ModelConfigProps) {
     const activated = premiumActions.useAutoValidate()
     const [loading, setLoading] = useState(false)
     const [tip, setTip] = useState<React.ReactNode | null>(null)
+    const language = useAtomValue(languageAtom)
 
     const onInputChange = (value: string) => {
         setLoading(false)
@@ -43,7 +46,7 @@ export default function ChatboxAISetting(props: ModelConfigProps) {
                         setTip(
                             <Box className='text-red-500'>
                                 <Trans i18nKey="This license key has reached the activation limit, <a>click here</a> to manage license and devices to deactivate old devices."
-                                    components={{ a: <a href='https://chatboxai.app/redirect_app/manage_license' target='_blank' rel='noreferrer' /> }}
+                                    components={{ a: <a href={`https://chatboxai.app/redirect_app/manage_license/${language}`} target='_blank' rel='noreferrer' /> }}
                                 />
                             </Box>
                         )
@@ -197,13 +200,14 @@ function DetailCardForMobileApp(props: { licenseKey?: string, activated: boolean
 // 激活后的按钮组
 function ActivedButtonGroup() {
     const { t } = useTranslation()
+    const language = useAtomValue(languageAtom)
     return (
         <Box sx={{ marginTop: '10px' }}>
             <Button
                 variant="outlined"
                 sx={{ marginRight: '10px' }}
                 onClick={() => {
-                    platform.openLink('https://chatboxai.app/redirect_app/manage_license')
+                    platform.openLink(`https://chatboxai.app/redirect_app/manage_license/${language}`)
                     trackingEvent('click_manage_license_button', { event_category: 'user' })
                 }}
             >
@@ -237,6 +241,7 @@ function ActivedButtonGroup() {
 // 未激活时的按钮组
 function InactivedButtonGroup() {
     const { t } = useTranslation()
+    const language = useAtomValue(languageAtom)
     return (
         <Box sx={{ marginTop: '10px' }}>
             <Button
@@ -253,7 +258,7 @@ function InactivedButtonGroup() {
                 variant="text"
                 sx={{ marginRight: '10px' }}
                 onClick={() => {
-                    platform.openLink('https://chatboxai.app/redirect_app/manage_license')
+                    platform.openLink(`https://chatboxai.app/redirect_app/manage_license/${language}`)
                     trackingEvent('click_retrieve_license_button', { event_category: 'user' })
                 }}
             >
