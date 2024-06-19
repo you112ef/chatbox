@@ -99,4 +99,9 @@ export default class AzureOpenAI extends Base {
             'Content-Type': 'application/json',
         }
     }
+
+    static isSupportVision(model: string): boolean {
+        const list = ['gpt-4-vision-preview', 'gpt-4o']
+        return list.includes(model) || list.includes(model.toLowerCase())
+    }
 }
