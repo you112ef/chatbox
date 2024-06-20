@@ -80,24 +80,6 @@ export default function AzureSetting(props: ModelConfigProps) {
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    {/* <Alert severity="warning">
-                        {t('settings modify warning')}
-                        {t('please make sure you know what you are doing.')}
-                        {t('click here to')}
-                        <Button
-                            onClick={() =>
-                                setSettingsEdit({
-                                    ...settingsEdit,
-                                    temperature: defaults.settings().temperature,
-                                    topP: defaults.settings().topP,
-                                    // openaiMaxTokens: defaults.settings().openaiMaxTokens,
-                                })
-                            }
-                        >
-                            {t('reset')}
-                        </Button>
-                        {t('to default values.')}
-                    </Alert> */}
                     <MaxContextMessageCountSlider
                         value={settingsEdit.openaiMaxContextMessageCount}
                         onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}

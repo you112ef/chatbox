@@ -22,7 +22,7 @@ export default function OpenAISetting(props: ModelConfigProps) {
     return (
         <Box>
             <PasswordTextField
-                label={t('openai api key')}
+                label={t('api key')}
                 value={settingsEdit.openaiKey}
                 setValue={(value) => {
                     setSettingsEdit({ ...settingsEdit, openaiKey: value })
@@ -55,25 +55,6 @@ export default function OpenAISetting(props: ModelConfigProps) {
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    {/* <Alert severity="warning">
-                        {t('settings modify warning')}
-                        {t('please make sure you know what you are doing.')}
-                        {t('click here to')}
-                        <Button
-                            onClick={() =>
-                                setSettingsEdit({
-                                    ...settingsEdit,
-                                    model: defaults.settings().model,
-                                    temperature: defaults.settings().temperature,
-                                    topP: defaults.settings().topP,
-                                })
-                            }
-                        >
-                            {t('reset')}
-                        </Button>
-                        {t('to default values.')}
-                    </Alert> */}
-
                     <OpenAIModelSelect
                         model={settingsEdit.model}
                         openaiCustomModel={settingsEdit.openaiCustomModel}
