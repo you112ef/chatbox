@@ -1,4 +1,4 @@
-import { ThemeMode, Config, Settings, ModelProvider, Session } from './types'
+import { Theme, Config, Settings, ModelProvider, Session } from './types'
 import { v4 as uuidv4 } from 'uuid'
 
 export function settings(): Settings {
@@ -45,7 +45,7 @@ export function settings(): Settings {
         showModelName: true,
         showMessageTimestamp: false,
         userAvatarKey: '',
-        theme: ThemeMode.System,
+        theme: Theme.System,
         language: 'en',
         fontSize: 12,
         spellCheck: true,

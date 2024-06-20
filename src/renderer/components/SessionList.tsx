@@ -66,7 +66,6 @@ export default function SessionList(props: Props) {
                 height: '60vh',
                 '& ul': { padding: 0 },
             }}
-            className="scroll"
             subheader={<Subheader openClearWindow={props.openClearWindow} />}
             component="div"
             ref={props.sessionListRef}

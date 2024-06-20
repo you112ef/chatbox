@@ -1,5 +1,5 @@
 import { FormGroup, FormControlLabel, Switch, Select, MenuItem, FormControl, InputLabel, Box } from '@mui/material'
-import { Settings, ThemeMode } from '../../../shared/types'
+import { Settings, Theme } from '../../../shared/types'
 import { useTranslation } from 'react-i18next'
 import { languageNameMap, languages } from '../../i18n/locales'
 import TranslateIcon from '@mui/icons-material/Translate'
@@ -8,7 +8,7 @@ import SimpleSelect from '@/components/SimpleSelect'
 export default function DisplaySettingTab(props: {
     settingsEdit: Settings
     setSettingsEdit: (settings: Settings) => void
-    changeModeWithPreview: (newMode: ThemeMode) => void
+    changeModeWithPreview: (newMode: Theme) => void
 }) {
     const { settingsEdit, setSettingsEdit, changeModeWithPreview } = props
     const { t } = useTranslation()
@@ -36,9 +36,9 @@ export default function DisplaySettingTab(props: {
                 value={settingsEdit.theme}
                 onChange={(theme) => changeModeWithPreview(theme)}
                 options={[
-                    { value: ThemeMode.System, label: t('Follow System') },
-                    { value: ThemeMode.Light, label: t('Light Mode') },
-                    { value: ThemeMode.Dark, label: t('Dark Mode') },
+                    { value: Theme.System, label: t('Follow System') },
+                    { value: Theme.Light, label: t('Light Mode') },
+                    { value: Theme.Dark, label: t('Dark Mode') },
                 ]}
             />
             <FormGroup>

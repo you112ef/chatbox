@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
 import { Button, Tabs, Tab, Dialog, DialogContent, DialogActions, DialogTitle, Box } from '@mui/material'
-import { Settings, SettingWindowTab, ThemeMode } from '../../../shared/types'
+import { Settings, SettingWindowTab, Theme } from '../../../shared/types'
 import { useTranslation } from 'react-i18next'
 import { useAtom } from 'jotai'
 import { settingsAtom } from '../../stores/atoms'
-import { switchTheme } from '../../hooks/useThemeSwitcher'
+import { switchTheme } from '../../hooks/useTheme'
 import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined'
 import SettingsBrightnessIcon from '@mui/icons-material/SettingsBrightness'
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined'
@@ -74,7 +74,7 @@ export default function SettingWindow(props: Props) {
         props.close()
         setSettingsEdit(settings)
         // need to restore the previous theme
-        switchTheme(settings.theme ?? ThemeMode.System)
+        switchTheme(settings.theme ?? Theme.System)
 
         // 取消时如果修改过用户头像，则删除修改后的头像数据
         if (settingsEdit.userAvatarKey !== undefined && settingsEdit.userAvatarKey !== settings.userAvatarKey) {
@@ -82,8 +82,7 @@ export default function SettingWindow(props: Props) {
         }
     }
 
-    // preview theme
-    const changeModeWithPreview = (newMode: ThemeMode) => {
+    const changeThemeWithPreview = (newMode: Theme) => {
         setSettingsEdit({ ...settingsEdit, theme: newMode })
         switchTheme(newMode)
     }
@@ -161,7 +160,7 @@ export default function SettingWindow(props: Props) {
                         setSettingsEdit={(updated) => {
                             setSettingsEdit({ ...settingsEdit, ...updated })
                         }}
-                        changeModeWithPreview={changeModeWithPreview}
+                        changeModeWithPreview={changeThemeWithPreview}
                     />
                 )}
 

@@ -241,7 +241,7 @@ export interface Settings extends ModelSettings {
     showModelName?: boolean
     showMessageTimestamp?: boolean
 
-    theme: ThemeMode
+    theme: Theme
     language: Language
     languageInited?: boolean
     fontSize: number
@@ -298,7 +298,7 @@ export interface Toast {
     content: string
 }
 
-export enum ThemeMode {
+export enum Theme {
     Dark,
     Light,
     System,

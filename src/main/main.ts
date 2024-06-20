@@ -175,7 +175,7 @@ const createWindow = async () => {
 
     // 监听系统主题更新
     nativeTheme.on('updated', () => {
-        mainWindow?.webContents.send('native-theme-updated')
+        mainWindow?.webContents.send('system-theme-updated')
     })
 }
 

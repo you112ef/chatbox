@@ -7,7 +7,7 @@ import SettingDialog from './pages/SettingDialog'
 import ChatConfigWindow from './pages/ChatConfigWindow'
 import CleanWidnow from './pages/CleanWindow'
 import AboutWindow from './pages/AboutWindow'
-import useThemeSwicher from './hooks/useThemeSwitcher'
+import useTheme from './hooks/useTheme'
 import useShortcut from './hooks/useShortcut'
 import useScreenChange from './hooks/useScreenChange'
 import * as remote from './packages/remote'
@@ -133,7 +133,7 @@ export default function App() {
     useSystemLanguageWhenInit()
     useShortcut()
     useScreenChange()
-    const theme = useThemeSwicher()
+    const theme = useTheme()
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />

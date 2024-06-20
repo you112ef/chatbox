@@ -3,20 +3,20 @@ import { getDefaultStore, useAtomValue } from 'jotai'
 import { realThemeAtom, themeAtom, fontSizeAtom } from '../stores/atoms'
 import { createTheme } from '@mui/material/styles'
 import { ThemeOptions } from '@mui/material/styles'
-import { ThemeMode } from '../../shared/types'
+import { Theme } from '../../shared/types'
 import platform from '../platform'
 
-export const switchTheme = async (theme: ThemeMode) => {
+export const switchTheme = async (theme: Theme) => {
     const store = getDefaultStore()
-    if (theme === ThemeMode.System) {
+    if (theme === Theme.System) {
         const isDark = await platform.shouldUseDarkColors()
         store.set(realThemeAtom, isDark ? 'dark' : 'light')
     } else {
-        store.set(realThemeAtom, theme === ThemeMode.Dark ? 'dark' : 'light')
+        store.set(realThemeAtom, theme === Theme.Dark ? 'dark' : 'light')
     }
 }
 
-export default function useThemeSwicher() {
+export default function useTheme() {
     const theme = useAtomValue(themeAtom)
     const fontSize = useAtomValue(fontSizeAtom)
     const realTheme = useAtomValue(realThemeAtom)
@@ -44,11 +44,11 @@ export default function useThemeSwicher() {
         }
     }, [realTheme])
 
-    const themeObj = useMemo(() => createTheme(fetchThemeDesign(realTheme, fontSize)), [realTheme, fontSize])
+    const themeObj = useMemo(() => createTheme(getThemeDesign(realTheme, fontSize)), [realTheme, fontSize])
     return themeObj
 }
 
-export function fetchThemeDesign(realTheme: 'light' | 'dark', fontSize: number): ThemeOptions {
+export function getThemeDesign(realTheme: 'light' | 'dark', fontSize: number): ThemeOptions {
     return {
         palette: {
             mode: realTheme,
