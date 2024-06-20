@@ -16,7 +16,7 @@ export const switchTheme = async (theme: Theme) => {
     }
 }
 
-export default function useTheme() {
+export default function useAppTheme() {
     const theme = useAtomValue(themeAtom)
     const fontSize = useAtomValue(fontSizeAtom)
     const realTheme = useAtomValue(realThemeAtom)
