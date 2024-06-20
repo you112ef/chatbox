@@ -25,10 +25,10 @@ export default class Base {
 
     protected async _chat(messages: Message[], onResultUpdated?: (data: { text: string, cancel(): void }) => void): Promise<string> {
         // 初始化 fetch 的取消机制
-        let hasCancel = false // fetch has been canceled
-        const controller = new AbortController() // abort signal for fetch
+        let canceled = false
+        const controller = new AbortController()
         const cancel = () => {
-            hasCancel = true
+            canceled = true
             controller.abort()
         }
         let result = ''
@@ -49,7 +49,7 @@ export default class Base {
             // if a cancellation is performed
             // do not throw an exception
             // otherwise the content will be overwritten.
-            if (hasCancel) {
+            if (canceled) {
                 return result
             }
             // 如果不是取消，那么正常抛出错误

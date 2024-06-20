@@ -120,16 +120,15 @@ function _Message(props: Props) {
         setQuote(input)
     }
 
-    // stop action
-    const onStop = useCallback(() => {
+    const handleStop = () => {
         sessionActions.modifyMessage(props.sessionId, { ...msg, generating: false }, true)
         msg?.cancel?.()
-    }, [msg])
+    }
 
-    const onRefresh = useCallback(() => {
-        onStop()
+    const handleRefresh = () => {
+        handleStop()
         sessionActions.refreshMessage(props.sessionId, msg)
-    }, [onStop])
+    }
 
     const onGenerateMore = () => {
         sessionActions.refreshMessage(props.sessionId, msg, true)
@@ -499,7 +498,7 @@ function _Message(props: Props) {
                                         >
                                             {msg.generating && (
                                                 <Tooltip title={t('stop generating')} placement="top">
-                                                    <IconButton aria-label="edit" color="warning" onClick={onStop}>
+                                                    <IconButton aria-label="edit" color="warning" onClick={handleStop}>
                                                         <StopIcon fontSize="small" />
                                                     </IconButton>
                                                 </Tooltip>
@@ -511,7 +510,7 @@ function _Message(props: Props) {
                                                     <Tooltip title={t('Reply Again')} placement="top">
                                                         <IconButton
                                                             aria-label="Reply Again"
-                                                            onClick={onRefresh}
+                                                            onClick={handleRefresh}
                                                             color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
                                                         >
                                                             <ReplayIcon fontSize="small" />
@@ -523,7 +522,7 @@ function _Message(props: Props) {
                                                 <Tooltip title={t('Reply Again Below')} placement="top">
                                                     <IconButton
                                                         aria-label="Reply Again Below"
-                                                        onClick={onRefresh}
+                                                        onClick={handleRefresh}
                                                         color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
                                                     >
                                                         <SouthIcon fontSize="small" />
