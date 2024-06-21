@@ -15,6 +15,12 @@ export type ClaudeModel = keyof typeof modelConfig
 
 // https://docs.anthropic.com/claude/docs/models-overview
 export const modelConfig = {
+    'claude-3-5-sonnet-20240620': {
+        contextWindow: 200_000,
+        maxOutput: 4096,
+        vision: true,
+    },
+
     'claude-3-opus-20240229': {
         contextWindow: 200_000,
         maxOutput: 4096,
