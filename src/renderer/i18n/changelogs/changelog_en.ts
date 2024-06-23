@@ -1,4 +1,9 @@
 const changelog = `
+### v1.3.13 - 2024.06.23
+
+1. Add support for new model Claude 3.5 sonnet
+2. Fixed some known issues
+
 ### v1.3.12 - 2024.06.11
 
 1. Added support for an unlimited number of custom model providers, allowing for easy integration and switching between various API-compatible models.
