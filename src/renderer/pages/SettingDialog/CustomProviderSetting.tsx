@@ -5,6 +5,7 @@ import PasswordTextField from '@/components/PasswordTextField'
 import TemperatureSlider from '@/components/TemperatureSlider'
 import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
 import TextFieldReset from '@/components/TextFieldReset'
+import TopPSlider from '@/components/TopPSlider'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -129,6 +130,10 @@ export default function CustomProviderSetting(props: ModelConfigProps) {
             <TemperatureSlider
                 value={settingsEdit.temperature}
                 onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
+            />
+            <TopPSlider
+                topP={settingsEdit.topP}
+                setTopP={(v) => setSettingsEdit({ ...settingsEdit, topP: v })}
             />
         </Box>
     )

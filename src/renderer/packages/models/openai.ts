@@ -13,7 +13,7 @@ interface Options {
     openaiCustomModel?: string // OpenAI 自定义模型的 ID
     // openaiMaxTokens: number
     temperature: number
-    topP: number
+    topP?: number
 }
 
 export default class OpenAI extends Base {

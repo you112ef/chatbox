@@ -39,8 +39,8 @@ export function getModel(setting: Settings, config: Config) {
                 openaiCustomModel: customProvider.model,
                 dalleStyle: 'vivid',
                 // openaiMaxTokens: number
-                temperature: setting.temperature,
-                topP: setting.topP,
+                temperature: keepRange(setting.temperature, 0.1, 0.9),
+                topP: keepRange(setting.topP, 0.1, 0.9),
             })
         default:
             throw new Error('Cannot find model with provider: ' + setting.aiProvider)
@@ -167,4 +167,8 @@ export function isCurrentModelSupportImageInput(settings: ModelSettings) {
         || (settings.aiProvider === ModelProvider.Claude && settings.claudeModel.startsWith('claude-3'))
         || (settings.aiProvider === ModelProvider.Gemini && Gemini.isSupportVision(settings.geminiModel))
         || settings.aiProvider === ModelProvider.Custom
+}
+
+function keepRange(num: number, min: number, max: number): number {
+    return Math.max(min, Math.min(max, num))
 }
