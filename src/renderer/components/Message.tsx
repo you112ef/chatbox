@@ -34,10 +34,11 @@ import {
     showModelNameAtom,
     showTokenCountAtom,
     showWordCountAtom,
+    defaultAssistantAvatarKeyAtom,
     userAvatarKeyAtom,
     openSettingDialogAtom,
     enableMarkdownRenderingAtom,
-    enableLaTeXRenderingAtom,
+    enableLaTeXRenderingAtom, currentSessionAssistantAvatarKeyAtom, chatConfigDialogAtom, currentSessionAtom,
 } from '../stores/atoms'
 import { currsentSessionPicUrlAtom, showTokenUsedAtom } from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
@@ -75,6 +76,8 @@ function _Message(props: Props) {
     const { t } = useTranslation()
     const theme = useTheme()
 
+    const currentSessionAssistantAvatarKey = useAtomValue(currentSessionAssistantAvatarKeyAtom)
+    const defaultAssistantAvatarKey = useAtomValue(defaultAssistantAvatarKeyAtom)
     const userAvatarKey = useAtomValue(userAvatarKeyAtom)
     const showMessageTimestamp = useAtomValue(showMessageTimestampAtom)
     const showModelName = useAtomValue(showModelNameAtom)
@@ -88,6 +91,8 @@ function _Message(props: Props) {
     const setPictureShow = useSetAtom(pictureShowAtom)
     const setMessageEditDialogShow = useSetAtom(messageEditDialogShowAtom)
     const setOpenSettingWindow = useSetAtom(openSettingDialogAtom)
+    const setChatConfigDialog = useSetAtom(chatConfigDialogAtom);
+    const currentSession = useAtomValue(currentSessionAtom);
 
     const { msg, className, collapseThreshold, hiddenButtonGroup, small } = props
 
@@ -268,6 +273,10 @@ function _Message(props: Props) {
         </span>
     )
 
+    const onClickAssistantAvatar = () => {
+        setChatConfigDialog(currentSession)
+    }
+
     return (
         <Box
             ref={ref}
@@ -299,13 +308,29 @@ function _Message(props: Props) {
                     <Box sx={{ marginTop: '8px' }}>
                         {
                             {
-                                assistant: currentSessionPicUrl ? (
+                                assistant: currentSessionAssistantAvatarKey ? (
+                                    <Avatar
+                                        sx={{
+                                            backgroundColor: theme.palette.primary.main,
+                                            width: '28px',
+                                            height: '28px',
+                                        }}
+                                        className='cursor-pointer'
+                                        onClick={onClickAssistantAvatar}
+                                    >
+                                        <ImageInStorage storageKey={currentSessionAssistantAvatarKey}
+                                                        className='object-cover object-center w-full h-full' />
+
+                                    </Avatar>
+                                ) : currentSessionPicUrl ? (
                                     <Avatar
                                         src={currentSessionPicUrl}
                                         sx={{
                                             width: '28px',
                                             height: '28px',
                                         }}
+                                        className='cursor-pointer'
+                                        onClick={onClickAssistantAvatar}
                                     />
                                 ) : props.sessionType === 'picture' ? (
                                     <Avatar
@@ -314,8 +339,23 @@ function _Message(props: Props) {
                                             width: '28px',
                                             height: '28px',
                                         }}
+                                        className='cursor-pointer'
+                                        onClick={onClickAssistantAvatar}
                                     >
                                         <ImageIcon fontSize='small' />
+                                    </Avatar>
+                                ) : defaultAssistantAvatarKey ? (
+                                    <Avatar
+                                        sx={{
+                                            backgroundColor: theme.palette.primary.main,
+                                            width: '28px',
+                                            height: '28px',
+                                        }}
+                                        className='cursor-pointer'
+                                        onClick={onClickAssistantAvatar}
+                                    >
+                                        <ImageInStorage storageKey={defaultAssistantAvatarKey}
+                                                        className='object-cover object-center w-full h-full' />
                                     </Avatar>
                                 ) : (
                                     <Avatar
@@ -324,6 +364,8 @@ function _Message(props: Props) {
                                             width: '28px',
                                             height: '28px',
                                         }}
+                                        className='cursor-pointer'
+                                        onClick={onClickAssistantAvatar}
                                     >
                                         <SmartToyIcon fontSize='small' />
                                     </Avatar>

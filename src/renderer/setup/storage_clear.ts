@@ -46,12 +46,21 @@ export async function tickStorageTask() {
                 return
             }
         }
+
+        // 会话助手头像不需要删除
+        if (session.assistantAvatarKey) {
+            needDeletedSet.delete(session.assistantAvatarKey)
+        }
     }
 
     // 用户头像不需要删除
     const settings = store.get(atoms.settingsAtom)
     if (settings.userAvatarKey) {
         needDeletedSet.delete(settings.userAvatarKey)
+    }
+    // 助手头像不需要删除
+    if (settings.defaultAssistantAvatarKey) {
+        needDeletedSet.delete(settings.defaultAssistantAvatarKey)
     }
 
     for (const key of needDeletedSet) {

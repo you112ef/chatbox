@@ -45,6 +45,7 @@ export const showTokenUsedAtom = focusAtom(settingsAtom, (optic) => optic.prop('
 export const showModelNameAtom = focusAtom(settingsAtom, (optic) => optic.prop('showModelName'))
 export const showMessageTimestampAtom = focusAtom(settingsAtom, (optic) => optic.prop('showMessageTimestamp'))
 export const userAvatarKeyAtom = focusAtom(settingsAtom, (optic) => optic.prop('userAvatarKey'))
+export const defaultAssistantAvatarKeyAtom = focusAtom(settingsAtom, (optic) => optic.prop('defaultAssistantAvatarKey'))
 export const themeAtom = focusAtom(settingsAtom, (optic) => optic.prop('theme'))
 export const fontSizeAtom = focusAtom(settingsAtom, (optic) => optic.prop('fontSize'))
 export const spellCheckAtom = focusAtom(settingsAtom, (optic) => optic.prop('spellCheck'))
@@ -127,6 +128,7 @@ export const currentSessionAtom = atom((get) => {
 
 export const currentSessionNameAtom = selectAtom(currentSessionAtom, (s) => s.name)
 export const currsentSessionPicUrlAtom = selectAtom(currentSessionAtom, (s) => s.picUrl)
+export const currentSessionAssistantAvatarKeyAtom = selectAtom(currentSessionAtom, (s) => s.assistantAvatarKey)
 
 // 当前消息列表（包含历史主题下的消息）
 

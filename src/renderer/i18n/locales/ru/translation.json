@@ -117,6 +117,8 @@
     "Clear Conversation List": "Очистить список разговоров",
     "Keep only the Top N Conversations in List and Permanently Delete the Rest": "Сохранить только топ <0>{{n}}</0> разговоров в списке и окончательно удалить остальные",
     "Reset to Default": "Сбросить настройки по умолчанию",
+    "Edit default assistant avatar": "Редактировать аватар ассистента по умолчанию",
+    "Edit user avatar": "Редактировать аватар пользователя",
     "Default Prompt for New Conversation": "Подсказка по умолчанию для нового разговора",
     "Specific model settings": "Специфические настройки модели",
     "Specific model settings configured for this conversation": "Специфические настройки модели, настроенные для этого разговора",

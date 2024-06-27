@@ -117,6 +117,8 @@
     "Clear Conversation List": "会話リストをクリア",
     "Keep only the Top N Conversations in List and Permanently Delete the Rest": "リストの上位<0>{{n}}</0>の会話だけを保持し、残りを永久に削除",
     "Reset to Default": "デフォルトにリセット",
+    "Edit default assistant avatar": "デフォルトアシスタントアバターを編集",
+    "Edit user avatar": "ユーザーアバターを編集",
     "Default Prompt for New Conversation": "新しい会話のデフォルトプロンプト",
     "Specific model settings": "特定のモデル設定",
     "Specific model settings configured for this conversation": "この会話に対して設定された特定のモデル設定",

@@ -1,5 +1,5 @@
 import storage from '@/storage'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { CircularProgress } from '@mui/material'
 
 export function ImageInStorage(props: {
@@ -32,4 +32,25 @@ export function Image(props: {
     className?: string
 }) {
     return <img src={props.src} className={`max-w-full max-h-full ${props.className || ''}`} />
+}
+
+export function handleImageInputAndSave(event: React.ChangeEvent<HTMLInputElement>, key: string, updateKey?: (key: string) => void) {
+    if (!event.target.files) {
+        return
+    }
+    const file = event.target.files[0]
+    if (file.type.startsWith('image/')) {
+        const reader = new FileReader()
+        reader.onload = async (e) => {
+            if (e.target && e.target.result) {
+                const base64 = e.target.result as string
+                await storage.setBlob(key, base64)
+                if (updateKey) {
+                    updateKey(key)
+                }
+            }
+        }
+        reader.readAsDataURL(file)
+    }
+    event.target.value = ''
 }

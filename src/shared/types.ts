@@ -85,6 +85,7 @@ export interface Session {
     messages: Message[]
     starred?: boolean
     copilotId?: string
+    assistantAvatarKey?: string // 助手头像的 key
     settings?: Partial<ReturnType<typeof settings2SessionSettings>>
     threads?: SessionThread[] // 历史话题列表
     threadName?: string // 当前话题名称
@@ -256,6 +257,7 @@ export interface Settings extends ModelSettings {
     allowReportingAndTracking: boolean // 是否允许错误报告和事件追踪
 
     userAvatarKey?: string // 用户头像的 key
+    defaultAssistantAvatarKey?: string // 默认助手头像的 key
 
     enableMarkdownRendering: boolean
     enableLaTeXRendering: boolean

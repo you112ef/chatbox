@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import {
     Divider,
     Button,
@@ -8,7 +8,7 @@ import {
     DialogTitle,
     DialogContentText,
     TextField,
-    Typography,
+    Typography, useTheme,
 } from '@mui/material'
 import {
     Session,
@@ -37,6 +37,11 @@ import { trackingEvent } from '@/packages/event'
 import GeminiModelSelect from '@/components/GeminiModelSelect'
 import GropModelSelect from '@/components/GroqModelSelect'
 import { OllamaHostInput, OllamaModelSelect } from './SettingDialog/OllamaSetting'
+import SmartToyIcon from "@mui/icons-material/SmartToy";
+import EditableAvatar from "@/components/EditableAvatar";
+import { v4 as uuidv4 } from 'uuid'
+import { ImageInStorage, handleImageInputAndSave } from "@/components/Image";
+import ImageIcon from "@mui/icons-material/Image";
 
 interface Props {
 }
@@ -45,6 +50,8 @@ export default function ChatConfigWindow(props: Props) {
     const { t } = useTranslation()
     const isSmallScreen = useIsSmallScreen()
     const [chatConfigDialogSession, setChatConfigDialogSession] = useAtom(atoms.chatConfigDialogAtom)
+    const globalSettings = useAtomValue(atoms.settingsAtom)
+    const theme = useTheme()
 
     const [editingData, setEditingData] = React.useState<Session | null>(chatConfigDialogSession)
     useEffect(() => {
@@ -121,6 +128,50 @@ export default function ChatConfigWindow(props: Props) {
             <DialogTitle>{t('Conversation Settings')}</DialogTitle>
             <DialogContent>
                 <DialogContentText></DialogContentText>
+                <EditableAvatar
+                    onChange={(event) => {
+                        const key = `picture:assistant-avatar-${chatConfigDialogSession?.id}:${uuidv4()}`
+                        handleImageInputAndSave(
+                            event,
+                            key,
+                            () => setEditingData({ ...editingData, assistantAvatarKey: key })
+                        )
+                    }}
+                    sx={{
+                        backgroundColor: editingData.type === 'picture' ?
+                            theme.palette.secondary.main :
+                            editingData.picUrl ? theme.palette.background.default : theme.palette.primary.main
+                    }}
+                >
+                    {
+                        editingData.assistantAvatarKey ? (
+                            <ImageInStorage
+                                storageKey={editingData.assistantAvatarKey}
+                                className="object-cover object-center w-full h-full"
+                            />
+                        ) : editingData.picUrl ? (
+                            <img
+                                src={editingData.picUrl}
+                                className="object-cover object-center w-full h-full"
+                            />
+                        ) : editingData.type === 'picture' ? (
+                            <ImageIcon
+                                fontSize='large'
+                                sx={{
+                                    width: '60px',
+                                    height: '60px',
+                                }}
+                            />
+                        ) : globalSettings.defaultAssistantAvatarKey ? (
+                            <ImageInStorage
+                                storageKey={globalSettings.defaultAssistantAvatarKey}
+                                className="object-cover object-center w-full h-full"
+                            />
+                        ) : (
+                            <SmartToyIcon fontSize="large" />
+                        )
+                    }
+                </EditableAvatar>
                 <TextField
                     autoFocus={!isSmallScreen}
                     margin="dense"

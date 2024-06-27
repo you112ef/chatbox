@@ -54,19 +54,17 @@ export default function SettingWindow(props: Props) {
         _setSettingsEdit(settings)
     }, [settings])
 
-    const deleteUserAvatar = async (userAvatarKey: string) => {
-        if (userAvatarKey !== undefined) {
-            await storage.delBlob(userAvatarKey)
-        }
-    }
-
     const onSave = () => {
         setSettings(settingsEdit)
         props.close()
 
-        // 保存时如果修改过用户头像，则删除修改前的头像数据
+        // 保存时如果修改过头像，则删除修改前的头像数据
         if (settings.userAvatarKey !== undefined && settingsEdit.userAvatarKey !== settings.userAvatarKey) {
-            deleteUserAvatar(settings.userAvatarKey)
+            storage.delBlob(settings.userAvatarKey)
+        }
+        if (settings.defaultAssistantAvatarKey !== undefined
+            && settingsEdit.defaultAssistantAvatarKey !== settings.defaultAssistantAvatarKey) {
+            storage.delBlob(settings.defaultAssistantAvatarKey)
         }
     }
 
@@ -76,9 +74,13 @@ export default function SettingWindow(props: Props) {
         // need to restore the previous theme
         switchTheme(settings.theme ?? Theme.System)
 
-        // 取消时如果修改过用户头像，则删除修改后的头像数据
+        // 取消时如果修改过头像，则删除修改后的头像数据
         if (settingsEdit.userAvatarKey !== undefined && settingsEdit.userAvatarKey !== settings.userAvatarKey) {
-            deleteUserAvatar(settingsEdit.userAvatarKey)
+            storage.delBlob(settingsEdit.userAvatarKey)
+        }
+        if (settingsEdit.defaultAssistantAvatarKey !== undefined
+            && settingsEdit.defaultAssistantAvatarKey !== settings.defaultAssistantAvatarKey) {
+            storage.delBlob(settingsEdit.defaultAssistantAvatarKey)
         }
     }
 

@@ -45,6 +45,7 @@ export function settings(): Settings {
         showModelName: true,
         showMessageTimestamp: false,
         userAvatarKey: '',
+        defaultAssistantAvatarKey: '',
         theme: Theme.System,
         language: 'en',
         fontSize: 12,

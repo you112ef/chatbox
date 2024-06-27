@@ -16,6 +16,7 @@ import * as sessionActions from '../stores/sessionActions'
 import * as atoms from '@/stores/atoms'
 import { cn } from '@/lib/utils'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import { ImageInStorage } from "@/components/Image";
 
 export interface Props {
     session: Session
@@ -54,7 +55,20 @@ function _SessionItem(props: Props) {
             >
                 <ListItemIcon>
                     <IconButton color={session.type === 'picture' ? 'secondary' : 'inherit'} onClick={onClick}>
-                        {session.picUrl ? (
+                        { session.assistantAvatarKey ? (
+                            <Avatar
+                                sizes={medianSize}
+                                sx={{
+                                    width: medianSize,
+                                    height: medianSize,
+                                    backgroundColor: theme.palette.primary.main,
+                                }}
+                            >
+                                <ImageInStorage storageKey={session.assistantAvatarKey}
+                                                className='object-cover object-center w-full h-full' />
+
+                            </Avatar>
+                        ) : session.picUrl ? (
                             <Avatar sizes={medianSize} sx={{ width: medianSize, height: medianSize }} src={session.picUrl} />
                         ) : session.type === 'picture' ? (
                             <ImageIcon fontSize="small" />

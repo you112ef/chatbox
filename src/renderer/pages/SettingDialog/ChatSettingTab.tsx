@@ -1,15 +1,26 @@
-import { Button, TextField, Box, FormControlLabel, Switch, FormGroup, Badge, IconButton, useTheme } from '@mui/material'
+import {
+    Button,
+    TextField,
+    Box,
+    FormControlLabel,
+    Switch,
+    FormGroup,
+    Grid,
+    Stack,
+    useTheme,
+    Tooltip
+} from '@mui/material'
 import { Settings } from '../../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as defaults from '../../../shared/defaults'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
-import React, { useRef } from "react";
-import {v4 as uuidv4} from "uuid";
-import storage from "@/storage";
-import { ImageInStorage } from "@/components/Image";
-import PersonIcon from "@mui/icons-material/Person";
-import Avatar from "@mui/material/Avatar";
-import EditIcon from "@mui/icons-material/Edit";
+import React, { useRef } from 'react'
+import { v4 as uuidv4 } from 'uuid'
+import storage from '@/storage'
+import PersonIcon from '@mui/icons-material/Person'
+import EditableAvatar from '@/components/EditableAvatar'
+import SmartToyIcon from '@mui/icons-material/SmartToy'
+import { ImageInStorage, handleImageInputAndSave } from "@/components/Image";
 
 export default function ChatSettingTab(props: {
     settingsEdit: Settings
@@ -19,90 +30,87 @@ export default function ChatSettingTab(props: {
     const { settingsEdit, setSettingsEdit } = props
     const { t } = useTranslation()
     const isSmallScreen = useIsSmallScreen()
-    const userAvatarInputRef = useRef<HTMLInputElement | null>(null)
-
-    const onUserAvatarInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (!event.target.files) {
-            return
-        }
-        const file = event.target.files[0]
-        if (file.type.startsWith('image/')) {
-            const reader = new FileReader()
-            reader.onload = async (e) => {
-                if (e.target && e.target.result) {
-                    const base64 = e.target.result as string
-                    const key = `picture:user-avatar:${uuidv4()}`
-                    await storage.setBlob(key, base64)
-                    setSettingsEdit({
-                        ...settingsEdit,
-                        userAvatarKey: key,
-                    })
-                }
-            }
-            reader.readAsDataURL(file)
-        }
-        event.target.value = ''
-    }
-
-    const onUserAvatarUpload = () => {
-        userAvatarInputRef.current?.click()
-    }
 
     return (
         <Box>
-            <Box className='mb-2'>
-                <input type='file' ref={userAvatarInputRef} className='hidden' onChange={onUserAvatarInputChange}
-                       accept="image/png, image/jpeg"
-                />
-                <Box
+            <Box className="mb-2">
+                <Grid
+                    container
                     sx={{
                         display: 'flex',
                         justifyContent: 'center',
                         paddingBottom: '15px',
                     }}
                 >
-                    <Badge
-                        overlap="circular"
-                        anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'right',
-                        }}
-                        badgeContent={
-                            <IconButton
-                                onClick={onUserAvatarUpload}
-                                edge={'end'}
-                                size={'small'}
-                                sx={{
-                                    backgroundColor: theme.palette.primary.main,
-                                    color: theme.palette.primary.contrastText,
-                                    padding: 0.4,
-                                    top: 1,
-                                    left: 1,
-                                }}
+                    <Grid item xs={5.9}>
+                        <Stack>
+                            <Tooltip
+                                title={t('Edit user avatar')}
+                                placement={'top'}
                             >
-                                <EditIcon fontSize="small" />
-                            </IconButton>
-                        }
-                    >
-                        <Avatar
-                            sx={{
-                                width: '80px',
-                                height: '80px',
-                            }}
-                            className='cursor-pointer'
-                            onClick={onUserAvatarUpload}
-                        >
-                            {
-                                settingsEdit.userAvatarKey ? (
-                                    <ImageInStorage storageKey={settingsEdit.userAvatarKey}
-                                                    className='object-cover object-center w-full h-full' />
-                                ) : (
-                                    <PersonIcon fontSize='small' />
-                                )
-                            }
-                        </Avatar>
-                    </Badge>
-                </Box>
+                                <Box>
+                                    <EditableAvatar
+                                        onChange={(event) => {
+                                            const key = `picture:user-avatar:${uuidv4()}`
+                                            handleImageInputAndSave(
+                                                event,
+                                                key,
+                                                () => setSettingsEdit({ ...settingsEdit, userAvatarKey: key })
+                                            )
+                                        }}
+                                    >
+                                        {settingsEdit.userAvatarKey ? (
+                                            <ImageInStorage storageKey={settingsEdit.userAvatarKey}
+                                                className="object-cover object-center w-full h-full"
+                                            />
+                                        ) : (
+                                            <PersonIcon fontSize="large" />
+                                        )}
+                                    </EditableAvatar>
+                                </Box>
+                            </Tooltip>
+                        </Stack>
+                    </Grid>
+                    <Box
+                        sx={{
+                            borderLeft: 1,
+                            borderColor: 'divider',
+                        }}
+                    />
+                    <Grid item xs={5.9}>
+                        <Stack>
+                            <Tooltip
+                                title={t('Edit default assistant avatar')}
+                                placement={'top'}
+                            >
+                                <Box>
+                                    <EditableAvatar
+                                        onChange={(event) => {
+                                            const key = `picture:default-assistant-avatar:${uuidv4()}`
+                                            handleImageInputAndSave(
+                                                event,
+                                                key,
+                                                () => setSettingsEdit({ ...settingsEdit, defaultAssistantAvatarKey: key })
+                                            )
+                                        }}
+                                        sx={{
+                                            backgroundColor: theme.palette.primary.main,
+                                        }}
+                                    >
+                                        {settingsEdit.defaultAssistantAvatarKey ? (
+                                            <ImageInStorage
+                                                storageKey={settingsEdit.defaultAssistantAvatarKey}
+                                                className="object-cover object-center w-full h-full"
+                                            />
+                                        ) : (
+                                            <SmartToyIcon fontSize="large" />
+                                        )}
+                                    </EditableAvatar>
+                                </Box>
+                            </Tooltip>
+                        </Stack>
+                    </Grid>
+                </Grid>
                 <TextField
                     autoFocus={!isSmallScreen}
                     margin="dense"
