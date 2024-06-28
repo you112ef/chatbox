@@ -21,6 +21,7 @@ import PersonIcon from '@mui/icons-material/Person'
 import EditableAvatar from '@/components/EditableAvatar'
 import SmartToyIcon from '@mui/icons-material/SmartToy'
 import { ImageInStorage, handleImageInputAndSave } from "@/components/Image";
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 export default function ChatSettingTab(props: {
     settingsEdit: Settings
@@ -178,6 +179,28 @@ export default function ChatSettingTab(props: {
                         if (checked) {
                             settingsEdit.enableMarkdownRendering = true
                         }
+                        setSettingsEdit({ ...settingsEdit })
+                    }}
+                />
+            </FormGroup>
+            <FormGroup>
+                <FormControlLabel
+                    control={<Switch />}
+                    label={
+                        <span className='flex items-start justify-center'>
+                            {t('Inject default metadata')}
+                            <Tooltip
+                                title={t('e.g., Model Name, Current Date')}
+                                className="cursor-pointer"
+                                placement='top'
+                            >
+                                <HelpOutlineIcon className='opacity-60 ml-0.5' fontSize='small' />
+                            </Tooltip>
+                        </span>
+                    }
+                    checked={settingsEdit.injectDefaultMetadata}
+                    onChange={(e, checked) => {
+                        settingsEdit.injectDefaultMetadata = checked
                         setSettingsEdit({ ...settingsEdit })
                     }}
                 />

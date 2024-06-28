@@ -15,6 +15,8 @@ interface Options {
 
     dalleStyle: 'vivid' | 'natural'
     imageGenerateNum: number // 生成图片的数量
+
+    injectDefaultMetadata: boolean
 }
 
 export default class AzureOpenAI extends Base {
@@ -33,7 +35,10 @@ export default class AzureOpenAI extends Base {
 
     async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
         let messages = await populateOpenAIMessage(rawMessages, this.options.azureDeploymentName as any)
-        messages = injectModelSystemPrompt(this.options.azureDeploymentName, messages)
+
+        if (this.options.injectDefaultMetadata) {
+            messages = injectModelSystemPrompt(this.options.azureDeploymentName, messages)
+        }
 
         const origin = new URL((this.options.azureEndpoint || '').trim()).origin
         const apiVersion = this.getApiVersion()

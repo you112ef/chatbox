@@ -14,6 +14,7 @@ interface Options {
     // openaiMaxTokens: number
     temperature: number
     topP?: number
+    injectDefaultMetadata: boolean
 }
 
 export default class OpenAI extends Base {
@@ -58,7 +59,10 @@ export default class OpenAI extends Base {
         const model = this.options.model === 'custom-model'
             ? this.options.openaiCustomModel || ''
             : this.options.model
-        messages = injectModelSystemPrompt(model, messages)
+
+        if (this.options.injectDefaultMetadata) {
+            messages = injectModelSystemPrompt(model, messages)
+        }
 
         const apiPath = this.options.apiPath || '/v1/chat/completions'
         const response = await this.post(
@@ -280,14 +284,19 @@ export async function populateOpenAIMessageVision(rawMessages: Message[]): Promi
  * @returns 
  */
 export function injectModelSystemPrompt(model: string, messages: OpenAIMessage[] | OpenAIMessageVision[]) {
+    const metadataPrompt = `
+Current model: ${model}
+Current date: ${new Date().toISOString()}
+
+`
     for (const message of messages) {
         if (message.role === 'system') {
             if (typeof message.content == 'string') {
-                message.content = `Current model: ${model}\n\n` + message.content
+                message.content = metadataPrompt + message.content
             } else if (typeof message.content == 'object') {
                 for (const content of message.content) {
                     if (content.type === 'text') {
-                        content.text = `Current model: ${model}\n\n` + content.text
+                        content.text = metadataPrompt + content.text
                         break
                     }
                 }

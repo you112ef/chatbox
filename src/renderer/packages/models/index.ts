@@ -41,6 +41,7 @@ export function getModel(setting: Settings, config: Config) {
                 // openaiMaxTokens: number
                 temperature: keepRange(setting.temperature, 0.1, 0.9),
                 topP: keepRange(setting.topP, 0.1, 0.9),
+                injectDefaultMetadata: setting.injectDefaultMetadata,
             })
         default:
             throw new Error('Cannot find model with provider: ' + setting.aiProvider)
