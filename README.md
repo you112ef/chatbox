@@ -160,13 +160,21 @@ spctl -a -vv --verbose=4 ./release/build/mac/Chatbox.app
 spctl -a -vv --verbose=4 /Applications/Safari.app
 ```
 
-## 生产部署
+## 版本发布
 
 打包正式版本需要公证与签名，同时为了自动发布还需要一些资源配置（如 Cloudflare R2）。需要正确配置 `electron-builder.env` 才能正常工作。
 
-### 正式版本的打包与发布
+### 发布动作
 
 现在改用 Github Action 来自动打包和发布了。本地开发后，只需要 git tag vX.X.X 并推送到远程仓库，Github Action 就会自动打包并发布。
+
+1. 修改 `app/package.json`，``app/package-lock.json` 中的版本号
+2. 打标签 `git tag v0.0.1`
+3. 推送标签 `git push --tags`
+
+### 发布的常见问题
+
+有时候 MacOS 发布会出现 notarize 失败的情况，可能是因为有新的开发者协议需要签署，登录开发者中心查看是否有新的协议需要签署。
 
 ### （已弃用）本地打包与发布正式版
 
