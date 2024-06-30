@@ -1,4 +1,10 @@
 const changelog = `
+### v1.3.14 - 2024.06.30
+
+1. Added support for setting user and assistant avatars.
+2. Fixed some API compatibility issues with custom model providers.
+3. Resolved various known bugs.
+
 ### v1.3.13 - 2024.06.23
 
 1. Add support for new model Claude 3.5 sonnet
