@@ -174,7 +174,7 @@ spctl -a -vv --verbose=4 /Applications/Safari.app
 
 ### 发布的常见问题
 
-有时候 MacOS 发布会出现 notarize 失败的情况，可能是因为有新的开发者协议需要签署，登录开发者中心查看是否有新的协议需要签署。
+有时候 MacOS 发布会出现 notarize 失败的情况，可能是因为有新的开发者协议需要签署，登录开发者中心查看是否有新的协议需要签署。 https://developer.apple.com/account
 
 ### （已弃用）本地打包与发布正式版
 
