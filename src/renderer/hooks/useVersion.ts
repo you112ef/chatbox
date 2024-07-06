@@ -18,7 +18,6 @@ export default function useVersion() {
                 setNeedCheckUpdate(needUpdate)
             } catch (e) {
                 console.log(e)
-                setNeedCheckUpdate(true)
             }
         }
         handler()
