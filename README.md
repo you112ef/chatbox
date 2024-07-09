@@ -237,6 +237,10 @@ npm run mobile:android
 npm run mobile:assets
 ```
 
+### Debug 和调试
+
+在 Xcode 或 Android Studio 中运行 App，然后 chrome 访问 `chrome://inspect`，可以看到设备上运行的 App，可以进行调试。
+
 ## 生产部署
 
 移动端的测试、打包、上架等操作，都在对应的 IDE 中操作的。

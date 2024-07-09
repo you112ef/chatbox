@@ -4,8 +4,10 @@ const config: CapacitorConfig = {
     appId: 'xyz.chatboxapp.chatbox',
     appName: 'Chatbox',
     webDir: 'release/app/dist/renderer',
+    // 解决 Android 无法访问 http 服务的问题（比如连接局域网中的 Ollama 服务）
+    // https://github.com/ionic-team/capacitor/discussions/4477
     server: {
-        androidScheme: 'https',
+        cleartext: true
     },
     ios: {
         scheme: 'Chatbox AI',
