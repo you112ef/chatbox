@@ -4,7 +4,7 @@
     user-select: text;
 
     .msg-content p {
-        margin: 0.6rem 0 0.4rem 0;
+        margin: 0.5rem 0 0.5rem 0;
     }
     .msg-content-small p {
         margin: 0.3rem 0 0.2rem 0;

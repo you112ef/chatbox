@@ -285,7 +285,7 @@ function _Message(props: Props) {
             className={cn(
                 'group/message',
                 'msg-block',
-                'px-2',
+                'px-2 py-1.5',
                 msg.generating ? 'rendering' : 'render-done',
                 {
                     user: 'user-msg',
@@ -305,7 +305,7 @@ function _Message(props: Props) {
         >
             <Grid container wrap="nowrap" spacing={1.5}>
                 <Grid item>
-                    <Box sx={{ marginTop: '8px' }}>
+                    <Box className={cn(msg.role !== 'assistant' ? 'mt-1' : 'mt-2')} >
                         {
                             {
                                 assistant: currentSessionAssistantAvatarKey ? (
@@ -319,7 +319,7 @@ function _Message(props: Props) {
                                         onClick={onClickAssistantAvatar}
                                     >
                                         <ImageInStorage storageKey={currentSessionAssistantAvatarKey}
-                                                        className='object-cover object-center w-full h-full' />
+                                            className='object-cover object-center w-full h-full' />
 
                                     </Avatar>
                                 ) : currentSessionPicUrl ? (
@@ -355,7 +355,7 @@ function _Message(props: Props) {
                                         onClick={onClickAssistantAvatar}
                                     >
                                         <ImageInStorage storageKey={defaultAssistantAvatarKey}
-                                                        className='object-cover object-center w-full h-full' />
+                                            className='object-cover object-center w-full h-full' />
                                     </Avatar>
                                 ) : (
                                     <Avatar
@@ -433,90 +433,102 @@ function _Message(props: Props) {
                                 </div>
                             )
                         }
-                        <Box className={cn('msg-content', { 'msg-content-small': small })} sx={
-                            small ? { fontSize: theme.typography.body2.fontSize } : {}
-                        }>
-                            {
-                                enableMarkdownRendering && !isCollapsed ? (
-                                    <Markdown enableLaTeXRendering={enableLaTeXRendering}>
-                                        {content}
-                                    </Markdown>
-                                ) : (
-                                    <div>
-                                        {content}
-                                        {
-                                            needCollapse && isCollapsed && (
-                                                CollapseButton
-                                            )
-                                        }
-                                    </div>
-                                )
-                            }
-                        </Box>
-                        {msg.pictures && (
-                            <div className='flex flex-row items-start justify-start overflow-x-auto overflow-y-hidden'>
-                                {
-                                    msg.pictures.map((pic, index) => (
-                                        <div
-                                            key={index}
-                                            className="w-[100px] min-w-[100px] h-[100px] min-h-[100px]
-                                                    md:w-[200px] md:min-w-[200px] md:h-[200px] md:min-h-[200px]
-                                                    p-2 mr-2 my-2 inline-flex items-center justify-center
-                                                    bg-white dark:bg-slate-800
-                                                    border-solid border-slate-400/20 rounded-md shadow
-                                                    hover:drop-shadow-2xl hover:cursor-pointer hover:border-slate-800/20 transition-all duration-200"
-                                            onClick={() => setPictureShow(pic)}
-                                        >
-                                            {
-                                                pic.loading && !pic.storageKey && !pic.url && (
-                                                    <CircularProgress className='block max-w-full max-h-full' color='secondary' />
-                                                )
-                                            }
-                                            {
-                                                pic.storageKey && (
-                                                    <ImageInStorage className='w-full' storageKey={pic.storageKey} />
-                                                )
-                                            }
-                                            {
-                                                pic.url && (
-                                                    <Image src={pic.url} className='w-full' />
-                                                )
-                                            }
-                                        </div>
-                                    ))
+                        <div className={cn(
+                            'max-w-full inline-block',
+                            msg.role !== 'assistant'
+                                ? 'bg-stone-400/10 dark:bg-blue-400/10 px-2 rounded '
+                                : '',
+                        )}>
+                            <Box className={cn('msg-content', { 'msg-content-small': small })}
+                                sx={
+                                    small ? { fontSize: theme.typography.body2.fontSize } : {}
                                 }
-                            </div>
-                        )}
-                        {
-                            msg.files && (
+                            >
+                                {
+                                    enableMarkdownRendering && !isCollapsed ? (
+                                        <Markdown enableLaTeXRendering={enableLaTeXRendering}>
+                                            {content}
+                                        </Markdown>
+                                    ) : (
+                                        <div>
+                                            <p>
+                                                {content}
+                                                {
+                                                    needCollapse && isCollapsed && (
+                                                        CollapseButton
+                                                    )
+                                                }
+                                            </p>
+                                        </div>
+                                    )
+                                }
+                            </Box>
+                            {msg.pictures && (
                                 <div className='flex flex-row items-start justify-start overflow-x-auto overflow-y-hidden'>
                                     {
-                                        msg.files.map((file, index) => (
-                                            <div key={index} className='flex justify-start items-center mb-1 px-1 py-2
-                                                    border-solid border-slate-400/20 shadow rounded 
+                                        msg.pictures.map((pic, index) => (
+                                            <div
+                                                key={index}
+                                                className="w-[100px] min-w-[100px] h-[100px] min-h-[100px]
+                                                    md:w-[200px] md:min-w-[200px] md:h-[200px] md:min-h-[200px]
+                                                    p-1.5 mr-2 mb-2 inline-flex items-center justify-center
                                                     bg-white dark:bg-slate-800
-                                                    '
+                                                    border-solid border-slate-400/20 rounded-md
+                                                    hover:cursor-pointer hover:border-slate-800/20 transition-all duration-200"
+                                                onClick={() => setPictureShow(pic)}
                                             >
-                                                <FileIcon filename={file.name} className='w-6 h-6 ml-1 mr-2 text-black dark:text-white' />
-                                                <Typography className='w-32' noWrap>
-                                                    {file.name}
-                                                </Typography>
+                                                {
+                                                    pic.loading && !pic.storageKey && !pic.url && (
+                                                        <CircularProgress className='block max-w-full max-h-full' color='secondary' />
+                                                    )
+                                                }
+                                                {
+                                                    pic.storageKey && (
+                                                        <ImageInStorage className='w-full' storageKey={pic.storageKey} />
+                                                    )
+                                                }
+                                                {
+                                                    pic.url && (
+                                                        <Image src={pic.url} className='w-full' />
+                                                    )
+                                                }
                                             </div>
                                         ))
                                     }
                                 </div>
-                            )
-                        }
-                        <MessageErrTips msg={msg} />
-                        {
-                            needCollapse && !isCollapsed && CollapseButton
-                        }
-                        <Typography variant="body2" sx={{ opacity: 0.5 }}>
-                            {tips.join(', ')}
-                        </Typography>
+                            )}
+                            {
+                                msg.files && (
+                                    <div className='flex flex-row items-start justify-start overflow-x-auto overflow-y-hidden pb-1'>
+                                        {
+                                            msg.files.map((file, index) => (
+                                                <div key={index} className='flex justify-start items-center mb-2 p-1.5
+                                                    border-solid border-slate-400/20 rounded 
+                                                    bg-white dark:bg-slate-800
+                                                    '
+                                                >
+                                                    <FileIcon filename={file.name} className='w-6 h-6 ml-1 mr-2 text-black dark:text-white' />
+                                                    <Typography className='w-32' noWrap>
+                                                        {file.name}
+                                                    </Typography>
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                )
+                            }
+                            <MessageErrTips msg={msg} />
+                            {
+                                needCollapse && !isCollapsed && CollapseButton
+                            }
+                            <Typography variant="body2" sx={{ opacity: 0.5 }}>
+                                {tips.join(', ')}
+                            </Typography>
+                        </div>
                         {
                             !hiddenButtonGroup && (
                                 <Box sx={{ height: '35px' }}>
+                                {/* <Box sx={{ height: '35px' }} className='opacity-0 group-hover/message:opacity-100 delay-100 transition-all duration-100'> */}
                                     <span className={cn(!anchorEl && !msg.generating ? 'hidden group-hover/message:inline-flex' : 'inline-flex')} >
                                         <ButtonGroup
                                             sx={{

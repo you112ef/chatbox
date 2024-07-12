@@ -114,7 +114,7 @@ export default function Header(props: Props) {
                 borderBottomColor: theme.palette.divider,
             }}
         >
-            <div className={cn('w-full mx-auto flex flex-row', widthFull ? '' : 'max-w-5xl')}>
+            <div className={'w-full mx-auto flex flex-row'}>
                 {!showSidebar && (
                     <Box className="mr-1">
                         <IconButton onClick={() => setShowSidebar(!showSidebar)}>

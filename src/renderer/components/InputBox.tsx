@@ -10,8 +10,8 @@ import * as dom from '../hooks/dom'
 import { Shortcut } from './Shortcut'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import {
-    Image, FolderClosed, ListRestart, Mic, Undo2, SendHorizontal,
-    Clock, ChevronRight, MessageSquareDashed, MessagesSquare, ChevronsUpDown,
+    Image, FolderClosed, Undo2, SendHorizontal,
+    MessageSquareDashed, MessagesSquare,
     Settings2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -269,7 +269,7 @@ export default function InputBox(props: Props) {
                 borderTopColor: theme.palette.divider,
             }}
         >
-            <div className={cn('w-full mx-auto flex flex-col', widthFull ? '' : 'max-w-5xl')}>
+            <div className={'w-full mx-auto flex flex-col'}>
                 <div className='flex flex-row flex-nowrap justify-between py-1'>
                     <div className='flex flex-row items-center'>
                         <MiniButton className='mr-1 sm:mr-2 hover:bg-transparent' style={{ color: theme.palette.text.primary }}
