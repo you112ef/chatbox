@@ -39,6 +39,7 @@ import {
     openSettingDialogAtom,
     enableMarkdownRenderingAtom,
     enableLaTeXRenderingAtom, currentSessionAssistantAvatarKeyAtom, chatConfigDialogAtom, currentSessionAtom,
+    widthFullAtom,
 } from '../stores/atoms'
 import { currsentSessionPicUrlAtom, showTokenUsedAtom } from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
@@ -93,6 +94,7 @@ function _Message(props: Props) {
     const setOpenSettingWindow = useSetAtom(openSettingDialogAtom)
     const setChatConfigDialog = useSetAtom(chatConfigDialogAtom);
     const currentSession = useAtomValue(currentSessionAtom);
+    const widthFull = useAtomValue(widthFullAtom)
 
     const { msg, className, collapseThreshold, hiddenButtonGroup, small } = props
 
@@ -293,9 +295,9 @@ function _Message(props: Props) {
                     assistant: 'assistant-msg',
                 }[msg?.role || 'user'],
                 className,
+                widthFull ? 'w-full' : 'max-w-4xl mx-auto',
             )}
             sx={{
-                margin: '0',
                 paddingBottom: '0.1rem',
                 paddingX: '1rem',
                 [theme.breakpoints.down('sm')]: {

@@ -6,8 +6,6 @@ import { Virtuoso } from 'react-virtuoso'
 import { VirtuosoHandle } from 'react-virtuoso'
 import * as scrollActions from '../stores/scrollActions'
 import { useTranslation } from 'react-i18next'
-import * as dom from '@/hooks/dom'
-import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import { cn } from '@/lib/utils'
 
 interface Props { }
@@ -19,7 +17,6 @@ export default function MessageList(props: Props) {
     const currentThreadHash = useAtomValue(atoms.currentThreadHistoryHashAtom)
     const virtuoso = useRef<VirtuosoHandle>(null)
     const messageListRef = useRef<HTMLDivElement>(null)
-    const widthFull = useAtomValue(atoms.widthFullAtom)
 
     const setMessageScrollingAtom = useSetAtom(atoms.messageScrollingAtom)
     const setAtTop = useSetAtom(atoms.messageScrollingAtTopAtom)
@@ -32,7 +29,7 @@ export default function MessageList(props: Props) {
     }, [virtuoso])
 
     return (
-        <div className={cn('w-full h-full mx-auto', widthFull ? '' : 'max-w-4xl')}>
+        <div className={cn('w-full h-full mx-auto')}>
             <div className='overflow-auto h-full pr-0 pl-1 sm:pl-0' ref={messageListRef}>
                 <Virtuoso
                     data={currentMessageList}

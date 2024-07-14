@@ -21,7 +21,6 @@ export default function Header(props: Props) {
     const { t } = useTranslation()
     const theme = useTheme()
     const currentSession = useAtomValue(atoms.currentSessionAtom)
-    const widthFull = useAtomValue(atoms.widthFullAtom)
     const setChatConfigDialogSession = useSetAtom(atoms.chatConfigDialogAtom)
     const [showSidebar, setShowSidebar] = useAtom(atoms.showSidebarAtom)
     const selectedCustomProviderId = useAtomValue(atoms.selectedCustomProviderIdAtom)

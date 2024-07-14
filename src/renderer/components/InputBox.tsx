@@ -4,7 +4,7 @@ import { Typography, useTheme } from '@mui/material'
 import { SessionType, createMessage } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as atoms from '../stores/atoms'
-import { useAtom, useSetAtom, useAtomValue } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import * as sessionActions from '../stores/sessionActions'
 import * as dom from '../hooks/dom'
 import { Shortcut } from './Shortcut'
@@ -44,7 +44,6 @@ export default function InputBox(props: Props) {
     const showRollbackThreadButtonTimerRef = useRef<null | NodeJS.Timeout>(null)
     const inputRef = useRef<HTMLTextAreaElement | null>(null)
     const [previousMessageQuickInputMark, setPreviousMessageQuickInputMark] = useState('')
-    const widthFull = useAtomValue(atoms.widthFullAtom)
 
     useEffect(() => {
         if (quote !== '') {
