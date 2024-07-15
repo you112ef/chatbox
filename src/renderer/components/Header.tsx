@@ -21,7 +21,7 @@ export default function Header(props: Props) {
     const { t } = useTranslation()
     const theme = useTheme()
     const currentSession = useAtomValue(atoms.currentSessionAtom)
-    const setChatConfigDialogSession = useSetAtom(atoms.chatConfigDialogAtom)
+    const setChatConfigDialogSession = useSetAtom(atoms.chatConfigDialogIdAtom)
     const [showSidebar, setShowSidebar] = useAtom(atoms.showSidebarAtom)
     const selectedCustomProviderId = useAtomValue(atoms.selectedCustomProviderIdAtom)
 
@@ -45,7 +45,7 @@ export default function Header(props: Props) {
     }, [currentSession.messages.length])
 
     const editCurrentSession = () => {
-        setChatConfigDialogSession(currentSession)
+        setChatConfigDialogSession(currentSession.id)
     }
 
     const currentSessionMergeSettings = useMemo(() => {

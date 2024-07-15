@@ -33,7 +33,7 @@ export default function InputBox(props: Props) {
     const [quote, setQuote] = useAtom(atoms.quoteAtom)
     const isSmallScreen = useIsSmallScreen()
     const setThreadHistoryDrawerOpen = useSetAtom(atoms.showThreadHistoryDrawerAtom)
-    const setChatConfigDialogSession = useSetAtom(atoms.chatConfigDialogAtom)
+    const setChatConfigDialogSessionId = useSetAtom(atoms.chatConfigDialogIdAtom)
     const { t } = useTranslation()
     const [messageInput, setMessageInput] = useState('')
     const [pictureKeys, setPictureKeys] = useState<string[]>([])
@@ -354,7 +354,7 @@ export default function InputBox(props: Props) {
                             <FolderClosed size='22' strokeWidth={1} />
                         </MiniButton>
                         <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
-                            onClick={() => setChatConfigDialogSession(sessionActions.getCurrentSession())}
+                            onClick={() => setChatConfigDialogSessionId(sessionActions.getCurrentSession().id)}
                             tooltipTitle={
                                 <div className='text-center inline-block'>
                                     <span>{t('Customize settings for the current conversation')}</span>

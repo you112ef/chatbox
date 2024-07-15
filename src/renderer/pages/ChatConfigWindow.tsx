@@ -43,17 +43,15 @@ import { v4 as uuidv4 } from 'uuid'
 import { ImageInStorage, handleImageInputAndSave } from "@/components/Image";
 import ImageIcon from "@mui/icons-material/Image";
 
-interface Props {
-}
-
-export default function ChatConfigWindow(props: Props) {
+export default function ChatConfigWindow(props: {}) {
     const { t } = useTranslation()
     const isSmallScreen = useIsSmallScreen()
-    const [chatConfigDialogSession, setChatConfigDialogSession] = useAtom(atoms.chatConfigDialogAtom)
+    const [chatConfigDialogSessionId, setChatConfigDialogSessionId] = useAtom(atoms.chatConfigDialogIdAtom)
     const globalSettings = useAtomValue(atoms.settingsAtom)
     const theme = useTheme()
 
-    const [editingData, setEditingData] = React.useState<Session | null>(chatConfigDialogSession)
+    const chatConfigDialogSession = sessionActions.getSession(chatConfigDialogSessionId || '')
+    const [editingData, setEditingData] = React.useState<Session | null>(chatConfigDialogSession || null)
     useEffect(() => {
         if (!chatConfigDialogSession) {
             setEditingData(null)
@@ -65,7 +63,7 @@ export default function ChatConfigWindow(props: Props) {
                     : undefined,
             })
         }
-    }, [chatConfigDialogSession])
+    }, [chatConfigDialogSessionId])
 
     const [systemPrompt, setSystemPrompt] = React.useState('')
     useEffect(() => {
@@ -75,7 +73,7 @@ export default function ChatConfigWindow(props: Props) {
             const systemMessage = chatConfigDialogSession.messages.find((m) => m.role === 'system')
             setSystemPrompt(systemMessage?.content || '')
         }
-    }, [chatConfigDialogSession])
+    }, [chatConfigDialogSessionId])
 
     const onReset = (event: React.MouseEvent) => {
         event.stopPropagation()
@@ -92,10 +90,10 @@ export default function ChatConfigWindow(props: Props) {
         if (chatConfigDialogSession) {
             trackingEvent('chat_config_window', { event_category: 'screen_view' })
         }
-    }, [chatConfigDialogSession])
+    }, [chatConfigDialogSessionId])
 
     const onCancel = () => {
-        setChatConfigDialogSession(null)
+        setChatConfigDialogSessionId(null)
         setEditingData(null)
     }
     const onSave = () => {
@@ -117,7 +115,7 @@ export default function ChatConfigWindow(props: Props) {
             }
         }
         sessionActions.modify(editingData)
-        setChatConfigDialogSession(null)
+        setChatConfigDialogSessionId(null)
     }
 
     if (!chatConfigDialogSession || !editingData) {

@@ -38,7 +38,7 @@ import {
     userAvatarKeyAtom,
     openSettingDialogAtom,
     enableMarkdownRenderingAtom,
-    enableLaTeXRenderingAtom, currentSessionAssistantAvatarKeyAtom, chatConfigDialogAtom, currentSessionAtom,
+    enableLaTeXRenderingAtom, currentSessionAssistantAvatarKeyAtom, chatConfigDialogIdAtom,
     widthFullAtom,
 } from '../stores/atoms'
 import { currsentSessionPicUrlAtom, showTokenUsedAtom } from '../stores/atoms'
@@ -93,8 +93,7 @@ function _Message(props: Props) {
     const setPictureShow = useSetAtom(pictureShowAtom)
     const setMessageEditDialogShow = useSetAtom(messageEditDialogShowAtom)
     const setOpenSettingWindow = useSetAtom(openSettingDialogAtom)
-    const setChatConfigDialog = useSetAtom(chatConfigDialogAtom);
-    const currentSession = useAtomValue(currentSessionAtom);
+    const setChatConfigDialog = useSetAtom(chatConfigDialogIdAtom);
     const widthFull = useAtomValue(widthFullAtom)
 
     const { msg, className, collapseThreshold, hiddenButtonGroup, small } = props
@@ -277,7 +276,7 @@ function _Message(props: Props) {
     )
 
     const onClickAssistantAvatar = () => {
-        setChatConfigDialog(currentSession)
+        setChatConfigDialog(props.sessionId)
     }
 
     return (

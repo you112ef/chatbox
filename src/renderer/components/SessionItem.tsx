@@ -26,7 +26,7 @@ export interface Props {
 function _SessionItem(props: Props) {
     const { session, selected } = props
     const { t } = useTranslation()
-    const setChatConfigDialogSession = useSetAtom(atoms.chatConfigDialogAtom)
+    const setChatConfigDialogSessionId = useSetAtom(atoms.chatConfigDialogIdAtom)
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
     const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -103,7 +103,7 @@ function _SessionItem(props: Props) {
                 <MenuItem
                     key={session.id + 'edit'}
                     onClick={() => {
-                        setChatConfigDialogSession(session)
+                        setChatConfigDialogSessionId(session.id)
                         handleMenuClose()
                     }}
                     disableRipple
