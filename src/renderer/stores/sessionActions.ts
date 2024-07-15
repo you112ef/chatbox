@@ -904,6 +904,31 @@ export function getCurrentMessages() {
     return store.get(atoms.currentMessageListAtom)
 }
 
+/**
+ * 寻找某个消息所在的话题消息列表
+ * @param sessionId 会话ID
+ * @param messageId 消息ID
+ * @returns 消息所在的话题消息列表
+ */
+export function getMessageThreadContext(sessionId: string, messageId: string): Message[] {
+    const session = getSession(sessionId)
+    if (!session) {
+        return []
+    }
+    if (session.messages.find((m) => m.id === messageId)) {
+        return session.messages
+    }
+    if (!session.threads) {
+        return []
+    }
+    for (const t of session.threads) {
+        if (t.messages.find((m) => m.id === messageId)) {
+            return t.messages
+        }
+    }
+    return []
+}
+
 export function mergeSettings(globalSettings: Settings, sessionSetting: Partial<ModelSettings>, sessionType?: 'picture' | 'chat'): Settings {
     let specialSettings = sessionSetting
     // 过滤掉会话专属设置中不应该存在的设置项，为了兼容旧版本数据和防止疏漏

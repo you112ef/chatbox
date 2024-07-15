@@ -61,6 +61,7 @@ import { Loader } from 'lucide-react'
 import { copyToClipboard } from '@/packages/navigator'
 import { estimateTokensFromMessages } from '@/packages/token'
 import { countWord } from '@/packages/word-count'
+import { MessageArtifact } from './Artifact'
 
 export interface Props {
     id?: string
@@ -523,6 +524,15 @@ function _Message(props: Props) {
                             {
                                 needCollapse && !isCollapsed && CollapseButton
                             }
+                            {
+                                msg.role === 'assistant' && (
+                                    <MessageArtifact
+                                        sessionId={props.sessionId}
+                                        messageId={msg.id}
+                                        messageContent={msg.content}
+                                    />
+                                )
+                            }
                             <Typography variant="body2" sx={{ opacity: 0.5 }}>
                                 {tips.join(', ')}
                             </Typography>
@@ -530,7 +540,7 @@ function _Message(props: Props) {
                         {
                             !hiddenButtonGroup && (
                                 <Box sx={{ height: '35px' }}>
-                                {/* <Box sx={{ height: '35px' }} className='opacity-0 group-hover/message:opacity-100 delay-100 transition-all duration-100'> */}
+                                    {/* <Box sx={{ height: '35px' }} className='opacity-0 group-hover/message:opacity-100 delay-100 transition-all duration-100'> */}
                                     <span className={cn(!anchorEl && !msg.generating ? 'hidden group-hover/message:inline-flex' : 'inline-flex')} >
                                         <ButtonGroup
                                             sx={{

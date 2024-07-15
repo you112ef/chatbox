@@ -257,5 +257,6 @@
     "Dark Mode": "Dunkler Modus",
     "Please ensure that the Remote Ollama Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "Bitte stellen Sie sicher, dass der Remote Ollama Service eine Remoteverbindung herstellen kann. Weitere Informationen finden Sie in <a>diesem Tutorial</a>.",
     "Inject default metadata": "Standardmetadaten einfügen",
-    "e.g., Model Name, Current Date": "z. B. Modellname, aktuelles Datum"
+    "e.g., Model Name, Current Date": "z. B. Modellname, aktuelles Datum",
+    "Preview": "Vorschau"
 }
