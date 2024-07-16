@@ -258,5 +258,6 @@
     "Please ensure that the Remote Ollama Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "원격 Ollama 서비스가 원격으로 연결할 수 있는지 확인하십시오. 자세한 내용은 <a>이 튜토리얼</a>을 참조하십시오.",
     "Inject default metadata": "기본 메타데이터 주입",
     "e.g., Model Name, Current Date": "예: 모델 이름, 현재 날짜",
-    "Preview": "미리보기"
+    "Preview": "미리보기",
+    "Refresh": "새로 고침"
 }

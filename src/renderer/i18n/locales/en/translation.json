@@ -257,5 +257,6 @@
     "Please ensure that the Remote Ollama Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "Please ensure that the Remote Ollama Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.",
     "Inject default metadata": "Inject default metadata",
     "e.g., Model Name, Current Date": "e.g., Model Name, Current Date",
-    "Preview": "Preview"
+    "Preview": "Preview",
+    "Refresh": "Refresh"
 }

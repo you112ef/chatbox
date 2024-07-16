@@ -30,7 +30,7 @@ export default function ExportChatDialog(props: {}) {
                 />
             </DialogContent>
             <DialogActions>
-                <Button onClick={onReload}>{t('refresh')}</Button>
+                <Button onClick={onReload}>{t('Refresh')}</Button>
                 <Button onClick={onClose}>{t('close')}</Button>
             </DialogActions>
         </Dialog>
