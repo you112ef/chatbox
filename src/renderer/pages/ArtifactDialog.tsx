@@ -18,13 +18,15 @@ export default function ExportChatDialog(props: {}) {
     }
 
     return (
-        <Dialog open={!!htmlCode} onClose={onClose} fullWidth>
+        <Dialog open={!!htmlCode} onClose={onClose} fullWidth
+            maxWidth='md' classes={{ paper: 'h-4/5' }}
+        >
             <DialogTitle>{t('Preview')}</DialogTitle>
-            <DialogContent>
+            <DialogContent style={{ padding: '0', margin: '0' }}>
                 <Artifact
                     htmlCode={htmlCode}
                     reloadSign={reloadSign}
-                    className='h-full'
+                    className='h-[96%]'
                 />
             </DialogContent>
             <DialogActions>
