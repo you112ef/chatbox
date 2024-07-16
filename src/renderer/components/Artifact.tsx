@@ -54,16 +54,20 @@ export function ArtifactWithButtons(props: {
     const onReplay = () => {
         setReloadSign(Math.random())
     }
-    const onStop = () => {
+    const onPreview = () => {
+        setPreview(true)
+        setReloadSign(Math.random())
+    }
+    const onStopPreview = () => {
         setPreview(false)
     }
-    const onFullscreen = () => {
+    const onOpenFullscreen = () => {
         setArtifactDialogHtmlCode(htmlCode)
     }
     if (!preview) {
         return (
             <div className="w-full my-1 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 cursor-pointer overflow-hidden group"
-                onClick={() => setPreview(true)}
+                onClick={onPreview}
             >
                 <div className="flex items-center justify-between p-4">
                     <div className="flex items-center space-x-3">
@@ -82,7 +86,7 @@ export function ArtifactWithButtons(props: {
                             onClick={(e) => {
                                 e.preventDefault()
                                 e.stopPropagation()
-                                onFullscreen()
+                                onOpenFullscreen()
                             }}
                         />
                         <ArrowRightIcon className="hover:bg-white hover:rounded  hover:text-gray-500
@@ -113,10 +117,10 @@ export function ArtifactWithButtons(props: {
                 <IconButton onClick={onReplay} color="primary">
                     <ReplayOutlinedIcon />
                 </IconButton>
-                <IconButton onClick={onFullscreen} color="primary">
+                <IconButton onClick={onOpenFullscreen} color="primary">
                     <FullscreenIcon className="w-5 h-5" />
                 </IconButton>
-                <IconButton onClick={onStop} color="error">
+                <IconButton onClick={onStopPreview} color="error">
                     <StopCircleOutlinedIcon />
                 </IconButton>
             </ButtonGroup>
