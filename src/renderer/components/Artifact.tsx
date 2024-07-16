@@ -33,46 +33,26 @@ export function MessageArtifact(props: {
         return null
     }
     return (
-        <Artifact htmlCode={htmlCode} defaultPreview />
+        <ArtifactWithButtons htmlCode={htmlCode} defaultPreview />
     )
 }
 
-export function Artifact(props: {
+export function ArtifactWithButtons(props: {
     htmlCode: string
     defaultPreview?: boolean
 }) {
     const { htmlCode, defaultPreview } = props
     const { t } = useTranslation()
     const [preview, setPreview] = useState(!!defaultPreview)
+    const [reloadSign, setReloadSign] = useState(0)
     const isSmallScreen = useIsSmallScreen()
-    const ref = useRef<HTMLIFrameElement>(null)
-
-    const sendIframeMsg = (type: 'html', code: string) => {
-        if (!ref.current) {
-            return
-        }
-        ref.current.contentWindow?.postMessage({ type, code }, "*")
-    }
-
-    const updateIframe = debounce(() => {
-        sendIframeMsg('html', htmlCode)
-    }, 1000)
-    useEffect(() => {
-        updateIframe()
-    }, [htmlCode])
 
     const onReplay = () => {
-        sendIframeMsg('html', '')
-        sendIframeMsg('html', htmlCode)
+        setReloadSign(Math.random())
     }
-
     const onStop = () => {
-        sendIframeMsg('html', '')
         setPreview(false)
     }
-
-    const iframeOrigin = "https://chatbox-artifacts.pages.dev/preview"
-
     if (!preview) {
         return (
             <div className='w-full rounded h-28 cursor-pointer
@@ -85,7 +65,6 @@ export function Artifact(props: {
             </div>
         )
     }
-
     return (
         <div className={cn(
             "w-full",
@@ -93,12 +72,7 @@ export function Artifact(props: {
             'flex',
             isSmallScreen ? 'flex-col-reverse' : 'flex-row',
         )}>
-            <iframe
-                className={cn('w-full', 'border-none', 'h-[400px]')}
-                sandbox='allow-scripts allow-forms'
-                src={iframeOrigin}
-                ref={ref}
-            />
+            <Artifact htmlCode={htmlCode} reloadSign={reloadSign} />
             <ButtonGroup orientation={isSmallScreen ? "horizontal" : "vertical"}
                 className={cn(
                     "border-solid border-gray-500/20",
@@ -115,6 +89,44 @@ export function Artifact(props: {
                 </IconButton>
             </ButtonGroup>
         </div>
+    )
+}
+
+export function Artifact(props: {
+    htmlCode: string
+    reloadSign?: number
+}) {
+    const { htmlCode, reloadSign } = props
+    const ref = useRef<HTMLIFrameElement>(null)
+    const iframeOrigin = "https://chatbox-artifacts.pages.dev/preview"
+
+    const sendIframeMsg = (type: 'html', code: string) => {
+        if (!ref.current) {
+            return
+        }
+        ref.current.contentWindow?.postMessage({ type, code }, "*")
+    }
+    // 当 reloadSign 改变时，重新加载 iframe 内容
+    useEffect(() => {
+        sendIframeMsg('html', '')
+        sendIframeMsg('html', htmlCode)
+    }, [reloadSign])
+
+    // 当 htmlCode 改变时，防抖地刷新 iframe 内容
+    const updateIframe = debounce(() => {
+        sendIframeMsg('html', htmlCode)
+    }, 300)
+    useEffect(() => {
+        updateIframe()
+    }, [htmlCode])
+
+    return (
+        <iframe
+            className={cn('w-full', 'border-none', 'h-[400px]')}
+            sandbox='allow-scripts allow-forms'
+            src={iframeOrigin}
+            ref={ref}
+        />
     )
 }
 
