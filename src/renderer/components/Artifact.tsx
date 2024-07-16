@@ -5,7 +5,7 @@ import ReplayOutlinedIcon from '@mui/icons-material/ReplayOutlined';
 import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
 import { useIsSmallScreen } from "@/hooks/useScreenChange";
 import { cn } from "@/lib/utils";
-import { PlayIcon } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import * as sessionActions from '@/stores/sessionActions'
 
@@ -55,13 +55,22 @@ export function ArtifactWithButtons(props: {
     }
     if (!preview) {
         return (
-            <div className='w-full rounded h-28 cursor-pointer
-                flex justify-center items-center
-                bg-slate-400/20 hover:bg-slate-400/30'
+            <div className="w-full my-1 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 cursor-pointer overflow-hidden group"
                 onClick={() => setPreview(true)}
             >
-                <PlayIcon className='w-6 h-6 opacity-70' />
-                <span className="text-xl font-thin opacity-70">{t('Preview')}</span>
+                <div className="flex items-center justify-between p-4">
+                    <div className="flex items-center space-x-3">
+                        <div className="w-7 h-7 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <span className="text-lg font-semibold text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                            {t('Preview')}
+                        </span>
+                    </div>
+                    <ChevronRight className="text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400" />
+                </div>
             </div>
         )
     }
@@ -181,6 +190,8 @@ function generateHtml(markdowns: string[]): string {
     }
 
     const srcDoc = `
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+
 ${codeBlocks.html.join('\n')}
 
 <style>
