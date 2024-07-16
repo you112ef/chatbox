@@ -31,6 +31,7 @@ import WelcomeDialog from './pages/WelcomeDialog'
 import * as premiumActions from './stores/premiumActions'
 import platform from './platform'
 import ExportChatDialog from '@/pages/ExportChatDialog'
+import ArtifactDialog from '@/pages/ArtifactDialog'
 
 function Main() {
     // 是否展示菜单栏
@@ -122,6 +123,7 @@ function Main() {
                 onClose={() => setOpenWelcomeDialog(false)}
                 onSetup={() => setOpenSettingWindow('ai')}
             />
+            <ArtifactDialog />
             <Toasts />
         </Box>
     )

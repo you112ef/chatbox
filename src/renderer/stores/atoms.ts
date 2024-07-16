@@ -209,6 +209,7 @@ export const openSettingDialogAtom = atom<SettingWindowTab | null>(null)
 export const sessionCleanDialogAtom = atom<Session | null>(null)  // 清空会话的弹窗
 export const chatConfigDialogIdAtom = atom<string | null>(null)   // 会话配置窗口
 export const openExportChatDialogAtom = atom(false)   // 导出聊天记录的弹窗
+export const artifactDialogHtmlCodeAtom = atom('')
 
 // 图片展示窗口的图片
 export const pictureShowAtom = atom<MessagePicture | null>(null)

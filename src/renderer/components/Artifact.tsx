@@ -5,9 +5,12 @@ import ReplayOutlinedIcon from '@mui/icons-material/ReplayOutlined';
 import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
 import { useIsSmallScreen } from "@/hooks/useScreenChange";
 import { cn } from "@/lib/utils";
-import { ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import * as sessionActions from '@/stores/sessionActions'
+import { useSetAtom } from "jotai";
+import * as atoms from '@/stores/atoms'
+import FullscreenIcon from "./icons/FullscreenIcon";
+import ArrowRightIcon from "./icons/ArrowRightIcon";
 
 export type CodeBlockLanguage = 'html' | 'js' | 'javascript' | 'css'
 
@@ -46,12 +49,16 @@ export function ArtifactWithButtons(props: {
     const [preview, setPreview] = useState(!!defaultPreview)
     const [reloadSign, setReloadSign] = useState(0)
     const isSmallScreen = useIsSmallScreen()
+    const setArtifactDialogHtmlCode = useSetAtom(atoms.artifactDialogHtmlCodeAtom)
 
     const onReplay = () => {
         setReloadSign(Math.random())
     }
     const onStop = () => {
         setPreview(false)
+    }
+    const onFullscreen = () => {
+        setArtifactDialogHtmlCode(htmlCode)
     }
     if (!preview) {
         return (
@@ -69,7 +76,20 @@ export function ArtifactWithButtons(props: {
                             {t('Preview')}
                         </span>
                     </div>
-                    <ChevronRight className="text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400" />
+                    <div className="flex items-center justify-center">
+                        <FullscreenIcon className="mr-1 hover:bg-white hover:rounded  hover:text-gray-500
+                            p-1 w-8 h-8 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400"
+                            onClick={(e) => {
+                                e.preventDefault()
+                                e.stopPropagation()
+                                onFullscreen()
+                            }}
+                        />
+                        <ArrowRightIcon className="hover:bg-white hover:rounded  hover:text-gray-500
+                            p-1 w-8 h-8 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400"
+                            onClick={() => setPreview(true)}
+                        />
+                    </div>
                 </div>
             </div>
         )
@@ -93,6 +113,9 @@ export function ArtifactWithButtons(props: {
                 <IconButton onClick={onReplay} color="primary">
                     <ReplayOutlinedIcon />
                 </IconButton>
+                <IconButton onClick={onFullscreen} color="primary">
+                    <FullscreenIcon className="w-5 h-5" />
+                </IconButton>
                 <IconButton onClick={onStop} color="error">
                     <StopCircleOutlinedIcon />
                 </IconButton>
@@ -104,8 +127,9 @@ export function ArtifactWithButtons(props: {
 export function Artifact(props: {
     htmlCode: string
     reloadSign?: number
+    className?: string
 }) {
-    const { htmlCode, reloadSign } = props
+    const { htmlCode, reloadSign, className } = props
     const ref = useRef<HTMLIFrameElement>(null)
     const iframeOrigin = "https://chatbox-artifacts.pages.dev/preview"
 
@@ -131,7 +155,7 @@ export function Artifact(props: {
 
     return (
         <iframe
-            className={cn('w-full', 'border-none', 'h-[400px]')}
+            className={cn('w-full', 'border-none', 'h-[400px]', className)}
             sandbox='allow-scripts allow-forms'
             src={iframeOrigin}
             ref={ref}
