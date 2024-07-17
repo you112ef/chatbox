@@ -7,7 +7,7 @@ import { useIsSmallScreen } from "@/hooks/useScreenChange";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import * as sessionActions from '@/stores/sessionActions'
-import { useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import * as atoms from '@/stores/atoms'
 import FullscreenIcon from "./icons/FullscreenIcon";
 import ArrowRightIcon from "./icons/ArrowRightIcon";
@@ -20,6 +20,7 @@ export function MessageArtifact(props: {
     messageContent: string
 }) {
     const { sessionId, messageId, messageContent } = props
+    const autoPreviewArtifacts = useAtomValue(atoms.autoPreviewArtifactsAtom)
     const contextMessages = useMemo(() => {
         return sessionActions.getMessageThreadContext(sessionId, messageId)
     }, [sessionId, messageId])
@@ -36,7 +37,7 @@ export function MessageArtifact(props: {
         return null
     }
     return (
-        <ArtifactWithButtons htmlCode={htmlCode} defaultPreview />
+        <ArtifactWithButtons htmlCode={htmlCode} defaultPreview={autoPreviewArtifacts} />
     )
 }
 

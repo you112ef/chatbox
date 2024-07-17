@@ -262,6 +262,7 @@ export interface Settings extends ModelSettings {
     enableMarkdownRendering: boolean
     enableLaTeXRendering: boolean
     injectDefaultMetadata: boolean // 是否注入默认附加元数据（如模型名称、当前日期）
+    autoPreviewArtifacts: boolean // 是否自动展开预览 artifacts
 }
 
 export type Language = 'en' | 'zh-Hans' | 'zh-Hant' | 'ja' | 'ko' | 'ru' | 'de' | 'fr'

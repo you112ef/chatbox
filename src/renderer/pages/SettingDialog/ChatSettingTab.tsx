@@ -14,9 +14,7 @@ import { Settings } from '../../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as defaults from '../../../shared/defaults'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
-import React, { useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import storage from '@/storage'
 import PersonIcon from '@mui/icons-material/Person'
 import EditableAvatar from '@/components/EditableAvatar'
 import SmartToyIcon from '@mui/icons-material/SmartToy'
@@ -201,6 +199,28 @@ export default function ChatSettingTab(props: {
                     checked={settingsEdit.injectDefaultMetadata}
                     onChange={(e, checked) => {
                         settingsEdit.injectDefaultMetadata = checked
+                        setSettingsEdit({ ...settingsEdit })
+                    }}
+                />
+            </FormGroup>
+            <FormGroup>
+                <FormControlLabel
+                    control={<Switch />}
+                    label={
+                        <span className='flex items-start justify-center'>
+                            {t('Auto-preview artifacts')}
+                            <Tooltip
+                                title={t('Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)')}
+                                className="cursor-pointer"
+                                placement='top'
+                            >
+                                <HelpOutlineIcon className='opacity-60 ml-0.5' fontSize='small' />
+                            </Tooltip>
+                        </span>
+                    }
+                    checked={settingsEdit.autoPreviewArtifacts}
+                    onChange={(e, checked) => {
+                        settingsEdit.autoPreviewArtifacts = checked
                         setSettingsEdit({ ...settingsEdit })
                     }}
                 />

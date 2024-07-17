@@ -259,5 +259,7 @@
     "Inject default metadata": "注入默认元数据",
     "e.g., Model Name, Current Date": "例如，模型名称、当前日期",
     "Preview": "预览",
-    "Refresh": "刷新"
+    "Refresh": "刷新",
+    "Auto-preview artifacts": "自动预览生成物(Artifacts)",
+    "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "自动渲染生成物（例如，带有 CSS、JS、Tailwind 的 HTML）"
 }

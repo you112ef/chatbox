@@ -258,5 +258,7 @@
     "Inject default metadata": "Inject default metadata",
     "e.g., Model Name, Current Date": "e.g., Model Name, Current Date",
     "Preview": "Preview",
-    "Refresh": "Refresh"
+    "Refresh": "Refresh",
+    "Auto-preview artifacts": "Auto-preview artifacts",
+    "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)"
 }

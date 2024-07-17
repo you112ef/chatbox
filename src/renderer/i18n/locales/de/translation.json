@@ -259,5 +259,7 @@
     "Inject default metadata": "Standardmetadaten einfügen",
     "e.g., Model Name, Current Date": "z. B. Modellname, aktuelles Datum",
     "Preview": "Vorschau",
-    "Refresh": "Aktualisieren"
+    "Refresh": "Aktualisieren",
+    "Auto-preview artifacts": "Artefakte automatisch anzeigen",
+    "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "Automatisches Rendern von generierten Artefakten (z. B. HTML mit CSS, JS, Tailwind)"
 }

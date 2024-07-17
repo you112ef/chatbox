@@ -53,6 +53,7 @@ export const allowReportingAndTrackingAtom = focusAtom(settingsAtom, (optic) => 
 export const enableMarkdownRenderingAtom = focusAtom(settingsAtom, (optic) => optic.prop('enableMarkdownRendering'))
 export const enableLaTeXRenderingAtom = focusAtom(settingsAtom, (optic) => optic.prop('enableLaTeXRendering'))
 export const selectedCustomProviderIdAtom = focusAtom(settingsAtom, (optic) => optic.prop('selectedCustomProviderId'))
+export const autoPreviewArtifactsAtom = focusAtom(settingsAtom, (optic) => optic.prop('autoPreviewArtifacts'))
 
 export const licenseDetailAtom = focusAtom(settingsAtom, (optic) => optic.prop('licenseDetail'))
 
@@ -209,7 +210,7 @@ export const openSettingDialogAtom = atom<SettingWindowTab | null>(null)
 export const sessionCleanDialogAtom = atom<Session | null>(null)  // 清空会话的弹窗
 export const chatConfigDialogIdAtom = atom<string | null>(null)   // 会话配置窗口
 export const openExportChatDialogAtom = atom(false)   // 导出聊天记录的弹窗
-export const artifactDialogHtmlCodeAtom = atom('')
+export const artifactDialogHtmlCodeAtom = atom('')  // artifact 预览弹窗（当 html 不为空时则弹窗）
 
 // 图片展示窗口的图片
 export const pictureShowAtom = atom<MessagePicture | null>(null)

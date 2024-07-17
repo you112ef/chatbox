@@ -259,5 +259,7 @@
     "Inject default metadata": "Injecter les métadonnées par défaut",
     "e.g., Model Name, Current Date": "par exemple, Nom du Modèle, Date Actuelle",
     "Preview": "Aperçu",
-    "Refresh": "Actualiser"
+    "Refresh": "Actualiser",
+    "Auto-preview artifacts": "Aperçu automatique des artefacts",
+    "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "Rendu automatique des artefacts générés (par exemple, HTML avec CSS, JS, Tailwind)"
 }
