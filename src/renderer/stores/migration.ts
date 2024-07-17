@@ -1,7 +1,7 @@
 import { getDefaultStore } from 'jotai'
 import { settingsAtom, configVersionAtom, sessionsAtom } from './atoms'
 import * as defaults from '../../shared/defaults'
-import { imageCreatorSessionForCN, imageCreatorSessionForEN } from '@/packages/initial_data'
+import { artifactSessionCN, artifactSessionEN, imageCreatorSessionForCN, imageCreatorSessionForEN } from '@/packages/initial_data'
 import platform from '@/platform'
 import WebPlatform from '@/platform/web_platform'
 import storage, { StorageKey } from '@/storage'
@@ -28,6 +28,12 @@ async function _migrate() {
     if (configVersion < 3) {
         await migrate_2_to_3()
         configVersion = 3
+        await storage.setItem(StorageKey.ConfigVersion, configVersion)
+        getDefaultStore().set(configVersionAtom, configVersion)
+    }
+    if (configVersion < 4) {
+        await migrate_3_to_4()
+        configVersion = 4
         await storage.setItem(StorageKey.ConfigVersion, configVersion)
         getDefaultStore().set(configVersionAtom, configVersion)
     }
@@ -79,4 +85,17 @@ async function migrate_2_to_3() {
         await storage.setBlob(key, value)
         await ws.delStoreBlob(key)
     }
+}
+
+async function migrate_3_to_4() {
+    const sessions = await storage.getItem(StorageKey.ChatSessions, defaults.sessions())
+    const lang = await platform.getLocale()
+    const targetSession = lang.startsWith('zh') ? artifactSessionCN : artifactSessionEN
+    if (sessions.find((session) => session.id === targetSession.id)) {
+        return
+    }
+    getDefaultStore().set(sessionsAtom, [
+        ...sessions,
+        targetSession,
+    ])
 }
