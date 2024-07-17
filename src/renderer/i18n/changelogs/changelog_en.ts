@@ -1,4 +1,16 @@
 const changelog = `
+### v1.3.15 - 2024-07-17
+
+1. Introduced **Artifact Preview** feature: Now you can preview HTML code (including JS, CSS, and TailwindCSS) within generated messages.
+2. Added pop-up mode for Artifact Preview.
+3. New toggle in Settings to enable automatic Artifact rendering.
+4. Enhanced chat UI for a more visually appealing experience.
+5. Optimized message generation performance.
+6. Resolved known issues with app update notifications.
+7. Resolved connection issues with Ollama on the Android version.
+8. Enhanced compatibility with older Android OS versions.
+9. Fixed several known bugs.
+
 ### v1.3.14 - 2024.06.30
 
 1. Added support for setting user and assistant avatars.
