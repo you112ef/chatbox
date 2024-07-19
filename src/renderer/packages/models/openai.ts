@@ -141,72 +141,100 @@ export const openaiModelConfigs = {
     'gpt-3.5-turbo': {
         maxTokens: 4096, // 模型支持最大的token数
         maxContextTokens: 16_385,
+        vision: false,
     },
     'gpt-3.5-turbo-16k': {
         maxTokens: 4096,
         maxContextTokens: 16_385,
+        vision: false,
     },
     'gpt-3.5-turbo-1106': {
         maxTokens: 4096,
         maxContextTokens: 16_385,
+        vision: false,
     },
     'gpt-3.5-turbo-0125': {
         maxTokens: 4096,
         maxContextTokens: 16_385,
+        vision: false,
     },
     'gpt-3.5-turbo-0613': {
         maxTokens: 4096,
         maxContextTokens: 4_096,
+        vision: false,
     },
     'gpt-3.5-turbo-16k-0613': {
         maxTokens: 4096,
         maxContextTokens: 16_385,
+        vision: false,
+    },
+
+    'gpt-4o-mini': {
+        maxTokens: 4_096,
+        maxContextTokens: 128_000,
+        vision: true,
+    },
+    'gpt-4o-mini-2024-07-18	': {
+        maxTokens: 4_096,
+        maxContextTokens: 128_000,
+        vision: true,
     },
 
     'gpt-4o': {
         maxTokens: 4_096,
         maxContextTokens: 128_000,
+        vision: true,
     },
     'gpt-4o-2024-05-13': {
         maxTokens: 4_096,
         maxContextTokens: 128_000,
+        vision: true,
     },
 
     'gpt-4': {
         maxTokens: 4_096,
         maxContextTokens: 8_192,
+        vision: false,
     },
     'gpt-4-turbo': {
         maxTokens: 4_096,
         maxContextTokens: 128_000,
+        vision: true,
     },
     'gpt-4-0613': {
         maxTokens: 4_096,
         maxContextTokens: 8_192,
+        vision: false,
     },
     'gpt-4-32k': {
         maxTokens: 4_096,
         maxContextTokens: 32_768,
+        vision: false,
     },
     'gpt-4-32k-0613': {
         maxTokens: 4_096,
         maxContextTokens: 32_768,
+        vision: false,
     },
     'gpt-4-1106-preview': {
         maxTokens: 4_096,
         maxContextTokens: 128_000,
+        vision: false,
     },
     'gpt-4-0125-preview': {
         maxTokens: 4_096,
         maxContextTokens: 128_000,
+        vision: false,
     },
     'gpt-4-turbo-preview': {
         maxTokens: 4_096,
         maxContextTokens: 128_000,
+        vision: false,
     },
     'gpt-4-vision-preview': {
         maxTokens: 4_096,
         maxContextTokens: 128_000,
+        vision: true,
     },
 
     // 以下模型延长到了 2024 年 6 月
@@ -214,27 +242,24 @@ export const openaiModelConfigs = {
     'gpt-3.5-turbo-0301': {
         maxTokens: 4096,
         maxContextTokens: 4096,
+        vision: false,
     },
     'gpt-4-0314': {
         maxTokens: 4096,
         maxContextTokens: 8192,
+        vision: false,
     },
     'gpt-4-32k-0314': {
         maxTokens: 4096,
         maxContextTokens: 32768,
+        vision: false,
     },
 }
 export type Model = keyof typeof openaiModelConfigs
 export const models = Array.from(Object.keys(openaiModelConfigs)).sort() as Model[]
 
 export function isSupportVision(model: Model | 'custom-model'): boolean {
-    return [
-        'gpt-4-turbo',
-        'gpt-4-vision-preview',
-        'gpt-4o',
-        'gpt-4o-2024-05-13',
-        'custom-model',
-    ].includes(model)
+    return model === 'custom-model' || openaiModelConfigs[model].vision
 }
 
 export async function populateOpenAIMessage(rawMessages: Message[], model: Model | 'custom-model'): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
