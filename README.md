@@ -11,8 +11,9 @@
       - ["hdiutil exited with code" 问题](#hdiutil-exited-with-code-问题)
     - [提取软件包源码](#提取软件包源码)
     - [查看软件包证书和公证](#查看软件包证书和公证)
-  - [生产部署](#生产部署)
-    - [正式版本的打包与发布](#正式版本的打包与发布)
+  - [版本发布](#版本发布)
+    - [发布动作](#发布动作)
+    - [发布的常见问题](#发布的常见问题)
     - [（已弃用）本地打包与发布正式版](#已弃用本地打包与发布正式版)
     - [网页版部署](#网页版部署)
 - [移动端开发（iOS/Android）](#移动端开发iosandroid)
@@ -20,7 +21,8 @@
     - [同步代码到移动端工程](#同步代码到移动端工程)
     - [同步代码并启动 IDE](#同步代码并启动-ide)
     - [更新图片资源](#更新图片资源)
-  - [生产部署](#生产部署-1)
+    - [Debug 和调试](#debug-和调试)
+  - [生产部署](#生产部署)
 - [配置与日志路径](#配置与日志路径)
     - [配置文件](#配置文件)
     - [主进程的日志文件](#主进程的日志文件)
@@ -256,6 +258,18 @@ npm run mobile:assets
     - Android Studio 点击顶部导航栏的 “Build” -> “Generate Signed Bundle/APK”
 4. iOS 可以在 Xcode 中直接上传，Android 需要在 Google Play Console 中手动上传
 5. Android APK 打包后，命名成 chatbox.apk，然后复制到 Cloudflare R2 的 release 路径下，提供给用户下载
+
+## 已知的坑
+
+### Capacitor5 不支持 targetSdkVersion=34
+
+如果改成 targetSdkVersion=34，那么在 Android 14 下应用启动会直接崩溃，报错信息与 Capacitor Share 插件有关。
+
+这个问题可以 Android Studio 模拟器运行 Android 14 时直接复现。
+
+最简单的修复方式是保持 targetSdkVersion=33，这样即使在 Android 14 下依然可以正常工作。
+
+https://github.com/ionic-team/capacitor-plugins/issues/1823
 
 # 配置与日志路径
 
