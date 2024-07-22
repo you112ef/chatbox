@@ -40,11 +40,17 @@ export function getState(): [IWindowState, boolean? /* has multiple displays */]
 }
 
 export function saveState(win: Electron.BrowserWindow): void {
-    const [x, y] = win.getPosition()
-    const [width, height] = win.getSize()
+    let [x, y] = win.getPosition()
+    let [width, height] = win.getSize()
     let mode = WindowMode.Normal
     if (win.isFullScreen()) {
         mode = WindowMode.Fullscreen
+        // when we are in fullscreen, we want to persist the last non-fullscreen x/y position and width/height
+        const [originalState] = getState()
+        x = originalState.x ?? x
+        y = originalState.y ?? y
+        width = originalState.width ?? width
+        height = originalState.height ?? height
     } else if (win.isMaximized()) {
         mode = WindowMode.Maximized
     }
