@@ -532,9 +532,13 @@ function _Message(props: Props) {
                                     />
                                 )
                             }
-                            <Typography variant="body2" sx={{ opacity: 0.5 }}>
-                                {tips.join(', ')}
-                            </Typography>
+                            {
+                                tips.length > 0 && (
+                                    <Typography variant="body2" sx={{ opacity: 0.5 }} className='pb-1'>
+                                        {tips.join(', ')}
+                                    </Typography>
+                                )
+                            }
                         </div>
                         {
                             !hiddenButtonGroup && (

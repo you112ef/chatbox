@@ -39,7 +39,7 @@ export function settings(): Settings {
 
         customProviders: [],
 
-        showWordCount: true,
+        showWordCount: false,
         showTokenCount: false,
         showTokenUsed: true,
         showModelName: true,
