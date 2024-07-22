@@ -58,7 +58,7 @@ export function settings(): Settings {
         enableMarkdownRendering: true,
         enableLaTeXRendering: true,
         injectDefaultMetadata: true,
-        autoPreviewArtifacts: true,
+        autoPreviewArtifacts: false,
     }
 }
 
