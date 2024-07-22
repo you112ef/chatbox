@@ -1,4 +1,8 @@
 const changelog = `
+### v1.3.16 - 2024.07.22
+
+1. 添加对新模型 gpt-4o-mini 的 API 支持
+
 ### v1.3.15 - 2024.07.17
 
 1. 新增 Artifact 预览功能，可以预览生成消息中的 HTML 代码（包括 JS/CSS/TailwindCSS 等）

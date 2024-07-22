@@ -1,4 +1,8 @@
 const changelog = `
+### v1.3.16 - 2024.07.22
+
+1. Add support for new model gpt-4o-mini API
+
 ### v1.3.15 - 2024-07-17
 
 1. Introduced **Artifact Preview** feature: Now you can preview HTML code (including JS, CSS, and TailwindCSS) within generated messages.
