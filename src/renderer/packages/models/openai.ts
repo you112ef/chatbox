@@ -174,7 +174,7 @@ export const openaiModelConfigs = {
         maxContextTokens: 128_000,
         vision: true,
     },
-    'gpt-4o-mini-2024-07-18	': {
+    'gpt-4o-mini-2024-07-18': {
         maxTokens: 4_096,
         maxContextTokens: 128_000,
         vision: true,
