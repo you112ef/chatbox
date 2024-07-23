@@ -131,7 +131,7 @@ export default class OpenAI extends Base {
         return headers
     }
 
-    static isSupportVision(model: Model | 'custom-model'): boolean {
+    static isSupportVision(model: Model | 'custom-model' | string): boolean {
         return isSupportVision(model)
     }
 }
@@ -258,8 +258,12 @@ export const openaiModelConfigs = {
 export type Model = keyof typeof openaiModelConfigs
 export const models = Array.from(Object.keys(openaiModelConfigs)).sort() as Model[]
 
-export function isSupportVision(model: Model | 'custom-model'): boolean {
-    return model === 'custom-model' || openaiModelConfigs[model].vision
+export function isSupportVision(model: Model | 'custom-model' | string): boolean {
+    // 因为历史原因，有些用户会在 openai 提供商的设置中使用其他厂商的模型
+    return (
+        model === 'custom-model'
+        || (openaiModelConfigs[model as Model] && openaiModelConfigs[model as Model].vision)
+    )
 }
 
 export async function populateOpenAIMessage(rawMessages: Message[], model: Model | 'custom-model'): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
