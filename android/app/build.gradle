@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     namespace "xyz.chatboxapp.chatbox"
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "xyz.chatboxapp.chatbox"
         minSdkVersion rootProject.ext.minSdkVersion
