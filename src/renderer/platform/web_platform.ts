@@ -1,11 +1,12 @@
 import { Config, Settings } from "src/shared/types"
 import * as defaults from 'src/shared/defaults'
 import { Platform, PlatformType } from "./interfaces"
-import store from 'store'
 import { getOS, getBrowser } from '../packages/navigator'
 import { parseLocale } from '@/i18n/parser'
 import localforage from 'localforage'
 import WebExporter from "./web_exporter"
+
+const store = localforage.createInstance({ name: 'chatboxstore' })
 
 export default class WebPlatform implements Platform {
     public type: PlatformType = 'web'
@@ -54,42 +55,46 @@ export default class WebPlatform implements Platform {
     }
 
     public async getConfig(): Promise<Config> {
-        let value = store.get('configs')
+        let value: Config = await this.getStoreValue('configs')
         if (value === undefined || value === null) {
             value = defaults.newConfigs()
-            store.set('configs', value)
+            await this.setStoreValue('configs', value)
         }
         return value
     }
     public async getSettings(): Promise<Settings> {
-        let value = store.get('settings')
+        let value: Settings = await this.getStoreValue('settings')
         if (value === undefined || value === null) {
             value = defaults.settings()
-            store.set('settings', value)
+            await this.setStoreValue('settings', value)
         }
         return value
     }
 
     public async setStoreValue(key: string, value: any) {
-        return store.set(key, value)
+        // 为什么序列化成 JSON？
+        // 因为 IndexedDB 作为底层驱动时，可以直接存储对象，但是如果对象中包含函数或引用，将会直接报错
+        await store.setItem(key, JSON.stringify(value))
     }
     public async getStoreValue(key: string) {
-        return store.get(key)
+        const json = await store.getItem<string>(key)
+        return json ? JSON.parse(json) : null
     }
     public async delStoreValue(key: string) {
-        return store.remove(key)
+        return await store.removeItem(key)
     }
     public async getAllStoreValues(): Promise<{ [key: string]: any }> {
         const ret: { [key: string]: any } = {}
-        store.each((value, key) => {
+        await store.iterate((json, key) => {
+            const value = typeof json === 'string' ? JSON.parse(json) : null
             ret[key] = value
         })
         return ret
     }
     public async setAllStoreValues(data: { [key: string]: any }): Promise<void> {
-        store.clearAll()
+        await store.clear()
         for (const [key, value] of Object.entries(data)) {
-            store.set(key, value)
+            await store.setItem(key, JSON.stringify(value))
         }
     }
 

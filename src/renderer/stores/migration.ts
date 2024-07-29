@@ -1,10 +1,11 @@
 import { getDefaultStore } from 'jotai'
-import { settingsAtom, configVersionAtom, sessionsAtom } from './atoms'
+import { settingsAtom, sessionsAtom } from './atoms'
 import * as defaults from '../../shared/defaults'
 import { artifactSessionCN, artifactSessionEN, imageCreatorSessionForCN, imageCreatorSessionForEN } from '@/packages/initial_data'
 import platform from '@/platform'
 import WebPlatform from '@/platform/web_platform'
 import storage, { StorageKey } from '@/storage'
+import oldStore from 'store'
 
 export function migrate() {
     // 通过定时器延迟启动，防止处理状态底层存储的异步加载前错误的初始数据（水合阶段）
@@ -17,25 +18,29 @@ async function _migrate() {
         await migrate_0_to_1()
         configVersion = 1
         await storage.setItem(StorageKey.ConfigVersion, configVersion)
-        getDefaultStore().set(configVersionAtom, configVersion)
     }
     if (configVersion < 2) {
         await migrate_1_to_2()
         configVersion = 2
         await storage.setItem(StorageKey.ConfigVersion, configVersion)
-        getDefaultStore().set(configVersionAtom, configVersion)
     }
     if (configVersion < 3) {
         await migrate_2_to_3()
         configVersion = 3
         await storage.setItem(StorageKey.ConfigVersion, configVersion)
-        getDefaultStore().set(configVersionAtom, configVersion)
     }
     if (configVersion < 4) {
         await migrate_3_to_4()
         configVersion = 4
         await storage.setItem(StorageKey.ConfigVersion, configVersion)
-        getDefaultStore().set(configVersionAtom, configVersion)
+    }
+    if (configVersion < 5) {
+        const needRelaunch = await migrate_4_to_5()
+        configVersion = 5
+        await storage.setItem(StorageKey.ConfigVersion, configVersion)
+        if (needRelaunch) {
+            await platform.relaunch()
+        }
     }
 }
 
@@ -98,4 +103,20 @@ async function migrate_3_to_4() {
         ...sessions,
         targetSession,
     ])
+}
+
+async function migrate_4_to_5(): Promise<boolean> {
+    if (platform.type !== 'web') {
+        return false
+    }
+    // 针对网页版，从 store 迁移至 localforage
+    // 本质上是从更小的 localStorage 迁移到更大的 IndexedDB，解决容量不够用的问题
+    const keys: string[] = []
+    oldStore.each((value, key) => {
+        keys.push(key)
+    })
+    for (const key of keys) {
+        await storage.setItem(key, oldStore.get(key))
+    }
+    return true
 }
