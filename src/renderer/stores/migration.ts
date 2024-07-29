@@ -115,6 +115,9 @@ async function migrate_4_to_5(): Promise<boolean> {
     oldStore.each((value, key) => {
         keys.push(key)
     })
+    if (keys.length === 0) {
+        return false
+    }
     for (const key of keys) {
         await storage.setItem(key, oldStore.get(key))
     }
