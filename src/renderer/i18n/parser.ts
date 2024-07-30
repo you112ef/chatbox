@@ -37,10 +37,13 @@ export function parseLocale(locale: string): Language {
         return 'fr'
     }
     if (locale.startsWith('pt')) {
-        // TODO: 这两种语言都是葡萄牙语，但是区域不同，一些用词习惯也不同，以后可能需要区分
+        // 这两种语言都是葡萄牙语，但是区域不同，一些用词习惯也不同，以后可能需要区分
         // 葡萄牙（Portugal） - pt-PT
         // 巴西（Brazil） - pt-BR
         return 'pt-PT'
+    }
+    if (locale.startsWith('es')) {
+        return 'es'
     }
     return 'en'
 }

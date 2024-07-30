@@ -265,7 +265,7 @@ export interface Settings extends ModelSettings {
     autoPreviewArtifacts: boolean // 是否自动展开预览 artifacts
 }
 
-export type Language = 'en' | 'zh-Hans' | 'zh-Hant' | 'ja' | 'ko' | 'ru' | 'de' | 'fr' | 'pt-PT'
+export type Language = 'en' | 'zh-Hans' | 'zh-Hant' | 'ja' | 'ko' | 'ru' | 'de' | 'fr' | 'pt-PT' | 'es'
 
 export interface Config {
     uuid: string
