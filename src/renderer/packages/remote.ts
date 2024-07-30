@@ -41,7 +41,10 @@ async function testApiOrigins() {
     const fastest = await Promise.any(pool.map(async origin => {
         const res = await ofetch<Response>(`${origin}/api/api_origins`, { retry: 1 })
         return { origin, res }
-    }))
+    })).catch(e => null)
+    if (!fastest) {
+        return
+    }
     for (const newOrigin of fastest.res.data.api_origins) {
         if (!pool.includes(newOrigin)) {
             pool.push(newOrigin)
