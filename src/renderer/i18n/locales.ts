@@ -1,6 +1,6 @@
 import { Language } from '../../shared/types'
 
-export const languageNameMap = {
+export const languageNameMap: Record<Language, string> = {
     en: 'English',
     'zh-Hans': '简体中文',
     'zh-Hant': '繁體中文',
@@ -9,6 +9,7 @@ export const languageNameMap = {
     ru: 'Русский', // Russian
     de: 'Deutsch', // German
     fr: 'Français', // French
+    'pt-PT': 'Português', // Portuguese
 }
 
 export const languages = Array.from(Object.keys(languageNameMap)) as Language[]
