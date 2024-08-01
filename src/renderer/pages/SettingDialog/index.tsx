@@ -57,15 +57,6 @@ export default function SettingWindow(props: Props) {
     const onSave = () => {
         setSettings(settingsEdit)
         props.close()
-
-        // 保存时如果修改过头像，则删除修改前的头像数据
-        if (settings.userAvatarKey !== undefined && settingsEdit.userAvatarKey !== settings.userAvatarKey) {
-            storage.delBlob(settings.userAvatarKey)
-        }
-        if (settings.defaultAssistantAvatarKey !== undefined
-            && settingsEdit.defaultAssistantAvatarKey !== settings.defaultAssistantAvatarKey) {
-            storage.delBlob(settings.defaultAssistantAvatarKey)
-        }
     }
 
     const onCancel = () => {
@@ -73,15 +64,6 @@ export default function SettingWindow(props: Props) {
         setSettingsEdit(settings)
         // need to restore the previous theme
         switchTheme(settings.theme ?? Theme.System)
-
-        // 取消时如果修改过头像，则删除修改后的头像数据
-        if (settingsEdit.userAvatarKey !== undefined && settingsEdit.userAvatarKey !== settings.userAvatarKey) {
-            storage.delBlob(settingsEdit.userAvatarKey)
-        }
-        if (settingsEdit.defaultAssistantAvatarKey !== undefined
-            && settingsEdit.defaultAssistantAvatarKey !== settings.defaultAssistantAvatarKey) {
-            storage.delBlob(settingsEdit.defaultAssistantAvatarKey)
-        }
     }
 
     const changeThemeWithPreview = (newMode: Theme) => {

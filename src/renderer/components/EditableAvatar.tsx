@@ -1,20 +1,24 @@
 import { Badge, Box, IconButton, useTheme } from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit'
 import Avatar from '@mui/material/Avatar'
 import React, { useRef } from 'react'
-import storage from '@/storage'
 import { SxProps } from "@mui/system";
 import { Theme } from "@mui/material/styles";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useIsSmallScreen } from "@/hooks/useScreenChange";
 
 interface Props {
     children: React.ReactNode
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+    onRemove: () => void
+    removable?: boolean
     sx?: SxProps<Theme>
 }
 
 export default function EditableAvatar(props: Props) {
     const theme = useTheme()
     const avatarInputRef = useRef<HTMLInputElement | null>(null)
+    const [showRemoveButton, setShowRemoveButton] = React.useState(false)
+    const isSmallScreen = useIsSmallScreen()
 
     const onAvatarUpload = () => {
         avatarInputRef.current?.click()
@@ -41,21 +45,24 @@ export default function EditableAvatar(props: Props) {
                     vertical: 'bottom',
                     horizontal: 'right',
                 }}
+                onMouseEnter={() => setShowRemoveButton(true)}
+                onMouseLeave={() => setShowRemoveButton(false)}
+                invisible={!(props.removable && (isSmallScreen  || showRemoveButton))}
                 badgeContent={
-                    <IconButton
-                        onClick={onAvatarUpload}
-                        edge={'end'}
-                        size={'small'}
-                        sx={{
-                            backgroundColor: theme.palette.warning.main,
-                            color: theme.palette.primary.contrastText,
-                            padding: 0.4,
-                            top: 1,
-                            left: 1,
-                        }}
-                    >
-                        <EditIcon fontSize="small" />
-                    </IconButton>
+                    <Box>
+                        <IconButton
+                            onClick={props.onRemove}
+                            edge={'end'}
+                            size={'small'}
+                            disableRipple
+                            sx={{
+                                backgroundColor: theme.palette.error.main,
+                                color: theme.palette.error.contrastText,
+                            }}
+                        >
+                            <DeleteIcon fontSize="small" />
+                        </IconButton>
+                    </Box>
                 }
             >
                 <Avatar

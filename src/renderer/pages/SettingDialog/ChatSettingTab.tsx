@@ -57,6 +57,10 @@ export default function ChatSettingTab(props: {
                                                 () => setSettingsEdit({ ...settingsEdit, userAvatarKey: key })
                                             )
                                         }}
+                                        onRemove={() => {
+                                           setSettingsEdit({ ...settingsEdit, userAvatarKey: undefined })
+                                        }}
+                                        removable={!!settingsEdit.userAvatarKey}
                                     >
                                         {settingsEdit.userAvatarKey ? (
                                             <ImageInStorage storageKey={settingsEdit.userAvatarKey}
@@ -92,6 +96,10 @@ export default function ChatSettingTab(props: {
                                                 () => setSettingsEdit({ ...settingsEdit, defaultAssistantAvatarKey: key })
                                             )
                                         }}
+                                        onRemove={() => {
+                                            setSettingsEdit({ ...settingsEdit, defaultAssistantAvatarKey: undefined })
+                                        }}
+                                        removable={!!settingsEdit.defaultAssistantAvatarKey}
                                         sx={{
                                             backgroundColor: theme.palette.primary.main,
                                         }}

@@ -135,6 +135,10 @@ export default function ChatConfigWindow(props: {}) {
                             () => setEditingData({ ...editingData, assistantAvatarKey: key })
                         )
                     }}
+                    onRemove={() => {
+                        setEditingData({ ...editingData, assistantAvatarKey: undefined })
+                    }}
+                    removable={!!editingData.assistantAvatarKey}
                     sx={{
                         backgroundColor: editingData.type === 'picture' ?
                             theme.palette.secondary.main :
