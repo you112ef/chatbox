@@ -23,6 +23,7 @@ import { FileMiniCard, ImageMiniCard } from './Attachments'
 import MiniButton from './MiniButton'
 import _ from 'lodash'
 import { ChatModelSelector } from './ModelSelector'
+import autosize from 'autosize'
 
 export default function InputBox(props: {}) {
     const theme = useTheme()
@@ -91,6 +92,23 @@ export default function InputBox(props: {}) {
 
     const minTextareaHeight = isSmallScreen ? 32 : 96
     const maxTextareaHeight = 192
+
+    // 自动调整输入框高度
+    useEffect(() => {
+        if (inputRef.current) {
+            autosize(inputRef.current);
+        }
+        return () => {
+            if (inputRef.current) {
+                autosize.destroy(inputRef.current);
+            }
+        };
+    }, [])
+    useEffect(() => {
+        if (inputRef.current) {
+            autosize.update(inputRef.current);
+        }
+    }, [messageInput]);
 
     const onMessageInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         const input = event.target.value
@@ -400,7 +418,7 @@ export default function InputBox(props: {}) {
                 <div className='w-full pl-1 pb-2'>
                     <textarea id={dom.messageInputID}
                         className={cn(
-                            `w-full max-h-[${maxTextareaHeight}px]`,
+                            `w-full`,
                             'overflow-y resize-none border-none outline-none',
                             'bg-slate-300/25 rounded-lg p-2',
                             'sm:bg-transparent sm:p-1'
@@ -410,15 +428,15 @@ export default function InputBox(props: {}) {
                         ref={inputRef}
                         autoFocus={!isSmallScreen}
                         style={{
-                            height: 'auto',
                             minHeight: minTextareaHeight + 'px',
+                            maxHeight: maxTextareaHeight + 'px',
                             color: theme.palette.text.primary,
                             fontFamily: theme.typography.fontFamily,
                             fontSize: theme.typography.body1.fontSize,
                         }}
                         placeholder={t('Type your question here...') || ''}
                         onPaste={onPaste}
-                        // {...{ enterKeyHint: 'send' } as any}
+                    // {...{ enterKeyHint: 'send' } as any}
                     />
                     <div className='flex flex-row items-center' onClick={() => dom.focusMessageInput()} >
                         {
