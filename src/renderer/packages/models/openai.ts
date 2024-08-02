@@ -8,7 +8,7 @@ interface Options {
     openaiKey: string
     apiHost: string
     apiPath?: string
-    model: Model | 'custom-model'
+    model: OpenAIModel | 'custom-model'
     dalleStyle: 'vivid' | 'natural'
     openaiCustomModel?: string // OpenAI 自定义模型的 ID
     // openaiMaxTokens: number
@@ -131,7 +131,7 @@ export default class OpenAI extends Base {
         return headers
     }
 
-    static isSupportVision(model: Model | 'custom-model' | string): boolean {
+    static isSupportVision(model: OpenAIModel | 'custom-model' | string): boolean {
         return isSupportVision(model)
     }
 }
@@ -255,18 +255,18 @@ export const openaiModelConfigs = {
         vision: false,
     },
 }
-export type Model = keyof typeof openaiModelConfigs
-export const models = Array.from(Object.keys(openaiModelConfigs)).sort() as Model[]
+export type OpenAIModel = keyof typeof openaiModelConfigs
+export const models = Array.from(Object.keys(openaiModelConfigs)).sort() as OpenAIModel[]
 
-export function isSupportVision(model: Model | 'custom-model' | string): boolean {
+export function isSupportVision(model: OpenAIModel | 'custom-model' | string): boolean {
     // 因为历史原因，有些用户会在 openai 提供商的设置中使用其他厂商的模型
     return (
         model === 'custom-model'
-        || (openaiModelConfigs[model as Model] && openaiModelConfigs[model as Model].vision)
+        || (openaiModelConfigs[model as OpenAIModel] && openaiModelConfigs[model as OpenAIModel].vision)
     )
 }
 
-export async function populateOpenAIMessage(rawMessages: Message[], model: Model | 'custom-model'): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
+export async function populateOpenAIMessage(rawMessages: Message[], model: OpenAIModel | 'custom-model'): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
     if (isSupportVision(model) && rawMessages.some((m) => m.pictures && m.pictures.length > 0)) {
         return populateOpenAIMessageVision(rawMessages)
     } else {

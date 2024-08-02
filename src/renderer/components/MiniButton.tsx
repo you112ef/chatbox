@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 
 export default function MiniButton(props: {
     children: React.ReactNode
-    onClick?: () => void
+    onClick?: React.MouseEventHandler<HTMLButtonElement>
     disabled?: boolean
     className?: string
     style?: React.CSSProperties

@@ -176,7 +176,7 @@
         "js-tiktoken": "^1.0.7",
         "localforage": "^1.10.0",
         "lodash": "^4.17.21",
-        "lucide-react": "^0.285.0",
+        "lucide-react": "^0.419.0",
         "mark.js": "^8.11.1",
         "material-ui-popup-state": "^5.0.4",
         "ofetch": "^1.0.1",

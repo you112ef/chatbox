@@ -1,5 +1,5 @@
 import OpenAI from './openai'
-import { Settings, Config, ModelProvider, SessionType, ModelSettings, Session } from '../../../shared/types'
+import { Settings, Config, ModelProvider, SessionType, ModelSettings } from '../../../shared/types'
 import ChatboxAI from './chatboxai'
 import AzureOpenAI from './azure'
 import ChatGLM from './chatglm'
@@ -48,7 +48,7 @@ export function getModel(setting: Settings, config: Config) {
     }
 }
 
-export const aiProviderNameHash = {
+export const aiProviderNameHash: Record<ModelProvider, string> = {
     [ModelProvider.OpenAI]: 'OpenAI API',
     [ModelProvider.Azure]: 'Azure OpenAI API',
     [ModelProvider.ChatGLM6B]: 'ChatGLM',
@@ -108,67 +108,6 @@ export const AIModelProviderMenuOptionList = [
     //     disabled: true,
     // },
 ]
-
-export function getModelDisplayName(settings: Settings, sessionType: SessionType): string {
-    if (!settings) {
-        return 'unknown'
-    }
-    switch (settings.aiProvider) {
-        case ModelProvider.OpenAI:
-            if (sessionType === 'picture') {
-                return `OpenAI (DALL-E-3)`
-            } else {
-                if (settings.model === 'custom-model') {
-                    let name = settings.openaiCustomModel || ''
-                    if (name.length >= 10) {
-                        name = name.slice(0, 10) + '...'
-                    }
-                    return `OpenAI Custom Model (${name})`
-                }
-                return settings.model || 'unknown'
-            }
-        case ModelProvider.Azure:
-            if (sessionType === 'picture') {
-                return `Azure OpenAI (${settings.azureDalleDeploymentName})`
-            } else {
-                return `Azure OpenAI (${settings.azureDeploymentName})`
-            }
-        case ModelProvider.ChatGLM6B:
-            return 'ChatGLM'
-        case ModelProvider.ChatboxAI:
-            if (sessionType === 'picture') {
-                return `Chatbox AI (DALL-E-3)`
-            } else {
-                const model = settings.chatboxAIModel || 'chatboxai-3.5'
-                return model.replace('chatboxai-', 'Chatbox AI ')
-            }
-        case ModelProvider.Claude:
-            return settings.claudeModel || 'unknown'
-        case ModelProvider.Gemini:
-            return `Google (${settings.geminiModel})`
-        case ModelProvider.Ollama:
-            return `Ollama (${settings.ollamaModel})`
-        case ModelProvider.Groq:
-            return `Groq (${settings.groqModel})`
-        case ModelProvider.Custom:
-            const customProvider = settings.customProviders?.find((provider) => provider.id === settings.selectedCustomProviderId)
-            if (!customProvider) {
-                return 'unknown'
-            }
-            return `${customProvider.name}(${customProvider.model})`
-        default:
-            return 'unknown'
-    }
-}
-
-export function isCurrentModelSupportImageInput(settings: ModelSettings) {
-    return (settings.aiProvider === ModelProvider.ChatboxAI)
-        || (settings.aiProvider === ModelProvider.OpenAI && OpenAI.isSupportVision(settings.model))
-        || (settings.aiProvider === ModelProvider.Azure && AzureOpenAI.isSupportVision(settings.azureDeploymentName))
-        || (settings.aiProvider === ModelProvider.Claude && settings.claudeModel.startsWith('claude-3'))
-        || (settings.aiProvider === ModelProvider.Gemini && Gemini.isSupportVision(settings.geminiModel))
-        || settings.aiProvider === ModelProvider.Custom
-}
 
 function keepRange(num: number, min: number, max: number): number {
     return Math.max(min, Math.min(max, num))

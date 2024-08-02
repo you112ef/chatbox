@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { Typography, useTheme } from '@mui/material'
-import { SessionType, createMessage } from '../../shared/types'
+import { createMessage } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as atoms from '../stores/atoms'
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import * as sessionActions from '../stores/sessionActions'
 import * as dom from '../hooks/dom'
 import { Shortcut } from './Shortcut'
@@ -22,15 +22,13 @@ import storage from '@/storage'
 import { FileMiniCard, ImageMiniCard } from './Attachments'
 import MiniButton from './MiniButton'
 import _ from 'lodash'
+import { ChatModelSelector } from './ModelSelector'
 
-export interface Props {
-    currentSessionId: string
-    currentSessionType: SessionType
-}
-
-export default function InputBox(props: Props) {
+export default function InputBox(props: {}) {
     const theme = useTheme()
     const [quote, setQuote] = useAtom(atoms.quoteAtom)
+    const currentSessionId = useAtomValue(atoms.currentSessionIdAtom)
+    const currentSessionType = useAtomValue(atoms.currentSessionTypeAtom)
     const isSmallScreen = useIsSmallScreen()
     const setThreadHistoryDrawerOpen = useSetAtom(atoms.showThreadHistoryDrawerAtom)
     const setChatConfigDialogSessionId = useSetAtom(atoms.chatConfigDialogIdAtom)
@@ -60,7 +58,7 @@ export default function InputBox(props: Props) {
         if (!isSmallScreen) {
             dom.focusMessageInput() // 大屏幕切换会话时自动聚焦
         }
-    }, [props.currentSessionId])
+    }, [currentSessionId])
 
     const handleSubmit = (needGenerating = true) => {
         setPreviousMessageQuickInputMark('')
@@ -72,7 +70,7 @@ export default function InputBox(props: Props) {
             newMessage.pictures = pictureKeys.map(k => ({ storageKey: k }))
         }
         sessionActions.submitNewUserMessage({
-            currentSessionId: props.currentSessionId,
+            currentSessionId: currentSessionId,
             newUserMsg: newMessage,
             needGenerating,
             attachments
@@ -195,7 +193,7 @@ export default function InputBox(props: Props) {
         if (showRollbackThreadButtonTimerRef.current) {
             clearTimeout(showRollbackThreadButtonTimerRef.current)
         }
-        sessionActions.removeCurrentThread(props.currentSessionId)
+        sessionActions.removeCurrentThread(currentSessionId)
     }
 
     const insertFiles = async (files: File[]) => {
@@ -239,7 +237,7 @@ export default function InputBox(props: Props) {
     }
 
     const onPaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
-        if (props.currentSessionType === 'picture') {
+        if (currentSessionType === 'picture') {
             return
         }
         if (event.clipboardData && event.clipboardData.items) {
@@ -325,7 +323,7 @@ export default function InputBox(props: Props) {
                             accept="image/png, image/jpeg"
                         />
                         <MiniButton
-                            className={cn('mr-1 sm:mr-2', props.currentSessionType !== 'picture' ? '' : 'hidden')}
+                            className={cn('mr-1 sm:mr-2', currentSessionType !== 'picture' ? '' : 'hidden')}
                             style={{ color: theme.palette.text.primary }}
                             onClick={onImageUploadClick}
                             tooltipTitle={
@@ -339,7 +337,7 @@ export default function InputBox(props: Props) {
                         </MiniButton>
                         <input type='file' ref={fileInputRef} className='hidden' onChange={onFileInputChange} />
                         <MiniButton
-                            className={cn('mr-1 sm:mr-2', props.currentSessionType !== 'picture' ? '' : 'hidden')}
+                            className={cn('mr-1 sm:mr-2', currentSessionType !== 'picture' ? '' : 'hidden')}
                             style={{ color: theme.palette.text.primary }}
                             onClick={onFileUploadClick}
                             tooltipTitle={
@@ -366,15 +364,11 @@ export default function InputBox(props: Props) {
                         </MiniButton>
                     </div>
                     <div className='flex flex-row items-center'>
-                        {/* <MiniButton className='mr-2 w-auto flex items-center opacity-70'>
-                        <span className='text-sm' style={{ color: theme.palette.text.primary }}>
-                            Chatbox AI 4
-                        </span>
-                        <ChevronsUpDown size='16' strokeWidth={1}
-                            style={{ color: theme.palette.text.primary }}
-                            className='opacity-50'
-                        />
-                    </MiniButton> */}
+                        {
+                            currentSessionType === 'chat' && (
+                                <ChatModelSelector />
+                            )
+                        }
                         {/* <MiniButton className='mr-2 w-auto flex items-center opacity-70'>
                         <span className='text-sm' style={{ color: theme.palette.text.primary }}>
                             严谨(0.7)
@@ -387,7 +381,7 @@ export default function InputBox(props: Props) {
                         <MiniButton className='w-8 ml-2'
                             style={{
                                 color: theme.palette.getContrastText(theme.palette.primary.main),
-                                backgroundColor: props.currentSessionType === 'picture'
+                                backgroundColor: currentSessionType === 'picture'
                                     ? theme.palette.secondary.main
                                     : theme.palette.primary.main,
                             }}

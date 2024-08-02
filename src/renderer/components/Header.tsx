@@ -10,10 +10,10 @@ import TuneIcon from '@mui/icons-material/Tune'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 import ImageIcon from '@mui/icons-material/Image'
 import Toolbar from './Toolbar'
-import { getModelDisplayName } from '@/packages/models'
 import { useIsSmallScreen } from '../hooks/useScreenChange'
 import { Pencil } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { getModelDisplayName } from '@/packages/model-setting-utils'
 
 interface Props { }
 
@@ -145,7 +145,7 @@ export default function Header(props: Props) {
                 </Typography>
                 {
                     // 大屏幕的广告UI
-                    !isSmallScreen && <SponsorChip sessionId={currentSession.id} />
+                    !isSmallScreen && <SponsorChip />
                 }
                 <Toolbar />
             </div>

@@ -22,7 +22,7 @@ import * as defaults from '../../shared/defaults'
 import * as scrollActions from './scrollActions'
 import storage from '../storage'
 import i18n from '../i18n'
-import { getModel, getModelDisplayName, isCurrentModelSupportImageInput } from '@/packages/models'
+import { getModel } from '@/packages/models'
 import { AIProviderNoImplementedPaintError, NetworkError, ApiError, BaseError, ChatboxAIAPIError } from '@/packages/models/errors'
 import platform from '../platform'
 import * as dom from '@/hooks/dom'
@@ -32,6 +32,7 @@ import * as settingActions from './settingActions'
 import { formatChatAsHtml, formatChatAsMarkdown, formatChatAsTxt } from "@/lib/format-chat";
 import { countWord } from '@/packages/word-count'
 import { estimateTokensFromMessages } from '@/packages/token'
+import { getModelDisplayName, isModelSupportImageInput } from '@/packages/model-setting-utils'
 
 /**
  * 创建一个新的会话
@@ -534,7 +535,7 @@ export async function submitNewUserMessage(params: {
         const remoteConfig = settingActions.getRemoteConfig()
         // 如果本次发送消息携带了图片，检查当前模型是否支持
         if (newUserMsg.pictures && newUserMsg.pictures.length > 0) {
-            if (!isCurrentModelSupportImageInput(settings)) {
+            if (!isModelSupportImageInput(settings)) {
                 // 根据当前 IP，判断是否在错误中推荐 Chatbox AI 4
                 if (remoteConfig.setting_chatboxai_first) {
                     throw ChatboxAIAPIError.fromCodeName('model_not_support_image', 'model_not_support_image')

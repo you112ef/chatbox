@@ -14,7 +14,7 @@ export function settings(): Settings {
         azureDalleDeploymentName: 'dall-e-3',
         azureEndpoint: '',
         chatglm6bUrl: '',
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4o',
         temperature: 0.7,
         topP: 1,
         // openaiMaxTokens: 0,

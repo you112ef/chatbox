@@ -17,6 +17,11 @@ export function useIsSmallScreen() {
     return isSmallScreen
 }
 
+export function useScreenDownToMD() {
+    const theme = useTheme()
+    return useMediaQuery(theme.breakpoints.down('md'))
+}
+
 export function useIsLargeScreen() {
     const theme = useTheme()
     return !useMediaQuery(theme.breakpoints.down('lg'))

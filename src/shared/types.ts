@@ -1,6 +1,6 @@
 import pick from 'lodash/pick'
 import { v4 as uuidv4 } from 'uuid'
-import { Model } from '../renderer/packages/models/openai'
+import { OpenAIModel } from '../renderer/packages/models/openai'
 import { ClaudeModel } from '../renderer/packages/models/claude'
 import { GeminiModel } from '@/packages/models/gemini'
 import { GroqModel } from '@/packages/models/groq'
@@ -171,7 +171,7 @@ export interface ModelSettings {
     // openai
     openaiKey: string
     apiHost: string
-    model: Model | 'custom-model'
+    model: OpenAIModel | 'custom-model'
     openaiCustomModel?: string // OpenAI 自定义模型的 ID
 
     dalleStyle: 'vivid' | 'natural'

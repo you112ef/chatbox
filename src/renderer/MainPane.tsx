@@ -15,7 +15,6 @@ import Header from './components/Header'
 interface Props {}
 
 export default function MainPane(props: Props) {
-    const currentSession = useAtomValue(atoms.currentSessionAtom)
     const [showSidebar] = useAtom(atoms.showSidebarAtom)
 
     const atScrollTop = useAtomValue(atoms.messageScrollingAtTopAtom)
@@ -43,7 +42,7 @@ export default function MainPane(props: Props) {
                     // 小屏幕的广告UI
                     isSmallScreen && (
                         <Box className="text-center">
-                            <SponsorChip sessionId={currentSession.id} />
+                            <SponsorChip />
                         </Box>
                     )
                 }
@@ -77,7 +76,7 @@ export default function MainPane(props: Props) {
                         </IconButton>
                     </ButtonGroup>
                 </Box>
-                <InputBox currentSessionId={currentSession.id} currentSessionType={currentSession.type || 'chat'} />
+                <InputBox />
             </div>
         </Box>
     )

@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Chip } from '@mui/material'
 import { SponsorAd } from '../../shared/types'
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined'
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'
 import * as remote from '../packages/remote'
 import platform from '../platform'
+import { useAtomValue } from 'jotai'
+import { currentSessionIdAtom } from '@/stores/atoms'
 
-export interface Props {
-    sessionId: string
-}
-
-export default function SponsorChip(props: Props) {
+export default function SponsorChip(props: {}) {
+    const currrentSessionId = useAtomValue(currentSessionIdAtom)
     const [showSponsorAD, setShowSponsorAD] = useState(true)
     const [sponsorAD, setSponsorAD] = useState<SponsorAd | null>(null)
     useEffect(() => {
@@ -20,7 +19,7 @@ export default function SponsorChip(props: Props) {
                 setSponsorAD(ad)
             }
         })()
-    }, [props.sessionId])
+    }, [currrentSessionId])
     if (!showSponsorAD || !sponsorAD) {
         return <></>
     }

@@ -8,6 +8,7 @@ import * as defaults from '../../shared/defaults'
 import storage, { StorageKey } from '../storage'
 import { VirtuosoHandle } from 'react-virtuoso'
 import platform from '../platform'
+import { mergeSettings } from './sessionActions'
 
 // settings
 
@@ -172,6 +173,19 @@ export const currentThreadHistoryHashAtom = selectAtom(currentSessionAtom, (s) =
         }
     }
     return ret
+})
+
+export const currentSessionSettingsAtom = selectAtom(currentSessionAtom, (session) => session.settings)
+export const currentSessionTypeAtom = selectAtom(currentSessionAtom, (session) => session.type || 'chat') // 老版本 chat 可能是 undefined
+
+export const currentMergedSettingsAtom = atom((get) => {
+    const sessionSettings = get(currentSessionSettingsAtom)
+    const globalSettings = get(settingsAtom)
+    if (!sessionSettings) {
+        return globalSettings
+    }
+    const sessionType = get(currentSessionTypeAtom)
+    return mergeSettings(globalSettings, sessionSettings, sessionType)
 })
 
 // toasts

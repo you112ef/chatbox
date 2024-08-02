@@ -1,0 +1,37 @@
+import { ModelProvider, ModelSettings, SessionType, Settings } from "src/shared/types";
+import { ModelSettingUtil } from "./interface";
+import AzureSettingUtil from "./azure-setting-util";
+import ChatGLMSettingUtil from "./chatglm-setting-util";
+import ChatboxAISettingUtil from "./chatboxai-setting-util";
+import ClaudeSettingUtil from "./claude-setting-util";
+import GeminiSettingUtil from "./gemini-setting-util";
+import GroqSettingUtil from "./groq-setting-util";
+import OllamaSettingUtil from "./ollama-setting-util";
+import OpenAISettingUtil from "./openai-setting-util";
+import CustomModelSettingUtil from "./custom-setting-util";
+
+export function getModelSettingUtil(aiProvider: ModelProvider): ModelSettingUtil {
+    const hash: Record<ModelProvider, new () => ModelSettingUtil> = {
+        [ModelProvider.Azure]: AzureSettingUtil,
+        [ModelProvider.ChatboxAI]: ChatboxAISettingUtil,
+        [ModelProvider.ChatGLM6B]: ChatGLMSettingUtil,
+        [ModelProvider.Claude]: ClaudeSettingUtil,
+        [ModelProvider.Gemini]: GeminiSettingUtil,
+        [ModelProvider.Groq]: GroqSettingUtil,
+        [ModelProvider.Ollama]: OllamaSettingUtil,
+        [ModelProvider.OpenAI]: OpenAISettingUtil,
+        [ModelProvider.Custom]: CustomModelSettingUtil,
+    }
+    const Class = hash[aiProvider]
+    return new Class()
+}
+
+export function getModelDisplayName(settings: Settings, sessionType: SessionType) {
+    const util = getModelSettingUtil(settings.aiProvider)
+    return util.getCurrentModelDisplayName(settings, sessionType)
+}
+
+export function isModelSupportImageInput(settings: ModelSettings): boolean {
+    const util = getModelSettingUtil(settings.aiProvider)
+    return util.isCurrentModelSupportImageInput(settings)
+}
