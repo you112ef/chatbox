@@ -7,11 +7,10 @@ import * as atoms from '../stores/atoms'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import * as sessionActions from '../stores/sessionActions'
 import TuneIcon from '@mui/icons-material/Tune'
-import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 import ImageIcon from '@mui/icons-material/Image'
 import Toolbar from './Toolbar'
 import { useIsSmallScreen } from '../hooks/useScreenChange'
-import { Pencil } from 'lucide-react'
+import { Pencil, PanelRightClose } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getModelDisplayName } from '@/packages/model-setting-utils'
 
@@ -106,21 +105,43 @@ export default function Header(props: Props) {
 
     return (
         <div
-            className="pt-3 pb-2 px-0.5 sm:px-4"
+            className={cn(
+                'flex flex-row',
+                isSmallScreen
+                    ? ''
+                    : showSidebar ? 'sm:pl-3 sm:pr-2' : 'pr-2',
+            )}
             style={{
                 borderBottomWidth: '1px',
                 borderBottomStyle: 'solid',
                 borderBottomColor: theme.palette.divider,
             }}
         >
-            <div className={'w-full mx-auto flex flex-row'}>
-                {!showSidebar && (
-                    <Box className="mr-1">
-                        <IconButton onClick={() => setShowSidebar(!showSidebar)}>
-                            <MenuOpenIcon className="text-xl" sx={{ transform: 'rotate(180deg)' }} />
-                        </IconButton>
-                    </Box>
+            {(!showSidebar || isSmallScreen) && (
+                <Box className={cn(
+                    'px-1',
+                    "pt-3 pb-2",
                 )}
+                    onClick={() => setShowSidebar(!showSidebar)}
+                >
+                    <IconButton sx={
+                        isSmallScreen
+                            ? {
+                                borderColor: theme.palette.action.hover,
+                                borderStyle: 'solid',
+                                borderWidth: 1,
+                            }
+                            : {}
+                    }>
+                        <PanelRightClose size='20' strokeWidth={1.5} />
+                    </IconButton>
+                </Box>
+            )
+            }
+            <div className={cn(
+                'w-full mx-auto flex flex-row',
+                'pt-3 pb-2',
+            )}>
                 <Typography
                     variant="h6"
                     color="inherit"
@@ -149,6 +170,6 @@ export default function Header(props: Props) {
                 }
                 <Toolbar />
             </div>
-        </div>
+        </div >
     )
 }

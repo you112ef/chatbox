@@ -20,13 +20,13 @@ import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSo
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 
 export interface Props {
-    openClearWindow(): void
     sessionListRef: MutableRefObject<HTMLDivElement | null>
 }
 
 export default function SessionList(props: Props) {
     const sortedSessions = useAtomValue(atoms.sortedSessionsAtom)
     const setSessions = useSetAtom(atoms.sessionsAtom)
+    const setOpenClearConversationListDialog = useSetAtom(atoms.openClearConversationListDialogAtom)
     const currentSessionId = useAtomValue(atoms.currentSessionIdAtom)
     const sensors = useSensors(
         useSensor(TouchSensor, {
@@ -66,7 +66,7 @@ export default function SessionList(props: Props) {
                 height: '60vh',
                 '& ul': { padding: 0 },
             }}
-            subheader={<Subheader openClearWindow={props.openClearWindow} />}
+            subheader={<Subheader openClearWindow={() => setOpenClearConversationListDialog(true)} />}
             component="div"
             ref={props.sessionListRef}
         >

@@ -34,23 +34,19 @@ import { v4 as uuidv4 } from 'uuid'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import * as atoms from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import platform from '../platform'
 import { trackingEvent } from '@/packages/event'
 
-interface Props {
-    open: boolean
-    close(): void
-}
-
-export default function CopilotWindow(props: Props) {
+export default function CopilotWindow(props: {}) {
     const language = useAtomValue(atoms.languageAtom)
+    const [open, setOpen] = useAtom(atoms.openCopilotDialogAtom)
 
     const { t } = useTranslation()
 
     const store = useMyCopilots()
-    const remoteStore = useRemoteCopilots(language, props.open)
+    const remoteStore = useRemoteCopilots(language, open)
 
     const createChatSessionWithCopilot = (copilot: CopilotDetail) => {
         const msgs: Message[] = []
@@ -80,6 +76,9 @@ export default function CopilotWindow(props: Props) {
         })
         trackingEvent('create_copilot_conversation', { event_category: 'user' })
     }
+    const handleClose = () => {
+        setOpen(false)
+    }
 
     const useCopilot = (detail: CopilotDetail) => {
         const newDetail = { ...detail, usedCount: (detail.usedCount || 0) + 1 }
@@ -88,17 +87,17 @@ export default function CopilotWindow(props: Props) {
         }
         store.addOrUpdate(newDetail)
         createChatSessionWithCopilot(newDetail)
-        props.close()
+        handleClose()
     }
 
     const [copilotEdit, setCopilotEdit] = useState<CopilotDetail | null>(null)
     useEffect(() => {
-        if (!props.open) {
+        if (!open) {
             setCopilotEdit(null)
         } else {
             trackingEvent('copilot_window', { event_category: 'screen_view' })
         }
-    }, [props.open])
+    }, [open])
 
     const list = [
         ...store.copilots.filter((item) => item.starred).sort((a, b) => b.usedCount - a.usedCount),
@@ -106,7 +105,7 @@ export default function CopilotWindow(props: Props) {
     ]
 
     return (
-        <Dialog open={props.open} onClose={props.close} fullWidth maxWidth="md" classes={{ paper: 'h-4/5' }}>
+        <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md" classes={{ paper: 'h-4/5' }}>
             <DialogTitle>{t('My Copilots')}</DialogTitle>
             <DialogContent style={{ width: '100%' }}>
                 {copilotEdit ? (
@@ -194,7 +193,7 @@ export default function CopilotWindow(props: Props) {
                 </div>
             </DialogContent>
             <DialogActions>
-                <Button onClick={props.close}>{t('close')}</Button>
+                <Button onClick={handleClose}>{t('close')}</Button>
             </DialogActions>
         </Dialog>
     )

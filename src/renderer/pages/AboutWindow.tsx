@@ -19,31 +19,30 @@ import { SponsorAboutBanner } from '../../shared/types'
 import * as i18n from '../i18n'
 import useVersion from '../hooks/useVersion'
 import * as atoms from '../stores/atoms'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import Markdown from '@/components/Markdown'
 import { trackingEvent } from '@/packages/event'
 
-interface Props {
-    open: boolean
-    close(): void
-}
-
-export default function AboutWindow(props: Props) {
+export default function AboutWindow(props: {}) {
     const { t } = useTranslation()
     const theme = useTheme()
+    const [open, setOpen] = useAtom(atoms.openAboutDialogAtom)
     const language = useAtomValue(atoms.languageAtom)
     const versionHook = useVersion()
     const [sponsorBanners, setSponsorBanners] = useState<SponsorAboutBanner[]>([])
     useEffect(() => {
-        if (props.open) {
+        if (open) {
             remote.listSponsorAboutBanner().then(setSponsorBanners)
             trackingEvent('about_window', { event_category: 'screen_view' })
         } else {
             setSponsorBanners([])
         }
-    }, [props.open])
+    }, [open])
+    const handleClose = () => {
+        setOpen(false)
+    }
     return (
-        <Dialog open={props.open} onClose={props.close} fullWidth>
+        <Dialog open={open} onClose={handleClose} fullWidth>
             <DialogTitle>{t('About Chatbox')}</DialogTitle>
             <DialogContent>
                 <Box sx={{ textAlign: 'center', padding: '0 20px' }}>
@@ -218,7 +217,7 @@ export default function AboutWindow(props: Props) {
                 </Box>
             </DialogContent>
             <DialogActions>
-                <Button onClick={props.close}>{t('close')}</Button>
+                <Button onClick={handleClose}>{t('close')}</Button>
             </DialogActions>
         </Dialog>
     )

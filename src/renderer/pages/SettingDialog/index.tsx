@@ -15,30 +15,29 @@ import AdvancedSettingTab from './AdvancedSettingTab'
 // import { resetTokenConfig } from '../../packages/token_config'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { trackingEvent } from '@/packages/event'
-import storage from "@/storage";
+import * as atoms from '@/stores/atoms'
 
-interface Props {
-    open: boolean
-    targetTab?: SettingWindowTab
-    close(): void
-}
-
-export default function SettingWindow(props: Props) {
+export default function SettingWindow(props: {}) {
     const { t } = useTranslation()
     const [settings, setSettings] = useAtom(settingsAtom)
+
+    const [targetTab, setTargetTab] = useAtom(atoms.openSettingDialogAtom)
+    const handleClose = () => {
+        setTargetTab(null)
+    }
 
     // 标签页控制
     const [currentTab, setCurrentTab] = React.useState<SettingWindowTab>('ai')
     useEffect(() => {
-        if (props.targetTab) {
-            setCurrentTab(props.targetTab)
+        if (targetTab) {
+            setCurrentTab(targetTab)
         }
-    }, [props.targetTab, props.open])
+    }, [targetTab])
     useEffect(() => {
-        if (props.open) {
+        if (targetTab) {
             trackingEvent('setting_window', { event_category: 'screen_view' })
         }
-    }, [props.open])
+    }, [targetTab])
 
     const [settingsEdit, _setSettingsEdit] = React.useState<Settings>(settings)
     const setSettingsEdit = (updated: Settings) => {
@@ -56,11 +55,11 @@ export default function SettingWindow(props: Props) {
 
     const onSave = () => {
         setSettings(settingsEdit)
-        props.close()
+        handleClose()
     }
 
     const onCancel = () => {
-        props.close()
+        handleClose()
         setSettingsEdit(settings)
         // need to restore the previous theme
         switchTheme(settings.theme ?? Theme.System)
@@ -72,7 +71,7 @@ export default function SettingWindow(props: Props) {
     }
 
     return (
-        <Dialog open={props.open} onClose={onCancel} fullWidth>
+        <Dialog open={!!targetTab} onClose={onCancel} fullWidth>
             <DialogTitle>{t('settings')}</DialogTitle>
             <DialogContent>
                 <Box

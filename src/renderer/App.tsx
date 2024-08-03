@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { Box, Grid } from '@mui/material'
-import { RemoteConfig, Session, ModelProvider } from '../shared/types'
+import { RemoteConfig, ModelProvider } from '../shared/types'
 import SettingDialog from './pages/SettingDialog'
 import ChatConfigWindow from './pages/ChatConfigWindow'
 import CleanWidnow from './pages/CleanWindow'
@@ -19,11 +19,10 @@ import RemoteDialogWindow from './pages/RemoteDialogWindow'
 import { useSystemLanguageWhenInit } from './hooks/useDefaultSystemLanguage'
 import ClearConversationListWindow from './pages/ClearConversationListWindow'
 import MainPane from './MainPane'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import * as atoms from './stores/atoms'
 import SearchDialog from './pages/SearchDialog'
 import Sidebar from './Sidebar'
-import { CHATBOX_BUILD_TARGET } from '@/variables'
 import PictureDialog from './pages/PictureDialog'
 import MessageEditDialog from './pages/MessageEditDialog'
 import ThreadHistoryDrawer from './components/ThreadHistoryDrawer'
@@ -34,13 +33,10 @@ import ExportChatDialog from '@/pages/ExportChatDialog'
 import ArtifactDialog from '@/pages/ArtifactDialog'
 
 function Main() {
-    // 是否展示菜单栏
-    const [showSidebar, setShowSidebar] = useAtom(atoms.showSidebarAtom)
     const spellCheck = useAtomValue(atoms.spellCheckAtom)
 
-    // 是否展示设置窗口
-    const [openSettingWindow, setOpenSettingWindow] = useAtom(atoms.openSettingDialogAtom)
-    const [openWelcomeDialog, setOpenWelcomeDialog] = useState(false)
+    const setOpenWelcomeDialog = useSetAtom(atoms.openWelcomeDialogAtom)
+    const setOpenAboutDialog = useSetAtom(atoms.openAboutDialogAtom)
 
     const setRemoteConfig = useSetAtom(atoms.remoteConfigAtom)
     useEffect(() => {
@@ -63,66 +59,32 @@ function Main() {
                 // 目前仅在桌面版本更新后首次启动、且网络环境为“外网”的情况下才自动弹窗
                 const shouldShowAboutDialogWhenStartUp = await platform.shouldShowAboutDialogWhenStartUp()
                 if (shouldShowAboutDialogWhenStartUp && remoteConfig.setting_chatboxai_first) {
-                    setOpenAboutWindow(true)
+                    setOpenAboutDialog(true)
                     return
                 }
             })()
         }, 2000)
     }, [])
 
-    // 是否展示相关信息的窗口
-    const [openAboutWindow, setOpenAboutWindow] = React.useState(false)
-
-    // 是否展示copilot窗口
-    const [openCopilotWindow, setOpenCopilotWindow] = React.useState(false)
-
-    // 是否展示会话列表清理窗口
-    const [openClearConversationListWindow, setOpenClearConversationListWindow] = React.useState(false)
-
     return (
         <Box className="box-border App" spellCheck={spellCheck}>
             <Grid container className="h-full">
-                <Sidebar
-                    open={showSidebar}
-                    swtichOpen={setShowSidebar}
-                    openClearConversationListWindow={() => setOpenClearConversationListWindow(true)}
-                    openCopilotWindow={() => setOpenCopilotWindow(true)}
-                    openAboutWindow={() => setOpenAboutWindow(true)}
-                    setOpenSettingWindow={setOpenSettingWindow}
-                />
+                <Sidebar />
                 <MainPane />
                 <ThreadHistoryDrawer />
             </Grid>
-            <SettingDialog
-                open={!!openSettingWindow}
-                targetTab={openSettingWindow || undefined}
-                close={() => setOpenSettingWindow(null)}
-            />
-            <AboutWindow open={openAboutWindow} close={() => setOpenAboutWindow(false)} />
+            <SettingDialog />
+            <AboutWindow />
             <ChatConfigWindow />
             <CleanWidnow />
-            <CopilotWindow
-                open={openCopilotWindow}
-                // premiumActivated={store.premiumActivated}
-                // openPremiumPage={() => {
-                //     setOpenSettingWindow('premium')
-                // }}
-                close={() => setOpenCopilotWindow(false)}
-            />
+            <CopilotWindow />
             <RemoteDialogWindow />
-            <ClearConversationListWindow
-                open={openClearConversationListWindow}
-                close={() => setOpenClearConversationListWindow(false)}
-            />
+            <ClearConversationListWindow />
             <SearchDialog />
             <ExportChatDialog />
             <PictureDialog />
             <MessageEditDialog />
-            <WelcomeDialog
-                open={openWelcomeDialog}
-                onClose={() => setOpenWelcomeDialog(false)}
-                onSetup={() => setOpenSettingWindow('ai')}
-            />
+            <WelcomeDialog />
             <ArtifactDialog />
             <Toasts />
         </Box>

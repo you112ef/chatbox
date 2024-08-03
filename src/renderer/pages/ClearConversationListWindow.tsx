@@ -3,15 +3,12 @@ import { Input, Button, Dialog, DialogContent, DialogActions, DialogTitle, Dialo
 import { useTranslation, Trans } from 'react-i18next'
 import * as sessionActions from '../stores/sessionActions'
 import { trackingEvent } from '@/packages/event'
+import * as atoms from '@/stores/atoms'
+import { useAtom } from 'jotai'
 
-interface Props {
-    open: boolean
-    close(): void
-}
-
-export default function ClearConversationListWindow(props: Props) {
+export default function ClearConversationListWindow(props: {}) {
     const { t } = useTranslation()
-
+    const [open, setOpen] = useAtom(atoms.openClearConversationListDialogAtom)
     const [value, setValue] = useState(100)
     const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
         const int = parseInt(event.target.value || '0')
@@ -21,18 +18,20 @@ export default function ClearConversationListWindow(props: Props) {
     }
     useEffect(() => {
         setValue(100)
-        if (props.open) {
+        if (open) {
             trackingEvent('clear_conversation_list_window', { event_category: 'screen_view' })
         }
-    }, [props.open])
-
+    }, [open])
     const clean = () => {
         sessionActions.clearConversationList(value)
         trackingEvent('clear_conversation_list', { event_category: 'user' })
-        props.close()
+        handleClose()
+    }
+    const handleClose = () => {
+        setOpen(false)
     }
     return (
-        <Dialog open={props.open} onClose={props.close}>
+        <Dialog open={open} onClose={handleClose}>
             <DialogTitle>{t('Clear Conversation List')}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
@@ -51,7 +50,7 @@ export default function ClearConversationListWindow(props: Props) {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={props.close}>{t('cancel')}</Button>
+                <Button onClick={handleClose}>{t('cancel')}</Button>
                 <Button onClick={clean} color="error">
                     {t('clean it up')}
                 </Button>

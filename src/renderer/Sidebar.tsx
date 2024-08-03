@@ -11,6 +11,7 @@ import {
     ListItemIcon,
     Typography,
     Divider,
+    useTheme,
 } from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
@@ -21,31 +22,23 @@ import AddIcon from '@mui/icons-material/AddCircleOutline'
 import useVersion from './hooks/useVersion'
 import SessionList from './components/SessionList'
 import * as sessionActions from './stores/sessionActions'
-import MenuOpenIcon from '@mui/icons-material/MenuOpen'
-import { useSetAtom, useAtomValue } from 'jotai'
+import { useAtomValue, useAtom, useSetAtom } from 'jotai'
 import * as atoms from './stores/atoms'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import { useIsSmallScreen } from './hooks/useScreenChange'
-import platform from './platform'
 import { trackingEvent } from './packages/event'
+import { PanelLeftClose } from 'lucide-react'
 
 export const drawerWidth = 240
 
-interface Props {
-    open: boolean
-    swtichOpen(open: boolean): void
-
-    openClearConversationListWindow(): void
-    openCopilotWindow(): void
-    openAboutWindow(): void
-    setOpenSettingWindow(name: 'ai' | 'display' | null): void
-}
-
-export default function Sidebar(props: Props) {
+export default function Sidebar(props: {}) {
     const { t } = useTranslation()
     const versionHook = useVersion()
-    const setShowSidebar = useSetAtom(atoms.showSidebarAtom)
+    const [showSidebar, setShowSidebar] = useAtom(atoms.showSidebarAtom)
     const currentSessionId = useAtomValue(atoms.currentSessionIdAtom)
+    const setOpenSettingDialog = useSetAtom(atoms.openSettingDialogAtom)
+    const setOpenAboutWindow = useSetAtom(atoms.openAboutDialogAtom)
+    const setOpenCopilotDialog = useSetAtom(atoms.openCopilotDialogAtom)
 
     const sessionListRef = useRef<HTMLDivElement>(null)
     const handleCreateNewSession = () => {
@@ -62,6 +55,12 @@ export default function Sidebar(props: Props) {
         }
         trackingEvent('create_new_picture_conversation', { event_category: 'user' })
     }
+    const handleOpenAboutWindow = () => {
+        setOpenAboutWindow(true)
+    }
+    const handleOpenCopilotDialog = () => {
+        setOpenCopilotDialog(true)
+    }
 
     // 小屏幕切换会话时隐藏侧边栏
     const isSmallScreen = useIsSmallScreen()
@@ -70,6 +69,8 @@ export default function Sidebar(props: Props) {
             setShowSidebar(false)
         }
     }, [isSmallScreen, currentSessionId])
+
+    const theme = useTheme()
 
     const stack = (
         <div className="ToolBar h-full">
@@ -86,14 +87,24 @@ export default function Sidebar(props: Props) {
                             <span className="text-2xl align-middle inline-block">Chatbox</span>
                         </a>
                     </Box>
-                    <Box>
-                        <IconButton onClick={() => setShowSidebar(false)}>
-                            <MenuOpenIcon className="text-xl" />
+                    <Box onClick={() => setShowSidebar(!showSidebar)}>
+                        <IconButton
+                            sx={
+                                isSmallScreen
+                                    ? {
+                                          borderColor: theme.palette.action.hover,
+                                          borderStyle: 'solid',
+                                          borderWidth: 1,
+                                      }
+                                    : {}
+                            }
+                        >
+                            <PanelLeftClose size="20" strokeWidth={1.5} />
                         </IconButton>
                     </Box>
                 </Box>
 
-                <SessionList openClearWindow={props.openClearConversationListWindow} sessionListRef={sessionListRef} />
+                <SessionList sessionListRef={sessionListRef} />
 
                 <Divider variant="fullWidth" />
 
@@ -125,7 +136,7 @@ export default function Sidebar(props: Props) {
                         </Typography>
                     </MenuItem>
 
-                    <MenuItem onClick={props.openCopilotWindow} sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}>
+                    <MenuItem onClick={handleOpenCopilotDialog} sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}>
                         <ListItemIcon>
                             <IconButton>
                                 <SmartToyIcon fontSize="small" />
@@ -138,7 +149,7 @@ export default function Sidebar(props: Props) {
 
                     <MenuItem
                         onClick={() => {
-                            props.setOpenSettingWindow('ai')
+                            setOpenSettingDialog('ai')
                         }}
                         sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}
                     >
@@ -153,7 +164,7 @@ export default function Sidebar(props: Props) {
                         </Typography>
                     </MenuItem>
 
-                    <MenuItem onClick={props.openAboutWindow} sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}>
+                    <MenuItem onClick={handleOpenAboutWindow} sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}>
                         <ListItemIcon>
                             <IconButton>
                                 <InfoOutlinedIcon fontSize="small" />
@@ -183,9 +194,9 @@ export default function Sidebar(props: Props) {
             {/* 移动端 */}
             <SwipeableDrawer
                 anchor="left"
-                open={props.open}
-                onClose={() => props.swtichOpen(false)}
-                onOpen={() => props.swtichOpen(true)}
+                open={showSidebar}
+                onClose={() => setShowSidebar(false)}
+                onOpen={() => setShowSidebar(true)}
                 ModalProps={{
                     keepMounted: true, // Better open performance on mobile.
                 }}
@@ -204,9 +215,9 @@ export default function Sidebar(props: Props) {
             <SwipeableDrawer
                 anchor="left"
                 variant="persistent"
-                open={props.open}
-                onClose={() => props.swtichOpen(false)}
-                onOpen={() => props.swtichOpen(true)}
+                open={showSidebar}
+                onClose={() => setShowSidebar(false)}
+                onOpen={() => setShowSidebar(true)}
                 ModalProps={{
                     keepMounted: true, // Better open performance on mobile.
                 }}

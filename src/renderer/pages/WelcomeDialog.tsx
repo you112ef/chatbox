@@ -4,22 +4,25 @@ import {
     Paper,
     Dialog,
     DialogContent,
-    useTheme,
 } from '@mui/material'
 import icon from '../static/icon.png'
 import { useTranslation } from 'react-i18next'
 import { AllowReportingAndTrackingCheckbox } from './SettingDialog/AdvancedSettingTab'
 import Link from '@/components/Link'
+import { useAtom, useSetAtom } from 'jotai'
+import * as atoms from '@/stores/atoms'
 
-interface Props {
-    open: boolean
-    onClose(): void
-    onSetup(): void
-}
-
-export default function WelcomeDialog(props: Props) {
-    const { open, onSetup, onClose } = props
+export default function WelcomeDialog(props: {}) {
     const { t } = useTranslation()
+    const [open, setOpen] = useAtom(atoms.openWelcomeDialogAtom)
+    const setOpenSettingWindow = useSetAtom(atoms.openSettingDialogAtom)
+
+    const onClose = () => {
+        setOpen(false)
+    }
+    const onSetup = () => {
+        setOpenSettingWindow('ai')
+    }
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth='xs'>
