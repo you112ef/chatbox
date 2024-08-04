@@ -289,6 +289,57 @@ Windows:
 %APPDATA%/xyz.chatboxapp.app
 ```
 
+#### 数据恢复的方法
+
+在 MacOS 中，请打开终端应用，然后输入以下命令并按回车
+```shell
+cd 'Library/Application Support/xyz.chatboxapp.app' && ls
+```
+
+如果你看到了类似 `config-backup-2024-8-4.json` 这样的文件，那说明存在自动备份的数据文件（自动备份是为了预防类似的数据丢失问题发生）。
+
+然后请执行以下命令（请替换备份文件名到你看到最新的备份文件名），这将会用备份数据覆盖当前数据。
+
+```shell
+cp config-backup-2024-8-4.json config.json
+```
+
+在 Windows 中，请打开文件管理器，在顶部的地址栏输入 `%APPDATA%/xyz.chatboxapp.app` 并回车。
+
+如果你看到了类似 `config-backup-2024-8-4.json` 这样的文件，那说明存在自动备份的数据文件（自动备份是为了预防类似的数据丢失问题发生）。
+
+请删除文件 `config.json` （当前生效的数据），然后复制最新的自动备份的数据文件，重命名为 `config.json`。
+
+```
+I apologize for the inconvenience you've experienced. This is not expected behavior, but rather a bug. I understand the importance of your conversations, and I'd like to offer some potential solutions to recover your data:
+
+For macOS:
+1. Open the Terminal application.
+2. Enter the following command and press Enter:
+   cd 'Library/Application Support/xyz.chatboxapp.app' && ls
+
+If you see files like 'config-backup-2024-8-4.json', these are automatic backups created to prevent data loss in situations like this.
+
+3. To restore from a backup, use the following command (replace the filename with the most recent backup you see):
+   cp config-backup-2024-8-4.json config.json
+
+For Windows:
+1. Open File Explorer.
+2. In the address bar at the top, enter '%APPDATA%/xyz.chatboxapp.app' and press Enter.
+3. Look for files like 'config-backup-2024-8-4.json', these are automatic backups created to prevent data loss in situations like this.
+4. Delete the current 'config.json' file.
+5. Copy the most recent backup file and rename it to 'config.json'.
+
+I hope this helps recover your data. To assist in resolving this bug and preventing future occurrences, could you please provide some additional details:
+
+1. Did the data loss occur during an app upgrade?
+2. Do you remember which version you upgraded from to the current version?
+3. What is your operating system and its version?
+4. What are your computer specifications (e.g., CPU, RAM)?
+
+I have been tracking this bug for several months but have been unable to reproduce it locally (it has a very low incidence), which has hindered my ability to fix it. Your details will greatly help resolve this issue and prevent this problem from happening to other users in future releases. Thank you for being so patient.
+```
+
 ### 主进程的日志文件
 
 MacOS
