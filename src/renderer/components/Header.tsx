@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import { Box, IconButton, Typography, Chip, Tooltip, useTheme } from '@mui/material'
 import { isChatSession, isPictureSession } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
@@ -6,13 +6,11 @@ import SponsorChip from './SponsorChip'
 import * as atoms from '../stores/atoms'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import * as sessionActions from '../stores/sessionActions'
-import TuneIcon from '@mui/icons-material/Tune'
 import ImageIcon from '@mui/icons-material/Image'
 import Toolbar from './Toolbar'
 import { useIsSmallScreen } from '../hooks/useScreenChange'
-import { Pencil, PanelRightClose } from 'lucide-react'
+import { PanelRightClose, Settings2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { getModelDisplayName } from '@/packages/model-setting-utils'
 
 interface Props { }
 
@@ -22,7 +20,6 @@ export default function Header(props: Props) {
     const currentSession = useAtomValue(atoms.currentSessionAtom)
     const setChatConfigDialogSession = useSetAtom(atoms.chatConfigDialogIdAtom)
     const [showSidebar, setShowSidebar] = useAtom(atoms.showSidebarAtom)
-    const selectedCustomProviderId = useAtomValue(atoms.selectedCustomProviderIdAtom)
 
     const isSmallScreen = useIsSmallScreen()
 
@@ -47,40 +44,18 @@ export default function Header(props: Props) {
         setChatConfigDialogSession(currentSession.id)
     }
 
-    const currentSessionMergeSettings = useMemo(() => {
-        return sessionActions.getCurrentSessionMergedSettings()
-    }, [currentSession.id, currentSession.settings, selectedCustomProviderId])
-
     let EditButton: React.ReactNode | null = null
-    if (isChatSession(currentSession) && (currentSession.settings || currentSessionMergeSettings.selectedCustomProviderId)) {
-        const modelName = getModelDisplayName(currentSessionMergeSettings, currentSession.type || 'chat')
-        if (modelName === '' || modelName === 'unknown') {
-            EditButton = (
-                <Pencil className="ml-1 cursor-pointer w-4 h-4" fontSize="small"
+    if (isChatSession(currentSession) && (currentSession.settings)) {
+        EditButton = (
+            <Tooltip
+                title={t('Current conversation configured with specific model settings')}
+                className="cursor-pointer"
+            >
+                <Settings2 className="ml-1 cursor-pointer w-4 h-4" fontSize="small"
                     style={{ color: theme.palette.warning.main }}
                 />
-            )
-        } else {
-            EditButton = (
-                <Tooltip
-                    title={t('Current conversation configured with specific model settings')}
-                    className="cursor-pointer"
-                >
-                    <Chip
-                        className="ml-2 cursor-pointer"
-                        variant="outlined"
-                        color="warning"
-                        size="small"
-                        icon={<TuneIcon className="cursor-pointer" />}
-                        label={
-                            <span className="cursor-pointer">
-                                {modelName}
-                            </span>
-                        }
-                    />
-                </Tooltip>
-            )
-        }
+            </Tooltip>
+        )
     } else if (isPictureSession(currentSession)) {
         EditButton = (
             <Tooltip
@@ -99,7 +74,8 @@ export default function Header(props: Props) {
         )
     } else {
         EditButton = (
-            <Pencil className="ml-1 cursor-pointer opacity-30 w-4 h-4" fontSize="small" />
+            <Settings2 className="ml-1 cursor-pointer w-4 h-4 opacity-30" fontSize="small"
+            />
         )
     }
 
