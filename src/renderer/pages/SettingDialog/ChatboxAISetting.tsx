@@ -38,6 +38,7 @@ export default function ChatboxAISetting(props: ModelConfigProps) {
 
     const activate = async () => {
         setLoading(true)
+        setTip(null)
         try {
             const result = await premiumActions.activate(settingsEdit.licenseKey || '')
             if (!result.valid) {
@@ -72,7 +73,7 @@ export default function ChatboxAISetting(props: ModelConfigProps) {
                 <Box className='text-red-500'>
                     {t('Failed to activate license, please check your license key and network connection')}
                     <br />
-                    {(e as any).message}
+                    {`${(e as any).message}`.slice(0, 100)}
                 </Box>
             )
         }
@@ -94,6 +95,7 @@ export default function ChatboxAISetting(props: ModelConfigProps) {
                         disabled={loading}
                         sx={{ display: 'block', marginBottom: '15px' }}
                     >
+                        {tip}
                         {
                             activated && (
                                 <>

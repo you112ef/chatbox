@@ -176,7 +176,7 @@ export async function getLicenseDetailRealtime(params: { licenseKey: string }) {
         data: ChatboxAILicenseDetail | null
     }
     const res = await ofetch<Response>(`${API_ORIGIN}/api/license/detail/realtime`, {
-        retry: 3,
+        retry: 5,
         headers: {
             Authorization: params.licenseKey,
         },
@@ -246,13 +246,20 @@ export async function activateLicense(params: {
             error: string
         }
     }
-    const res = await afetch(`${API_ORIGIN}/api/license/activate`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
+    const res = await afetch(
+        `${API_ORIGIN}/api/license/activate`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(params),
         },
-        body: JSON.stringify(params),
-    }, { parseChatboxRemoteError: true })
+        {
+            parseChatboxRemoteError: true,
+            retry: 5,
+        }
+    )
     const json: Response = await res.json()
     return json['data']
 }
@@ -261,13 +268,20 @@ export async function deactivateLicense(params: {
     licenseKey: string,
     instanceId: string
 }) {
-    await afetch(`${API_ORIGIN}/api/license/deactivate`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
+    await afetch(
+        `${API_ORIGIN}/api/license/deactivate`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(params),
         },
-        body: JSON.stringify(params),
-    }, { parseChatboxRemoteError: true })
+        {
+            parseChatboxRemoteError: true,
+            retry: 5
+        },
+    )
 }
 
 export async function validateLicense(params: {
@@ -279,13 +293,20 @@ export async function validateLicense(params: {
             valid: boolean
         }
     }
-    const res = await afetch(`${API_ORIGIN}/api/license/validate`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
+    const res = await afetch(
+        `${API_ORIGIN}/api/license/validate`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(params),
         },
-        body: JSON.stringify(params),
-    }, { parseChatboxRemoteError: true })
+        {
+            parseChatboxRemoteError: true,
+            retry: 5,
+        }
+    )
     const json: Response = await res.json()
     return json['data']
 }

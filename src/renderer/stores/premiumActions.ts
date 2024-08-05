@@ -71,12 +71,14 @@ export function useAutoValidate() {
 export async function deactivate() {
     const store = getDefaultStore()
     const settings = store.get(settingsAtom)
+    // 更新本地状态
     store.set(settingsAtom, (settings) => ({
         ...settings,
         licenseKey: '',
         licenseDetail: undefined,
         licenseInstances: omit(settings.licenseInstances, settings.licenseKey || ''),
     }))
+    // 更新服务器状态（取消激活 license）
     const licenseKey = settings.licenseKey || ''
     const licenseInstances = settings.licenseInstances || {}
     if (licenseKey && licenseInstances[licenseKey]) {
@@ -94,8 +96,8 @@ export async function deactivate() {
  */
 export async function activate(licenseKey: string) {
     const store = getDefaultStore()
-    const settings = store.get(settingsAtom)
     // 取消激活已存在的 license
+    const settings = store.get(settingsAtom)
     if (settings.licenseKey) {
         await deactivate()
     }
@@ -108,7 +110,7 @@ export async function activate(licenseKey: string) {
         return result
     }
     // 获取 license 详情
-    const licenseDetail = await remote.getLicenseDetail({ licenseKey })
+    const licenseDetail = await remote.getLicenseDetailRealtime({ licenseKey })
     // 设置本地的 license 数据
     store.set(settingsAtom, (settings) => {
         const newSettings: Settings = {
