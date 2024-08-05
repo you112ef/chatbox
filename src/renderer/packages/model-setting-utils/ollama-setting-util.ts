@@ -31,6 +31,6 @@ export default class OllamaSettingUtil implements ModelSettingUtil {
     }
 
     isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
-        return false
+        return settings.ollamaModel.includes("llava")
     }
 }

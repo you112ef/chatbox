@@ -1,6 +1,8 @@
 import { Message } from 'src/shared/types'
 import Base, { onResultChange } from './base'
 import { ApiError } from './errors'
+import storage from '@/storage'
+import * as base64 from '@/packages/base64'
 
 // 也可以考虑官方库
 // import ollama from 'ollama/browser'
@@ -35,7 +37,32 @@ export default class Ollama extends Base {
     }
 
     async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
-        const messages = rawMessages.map(m => ({ role: m.role, content: m.content }))
+        // https://github.com/ollama/ollama/blob/main/docs/api.md#chat-request-with-images
+        const messages = await Promise.all(rawMessages.map(async (m) => {
+            const ret = {
+                role: m.role,
+                content: m.content,
+                images: undefined as string[] | undefined,
+            }
+            if (m.pictures) {
+                ret.images = []
+                for (const pic of m.pictures) {
+                    if (!pic.storageKey) {
+                        continue
+                    }
+                    const picBase64 = await storage.getBlob(pic.storageKey)
+                    if (!picBase64) {
+                        continue
+                    }
+                    const picData = base64.parseImage(picBase64)
+                    if (!picData.type || !picData.data) {
+                        continue
+                    }
+                    ret.images.push(picData.data)
+                }
+            }
+            return ret
+        }))
         const res = await this.post(
             `${this.getHost()}/api/chat`,
             { 'Content-Type': 'application/json' },
