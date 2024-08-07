@@ -12,6 +12,31 @@ export const defaultSessionsForEN: Session[] = [
                 content:
                     'You are a helpful assistant. You can help me by answering my questions. You can also ask me questions.',
             },
+            {
+                id: '430a7c50-39be-4aa4-965b-2bc56383c6cf',
+                role: 'user',
+                content: `
+\`\`\`mermaid
+mindmap
+  root((mindmap))
+    Origins
+      Long history
+      ::icon(fa fa-book)
+      Popularisation
+        British popular psychology author Tony Buzan
+    Research
+      On effectiveness<br/>and features
+      On Automatic creation
+        Uses
+            Creative techniques
+            Strategic planning
+            Argument mapping
+    Tools
+      Pen and paper
+      Mermaid
+\`\`\`
+                `,
+            }
         ],
         starred: true,
     },
