@@ -260,5 +260,6 @@
     "Preview": "Vista previa",
     "Refresh": "Actualizar",
     "Auto-preview artifacts": "Vista previa automática de artefactos",
-    "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "Renderizar automáticamente los artefactos generados (p. ej., HTML con CSS, JS, Tailwind)"
+    "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "Renderizar automáticamente los artefactos generados (p. ej., HTML con CSS, JS, Tailwind)",
+    "Mermaid Diagrams & Charts Rendering": "Renderizado de diagramas y gráficos Mermaid"
 }

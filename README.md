@@ -241,6 +241,14 @@ npm run mobile:assets
 
 ### Debug 和调试
 
+#### Android 调试
+
+chrome 访问 `chrome://inspect`，可以看到设备上运行的 App，可以进行调试
+
+#### iOS 调试
+
+在 Safari 设置中开启开发者模式，然后顶部菜单“开发”中选择模拟器，即可进行调试。
+
 在 Xcode 或 Android Studio 中运行 App，然后 chrome 访问 `chrome://inspect`，可以看到设备上运行的 App，可以进行调试。
 
 ## 生产部署

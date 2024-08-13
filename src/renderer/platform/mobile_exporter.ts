@@ -9,6 +9,35 @@ export default class MobileExporter implements Exporter {
     constructor() {
     }
 
+    async exportBlob(filename: string, blob: Blob, encoding?: 'utf8' | 'ascii' | 'utf16') {
+        const data = await blob.text()
+        // 保存
+        if (CHATBOX_BUILD_PLATFORM === 'ios') {
+            const result = await Filesystem.writeFile({
+                path: filename,
+                data: data,
+                directory: Directory.Cache, // 只有 Cache 才能分享
+                encoding: encoding as Encoding,
+            });
+            await Share.share({
+                title: 'Share File',
+                text: 'Share File',
+                url: result.uri,
+                dialogTitle: 'Share File',
+            });
+        } else {
+            await this.checkOrRequestPermission()
+            const file = await Filesystem.writeFile({
+                path: 'chatbox_ai_exports/' + filename,
+                data: data,
+                directory: Directory.Documents,
+                recursive: true,
+                encoding: encoding as Encoding,
+            });
+            await Toast.show({ text: `Saved to ${file.uri}` });
+        }
+    }
+
     async exportTextFile(filename: string, content: string) {
         if (CHATBOX_BUILD_PLATFORM === 'ios') {
             const result = await Filesystem.writeFile({

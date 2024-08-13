@@ -15,14 +15,24 @@ import * as latex from '../packages/latex'
 
 import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for you
 import { copyToClipboard } from '@/packages/navigator'
+import {MessageMermaid} from './Mermaid'
 
 export default function Markdown(props: {
     children: string
     enableLaTeXRendering?: boolean
+    enableMermaidRendering?: boolean
     hiddenCodeCopyButton?: boolean
     className?: string
+    generating?: boolean
 }) {
-    const { enableLaTeXRendering = true, children, hiddenCodeCopyButton, className } = props
+    const {
+        children,
+        enableLaTeXRendering = true,
+        enableMermaidRendering = true,
+        hiddenCodeCopyButton,
+        className,
+        generating,
+    } = props
     return useMemo(() => (
         <ReactMarkdown
             remarkPlugins={
@@ -36,7 +46,12 @@ export default function Markdown(props: {
             // 这里改用 sanitizeUrl 库，同时也可以避免 XSS 攻击
             urlTransform={(url) => sanitizeUrl(url)}
             components={{
-                code: (props: any) => CodeBlock({ ...props, hiddenCodeCopyButton }),
+                code: (props: any) => CodeBlock({
+                    ...props,
+                    hiddenCodeCopyButton,
+                    enableMermaidRendering,
+                    generating,
+                }),
                 a: ({ node, ...props }) => (
                     <a
                         {...props}
@@ -55,14 +70,14 @@ export default function Markdown(props: {
                     : children
             }
         </ReactMarkdown>
-    ), [children, enableLaTeXRendering])
+    ), [children, enableLaTeXRendering, enableMermaidRendering])
 }
 
 export function CodeBlock(props: any) {
     const { t } = useTranslation()
     const theme = useTheme()
     return useMemo(() => {
-        const { children, className, node, hiddenCodeCopyButton, ...rest } = props
+        const { children, className, node, hiddenCodeCopyButton, generating, ...rest } = props
         const match = /language-(\w+)/.exec(className || '')
         const language = match?.[1] || 'text'
         if (!String(children).includes('\n')) {
@@ -82,6 +97,13 @@ export function CodeBlock(props: any) {
                     {children}
                 </code>
             )
+        }
+        if (language === 'mermaid' && props.enableMermaidRendering) {
+            return <MessageMermaid
+                source={String(children)}
+                theme={theme.palette.mode}
+                generating={generating}
+            />
         }
         return (
             <div>
@@ -155,5 +177,5 @@ export function CodeBlock(props: any) {
                 />
             </div>
         )
-    }, [props.children, theme.palette.mode])
+    }, [props.children, theme.palette.mode, props.enableMermaidRendering])
 }

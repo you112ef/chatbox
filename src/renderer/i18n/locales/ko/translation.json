@@ -261,5 +261,6 @@
     "Preview": "미리보기",
     "Refresh": "새로 고침",
     "Auto-preview artifacts": "아티팩트 자동 미리보기",
-    "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "생성된 아티팩트(예: CSS, JS, Tailwind가 포함된 HTML)를 자동으로 렌더링"
+    "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "생성된 아티팩트(예: CSS, JS, Tailwind가 포함된 HTML)를 자동으로 렌더링",
+    "Mermaid Diagrams & Charts Rendering": "Mermaid 다이어그램 및 차트 렌더링"
 }

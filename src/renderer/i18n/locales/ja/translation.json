@@ -261,5 +261,6 @@
     "Preview": "プレビュー",
     "Refresh": "リフレッシュ",
     "Auto-preview artifacts": "アーティファクトを自動プレビュー",
-    "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "生成されたアーティファクト（HTML、CSS、JS、Tailwindなど）を自動的にレンダリング"
+    "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "生成されたアーティファクト（HTML、CSS、JS、Tailwindなど）を自動的にレンダリング",
+    "Mermaid Diagrams & Charts Rendering": "Mermaid ダイアグラムとチャートのレンダリング"
 }

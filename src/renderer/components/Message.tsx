@@ -38,7 +38,10 @@ import {
     userAvatarKeyAtom,
     openSettingDialogAtom,
     enableMarkdownRenderingAtom,
-    enableLaTeXRenderingAtom, currentSessionAssistantAvatarKeyAtom, chatConfigDialogIdAtom,
+    enableLaTeXRenderingAtom,
+    enableMermaidRenderingAtom,
+    currentSessionAssistantAvatarKeyAtom,
+    chatConfigDialogIdAtom,
     widthFullAtom,
 } from '../stores/atoms'
 import { currsentSessionPicUrlAtom, showTokenUsedAtom } from '../stores/atoms'
@@ -88,6 +91,7 @@ function _Message(props: Props) {
     const showTokenUsed = useAtomValue(showTokenUsedAtom)
     const enableMarkdownRendering = useAtomValue(enableMarkdownRenderingAtom)
     const enableLaTeXRendering = useAtomValue(enableLaTeXRenderingAtom)
+    const enableMermaidRendering = useAtomValue(enableMermaidRenderingAtom)
     const currentSessionPicUrl = useAtomValue(currsentSessionPicUrlAtom)
     const messageScrollingScrollPosition = useAtomValue(messageScrollingScrollPositionAtom)
     const setPictureShow = useSetAtom(pictureShowAtom)
@@ -448,7 +452,11 @@ function _Message(props: Props) {
                             >
                                 {
                                     enableMarkdownRendering && !isCollapsed ? (
-                                        <Markdown enableLaTeXRendering={enableLaTeXRendering}>
+                                        <Markdown
+                                            enableLaTeXRendering={enableLaTeXRendering}
+                                            enableMermaidRendering={enableMermaidRendering}
+                                            generating={msg.generating}
+                                        >
                                             {content}
                                         </Markdown>
                                     ) : (

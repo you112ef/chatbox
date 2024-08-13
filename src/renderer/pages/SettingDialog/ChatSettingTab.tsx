@@ -192,6 +192,17 @@ export default function ChatSettingTab(props: {
             <FormGroup>
                 <FormControlLabel
                     control={<Switch />}
+                    label={t('Mermaid Diagrams & Charts Rendering')}
+                    checked={settingsEdit.enableMermaidRendering}
+                    onChange={(e, checked) => {
+                        settingsEdit.enableMermaidRendering = checked
+                        setSettingsEdit({ ...settingsEdit })
+                    }}
+                />
+            </FormGroup>
+            <FormGroup>
+                <FormControlLabel
+                    control={<Switch />}
                     label={
                         <span className='flex items-start justify-center'>
                             {t('Inject default metadata')}

@@ -261,5 +261,6 @@
     "Preview": "预览",
     "Refresh": "刷新",
     "Auto-preview artifacts": "自动预览生成物(Artifacts)",
-    "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "自动渲染生成物（例如，带有 CSS、JS、Tailwind 的 HTML）"
+    "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "自动渲染生成物（例如，带有 CSS、JS、Tailwind 的 HTML）",
+    "Mermaid Diagrams & Charts Rendering": "Mermaid 图表与图表渲染"
 }

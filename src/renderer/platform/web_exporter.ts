@@ -5,6 +5,16 @@ export default class WebExporter implements Exporter {
     constructor() {
     }
 
+    async exportBlob(filename: string, blob: Blob, encoding?: 'utf8' | 'ascii' | 'utf16') {
+        var eleLink = document.createElement('a')
+        eleLink.download = filename
+        eleLink.style.display = 'none'
+        eleLink.href = URL.createObjectURL(blob)
+        document.body.appendChild(eleLink)
+        eleLink.click()
+        document.body.removeChild(eleLink)
+    }
+
     async exportTextFile(filename: string, content: string) {
         var eleLink = document.createElement('a')
         eleLink.download = filename

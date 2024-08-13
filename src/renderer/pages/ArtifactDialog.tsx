@@ -5,7 +5,7 @@ import { useAtom } from 'jotai'
 import { Artifact } from '@/components/Artifact'
 import { useState } from 'react'
 
-export default function ExportChatDialog(props: {}) {
+export default function ArtifactDialog(props: {}) {
     const { t } = useTranslation()
     const [htmlCode, setHtmlCode] = useAtom(atoms.artifactDialogHtmlCodeAtom)
     const [reloadSign, setReloadSign] = useState(0)

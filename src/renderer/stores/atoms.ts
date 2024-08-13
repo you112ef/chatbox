@@ -53,6 +53,7 @@ export const spellCheckAtom = focusAtom(settingsAtom, (optic) => optic.prop('spe
 export const allowReportingAndTrackingAtom = focusAtom(settingsAtom, (optic) => optic.prop('allowReportingAndTracking'))
 export const enableMarkdownRenderingAtom = focusAtom(settingsAtom, (optic) => optic.prop('enableMarkdownRendering'))
 export const enableLaTeXRenderingAtom = focusAtom(settingsAtom, (optic) => optic.prop('enableLaTeXRendering'))
+export const enableMermaidRenderingAtom = focusAtom(settingsAtom, (optic) => optic.prop('enableMermaidRendering'))
 export const selectedCustomProviderIdAtom = focusAtom(settingsAtom, (optic) => optic.prop('selectedCustomProviderId'))
 export const autoPreviewArtifactsAtom = focusAtom(settingsAtom, (optic) => optic.prop('autoPreviewArtifacts'))
 
@@ -230,6 +231,7 @@ export const openCopilotDialogAtom = atom(false) // 是否展示copilot窗口
 export const openClearConversationListDialogAtom = atom(false) // 是否展示会话列表清理窗口
 
 export const artifactDialogHtmlCodeAtom = atom('')  // artifact 预览弹窗（当 html 不为空时则弹窗）
+export const mermaidDialogSourceAtom = atom('')  // mermaid 预览弹窗（当 source 不为空时则弹窗）
 
 // 图片展示窗口的图片
 export const pictureShowAtom = atom<MessagePicture | null>(null)

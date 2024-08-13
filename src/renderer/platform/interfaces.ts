@@ -50,6 +50,7 @@ export interface Platform {
 
 
 export interface Exporter {
+    exportBlob: (filename: string, blob: Blob, encoding?: 'utf8' | 'ascii' | 'utf16') => Promise<void>
     exportTextFile: (filename: string, content: string) => Promise<void>
     exportImageFile: (basename: string, base64: string) => Promise<void>
     exportByUrl: (filename: string, url: string) => Promise<void>
