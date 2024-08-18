@@ -190,6 +190,16 @@ export const openaiModelConfigs = {
         maxContextTokens: 128_000,
         vision: true,
     },
+    'gpt-4o-2024-08-06': {
+        maxTokens: 16_384,
+        maxContextTokens: 128_000,
+        vision: true,
+    },
+    'chatgpt-4o-latest': {
+        maxTokens: 16_384,
+        maxContextTokens: 128_000,
+        vision: true,
+    },
 
     'gpt-4': {
         maxTokens: 4_096,
@@ -197,6 +207,11 @@ export const openaiModelConfigs = {
         vision: false,
     },
     'gpt-4-turbo': {
+        maxTokens: 4_096,
+        maxContextTokens: 128_000,
+        vision: true,
+    },
+    'gpt-4-turbo-2024-04-09': {
         maxTokens: 4_096,
         maxContextTokens: 128_000,
         vision: true,

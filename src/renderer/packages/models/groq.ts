@@ -5,6 +5,22 @@ import { populateOpenAIMessageText } from './openai'
 
 // https://console.groq.com/docs/models
 export const modelConfig = {
+    'llama-3.1-70b-versatile': {
+        vision: false,
+    },
+    'llama-3.1-8b-instant': {
+        vision: false,
+    },
+    'llama3-groq-70b-8192-tool-use-preview': {
+        vision: false,
+    },
+    'llama3-groq-8b-8192-tool-use-preview': {
+        vision: false,
+    },
+    'llama-guard-3-8b': {
+        vision: false,
+    },
+
     'llama3-8b-8192': {
         vision: false,
     },
