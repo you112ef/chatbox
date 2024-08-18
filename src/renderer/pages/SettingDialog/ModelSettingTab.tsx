@@ -23,8 +23,14 @@ export default function ModelSettingTab(props: ModelConfigProps) {
     return (
         <Box>
             <AIProviderSelect
-                settings={settingsEdit}
-                setSettings={setSettingsEdit}
+                aiProvider={settingsEdit.aiProvider}
+                onSwitchAIProvider={(v) => setSettingsEdit({ ...settingsEdit, aiProvider: v })}
+                selectedCustomProviderId={settingsEdit.selectedCustomProviderId}
+                onSwitchCustomProvider={(v) => setSettingsEdit({
+                    ...settingsEdit,
+                    aiProvider: ModelProvider.Custom,
+                    selectedCustomProviderId: v,
+                })}
             />
             <Divider sx={{ marginTop: '10px', marginBottom: '24px' }} />
             {settingsEdit.aiProvider === ModelProvider.OpenAI && (

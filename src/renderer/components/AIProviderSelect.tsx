@@ -10,18 +10,23 @@ import StyledMenu from './StyledMenu';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import StarIcon from '@mui/icons-material/Star';
+import { useAtom } from 'jotai';
+import { settingsAtom } from '@/stores/atoms';
 
 interface ModelConfigProps {
-    settings: ModelSettings
-    setSettings(value: ModelSettings): void
+    aiProvider: ModelProvider
+    onSwitchAIProvider: (provider: ModelProvider) => void
+    selectedCustomProviderId?: string
+    onSwitchCustomProvider: (providerId: string) => void
     className?: string
     hideCustomProviderManage?: boolean
 }
 
 export default function AIProviderSelect(props: ModelConfigProps) {
-    const { settings, setSettings, className, hideCustomProviderManage } = props
+    const { aiProvider, onSwitchAIProvider, selectedCustomProviderId, onSwitchCustomProvider, hideCustomProviderManage } = props
     const { t } = useTranslation()
-    const theme = useTheme()
+
+    const [globalSettings, setGlobalSettings] = useAtom(settingsAtom)
 
     const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(null);
     const menuState = Boolean(menuAnchorEl);
@@ -32,6 +37,7 @@ export default function AIProviderSelect(props: ModelConfigProps) {
         setMenuAnchorEl(null);
     };
 
+    // 创建自定义模型（作用于全局）
     const createCustomProvider = () => {
         const newCustomProvider: CustomProvider = {
             id: `custom-provider-${Date.now()}`,
@@ -42,30 +48,31 @@ export default function AIProviderSelect(props: ModelConfigProps) {
             key: '',
             model: 'gpt-4o',
         }
-        setSettings({
-            ...settings,
+        setGlobalSettings({
+            ...globalSettings,
             aiProvider: ModelProvider.Custom,
             selectedCustomProviderId: newCustomProvider.id,
             customProviders: [
                 newCustomProvider,
-                ...settings.customProviders,
+                ...globalSettings.customProviders,
             ],
         })
         closeMenu()
     }
 
+    // 删除自定义模型（作用于全局）
     const deleteCustomProvider = (providerId: string) => {
-        const customProviders = settings.customProviders.filter((provider) => provider.id !== providerId)
+        const customProviders = globalSettings.customProviders.filter((provider) => provider.id !== providerId)
         if (customProviders.length > 0) {
-            setSettings({
-                ...settings,
+            setGlobalSettings({
+                ...globalSettings,
                 customProviders,
                 selectedCustomProviderId: customProviders[0].id,
             })
             return
         } else {
-            setSettings({
-                ...settings,
+            setGlobalSettings({
+                ...globalSettings,
                 customProviders,
                 selectedCustomProviderId: undefined,
                 aiProvider: ModelProvider.ChatboxAI,
@@ -73,8 +80,9 @@ export default function AIProviderSelect(props: ModelConfigProps) {
         }
     }
 
+    // 复制自定义模型（作用于全局）
     const copyCustomProvider = (providerId: string) => {
-        const customProvider = settings.customProviders.find((provider) => provider.id === providerId)
+        const customProvider = globalSettings.customProviders.find((provider) => provider.id === providerId)
         if (!customProvider) {
             return
         }
@@ -83,11 +91,11 @@ export default function AIProviderSelect(props: ModelConfigProps) {
             id: `custom-provider-${Date.now()}`,
             name: `${customProvider.name} (copy)`,
         }
-        setSettings({
-            ...settings,
+        setGlobalSettings({
+            ...globalSettings,
             customProviders: [
                 newCustomProvider,
-                ...settings.customProviders,
+                ...globalSettings.customProviders,
             ],
             selectedCustomProviderId: newCustomProvider.id,
         })
@@ -116,20 +124,20 @@ export default function AIProviderSelect(props: ModelConfigProps) {
                 >
                     <Typography className='text-left' maxWidth={200} noWrap>
                         {
-                            settings.aiProvider === ModelProvider.Custom
-                                ? settings.customProviders.find((provider) => provider.id === settings.selectedCustomProviderId)?.name || t('Untitled')
-                                : AIModelProviderMenuOptionList.find((provider) => provider.value === settings.aiProvider)?.label || 'Unknown'
+                            aiProvider === ModelProvider.Custom
+                                ? globalSettings.customProviders.find((provider) => provider.id === selectedCustomProviderId)?.name || t('Untitled')
+                                : AIModelProviderMenuOptionList.find((provider) => provider.value === aiProvider)?.label || 'Unknown'
                         }
                     </Typography>
                 </Button>
                 {
-                    settings.aiProvider === ModelProvider.Custom && !hideCustomProviderManage && (
+                    aiProvider === ModelProvider.Custom && !hideCustomProviderManage && (
                         <Box className='inline-flex opacity-50 hover:opacity-100'>
                             <Button
                                 size='small'
                                 variant="outlined"
                                 sx={{ marginRight: '6px' }}
-                                onClick={() => copyCustomProvider(settings.selectedCustomProviderId || '')}
+                                onClick={() => copyCustomProvider(selectedCustomProviderId || '')}
                             >
                                 {t('copy')}
                             </Button>
@@ -137,7 +145,7 @@ export default function AIProviderSelect(props: ModelConfigProps) {
                                 size='small'
                                 variant="outlined"
                                 sx={{ marginRight: '6px' }}
-                                onClick={() => deleteCustomProvider(settings.selectedCustomProviderId || '')}
+                                onClick={() => deleteCustomProvider(selectedCustomProviderId || '')}
                                 color='error'
                             >
                                 {t('delete')}
@@ -159,17 +167,13 @@ export default function AIProviderSelect(props: ModelConfigProps) {
                     }}
                 >
                     {
-                        settings.customProviders.length > 0 && (
+                        globalSettings.customProviders.length > 0 && (
                             <>
                                 {
-                                    settings.customProviders.map((provider) => (
+                                    globalSettings.customProviders.map((provider) => (
                                         <MenuItem disableRipple
                                             onClick={() => {
-                                                setSettings({
-                                                    ...settings,
-                                                    aiProvider: ModelProvider.Custom,
-                                                    selectedCustomProviderId: provider.id,
-                                                })
+                                                onSwitchCustomProvider(provider.id)
                                                 closeMenu()
                                             }}
                                         >
@@ -187,10 +191,7 @@ export default function AIProviderSelect(props: ModelConfigProps) {
                         AIModelProviderMenuOptionList.map((provider) => (
                             <MenuItem disableRipple
                                 onClick={() => {
-                                    setSettings({
-                                        ...settings,
-                                        aiProvider: provider.value as ModelProvider,
-                                    })
+                                    onSwitchAIProvider(provider.value as ModelProvider)
                                     closeMenu()
                                 }}
                             >
@@ -209,7 +210,7 @@ export default function AIProviderSelect(props: ModelConfigProps) {
                         ))
                     }
                     {
-                        settings.customProviders.length === 0 && (
+                        globalSettings.customProviders.length === 0 && (
                             <>
                                 <Divider sx={{ my: 0.5 }} />
                                 {AddProviderMenuItem}

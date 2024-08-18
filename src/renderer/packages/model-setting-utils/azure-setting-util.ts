@@ -19,12 +19,17 @@ export default class AzureSettingUtil implements ModelSettingUtil {
     }
 
     async listModelOptions(settings: Settings) {
-        return [
-            {
+        const options = settings.azureDeploymentNameOptions.map(option => ({
+            label: option,
+            value: option,
+        }))
+        if (!options.some(option => option.value === settings.azureDeploymentName)) {
+            options.push({
                 label: settings.azureDeploymentName,
                 value: settings.azureDeploymentName,
-            }
-        ]
+            })
+        }
+        return options
     }
 
     selectSessionModel(settings: Session["settings"], selected: string): Session["settings"] {

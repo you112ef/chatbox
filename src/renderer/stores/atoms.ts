@@ -1,7 +1,6 @@
 import { RefObject } from 'react'
 import { atom, SetStateAction } from 'jotai'
-import { Session, Toast, Settings, CopilotDetail, MessagePicture, Message, SessionThreadBrief, SettingWindowTab
-} from '../../shared/types'
+import { Session, Toast, Settings, CopilotDetail, MessagePicture, Message, SessionThreadBrief, SettingWindowTab } from '../../shared/types'
 import { selectAtom, atomWithStorage } from 'jotai/utils'
 import { focusAtom } from 'jotai-optics'
 import * as defaults from '../../shared/defaults'

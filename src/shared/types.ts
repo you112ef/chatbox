@@ -137,6 +137,7 @@ export function settings2SessionSettings(settings: ModelSettings) {
         'groqModel',
 
         'selectedCustomProviderId',
+        'customProviders',
     ])
 }
 
@@ -173,6 +174,7 @@ export interface ModelSettings {
     apiHost: string
     model: OpenAIModel | 'custom-model'
     openaiCustomModel?: string // OpenAI 自定义模型的 ID
+    openaiCustomModelOptions: string[]
 
     dalleStyle: 'vivid' | 'natural'
     imageGenerateNum: number // 生成图片的数量
@@ -180,6 +182,7 @@ export interface ModelSettings {
     // azure
     azureEndpoint: string
     azureDeploymentName: string
+    azureDeploymentNameOptions: string[]
     azureDalleDeploymentName: string // dall-e-3 的部署名称
     azureApikey: string
 
@@ -233,6 +236,7 @@ export interface CustomProvider {
     path: string
     key: string
     model: string
+    modelOptions?: string[]
 }
 
 export interface Settings extends ModelSettings {

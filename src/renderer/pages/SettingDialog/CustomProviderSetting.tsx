@@ -6,6 +6,7 @@ import TemperatureSlider from '@/components/TemperatureSlider'
 import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
 import TextFieldReset from '@/components/TextFieldReset'
 import TopPSlider from '@/components/TopPSlider'
+import CreatableSelect from '@/components/CreatableSelect'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -90,7 +91,7 @@ export default function CustomProviderSetting(props: ModelConfigProps) {
                     setCustomProvider({ ...customProvider, host: value })
                 }}
             />
-           <TextFieldReset
+            <TextFieldReset
                 margin="dense"
                 label={t('api path')}
                 type="text"
@@ -110,18 +111,12 @@ export default function CustomProviderSetting(props: ModelConfigProps) {
                     setCustomProvider({ ...customProvider, key: value })
                 }}
             />
-            <TextFieldReset
-                margin="dense"
+            <CreatableSelect
                 label={t('model')}
-                type="text"
-                fullWidth
-                variant="outlined"
                 value={customProvider.model}
-                placeholder="gpt-4o"
-                defaultValue='gpt-4o'
-                onValueChange={(value) => {
-                    setCustomProvider({ ...customProvider, model: value })
-                }}
+                options={customProvider.modelOptions || []}
+                onChangeValue={(v) => setCustomProvider({ ...customProvider, model: v })}
+                onUpdateOptions={(v) => setCustomProvider({ ...customProvider, modelOptions: v })}
             />
             <MaxContextMessageCountSlider
                 value={settingsEdit.openaiMaxContextMessageCount}

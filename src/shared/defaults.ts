@@ -11,10 +11,12 @@ export function settings(): Settings {
 
         azureApikey: '',
         azureDeploymentName: '',
+        azureDeploymentNameOptions: [],
         azureDalleDeploymentName: 'dall-e-3',
         azureEndpoint: '',
         chatglm6bUrl: '',
         model: 'gpt-4o',
+        openaiCustomModelOptions: [],
         temperature: 0.7,
         topP: 1,
         // openaiMaxTokens: 0,

@@ -58,9 +58,10 @@ export default function OpenAISetting(props: ModelConfigProps) {
                     <OpenAIModelSelect
                         model={settingsEdit.model}
                         openaiCustomModel={settingsEdit.openaiCustomModel}
-                        onChange={(model, openaiCustomModel) =>
-                            setSettingsEdit({ ...settingsEdit, model, openaiCustomModel })
-                        }
+                        openaiCustomModelOptions={settingsEdit.openaiCustomModelOptions}
+                        onUpdateModel={(updated) => setSettingsEdit({ ...settingsEdit, model: updated })}
+                        onUpdateOpenaiCustomModel={(updated) => setSettingsEdit({ ...settingsEdit, openaiCustomModel: updated })}
+                        onUpdateOpenaiCustomModelOptions={(updated) => setSettingsEdit({ ...settingsEdit, openaiCustomModelOptions: updated })}
                     />
 
                     <TemperatureSlider

@@ -42,6 +42,7 @@ import EditableAvatar from "@/components/EditableAvatar";
 import { v4 as uuidv4 } from 'uuid'
 import { ImageInStorage, handleImageInputAndSave } from "@/components/Image";
 import ImageIcon from "@mui/icons-material/Image";
+import CreatableSelect from '@/components/CreatableSelect'
 
 export default function ChatConfigWindow(props: {}) {
     const { t } = useTranslation()
@@ -231,8 +232,11 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
     const { dataEdit, setDataEdit } = props
     const { t } = useTranslation()
     const licenseDetail = useAtomValue(atoms.licenseDetailAtom)
-    const globalSettings = useAtomValue(atoms.settingsAtom)
-    const sessionSettings = sessionActions.mergeSettings(globalSettings, dataEdit.settings || {}, dataEdit.type || 'chat')
+    // 全局设置
+    const [globalSettings, setGlobalSettings] = useAtom(atoms.settingsAtom)
+    // 会话生效设置 = 全局设置 + 会话设置
+    const mergedSettings = sessionActions.mergeSettings(globalSettings, dataEdit.settings || {}, dataEdit.type || 'chat')
+    // 修改当前会话设置
     const updateSettingsEdit = (updated: Partial<ModelSettings>) => {
         setDataEdit({
             ...dataEdit,
@@ -243,146 +247,171 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
         })
     }
     const specificSettings = dataEdit.settings || {}
+
+    // 当前选择的自定义提供方的全局设置
+    const globalCustomProvider = globalSettings.customProviders.find((provider) => provider.id === mergedSettings.selectedCustomProviderId)
+    // 当前选择的自定义提供方的选中模型
+    const sessionCustomProviderModel = (
+        mergedSettings.customProviders.find((provider) => provider.id === mergedSettings.selectedCustomProviderId)
+        || globalCustomProvider
+    )?.model
+
     return (
         <>
             <AIProviderSelect
-                settings={sessionSettings}
-                setSettings={updateSettingsEdit}
+                aiProvider={mergedSettings.aiProvider}
+                onSwitchAIProvider={(v) => updateSettingsEdit({ aiProvider: v })}
+                selectedCustomProviderId={mergedSettings.selectedCustomProviderId}
+                onSwitchCustomProvider={(v) => updateSettingsEdit({
+                    aiProvider: ModelProvider.Custom,
+                    selectedCustomProviderId: v,
+                })}
                 className={specificSettings.aiProvider === undefined ? 'opacity-50' : ''}
                 hideCustomProviderManage
             />
             <Divider sx={{ margin: '16px 0' }} />
-            {sessionSettings.aiProvider === ModelProvider.ChatboxAI && (
+            {mergedSettings.aiProvider === ModelProvider.ChatboxAI && (
                 <>
                     {licenseDetail && (
                         <ChatboxAIModelSelect
-                            value={sessionSettings.chatboxAIModel}
+                            value={mergedSettings.chatboxAIModel}
                             onChange={(v) => updateSettingsEdit({ chatboxAIModel: v })}
                             className={specificSettings.chatboxAIModel === undefined ? 'opacity-50' : ''}
                         />
                     )}
                     <MaxContextMessageCountSlider
-                        value={sessionSettings.openaiMaxContextMessageCount}
+                        value={mergedSettings.openaiMaxContextMessageCount}
                         onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
                         className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
                     />
                     <TemperatureSlider
-                        value={sessionSettings.temperature}
+                        value={mergedSettings.temperature}
                         onChange={(v) => updateSettingsEdit({ temperature: v })}
                         className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
                     />
                 </>
             )}
-            {sessionSettings.aiProvider === ModelProvider.OpenAI && (
+            {mergedSettings.aiProvider === ModelProvider.OpenAI && (
                 <>
                     <OpenAIModelSelect
-                        model={sessionSettings.model}
-                        openaiCustomModel={sessionSettings.openaiCustomModel}
-                        onChange={(model, openaiCustomModel) => updateSettingsEdit({ model, openaiCustomModel })}
+                        model={mergedSettings.model}
+                        openaiCustomModel={mergedSettings.openaiCustomModel}
+                        onUpdateModel={(updated) => updateSettingsEdit({ model: updated })}
+                        onUpdateOpenaiCustomModel={(updated) => updateSettingsEdit({ openaiCustomModel: updated })}
+                        // 选项直接读取和修改全局设置，这样用户体验会更好
+                        openaiCustomModelOptions={globalSettings.openaiCustomModelOptions}
+                        onUpdateOpenaiCustomModelOptions={(updated) => {
+                            setGlobalSettings(globalSettings => ({
+                                ...globalSettings,
+                                openaiCustomModelOptions: updated,
+                            }))
+                        }}
                         className={specificSettings.model === undefined ? 'opacity-50' : ''}
                     />
                     <MaxContextMessageCountSlider
-                        value={sessionSettings.openaiMaxContextMessageCount}
+                        value={mergedSettings.openaiMaxContextMessageCount}
                         onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
                         className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
                     />
                     <TemperatureSlider
-                        value={sessionSettings.temperature}
+                        value={mergedSettings.temperature}
                         onChange={(v) => updateSettingsEdit({ temperature: v })}
                         className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
                     />
                     <TopPSlider
-                        topP={sessionSettings.topP}
+                        topP={mergedSettings.topP}
                         setTopP={(v) => updateSettingsEdit({ topP: v })}
                         className={specificSettings.topP === undefined ? 'opacity-50' : ''}
                     />
                 </>
             )}
-            {sessionSettings.aiProvider === ModelProvider.Azure && (
+            {mergedSettings.aiProvider === ModelProvider.Azure && (
                 <>
-                    <TextField
-                        margin="dense"
+                    <CreatableSelect
                         label={t('Azure Deployment Name')}
-                        type="text"
-                        fullWidth
-                        variant="outlined"
-                        value={sessionSettings.azureDeploymentName}
-                        onChange={(e) =>
-                            updateSettingsEdit({ azureDeploymentName: e.target.value.trim() })
-                        }
+                        value={mergedSettings.azureDeploymentName}
+                        onChangeValue={(v) => updateSettingsEdit({ azureDeploymentName: v })}
+                        // 选项直接读取和修改全局设置，这样用户体验会更好
+                        options={globalSettings.azureDeploymentNameOptions}
+                        onUpdateOptions={(v) => {
+                            setGlobalSettings(globalSettings => ({
+                                ...globalSettings,
+                                azureDeploymentNameOptions: v,
+                            }))
+                        }}
                         className={specificSettings.azureDeploymentName === undefined ? 'opacity-50' : ''}
                     />
                     <MaxContextMessageCountSlider
-                        value={sessionSettings.openaiMaxContextMessageCount}
+                        value={mergedSettings.openaiMaxContextMessageCount}
                         onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
                         className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
                     />
                     <TemperatureSlider
-                        value={sessionSettings.temperature}
+                        value={mergedSettings.temperature}
                         onChange={(v) => updateSettingsEdit({ temperature: v })}
                         className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
                     />
                     <TopPSlider
-                        topP={sessionSettings.topP}
+                        topP={mergedSettings.topP}
                         setTopP={(v) => updateSettingsEdit({ topP: v })}
                         className={specificSettings.topP === undefined ? 'opacity-50' : ''}
                     />
                 </>
             )}
-            {sessionSettings.aiProvider === ModelProvider.ChatGLM6B && (
+            {mergedSettings.aiProvider === ModelProvider.ChatGLM6B && (
                 <>
                     <MaxContextMessageCountSlider
-                        value={sessionSettings.openaiMaxContextMessageCount}
+                        value={mergedSettings.openaiMaxContextMessageCount}
                         onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
                         className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
                     />
                     <TemperatureSlider
-                        value={sessionSettings.temperature}
+                        value={mergedSettings.temperature}
                         onChange={(v) => updateSettingsEdit({ temperature: v })}
                         className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
                     />
                 </>
             )}
-            {sessionSettings.aiProvider === ModelProvider.Claude && (
+            {mergedSettings.aiProvider === ModelProvider.Claude && (
                 <>
                     <ClaudeModelSelect
-                        value={sessionSettings.claudeModel}
+                        value={mergedSettings.claudeModel}
                         onChange={(v) => updateSettingsEdit({ claudeModel: v })}
                         className={specificSettings.claudeModel === undefined ? 'opacity-50' : ''}
                     />
                     <MaxContextMessageCountSlider
-                        value={sessionSettings.openaiMaxContextMessageCount}
+                        value={mergedSettings.openaiMaxContextMessageCount}
                         onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
                         className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
                     />
                     <TemperatureSlider
-                        value={sessionSettings.temperature}
+                        value={mergedSettings.temperature}
                         onChange={(v) => updateSettingsEdit({ temperature: v })}
                         className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
                     />
                 </>
             )}
             {
-                sessionSettings.aiProvider === ModelProvider.Ollama && (
+                mergedSettings.aiProvider === ModelProvider.Ollama && (
                     <>
                         <OllamaHostInput
-                            ollamaHost={sessionSettings.ollamaHost}
+                            ollamaHost={mergedSettings.ollamaHost}
                             setOllamaHost={(v) => updateSettingsEdit({ ollamaHost: v })}
                             className={specificSettings.ollamaHost === undefined ? 'opacity-50' : ''}
                         />
                         <OllamaModelSelect
-                            ollamaHost={sessionSettings.ollamaHost}
-                            ollamaModel={sessionSettings.ollamaModel}
+                            ollamaHost={mergedSettings.ollamaHost}
+                            ollamaModel={mergedSettings.ollamaModel}
                             setOlamaModel={(v) => updateSettingsEdit({ ollamaModel: v })}
                             className={specificSettings.ollamaModel === undefined ? 'opacity-50' : ''}
                         />
                         <MaxContextMessageCountSlider
-                            value={sessionSettings.openaiMaxContextMessageCount}
+                            value={mergedSettings.openaiMaxContextMessageCount}
                             onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
                             className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
                         />
                         <TemperatureSlider
-                            value={sessionSettings.temperature}
+                            value={mergedSettings.temperature}
                             onChange={(v) => updateSettingsEdit({ temperature: v })}
                             className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
                         />
@@ -390,20 +419,20 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                 )
             }
             {
-                sessionSettings.aiProvider === ModelProvider.Gemini && (
+                mergedSettings.aiProvider === ModelProvider.Gemini && (
                     <>
                         <GeminiModelSelect
-                            value={sessionSettings.geminiModel}
+                            value={mergedSettings.geminiModel}
                             onChange={(v) => updateSettingsEdit({ geminiModel: v })}
                             className={specificSettings.geminiModel === undefined ? 'opacity-50' : ''}
                         />
                         <MaxContextMessageCountSlider
-                            value={sessionSettings.openaiMaxContextMessageCount}
+                            value={mergedSettings.openaiMaxContextMessageCount}
                             onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
                             className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
                         />
                         <TemperatureSlider
-                            value={sessionSettings.temperature}
+                            value={mergedSettings.temperature}
                             onChange={(v) => updateSettingsEdit({ temperature: v })}
                             className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
                         />
@@ -411,22 +440,55 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                 )
             }
             {
-                sessionSettings.aiProvider === ModelProvider.Groq && (
+                mergedSettings.aiProvider === ModelProvider.Groq && (
                     <>
                         <GropModelSelect
-                            value={sessionSettings.groqModel}
+                            value={mergedSettings.groqModel}
                             onChange={(v) => updateSettingsEdit({ groqModel: v })}
                             className={specificSettings.groqModel === undefined ? 'opacity-50' : ''}
                         />
                         <MaxContextMessageCountSlider
-                            value={sessionSettings.openaiMaxContextMessageCount}
+                            value={mergedSettings.openaiMaxContextMessageCount}
                             onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
                             className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
                         />
                         <TemperatureSlider
-                            value={sessionSettings.temperature}
+                            value={mergedSettings.temperature}
                             onChange={(v) => updateSettingsEdit({ temperature: v })}
                             className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
+                        />
+                    </>
+                )
+            }
+            {
+                mergedSettings.aiProvider === ModelProvider.Custom && sessionCustomProviderModel && globalCustomProvider && (
+                    <>
+                        <CreatableSelect
+                            label={t('model')}
+                            value={sessionCustomProviderModel}
+                            options={globalCustomProvider.modelOptions || []}
+                            onChangeValue={(v) => {
+                                updateSettingsEdit({
+                                    customProviders: mergedSettings.customProviders.map(provider => {
+                                        if (provider.id === mergedSettings.selectedCustomProviderId) {
+                                            return { ...provider, model: v }
+                                        }
+                                        return provider
+                                    }),
+                                })
+                            }}
+                            onUpdateOptions={(v) => {
+                                setGlobalSettings(globalSettings => ({
+                                    ...globalSettings,
+                                    customProviders: globalSettings.customProviders.map(provider => {
+                                        if (provider.id === mergedSettings.selectedCustomProviderId) {
+                                            return { ...provider, modelOptions: v }
+                                        }
+                                        return provider
+                                    }),
+                                }))
+                            }}
+                            className={specificSettings.customProviders === undefined ? 'opacity-50' : ''}
                         />
                     </>
                 )

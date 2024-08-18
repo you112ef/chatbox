@@ -1,6 +1,7 @@
 import { ModelSettings, Session, SessionType, Settings } from "src/shared/types";
 import { ModelSettingUtil } from "./interface";
 import OpenAI, { OpenAIModel, openaiModelConfigs } from "../models/openai";
+import { uniq } from "lodash";
 
 export default class OpenAISettingUtil implements ModelSettingUtil {
     getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): string {
@@ -30,16 +31,16 @@ export default class OpenAISettingUtil implements ModelSettingUtil {
     }
 
     async listModelOptions(settings: Settings) {
-        const options = Array.from(Object.keys(openaiModelConfigs)).sort()
+        let models = Array.from(Object.keys(openaiModelConfigs)).sort()
         if (settings.openaiCustomModel) {
-            options.push(settings.openaiCustomModel)
+            models.push(settings.openaiCustomModel)
         }
-        return options.map(value => {
-            return {
-                label: value,
-                value: value,
-            }
-        })
+        models.push(...settings.openaiCustomModelOptions)
+        models = uniq(models)
+        return models.map(value => ({
+            label: value,
+            value: value,
+        }))
     }
 
     selectSessionModel(settings: Session["settings"], selected: string): Session["settings"] {

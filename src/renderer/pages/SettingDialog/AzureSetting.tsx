@@ -9,6 +9,7 @@ import PasswordTextField from '../../components/PasswordTextField'
 // import TokenConfig from './TokenConfig'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
+import CreatableSelect from '@/components/CreatableSelect'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -44,21 +45,14 @@ export default function AzureSetting(props: ModelConfigProps) {
                     setSettingsEdit({ ...settingsEdit, azureApikey: value })
                 }}
             />
-            <TextField
-                autoFocus={!isSmallScreen}
-                margin="dense"
+            <CreatableSelect
                 label={t('Azure Deployment Name')}
-                type="text"
-                fullWidth
-                variant="outlined"
                 value={settingsEdit.azureDeploymentName}
-                onChange={(e) =>
-                    setSettingsEdit({
-                        ...settingsEdit,
-                        azureDeploymentName: e.target.value.trim(),
-                    })
-                }
+                options={settingsEdit.azureDeploymentNameOptions}
+                onChangeValue={(v) => setSettingsEdit({ ...settingsEdit, azureDeploymentName: v })}
+                onUpdateOptions={(v) => setSettingsEdit({ ...settingsEdit, azureDeploymentNameOptions: v })}
             />
+
             <TextField
                 margin="dense"
                 label={t('Azure Dall-E Deployment Name')}

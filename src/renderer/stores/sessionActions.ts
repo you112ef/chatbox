@@ -944,10 +944,26 @@ export function mergeSettings(globalSettings: Settings, sessionSetting: Partial<
             break
     }
     specialSettings = omit(specialSettings) // 需要 omit 来去除 undefined，否则会覆盖掉全局配置
-    return {
+    const ret = {
         ...globalSettings,
         ...specialSettings, // 会话配置优先级高于全局配置
     }
+    // 对于自定义模型提供方，只有模型 model 可以被会话配置覆盖
+    if(ret.customProviders) {
+        ret.customProviders = globalSettings.customProviders.map(provider => {
+            if (specialSettings.customProviders) {
+                const specialProvider = specialSettings.customProviders.find(p => p.id === provider.id)
+                if (specialProvider) {
+                    return {
+                        ...provider,
+                        model: specialProvider.model, // model 字段的会话配置优先级高于全局配置
+                    }
+                }
+            }
+            return provider
+        })
+    }
+    return ret
 }
 
 function omit(obj: any) {
