@@ -9,8 +9,9 @@ import * as sessionActions from '../stores/sessionActions'
 import ImageIcon from '@mui/icons-material/Image'
 import Toolbar from './Toolbar'
 import { useIsSmallScreen } from '../hooks/useScreenChange'
-import { PanelRightClose, Settings2 } from 'lucide-react'
+import { PanelRightClose } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import EditIcon from '@mui/icons-material/Edit';
 
 interface Props { }
 
@@ -51,7 +52,7 @@ export default function Header(props: Props) {
                 title={t('Current conversation configured with specific model settings')}
                 className="cursor-pointer"
             >
-                <Settings2 className="ml-1 cursor-pointer w-4 h-4" fontSize="small"
+                <EditIcon className="ml-1 cursor-pointer w-4 h-4 opacity-30" fontSize="small"
                     style={{ color: theme.palette.warning.main }}
                 />
             </Tooltip>
@@ -74,7 +75,7 @@ export default function Header(props: Props) {
         )
     } else {
         EditButton = (
-            <Settings2 className="ml-1 cursor-pointer w-4 h-4 opacity-30" fontSize="small"
+            <EditIcon className="ml-1 cursor-pointer w-4 h-4 opacity-30" fontSize="small"
             />
         )
     }
