@@ -28,18 +28,14 @@ export function useAutoValidate() {
                 // 这里不清除数据，因为可能是本地数据尚未加载
                 return
             }
-            const instanceId = settings.licenseInstances[settings.licenseKey]
-            if (!instanceId) {
-                clearValidatedData()
-                return
-            }
+            const instanceId = settings.licenseInstances[settings.licenseKey] || ''
             try {
                 // 在 lemonsqueezy 检查 license 是否有效，主要检查是否过期、被禁用的情况。若无效则清除相关数据
                 const result = await remote.validateLicense({
                     licenseKey: settings.licenseKey,
                     instanceId: instanceId,
                 })
-                if (!result.valid) {
+                if (result.valid === false) {
                     clearValidatedData()
                     return
                 }
