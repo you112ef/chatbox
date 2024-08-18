@@ -1,4 +1,15 @@
 const changelog = `
+### v1.4.0 - 2024.08.18
+
+1. Added Mermaid chart preview, now you can preview AI-generated charts, flowcharts, mind maps, etc.
+2. Added quick buttons to switch between models
+3. Now you can add model options for custom models
+4. Updated model lists for various providers
+5. Added support for sending images when connecting to ollama's llava model
+6. After changing avatars, you can now revert to the default avatar
+7. Added support for Spanish and Portuguese languages
+8. Fixed several known minor issues
+
 ### v1.3.16 - 2024.07.22
 
 1. Add support for new model gpt-4o-mini API
