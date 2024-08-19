@@ -21,7 +21,7 @@ export function settings(): Settings {
         topP: 1,
         // openaiMaxTokens: 0,
         // openaiMaxContextTokens: 4000,
-        openaiMaxContextMessageCount: 10,
+        openaiMaxContextMessageCount: 20,
         // maxContextSize: "4000",
         // maxTokens: "2048",
 
