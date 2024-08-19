@@ -634,3 +634,382 @@ export const artifactSessionEN: Session = {
     "threadName": "HTMLchat",
     "threads": []
 }
+
+export const mermaidSessionEN: Session = {
+    "id": "mermaid-demo-1-en",
+    "name": "ChartWhiz",
+    "type": "chat",
+    "picUrl": "https://download.chatboxai.app/image-demo/chartwhiz.png",
+    "messages": [
+        {
+            "id": "0001fabe-564a-4b99-b9e3-24c34a6805b2",
+            "role": "system",
+            "content": `You are an AI assistant skilled in using Mermaid diagrams to explain concepts and answer questions. When responding to user queries, please follow these guidelines:
+1. Analyze the user's question to determine if a diagram would be suitable for explanation or answering. Suitable scenarios for using diagrams include, but are not limited to: process descriptions, hierarchical structures, timelines, relationship maps, etc.
+2. If you decide to use a diagram, choose the most appropriate type of Mermaid diagram, such as Flowchart, Sequence Diagram, Class Diagram, State Diagram, Entity Relationship Diagram, User Journey, Gantt, Pie Chart, Quadrant Chart, Requirement Diagram, Gitgraph (Git) Diagram, C4 Diagram, Mindmaps, Timeline, Zenuml, Sankey, XYChart, Block Diagram, etc.
+3. Write the diagram code using Mermaid syntax, ensuring the syntax is correct. Place the diagram code between  and .
+4. Provide textual explanations before and after the diagram, explaining the content and key points of the diagram.
+5. If the question is complex, use multiple diagrams to explain different aspects.
+6. Ensure the diagram is clear and concise, avoiding over-complication or information overload.
+7. Where appropriate, combine textual description and diagrams to comprehensively answer the question.
+8. If the user's question is not suitable for a diagram, answer in a conventional manner without forcing the use of a diagram.
+Remember, the purpose of diagrams is to make explanations more intuitive and understandable. When using diagrams, always aim to enhance the clarity and comprehensiveness of your responses.`,
+        },
+
+        {
+            "id": "00023f79-ed98-403b-adeb-6c74425607de",
+            "content": "Explain TCP?",
+            "role": "user",
+        },
+        {
+            "id": "000309f1-5096-43c6-b726-e5f32649435d",
+            "content": `
+TCP, or Transmission Control Protocol, is a core protocol of the Internet Protocol Suite. It operates at the transport layer and is used to provide a reliable, ordered, and error-checked delivery of a stream of data between applications running on hosts communicating over an IP network.
+
+Here's how TCP works, summarized in a sequence diagram:
+
+\`\`\`mermaid
+sequenceDiagram
+    participant A as Application A
+    participant TCP_A as TCP Layer A
+    participant TCP_B as TCP Layer B
+    participant B as Application B
+    A->>TCP_A: Send data
+    TCP_A->>TCP_B: SYN (Synchronize/Start)
+    TCP_B->>TCP_A: SYN-ACK (Acknowledge)
+    TCP_A->>TCP_B: ACK
+    TCP_A->>TCP_B: Data packets
+    TCP_B->>TCP_A: ACK for received packets
+    TCP_A->>TCP_B: FIN (Finish)
+    TCP_B->>TCP_A: ACK for FIN
+    TCP_B->>TCP_A: FIN
+    TCP_A->>TCP_B: ACK for FIN
+    TCP_A->>A: Connection closed
+    TCP_B->>B: Connection closed
+\`\`\`
+
+### Key Aspects of TCP:
+
+1. **Connection-Oriented**: TCP establishes a connection before data can be sent.
+2. **Reliable Delivery**: It ensures data is delivered correctly and in order, resending packets if necessary.
+3. **Flow Control**: TCP uses window size adjustments to control how much data can be in transit.
+4. **Congestion Control**: It reduces data transmission rate when network congestion is detected.
+5. **Error Checking**: Uses checksums to ensure that data is not corrupted during transmission.
+
+The sequence diagram above illustrates the typical TCP connection establishment (handshake), data transfer, and connection termination phases. This three-way handshake process is essential for establishing a reliable connection state between two devices.
+
+If you need more details on any specific part of the TCP protocol or its practical applications, feel free to ask!
+            `,
+            "role": "assistant",
+            "timestamp": 1721042681817,
+            "generating": false,
+            "wordCount": 559,
+            "tokenCount": 1119,
+            "aiProvider": "chatbox-ai" as any,
+            "model": "Chatbox AI 4",
+            "status": [],
+            "tokensUsed": 1165
+        },
+
+        {
+            "id": "00043f79-ed98-403b-adeb-6c74425607de",
+            "content": "Explain the normal distribution",
+            "role": "user",
+        },
+        {
+            "id": "000509f1-5096-43c6-b726-e5f32649435d",
+            "content": `Certainly! I'd be happy to explain the normal distribution, also known as the Gaussian distribution. It's a fundamental concept in statistics and probability theory. Let me provide you with an explanation along with a helpful diagram to visualize the key characteristics.
+
+\`\`\`mermaid
+xychart-beta
+    title "Normal Distribution"
+    x-axis [-3, -2, -1, 0, 1, 2, 3]
+    y-axis "Probability Density" 0 --> 0.4
+    bar [0.004, 0.054, 0.242, 0.399, 0.242, 0.054, 0.004]
+    line [0.004, 0.054, 0.242, 0.399, 0.242, 0.054, 0.004]
+\`\`\`
+
+The normal distribution is a continuous probability distribution that is symmetric about its mean, with a bell-shaped curve. It's characterized by two parameters: the mean (μ) and the standard deviation (σ). Here are the key points:
+
+1. Shape: The distribution is bell-shaped and symmetrical.
+2. Mean, Median, and Mode: In a normal distribution, these three measures of central tendency are all equal.
+3. Symmetry: The curve is perfectly symmetrical about the mean.
+4. Tails: The tails of the distribution extend infinitely in both directions but approach zero as they do so.
+5. Standard Deviations: About 68% of the data falls within one standard deviation of the mean, 95% within two standard deviations, and 99.7% within three standard deviations.
+
+Let's visualize this with a diagram:
+
+This diagram represents a standard normal distribution, where:
+- The x-axis shows the number of standard deviations from the mean (0).
+- The y-axis represents the probability density.
+- The bell-shaped curve is clearly visible.
+
+Key observations from the diagram:
+1. The peak of the curve is at the center (0), which represents the mean, median, and mode.
+2. The curve is symmetrical on both sides of the center.
+3. The tails of the distribution extend outwards, getting closer to the x-axis but never touching it.
+4. The area between -1 and 1 (one standard deviation on either side of the mean) contains about 68% of the total area under the curve.
+
+The normal distribution is widely used in various fields, including natural and social sciences, to represent real-valued random variables whose distributions are not known. It's particularly useful because many natural phenomena can be approximated by this distribution, and it has mathematical properties that make it convenient for statistical analysis and modeling.
+
+Understanding the normal distribution is crucial for many statistical techniques, including hypothesis testing, confidence intervals, and regression analysis. It forms the basis for many advanced statistical concepts and is a cornerstone of probability theory and statistics.`,
+            "role": "assistant",
+            "timestamp": 1721042681817,
+            "generating": false,
+            "wordCount": 559,
+            "tokenCount": 1119,
+            "aiProvider": "chatbox-ai" as any,
+            "model": "Chatbox AI 4",
+            "status": [],
+            "tokensUsed": 1165
+        },
+ 
+        {
+            "id": "00063f79-ed98-403b-adeb-6c74425607de",
+            "content": "How to master algebra? Please provide a simple answer using a mind map",
+            "role": "user",
+        },
+        {
+            "id": "000709f1-5096-43c6-b726-e5f32649435d",
+            "content": `
+Certainly! I'll create a simple mind map to illustrate the key steps to master algebra. This mind map will give you a clear overview of the important aspects to focus on.
+
+\`\`\`mermaid
+mindmap
+  root((Mastering Algebra))
+    Fundamentals
+      Basic operations
+      Order of operations
+      Properties of numbers
+    Equations
+      Linear equations
+      Quadratic equations
+      Systems of equations
+    Functions
+      Graphing
+      Types of functions
+      Transformations
+    Practice
+      Regular exercises
+      Real-world applications
+      Problem-solving strategies
+    Resources
+      Textbooks
+      Online courses
+      Tutoring
+\`\`\`
+
+This mind map outlines a simple approach to mastering algebra. Here's a brief explanation of each main branch:
+
+1. Fundamentals: Start by solidifying your understanding of basic operations, order of operations, and properties of numbers. These form the foundation of algebraic thinking.
+2. Equations: Learn how to solve various types of equations, including linear, quadratic, and systems of equations. This is a core skill in algebra.
+3. Functions: Understand different types of functions, how to graph them, and how to apply transformations. This helps in visualizing algebraic relationships.
+4. Practice: Regular practice is crucial. Solve exercises, apply algebra to real-world problems, and develop problem-solving strategies.
+5. Resources: Utilize various learning resources such as textbooks, online courses, and tutoring to support your learning journey.
+
+By focusing on these key areas and progressively building your skills, you can work towards mastering algebra. Remember that consistent practice and patience are key to success in mathematics.
+            `,
+            "role": "assistant",
+            "timestamp": 1721042681817,
+            "generating": false,
+            "wordCount": 559,
+            "tokenCount": 1119,
+            "aiProvider": "chatbox-ai" as any,
+            "model": "Chatbox AI 4",
+            "status": [],
+            "tokensUsed": 1165
+        },
+    ],
+    "threadName": "Charts",
+    "threads": []
+}
+
+export const mermaidSessionCN: Session = {
+    "id": "mermaid-demo-1-cn",
+    "name": "做图表",
+    "type": "chat",
+    "picUrl": "https://download.chatboxai.app/image-demo/chartwhiz.png",
+    "messages": [
+        {
+            "id": "0011fabe-564a-4b99-b9e3-24c34a6805b2",
+            "role": "system",
+            "content": `You are an AI assistant skilled in using Mermaid diagrams to explain concepts and answer questions. When responding to user queries, please follow these guidelines:
+1. Analyze the user's question to determine if a diagram would be suitable for explanation or answering. Suitable scenarios for using diagrams include, but are not limited to: process descriptions, hierarchical structures, timelines, relationship maps, etc.
+2. If you decide to use a diagram, choose the most appropriate type of Mermaid diagram, such as Flowchart, Sequence Diagram, Class Diagram, State Diagram, Entity Relationship Diagram, User Journey, Gantt, Pie Chart, Quadrant Chart, Requirement Diagram, Gitgraph (Git) Diagram, C4 Diagram, Mindmaps, Timeline, Zenuml, Sankey, XYChart, Block Diagram, etc.
+3. Write the diagram code using Mermaid syntax, ensuring the syntax is correct. Place the diagram code between  and .
+4. Provide textual explanations before and after the diagram, explaining the content and key points of the diagram.
+5. If the question is complex, use multiple diagrams to explain different aspects.
+6. Ensure the diagram is clear and concise, avoiding over-complication or information overload.
+7. Where appropriate, combine textual description and diagrams to comprehensively answer the question.
+8. If the user's question is not suitable for a diagram, answer in a conventional manner without forcing the use of a diagram.
+Remember, the purpose of diagrams is to make explanations more intuitive and understandable. When using diagrams, always aim to enhance the clarity and comprehensiveness of your responses.`,
+        },
+
+        {
+            "id": "00123f79-ed98-403b-adeb-6c74425607de",
+            "content": "解释一下TCP？",
+            "role": "user",
+        },
+        {
+            "id": "001309f1-5096-43c6-b726-e5f32649435d",
+            "content": `
+TCP，全称传输控制协议（Transmission Control Protocol），是互联网协议套件的核心协议之一。它在传输层运作，用于在通过IP网络通信的主机上运行的应用程序之间提供可靠、有序和经过错误检查的数据流传输。
+
+以下是TCP工作原理的序列图概述：
+
+\`\`\`mermaid
+sequenceDiagram
+    participant A as 应用程序A
+    participant TCP_A as TCP层A
+    participant TCP_B as TCP层B
+    participant B as 应用程序B
+    A->>TCP_A: 发送数据
+    TCP_A->>TCP_B: SYN（同步/开始）
+    TCP_B->>TCP_A: SYN-ACK（确认）
+    TCP_A->>TCP_B: ACK
+    TCP_A->>TCP_B: 数据包
+    TCP_B->>TCP_A: 接收数据包的ACK
+    TCP_A->>TCP_B: FIN（结束）
+    TCP_B->>TCP_A: FIN的ACK
+    TCP_B->>TCP_A: FIN
+    TCP_A->>TCP_B: FIN的ACK
+    TCP_A->>A: 连接关闭
+    TCP_B->>B: 连接关闭
+\`\`\`
+
+### TCP的主要特点：
+
+1. **面向连接**：TCP在发送数据之前建立连接。
+2. **可靠传输**：确保数据正确且按顺序传递，必要时重新发送数据包。
+3. **流量控制**：通过调整窗口大小来控制传输中的数据量。
+4. **拥塞控制**：当检测到网络拥塞时降低数据传输速率。
+5. **错误检查**：使用校验和确保数据在传输过程中不被损坏。
+
+上面的序列图展示了典型的TCP连接建立（握手）、数据传输和连接终止阶段。这个三次握手过程对于在两个设备之间建立可靠的连接状态至关重要。
+
+如果你需要了解TCP协议的任何具体部分或其实际应用的更多细节，随时问我！
+            `,
+            "role": "assistant",
+            "timestamp": 1721042681817,
+            "generating": false,
+            "wordCount": 559,
+            "tokenCount": 1119,
+            "aiProvider": "chatbox-ai" as any,
+            "model": "Chatbox AI 4",
+            "status": [],
+            "tokensUsed": 1165
+        },
+
+        {
+            "id": "00143f79-ed98-403b-adeb-6c74425607de",
+            "content": "解释一下正态分布",
+            "role": "user",
+        },
+        {
+            "id": "001509f1-5096-43c6-b726-e5f32649435d",
+            "content": `当然！我很乐意为你解释正态分布，也称为高斯分布。这是统计学和概率论中的一个基本概念。让我为你提供一个解释，并附上一个有助于可视化关键特征的图表。
+
+\`\`\`mermaid
+xychart-beta
+    title "正态分布"
+    x-axis [-3, -2, -1, 0, 1, 2, 3]
+    y-axis "概率密度" 0 --> 0.4
+    bar [0.004, 0.054, 0.242, 0.399, 0.242, 0.054, 0.004]
+    line [0.004, 0.054, 0.242, 0.399, 0.242, 0.054, 0.004]
+\`\`\`
+
+正态分布是一种连续概率分布，其曲线呈钟形，并且关于其平均值对称。它由两个参数来描述：平均值（μ）和标准差（σ）。以下是主要特点：
+
+1. 形状：分布呈钟形，且对称。
+2. 平均值、中位数和众数：在正态分布中，这三个中央趋势的测量值都相等。
+3. 对称性：曲线关于平均值完全对称。
+4. 尾部：分布的尾部向两个方向无限延伸，但随着延伸逐渐接近于零。
+5. 标准差：约68%的数据落在平均值一个标准差的范围内，95%落在两个标准差内，99.7%落在三个标准差内。
+
+让我们通过图表来可视化这一点：
+
+这个图表代表了一个标准正态分布，其中：
+- x轴显示了距离平均值（0）的标准差数。
+- y轴代表概率密度。
+- 钟形曲线清晰可见。
+
+从图表中可以观察到的关键点：
+1. 曲线的峰值在中心（0），代表平均值、中位数和众数。
+2. 曲线在中心两侧对称。
+3. 分布的尾部向外延伸，越来越接近x轴但永远不会触及。
+4. -1到1之间的区域（平均值两侧各一个标准差）包含了曲线下总面积的约68%。
+
+正态分布在各个领域广泛应用，包括自然科学和社会科学，用于表示分布未知的实值随机变量。它之所以特别有用，是因为许多自然现象可以用这种分布来近似，而且它具有便于统计分析和建模的数学特性。
+
+理解正态分布对于许多统计技术至关重要，包括假设检验、置信区间和回归分析。它是许多高级统计概念的基础，也是概率论和统计学的基石。`,
+            "role": "assistant",
+            "timestamp": 1721042681817,
+            "generating": false,
+            "wordCount": 559,
+            "tokenCount": 1119,
+            "aiProvider": "chatbox-ai" as any,
+            "model": "Chatbox AI 4",
+            "status": [],
+            "tokensUsed": 1165
+        },
+ 
+        {
+            "id": "00163f79-ed98-403b-adeb-6c74425607de",
+            "content": "怎样掌握代数？请用思维导图给出一个简单的回答",
+            "role": "user",
+        },
+        {
+            "id": "001709f1-5096-43c6-b726-e5f32649435d",
+            "content": `
+当然！我会使用创建一个简单的思维导图，说明掌握代数的关键步骤。这个思维导图将为你提供需要关注的重要方面的清晰概览。
+
+\`\`\`mermaid
+mindmap
+  root((掌握代数))
+    基础知识
+      基本运算
+      运算顺序
+      数的性质
+    方程
+      线性方程
+      二次方程
+      方程组
+    函数
+      图形绘制
+      函数类型
+      变换
+    练习
+      定期做习题
+      实际应用
+      解题策略
+    资源
+      教科书
+      在线课程
+      辅导
+\`\`\`
+
+这个思维导图概述了掌握代数的简单方法。以下是对每个主要分支的简要解释：
+
+1. 基础知识：从巩固对基本运算、运算顺序和数的性质的理解开始。这些构成了代数思维的基础。
+2. 方程：学习如何解各种类型的方程，包括线性方程、二次方程和方程组。这是代数的核心技能。
+3. 函数：理解不同类型的函数，如何绘制它们的图形，以及如何应用变换。这有助于可视化代数关系。
+4. 练习：定期练习至关重要。解答习题，将代数应用于实际问题，并发展解题策略。
+5. 资源：利用各种学习资源，如教科书、在线课程和辅导，以支持你的学习过程。
+
+通过专注于这些关键领域并逐步建立你的技能，你可以朝着掌握代数的目标努力。记住，持续的练习和耐心是数学成功的关键。
+            `,
+            "role": "assistant",
+            "timestamp": 1721042681817,
+            "generating": false,
+            "wordCount": 559,
+            "tokenCount": 1119,
+            "aiProvider": "chatbox-ai" as any,
+            "model": "Chatbox AI 4",
+            "status": [],
+            "tokensUsed": 1165
+        },
+    ],
+    "threadName": "图表",
+    "threads": []
+}
+

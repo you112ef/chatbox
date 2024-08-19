@@ -1,7 +1,7 @@
 import { getDefaultStore } from 'jotai'
 import { settingsAtom, sessionsAtom } from './atoms'
 import * as defaults from '../../shared/defaults'
-import { artifactSessionCN, artifactSessionEN, imageCreatorSessionForCN, imageCreatorSessionForEN } from '@/packages/initial_data'
+import { mermaidSessionCN, mermaidSessionEN, artifactSessionCN, artifactSessionEN, imageCreatorSessionForCN, imageCreatorSessionForEN } from '@/packages/initial_data'
 import platform from '@/platform'
 import WebPlatform from '@/platform/web_platform'
 import storage, { StorageKey } from '@/storage'
@@ -41,6 +41,11 @@ async function _migrate() {
         if (needRelaunch) {
             await platform.relaunch()
         }
+    }
+    if (configVersion < 6) {
+        await migrate_5_to_6()
+        configVersion = 6
+        await storage.setItem(StorageKey.ConfigVersion, configVersion)
     }
 }
 
@@ -122,4 +127,17 @@ async function migrate_4_to_5(): Promise<boolean> {
         await storage.setItem(key, oldStore.get(key))
     }
     return true
+}
+
+async function migrate_5_to_6() {
+    const sessions = await storage.getItem(StorageKey.ChatSessions, defaults.sessions())
+    const lang = await platform.getLocale()
+    const targetSession = lang.startsWith('zh') ? mermaidSessionCN : mermaidSessionEN
+    if (sessions.find((session) => session.id === targetSession.id)) {
+        return
+    }
+    getDefaultStore().set(sessionsAtom, [
+        ...sessions,
+        targetSession,
+    ])
 }
