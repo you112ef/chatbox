@@ -37,6 +37,7 @@ export function useAutoValidate() {
                 })
                 if (result.valid === false) {
                     clearValidatedData()
+                    platform.appLog('info', `clear license validated data due to invalid result: ${JSON.stringify(result)}`)
                     return
                 }
             } catch (err) {
@@ -47,6 +48,7 @@ export function useAutoValidate() {
                     && [401, 403, 404].includes(err.status)
                 ) {
                     clearValidatedData()
+                    platform.appLog('info', `clear license validated data due to respones status: ${err.status}`)
                 } else {
                     // 其余情况可能是联网出现问题，不清除数据
                     Sentry.captureException(err)

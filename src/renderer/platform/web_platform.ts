@@ -138,4 +138,8 @@ export default class WebPlatform implements Platform {
     public async shouldShowAboutDialogWhenStartUp(): Promise<boolean> {
         return false
     }
+
+    public async appLog(level: string, message: string): Promise<void> {
+        console.log(`APP_LOG: [${level}] ${message}`)
+    }
 }

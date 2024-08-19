@@ -46,6 +46,8 @@ export interface Platform {
 
     // 通知
     shouldShowAboutDialogWhenStartUp(): Promise<boolean>
+
+    appLog(level: string, message: string): Promise<void>
 }
 
 

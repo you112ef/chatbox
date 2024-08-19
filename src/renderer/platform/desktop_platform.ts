@@ -105,4 +105,8 @@ export default class DesktopPlatform implements Platform {
     public async shouldShowAboutDialogWhenStartUp(): Promise<boolean> {
         return this.ipc.invoke('shouldShowAboutDialogWhenStartUp')
     }
+
+    public async appLog(level: string, message: string) {
+        return this.ipc.invoke('appLog', JSON.stringify({ level, message }))
+    }
 }
