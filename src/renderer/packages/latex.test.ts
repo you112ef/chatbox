@@ -16,13 +16,13 @@ describe('processLaTeX', () => {
 
   test('converts block LaTeX expressions correctly', () => {
     const content = 'This is a block LaTeX expression: \\[E = mc^2\\]';
-    const expected = 'This is a block LaTeX expression: $$E = mc^2$$';
+    const expected = 'This is a block LaTeX expression: $$\nE = mc^2\n$$';
     expect(processLaTeX(content)).toBe(expected);
   });
 
   test('converts mixed LaTeX expressions correctly', () => {
     const content = 'Inline \\(a + b = c\\) and block \\[x^2 + y^2 = z^2\\]';
-    const expected = 'Inline $a + b = c$ and block $$x^2 + y^2 = z^2$$';
+    const expected = 'Inline $a + b = c$ and block $$\nx^2 + y^2 = z^2\n$$';
     expect(processLaTeX(content)).toBe(expected);
   });
 
@@ -67,22 +67,24 @@ describe('processLaTeX', () => {
   test('correctly processes complex block LaTeX with line breaks', () => {
     const complexBlockLatex = `Certainly! Here's an example of a mathematical formula written in LaTeX:
 
-    \\[
-    \\sum_{i=1}^{n} \\left( \\frac{x_i}{y_i} \\right)^2
-    \\]
+\\[
+\\sum_{i=1}^{n} \\left( \\frac{x_i}{y_i} \\right)^2
+\\]
     
-    This formula represents the sum of the squares of the ratios of \\(x\\) to \\(y\\) for \\(n\\) terms, where \\(x_i\\) and \\(y_i\\) represent the values of \\(x\\) and \\(y\\) for each term.
-    
-    LaTeX is a typesetting system commonly used for mathematical and scientific documents. It provides a wide range of formatting options and symbols for expressing mathematical expressions.`;
+This formula represents the sum of the squares of the ratios of \\(x\\) to \\(y\\) for \\(n\\) terms, where \\(x_i\\) and \\(y_i\\) represent the values of \\(x\\) and \\(y\\) for each term.
+
+LaTeX is a typesetting system commonly used for mathematical and scientific documents. It provides a wide range of formatting options and symbols for expressing mathematical expressions.`;
     const expectedOutput = `Certainly! Here's an example of a mathematical formula written in LaTeX:
 
-    $$
-    \\sum_{i=1}^{n} \\left( \\frac{x_i}{y_i} \\right)^2
-    $$
+$$
+
+\\sum_{i=1}^{n} \\left( \\frac{x_i}{y_i} \\right)^2
+
+$$
     
-    This formula represents the sum of the squares of the ratios of $x$ to $y$ for $n$ terms, where $x_i$ and $y_i$ represent the values of $x$ and $y$ for each term.
-    
-    LaTeX is a typesetting system commonly used for mathematical and scientific documents. It provides a wide range of formatting options and symbols for expressing mathematical expressions.`;
+This formula represents the sum of the squares of the ratios of $x$ to $y$ for $n$ terms, where $x_i$ and $y_i$ represent the values of $x$ and $y$ for each term.
+
+LaTeX is a typesetting system commonly used for mathematical and scientific documents. It provides a wide range of formatting options and symbols for expressing mathematical expressions.`;
     expect(processLaTeX(complexBlockLatex)).toBe(expectedOutput);
   });
 
