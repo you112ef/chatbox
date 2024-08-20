@@ -331,7 +331,7 @@ ipcMain.handle('shouldShowAboutDialogWhenStartUp', (event) => {
 })
 
 ipcMain.handle('appLog', (event, dataJson) => {
-    const data: { level: string, message: string } = JSON.parse(dataJson)
+    const data: { level: string; message: string } = JSON.parse(dataJson)
     data.message = 'APP_LOG: ' + data.message
     switch (data.level) {
         case 'info':
