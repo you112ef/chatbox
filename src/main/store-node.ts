@@ -36,6 +36,8 @@ export function getConfig(): Config {
     return configs
 }
 
+// ------------------ backup ------------------
+
 export async function backup() {
     const configPath = path.resolve(app.getPath('userData'), 'config.json')
     if (!fs.existsSync(configPath)) {
@@ -43,34 +45,79 @@ export async function backup() {
     }
     const now = new Date()
     const year = now.getFullYear()
-    const month = now.getMonth() + 1
-    const day = now.getDate()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const day = String(now.getDate()).padStart(2, '0')
     const backupPath = path.resolve(app.getPath('userData'), `config-backup-${year}-${month}-${day}.json`)
-    await fs.copy(configPath, backupPath)
+    try {
+        await fs.copy(configPath, backupPath)
+    } catch (err) {
+        log.error('Failed to backup config:', err)
+        return
+    }
     return backupPath
 }
 
-export async function needBackup() {
-    const filenames = await fs.readdir(app.getPath('userData'))
+export async function getBackups() {
+    let filenames: string[]
+    try {
+        filenames = await fs.readdir(app.getPath('userData'))
+    } catch (err) {
+        log.error('Failed to read directory:', err)
+        return []
+    }
     const backupFilenames = filenames.filter((filename) => filename.startsWith('config-backup-'))
     if (backupFilenames.length === 0) {
-        return true
+        return []
     }
-    // 是否大于7天
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-    return backupFilenames.some((filename) => {
+    let backupFileInfos = backupFilenames.map((filename) => {
         const dateStr = filename.replace('config-backup-', '').replace('.json', '')
         const date = new Date(dateStr)
-        if (isNaN(date.getTime())) {
-            return false
+        return {
+            filename,
+            // date,
+            dateMs: date.getTime() || 0,
         }
-        return date < sevenDaysAgo
     })
+    backupFileInfos = backupFileInfos.sort((a, b) => a.dateMs - b.dateMs)
+    return backupFileInfos
+}
+
+export async function needBackup() {
+    // 7天备份一次
+    const backups = await getBackups()
+    if (backups.length === 0) {
+        return true
+    }
+    const lastBackup = backups[backups.length - 1]
+    return lastBackup.dateMs < Date.now() - 7 * 24 * 60 * 60 * 1000
+}
+
+export async function clearBackups() {
+    // 保留最近10个备份
+    const backups = await getBackups()
+    if (backups.length < 10) {
+        return
+    }
+    const needDelete = backups.slice(0, backups.length - 10)
+    try {
+        await Promise.all(
+            needDelete.map(async (backup) => {
+                const backupPath = path.resolve(app.getPath('userData'), backup.filename)
+                await fs.remove(backupPath)
+                log.info('clear backup:', backup.filename)
+            })
+        )
+    } catch (err) {
+        log.error('Failed to clear backups:', err)
+    }
 }
 
 export async function autoBackup() {
     if (await needBackup()) {
         const filename = await backup()
-        log.info('auto backup:', filename)
+        if (filename) {
+            log.info('auto backup:', filename)
+        }
     }
+    await clearBackups()
 }
