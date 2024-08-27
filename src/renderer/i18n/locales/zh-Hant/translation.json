@@ -262,5 +262,6 @@
     "Refresh": "刷新",
     "Auto-preview artifacts": "自動預覽生成內容(Artifacts)",
     "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "自動渲染生成的內容（例如，帶有 CSS、JS、Tailwind 的 HTML）",
-    "Mermaid Diagrams & Charts Rendering": "Mermaid 圖表與圖表渲染"
+    "Mermaid Diagrams & Charts Rendering": "Mermaid 圖表與圖表渲染",
+    "Delete Current Session": "刪除當前會話"
 }

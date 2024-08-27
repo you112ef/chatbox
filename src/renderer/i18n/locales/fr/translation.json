@@ -262,5 +262,6 @@
     "Refresh": "Actualiser",
     "Auto-preview artifacts": "Aperçu automatique des artefacts",
     "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "Rendu automatique des artefacts générés (par exemple, HTML avec CSS, JS, Tailwind)",
-    "Mermaid Diagrams & Charts Rendering": "Rendu de diagrammes et de graphiques Mermaid"
+    "Mermaid Diagrams & Charts Rendering": "Rendu de diagrammes et de graphiques Mermaid",
+    "Delete Current Session": "Supprimer la session actuelle"
 }

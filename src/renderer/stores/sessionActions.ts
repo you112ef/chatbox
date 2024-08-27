@@ -205,6 +205,9 @@ export function clear(sessionId: string) {
     if (!session) {
         return
     }
+    session.messages.forEach((msg) => {
+        msg?.cancel?.()
+    })
     modify({
         ...session,
         messages: session.messages.filter((m) => m.role === 'system'),
