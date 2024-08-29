@@ -4,7 +4,7 @@ import Ollama from "../models/ollama";
 import BaseConfig from "./base-config";
 
 export default class OllamaSettingUtil extends BaseConfig implements ModelSettingUtil {
-    getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): string {
+    async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
         return `Ollama (${settings.ollamaModel})`
     }
 

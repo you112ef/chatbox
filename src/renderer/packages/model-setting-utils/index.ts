@@ -26,9 +26,9 @@ export function getModelSettingUtil(aiProvider: ModelProvider): ModelSettingUtil
     return new Class()
 }
 
-export function getModelDisplayName(settings: Settings, sessionType: SessionType) {
+export async function getModelDisplayName(settings: Settings, sessionType: SessionType) {
     const util = getModelSettingUtil(settings.aiProvider)
-    return util.getCurrentModelDisplayName(settings, sessionType)
+    return await util.getCurrentModelDisplayName(settings, sessionType)
 }
 
 export function isModelSupportImageInput(settings: ModelSettings): boolean {

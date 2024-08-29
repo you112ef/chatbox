@@ -1,9 +1,10 @@
 import { ModelSettings, Session, SessionType, Settings, ModelOptionGroup } from "src/shared/types"
 
 export interface ModelSettingUtil {
-    getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): string
+    getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string>
 
     getCurrentModelOptionValue(settings: Settings): string
+    getCurrentModelOptionLabel(settings: Settings): Promise<string>
 
     getLocalOptionGroups(settings: Settings): ModelOptionGroup[]
     getRemoteOptionGroups(settings: Settings): Promise<ModelOptionGroup[]>

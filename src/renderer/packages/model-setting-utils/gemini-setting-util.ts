@@ -4,7 +4,7 @@ import Gemini, { GeminiModel, geminiModels } from "../models/gemini";
 import BaseConfig from "./base-config";
 
 export default class GeminiSettingUtil extends BaseConfig implements ModelSettingUtil {
-    getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): string {
+    async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
         return `Google (${settings.geminiModel})`
     }
 

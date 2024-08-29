@@ -4,12 +4,17 @@ import { chatboxAIModels } from "../models/chatboxai";
 import BaseConfig from "./base-config";
 
 export default class ChatboxAISettingUtil extends BaseConfig implements ModelSettingUtil {
-    getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): string {
+    async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
         if (sessionType === 'picture') {
             return `Chatbox AI (DALL-E-3)`
         } else {
-            const model = settings.chatboxAIModel || 'chatboxai-3.5'
-            return model.replace('chatboxai-', 'Chatbox AI ')
+            // const model = settings.chatboxAIModel || 'chatboxai-3.5'
+            let model = await this.getCurrentModelOptionLabel(settings)
+            if (!model.toLowerCase().includes('chatbox')) {
+                model = `Chatbox AI (${model})`
+            }
+            model = model.replace('chatboxai-', 'Chatbox AI ')
+            return model
         }
     }
 

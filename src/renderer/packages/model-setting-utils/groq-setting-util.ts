@@ -4,7 +4,7 @@ import { GroqModel, groqModels } from "../models/groq";
 import BaseConfig from "./base-config";
 
 export default class GroqSettingUtil extends BaseConfig implements ModelSettingUtil {
-    getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): string {
+    async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
         return `Groq (${settings.groqModel})`
     }
 

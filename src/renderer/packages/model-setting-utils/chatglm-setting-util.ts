@@ -3,7 +3,7 @@ import { ModelSettingUtil } from "./interface";
 import BaseConfig from './base-config'
 
 export default class ChatGLMSettingUtil extends BaseConfig implements ModelSettingUtil {
-    getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): string {
+    async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
         return 'ChatGLM'
     }
 

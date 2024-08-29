@@ -5,7 +5,7 @@ import { uniq } from "lodash";
 import BaseConfig from "./base-config";
 
 export default class OpenAISettingUtil extends BaseConfig implements ModelSettingUtil {
-    getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): string {
+    async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
         if (sessionType === 'picture') {
             return `OpenAI (DALL-E-3)`
         } else {

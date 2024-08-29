@@ -4,7 +4,7 @@ import AzureOpenAI from "../models/azure";
 import BaseConfig from "./base-config";
 
 export default class AzureSettingUtil extends BaseConfig implements ModelSettingUtil {
-    getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): string {
+    async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
         if (sessionType === 'picture') {
             return `Azure OpenAI (${settings.azureDalleDeploymentName})`
         } else {

@@ -4,7 +4,7 @@ import * as settingActions from "../../stores/settingActions"
 import BaseConfig from "./base-config";
 
 export default class CustomModelSettingUtil extends BaseConfig implements ModelSettingUtil {
-    getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): string {
+    async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
         const customProvider = settings.customProviders?.find((provider) => provider.id === settings.selectedCustomProviderId)
         if (!customProvider) {
             return 'unknown'

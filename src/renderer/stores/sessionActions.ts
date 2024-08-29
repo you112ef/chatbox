@@ -588,7 +588,7 @@ export async function submitNewUserMessage(params: {
             ...newAssistantMsg,
             generating: false,
             cancel: undefined,
-            model: getModelDisplayName(settings, 'chat'),
+            model: await getModelDisplayName(settings, 'chat'),
             content: '',
             errorCode,
             error: `${err.message}`, // 这么写是为了避免类型问题
@@ -636,7 +636,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
             : targetMsg.pictures,
         cancel: undefined,
         aiProvider: settings.aiProvider,
-        model: getModelDisplayName(settings, session.type || 'chat'),
+        model: await getModelDisplayName(settings, session.type || 'chat'),
         style: session.type === 'picture' ? settings.dalleStyle : undefined,
         generating: true,
         errorCode: undefined,

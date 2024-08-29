@@ -42,4 +42,19 @@ export default class BaseConfig {
         return ret
     }
 
+    getCurrentModelOptionValue(settings: Settings) {
+        return ''
+    }
+
+    async getCurrentModelOptionLabel(settings: Settings): Promise<string> {
+        const currentValue = this.getCurrentModelOptionValue(settings)
+        const optionGroups = await this.getMergeOptionGroups(settings)
+        for (const optionGroup of optionGroups) {
+            const option = optionGroup.options.find(option => option.value === currentValue)
+            if (option) {
+                return option.label
+            }
+        }
+        return currentValue
+    }
 }
