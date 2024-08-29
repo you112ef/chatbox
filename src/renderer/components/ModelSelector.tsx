@@ -14,6 +14,8 @@ import Divider from '@mui/material/Divider';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import useModelConfig from '@/hooks/useModelConfig'
+import { chatboxAIModelLabelHash } from './ChatboxAIModelSelect'
+import { ModelProvider } from '../../shared/types'
 
 export function ChatModelSelector(props: {}) {
     const currentMergedSettings = useAtomValue(atoms.currentMergedSettingsAtom)
@@ -70,6 +72,10 @@ export function ChatModelSelector(props: {}) {
 
     const isSmallScreen = useIsSmallScreen()
 
+    const labelHash = currentMergedSettings.aiProvider === ModelProvider.ChatboxAI
+        ? chatboxAIModelLabelHash
+        : {}
+
     return (
         <div>
             {
@@ -89,7 +95,7 @@ export function ChatModelSelector(props: {}) {
                             onClick={handleMenuOpen}
                         >
                             <span className='text-sm opacity-70'>
-                                {currentOption.label}
+                                {labelHash[currentOption.value] || currentOption.label}
                             </span>
                             <ChevronsUpDown size='16' strokeWidth={1} className='opacity-50' />
                         </MiniButton>
@@ -159,7 +165,7 @@ export function ChatModelSelector(props: {}) {
                                 onClick={() => handleMenuItemSelect(option.value)}
                                 dense
                             >
-                                {option.label}
+                                {labelHash[option.value] || option.label}
                             </MenuItem>
                         )))
                     }
