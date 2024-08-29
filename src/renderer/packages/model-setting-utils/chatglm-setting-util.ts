@@ -1,23 +1,25 @@
 import { ModelSettings, Session, SessionType, Settings } from "src/shared/types";
 import { ModelSettingUtil } from "./interface";
+import BaseConfig from './base-config'
 
-export default class ChatGLMSettingUtil implements ModelSettingUtil {
+export default class ChatGLMSettingUtil extends BaseConfig implements ModelSettingUtil {
     getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): string {
         return 'ChatGLM'
     }
 
-    getCurrentModelOption(settings: Settings) {
-        return {
-            label: 'ChatGLM',
-            value: 'ChatGLM',
-        }
+    getCurrentModelOptionValue(settings: Settings) {
+        return 'ChatGLM'
     }
 
-    async listModelOptions(settings: Settings) {
+    getLocalOptionGroups(settings: Settings) {
         return [
             {
-                label: 'ChatGLM',
-                value: 'ChatGLM',
+                options: [
+                    {
+                        label: 'ChatGLM',
+                        value: 'ChatGLM',
+                    }
+                ]
             }
         ]
     }

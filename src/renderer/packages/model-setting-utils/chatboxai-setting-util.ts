@@ -1,8 +1,9 @@
 import { ChatboxAIModel, ModelSettings, Session, SessionType, Settings } from "src/shared/types";
 import { ModelSettingUtil } from "./interface";
 import { chatboxAIModels } from "../models/chatboxai";
+import BaseConfig from "./base-config";
 
-export default class ChatboxAISettingUtil implements ModelSettingUtil {
+export default class ChatboxAISettingUtil extends BaseConfig implements ModelSettingUtil {
     getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): string {
         if (sessionType === 'picture') {
             return `Chatbox AI (DALL-E-3)`
@@ -12,21 +13,19 @@ export default class ChatboxAISettingUtil implements ModelSettingUtil {
         }
     }
 
-    getCurrentModelOption(settings: Settings) {
-        const value = settings.chatboxAIModel || 'chatboxai-3.5'
-        return {
-            label: this.formatModelLabel(value),
-            value: value,
-        }
+    getCurrentModelOptionValue(settings: Settings) {
+        return settings.chatboxAIModel || 'chatboxai-3.5'
     }
 
-    async listModelOptions(settings: Settings) {
-        return chatboxAIModels.map(value => {
-            return {
-                label: this.formatModelLabel(value),
-                value: value,
+    getLocalOptionGroups(settings: Settings) {
+        return [
+            {
+                options: chatboxAIModels.map(value => ({
+                    label: this.formatModelLabel(value),
+                    value: value,
+                }))
             }
-        })
+        ]
     }
 
     formatModelLabel(value: string): string {

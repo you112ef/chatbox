@@ -1,8 +1,9 @@
 import { ModelSettings, Session, SessionType, Settings } from "src/shared/types";
 import { ModelSettingUtil } from "./interface";
 import * as settingActions from "../../stores/settingActions"
+import BaseConfig from "./base-config";
 
-export default class CustomModelSettingUtil implements ModelSettingUtil {
+export default class CustomModelSettingUtil extends BaseConfig implements ModelSettingUtil {
     getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): string {
         const customProvider = settings.customProviders?.find((provider) => provider.id === settings.selectedCustomProviderId)
         if (!customProvider) {
@@ -11,21 +12,15 @@ export default class CustomModelSettingUtil implements ModelSettingUtil {
         return `${customProvider.name}(${customProvider.model})`
     }
 
-    getCurrentModelOption(settings: Settings) {
+    getCurrentModelOptionValue(settings: Settings) {
         const customProvider = settings.customProviders?.find((provider) => provider.id === settings.selectedCustomProviderId)
         if (!customProvider) {
-            return {
-                label: 'unknown',
-                value: 'unknown',
-            }
+            return 'unknown'
         }
-        return {
-            label: customProvider.model,
-            value: customProvider.model,
-        }
+        return customProvider.model
     }
 
-    async listModelOptions(settings: Settings) {
+    getLocalOptionGroups(settings: Settings) {
         const customProvider = settings.customProviders?.find((provider) => provider.id === settings.selectedCustomProviderId)
         if (!customProvider) {
             return []
@@ -34,7 +29,18 @@ export default class CustomModelSettingUtil implements ModelSettingUtil {
         if (!models.includes(customProvider.model)) {
             models.push(customProvider.model)
         }
-        return models.map((model) => ({ label: model, value: model }))
+        return [
+            {
+                options: models.map((model) => ({
+                    label: model,
+                    value: model,
+                })),
+            }
+        ]
+    }
+
+    async getRemoteOptionGroups(settings: Settings) {
+        return []
     }
 
     selectSessionModel(settings: Session["settings"], selected: string): Session["settings"] {

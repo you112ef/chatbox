@@ -1,26 +1,28 @@
 import { ModelSettings, Session, SessionType, Settings } from "src/shared/types";
 import { ModelSettingUtil } from "./interface";
 import { GroqModel, groqModels } from "../models/groq";
+import BaseConfig from "./base-config";
 
-export default class GroqSettingUtil implements ModelSettingUtil {
+export default class GroqSettingUtil extends BaseConfig implements ModelSettingUtil {
     getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): string {
         return `Groq (${settings.groqModel})`
     }
 
-    getCurrentModelOption(settings: Settings) {
-        return {
-            label: settings.groqModel,
-            value: settings.groqModel,
-        }
+    getCurrentModelOptionValue(settings: Settings) {
+        return settings.groqModel
     }
 
-    async listModelOptions(settings: Settings) {
-        return groqModels.map(value => {
-            return {
-                label: value,
-                value: value,
+    getLocalOptionGroups(settings: Settings) {
+        return [
+            {
+                options: groqModels.map(value => {
+                    return {
+                        label: value,
+                        value: value,
+                    }
+                })
             }
-        })
+        ]
     }
 
     selectSessionModel(settings: Session["settings"], selected: string): Session["settings"] {

@@ -7,9 +7,12 @@ import {
     RemoteConfig,
     ChatboxAILicenseDetail,
     Settings,
+    ModelProvider,
+    ModelOptionGroup,
 } from '../../shared/types'
 import { ofetch } from 'ofetch'
 import { afetch, uploadFile } from './request'
+import { cache } from './cache'
 
 // ========== API ORIGIN 根据速度维护 ==========
 
@@ -309,4 +312,55 @@ export async function validateLicense(params: {
     )
     const json: Response = await res.json()
     return json['data']
+}
+
+export async function getModelConfigs(params: {
+    aiProvider: ModelProvider,
+    licenseKey?: string
+    language?: string
+}) {
+    type Response = {
+        data: {
+            option_groups: ModelOptionGroup[]
+        }
+    }
+    const res = await afetch(
+        `${API_ORIGIN}/api/model_configs`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                aiProvider: params.aiProvider,
+                licenseKey: params.licenseKey,
+                language: params.language,
+            }),
+        },
+        {
+            parseChatboxRemoteError: true,
+            retry: 2,
+        }
+    )
+    const json: Response = await res.json()
+    return json['data']
+}
+
+export async function getModelConfigsWithCache(params: {
+    aiProvider: ModelProvider,
+    licenseKey?: string
+    language?: string
+}) {
+    type ModelConfig = Awaited<ReturnType<typeof getModelConfigs>>
+    const remoteOptionGroups = await cache<ModelConfig>(
+        `model-options:${params.aiProvider}:${params.licenseKey}:${params.language}`,
+        async () => {
+            return await getModelConfigs(params)
+        },
+        {
+            ttl: 1000 * 60 * 60,
+            refreshFallbackToCache: true,
+        },
+    )
+    return remoteOptionGroups
 }

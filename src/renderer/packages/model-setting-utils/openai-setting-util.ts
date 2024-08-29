@@ -2,8 +2,9 @@ import { ModelSettings, Session, SessionType, Settings } from "src/shared/types"
 import { ModelSettingUtil } from "./interface";
 import OpenAI, { OpenAIModel, openaiModelConfigs } from "../models/openai";
 import { uniq } from "lodash";
+import BaseConfig from "./base-config";
 
-export default class OpenAISettingUtil implements ModelSettingUtil {
+export default class OpenAISettingUtil extends BaseConfig implements ModelSettingUtil {
     getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): string {
         if (sessionType === 'picture') {
             return `OpenAI (DALL-E-3)`
@@ -19,28 +20,29 @@ export default class OpenAISettingUtil implements ModelSettingUtil {
         }
     }
 
-    getCurrentModelOption(settings: Settings) {
+    getCurrentModelOptionValue(settings: Settings) {
         let current: string = settings.model
         if (settings.model === 'custom-model') {
             current = settings.openaiCustomModel || ''
         }
-        return {
-            label: current,
-            value: current,
-        }
+        return current
     }
 
-    async listModelOptions(settings: Settings) {
+    getLocalOptionGroups(settings: Settings) {
         let models = Array.from(Object.keys(openaiModelConfigs)).sort()
         if (settings.openaiCustomModel) {
             models.push(settings.openaiCustomModel)
         }
         models.push(...settings.openaiCustomModelOptions)
         models = uniq(models)
-        return models.map(value => ({
-            label: value,
-            value: value,
-        }))
+        return [
+            {
+                options: models.map(value => ({
+                    label: value,
+                    value: value,
+                }))
+            }
+        ]
     }
 
     selectSessionModel(settings: Session["settings"], selected: string): Session["settings"] {

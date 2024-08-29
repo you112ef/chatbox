@@ -71,7 +71,7 @@ export default function SettingWindow(props: {}) {
     }
 
     return (
-        <Dialog open={!!targetTab} onClose={onCancel} fullWidth>
+        <Dialog open={!!targetTab} onClose={onCancel} fullWidth >
             <DialogTitle>{t('settings')}</DialogTitle>
             <DialogContent>
                 <Box

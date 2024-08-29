@@ -331,4 +331,15 @@ export interface ChatboxAILicenseDetail {
     token_expire_time: string | null | undefined
 }
 
-export type ChatboxAIModel = 'chatboxai-3.5' | 'chatboxai-4'
+export type ChatboxAIModel = 'chatboxai-3.5' | 'chatboxai-4' | string
+
+export interface ModelOptionGroup {
+    group_name?: string
+    options: {
+        label: string
+        value: string
+        recommended?: boolean
+    }[]
+    // hidden?: boolean
+    collapsable?: boolean
+}

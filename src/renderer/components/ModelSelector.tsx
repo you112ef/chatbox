@@ -10,15 +10,33 @@ import StyledMenu from './StyledMenu'
 import * as sessionActions from '@/stores/sessionActions'
 import { getModelSettingUtil } from '@/packages/model-setting-utils'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import Divider from '@mui/material/Divider';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import useModelConfig from '@/hooks/useModelConfig'
 
 export function ChatModelSelector(props: {}) {
     const currentMergedSettings = useAtomValue(atoms.currentMergedSettingsAtom)
-
     const theme = useTheme()
-
     const currentSessionId = useAtomValue(atoms.currentSessionIdAtom)
 
+    const {
+        optionGroups,
+        currentModelOptionValue,
+        currentOption,
+        refreshWithRemoteOptionGroups,
+    } = useModelConfig(currentMergedSettings)
+
     const modelSettingUtil = getModelSettingUtil(currentMergedSettings.aiProvider)
+
+    const [expandedGroups, setExpandedGroups] = useState<string[]>([])
+    const onClickGroupName = (groupName: string) => {
+        if (expandedGroups.includes(groupName)) {
+            setExpandedGroups(prev => prev.filter(name => name !== groupName))
+        } else {
+            setExpandedGroups(prev => [...prev, groupName])
+        }
+    }
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -42,18 +60,12 @@ export function ChatModelSelector(props: {}) {
 
     const ITEM_HEIGHT = 48;
 
-    const selectedModelOption = modelSettingUtil.getCurrentModelOption(currentMergedSettings)
-
-    const [options, setOptions] = useState<{ label: string, value: string }[]>([])
-
     useEffect(() => {
-        if (!open) {
+        if (open) {
+            // 如果菜单打开，则不刷新，以避免刷新时闪动导致的糟糕体验
             return
         }
-        ; (async () => {
-            const availableModelOptions = await modelSettingUtil.listModelOptions(currentMergedSettings)
-            setOptions(availableModelOptions)
-        })()
+        refreshWithRemoteOptionGroups()
     }, [open])
 
     const isSmallScreen = useIsSmallScreen()
@@ -77,7 +89,7 @@ export function ChatModelSelector(props: {}) {
                             onClick={handleMenuOpen}
                         >
                             <span className='text-sm opacity-70'>
-                                {selectedModelOption.label}
+                                {currentOption.label}
                             </span>
                             <ChevronsUpDown size='16' strokeWidth={1} className='opacity-50' />
                         </MiniButton>
@@ -92,7 +104,7 @@ export function ChatModelSelector(props: {}) {
                 onClose={handleMenuClose}
                 PaperProps={{
                     style: {
-                        maxHeight: ITEM_HEIGHT * 4.5,
+                        maxHeight: ITEM_HEIGHT * 8,
                         marginTop: '0px', // 调整弹出菜单的位置
                     },
                 }}
@@ -106,16 +118,56 @@ export function ChatModelSelector(props: {}) {
                 }}
                 elevation={0}
             >
-                {options.map((option) => (
-                    <MenuItem
-                        key={option.value}
-                        selected={option.value === selectedModelOption.value}
-                        onClick={() => handleMenuItemSelect(option.value)}
-                        dense
-                    >
-                        {option.label}
-                    </MenuItem>
-                ))}
+                {optionGroups.map((group, index) => {
+                    const items: React.ReactNode[] = [];
+                    const isExpanded = expandedGroups.includes(group.group_name ?? '');
+                    if (index > 0 && group.group_name) {
+                        items.push(
+                            <MenuItem
+                                key={`group-${index}-group-name`}
+                                disabled={!group.collapsable}
+                                dense
+                                sx={{
+                                    opacity: group.collapsable && !isExpanded
+                                        ? 1
+                                        : 0.5,
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                }}
+                                onClick={() => onClickGroupName(group.group_name ?? '')}
+                            >
+                                <span>
+                                    {group.group_name}
+                                </span>
+                                {
+                                    group.collapsable && (
+                                        isExpanded
+                                            ? <ExpandLessIcon fontSize='small' />
+                                            : <ExpandMoreIcon fontSize='small' />
+                                    )
+                                }
+                            </MenuItem>
+                        )
+                    }
+                    if (!group.collapsable || isExpanded) {
+                        items.push(...group.options.map(option => (
+                            <MenuItem
+                                key={`group-${index}-option-${option.value}`}
+                                selected={option.value === currentModelOptionValue}
+                                onClick={() => handleMenuItemSelect(option.value)}
+                                dense
+                            >
+                                {option.label}
+                            </MenuItem>
+                        )))
+                    }
+                    if (index < optionGroups.length - 1) {
+                        items.push(<Divider key={`group-${index}-divider`} />);
+                    }
+                    return items
+                }).flat()}
             </StyledMenu>
         </div>
     );
