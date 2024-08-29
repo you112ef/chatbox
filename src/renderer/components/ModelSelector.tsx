@@ -11,11 +11,10 @@ import * as sessionActions from '@/stores/sessionActions'
 import { getModelSettingUtil } from '@/packages/model-setting-utils'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import Divider from '@mui/material/Divider';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import useModelConfig from '@/hooks/useModelConfig'
 import { chatboxAIModelLabelHash } from './ChatboxAIModelSelect'
 import { ModelProvider } from '../../shared/types'
+import { ChevronDown, ChevronRight } from 'lucide-react'
 
 export function ChatModelSelector(props: {}) {
     const currentMergedSettings = useAtomValue(atoms.currentMergedSettingsAtom)
@@ -150,8 +149,8 @@ export function ChatModelSelector(props: {}) {
                                 {
                                     group.collapsable && (
                                         isExpanded
-                                            ? <ExpandLessIcon fontSize='small' />
-                                            : <ExpandMoreIcon fontSize='small' />
+                                            ? <ChevronDown className='w-4 h-4' strokeWidth={1} />
+                                            : <ChevronRight className='w-4 h-4' strokeWidth={1} />
                                     )
                                 }
                             </MenuItem>
