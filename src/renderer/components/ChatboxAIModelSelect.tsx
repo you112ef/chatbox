@@ -63,10 +63,7 @@ export default function ChatboxAIModelSelect(props: Props) {
     const { t } = useTranslation()
     const settings = useAtomValue(atoms.settingsAtom)
 
-    const { optionGroups } = useModelConfig({
-        ...settings,
-        aiProvider: ModelProvider.ChatboxAI,
-    })
+    const { optionGroups } = useModelConfig(settings, ModelProvider.ChatboxAI)
 
     const [expandedGroups, setExpandedGroups] = useState<string[]>([])
     const onClickGroupName = (groupName: string) => {

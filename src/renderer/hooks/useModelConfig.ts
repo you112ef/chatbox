@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState, useRef } from 'react'
-import { ModelOptionGroup, Settings } from '../../shared/types'
+import { ModelOptionGroup, Settings, ModelProvider } from '../../shared/types'
 import { getModelSettingUtil } from '../packages/model-setting-utils'
 
-export default function useModelConfig(settings: Settings) {
-    const modelConfig = getModelSettingUtil(settings.aiProvider)
+export default function useModelConfig(settings: Settings, aiProvider?: ModelProvider) {
+    const modelConfig = getModelSettingUtil(aiProvider || settings.aiProvider)
 
     const [optionGroups, setOptionGroups] = useState<ModelOptionGroup[]>(
         modelConfig.getLocalOptionGroups(settings)
