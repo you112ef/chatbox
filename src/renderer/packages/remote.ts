@@ -23,6 +23,7 @@ let pool = [
     'https://chatboxai.app',
     'https://api.chatboxai.app',
     'https://api.ai-chatbox.com',
+    'https://api.chatboxapp.xyz',
 ]
 
 if (USE_LOCAL_API) {
@@ -42,7 +43,7 @@ async function testApiOrigins() {
         }
     }
     const fastest = await Promise.any(pool.map(async origin => {
-        const res = await ofetch<Response>(`${origin}/api/api_origins`, { retry: 1 })
+        const res = await ofetch<Response>(`${origin}/api/api_origins`)
         return { origin, res }
     })).catch(e => null)
     if (!fastest) {
@@ -55,7 +56,12 @@ async function testApiOrigins() {
     }
     API_ORIGIN = fastest.origin
 }
-testApiOrigins()
+;(async () => {
+    for (let i = 0; i < 2; i++) {
+        await testApiOrigins()
+        await new Promise(resolve => setTimeout(resolve, 1000))
+    }
+})();
 setInterval(testApiOrigins, 60 * 60 * 1000);
 
 // ========== 各个接口方法 ==========
