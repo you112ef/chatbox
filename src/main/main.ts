@@ -36,8 +36,6 @@ class AppUpdater {
         const locale = new Locale()
 
         autoUpdater.logger = log
-        autoUpdater.setFeedURL('https://chatboxai.app/api/auto_upgrade')
-        autoUpdater.checkForUpdatesAndNotify()
         autoUpdater.once('update-downloaded', (event) => {
             dialog
                 .showMessageBox({
@@ -51,6 +49,29 @@ class AppUpdater {
                     if (returnValue.response === 0) autoUpdater.quitAndInstall()
                 })
         })
+        this.tryUpdate()
+    }
+
+    async tryUpdate() {
+        const feedUrls = [
+            'https://chatboxai.app/api/auto_upgrade',
+            'https://api.chatboxai.app/api/auto_upgrade',
+            'https://api.ai-chatbox.com/api/auto_upgrade',
+            'https://api.chatboxapp.xyz/api/auto_upgrade',
+            'https://api.chatboxai.com/api/auto_upgrade',
+        ]
+        for (const url of feedUrls) {
+            try {
+                autoUpdater.setFeedURL(url)
+                const result = await autoUpdater.checkForUpdatesAndNotify()
+                if (result) {
+                    return result
+                }
+            } catch (e) {
+                log.error(`auto_updater: attempt failed: ${url}. `, e)
+            }
+        }
+        return null
     }
 }
 
