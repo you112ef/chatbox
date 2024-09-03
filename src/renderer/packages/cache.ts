@@ -1,6 +1,6 @@
 import localforage from 'localforage'
 
-const store = localforage.createInstance({ name: 'chatboxcache' })
+export const store = localforage.createInstance({ name: 'chatboxcache' })
 
 export interface CacheItem<T> {
     value: T

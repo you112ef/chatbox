@@ -12,57 +12,70 @@ import {
 } from '../../shared/types'
 import { ofetch } from 'ofetch'
 import { afetch, uploadFile } from './request'
-import { cache } from './cache'
+import * as cache from './cache'
+import { uniq } from 'lodash'
 
-// ========== API ORIGIN 根据速度维护 ==========
+// ========== API ORIGIN 根据可用性维护 ==========
 
 // const RELEASE_ORIGIN = 'https://releases.chatboxai.app'
 
 export let API_ORIGIN = 'https://chatboxai.app'
-let pool = [
-    'https://chatboxai.app',
-    'https://api.chatboxai.app',
-    'https://api.ai-chatbox.com',
-    'https://api.chatboxapp.xyz',
-]
 
+/**
+ * 按顺序测试 API 的可用性，只要有一个 API 域名可用，就终止测试并切换所有流量到该域名。
+ * 在测试过程中，会根据服务器返回添加新的 API 域名，并缓存到本地
+ */
+async function testApiOrigins() {
+    // 从缓存中获取已知的 API 域名列表
+    let pool = await cache.store.getItem<string[] | null>('api_origins').catch(() => null)
+    if (!pool) {
+        pool = [
+            'https://chatboxai.app',
+            'https://api.chatboxai.app',
+            'https://api.ai-chatbox.com',
+            'https://api.chatboxapp.xyz',
+        ]
+    }
+    // 按顺序测试 API 的可用性
+    let i = 0
+    while (i < pool.length) {
+        try {
+            const origin: string = pool[i]
+            const controller = new AbortController()
+            setTimeout(() => controller.abort(), 2000)  // 2秒超时
+            const res = await ofetch<{ data: { api_origins: string[] } }>(
+                `${origin}/api/api_origins`,
+                {
+                    signal: controller.signal,
+                    retry: 1,
+                },
+            )
+            // 如果服务器返回了新的 API 域名，则更新缓存
+            if (res.data.api_origins.length > 0) {
+                pool = uniq([...pool, ...res.data.api_origins])
+            }
+            // 如果当前 API 可用，则切换所有流量到该域名
+            API_ORIGIN = origin
+            pool = uniq([origin, ...pool])  // 将当前 API 域名添加到列表顶部
+            await cache.store.setItem('api_origins', pool)
+            return
+        } catch (e) {
+            i++
+        }
+    }
+}
+
+// 默认情况下，应用启动时立即测试并设置可用 API 域名，并且每小时测试一次并更新缓存
+// 如果使用本地 API，则不进行测试
 if (USE_LOCAL_API) {
     console.log('==================')
     console.log('Using local API')
     console.log('==================')
-
     API_ORIGIN = 'http://localhost:8002'
-    pool = ['http://localhost:8002']
+} else {
+    testApiOrigins()
+    setInterval(testApiOrigins, 60 * 60 * 1000);
 }
-
-
-async function testApiOrigins() {
-    type Response = {
-        data: {
-            api_origins: string[]
-        }
-    }
-    const fastest = await Promise.any(pool.map(async origin => {
-        const res = await ofetch<Response>(`${origin}/api/api_origins`)
-        return { origin, res }
-    })).catch(e => null)
-    if (!fastest) {
-        return
-    }
-    for (const newOrigin of fastest.res.data.api_origins) {
-        if (!pool.includes(newOrigin)) {
-            pool.push(newOrigin)
-        }
-    }
-    API_ORIGIN = fastest.origin
-}
-;(async () => {
-    for (let i = 0; i < 2; i++) {
-        await testApiOrigins()
-        await new Promise(resolve => setTimeout(resolve, 1000))
-    }
-})();
-setInterval(testApiOrigins, 60 * 60 * 1000);
 
 // ========== 各个接口方法 ==========
 
@@ -358,7 +371,7 @@ export async function getModelConfigsWithCache(params: {
     language?: string
 }) {
     type ModelConfig = Awaited<ReturnType<typeof getModelConfigs>>
-    const remoteOptionGroups = await cache<ModelConfig>(
+    const remoteOptionGroups = await cache.cache<ModelConfig>(
         `model-options:${params.aiProvider}:${params.licenseKey}:${params.language}`,
         async () => {
             return await getModelConfigs(params)
