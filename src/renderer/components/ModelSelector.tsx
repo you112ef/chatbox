@@ -94,7 +94,7 @@ export function ChatModelSelector(props: {}) {
                             onClick={handleMenuOpen}
                         >
                             <span className='text-sm opacity-70'>
-                                {labelHash[currentOption.value] || currentOption.label}
+                                {currentOption.label}
                             </span>
                             <ChevronsUpDown size='16' strokeWidth={1} className='opacity-50' />
                         </MiniButton>
