@@ -1,9 +1,9 @@
 import { useMemo, useLayoutEffect } from 'react'
 import { getDefaultStore, useAtomValue } from 'jotai'
-import { realThemeAtom, themeAtom, fontSizeAtom } from '../stores/atoms'
+import { realThemeAtom, themeAtom, fontSizeAtom, languageAtom } from '../stores/atoms'
 import { createTheme } from '@mui/material/styles'
 import { ThemeOptions } from '@mui/material/styles'
-import { Theme } from '../../shared/types'
+import { Theme, Language } from '../../shared/types'
 import platform from '../platform'
 
 export const switchTheme = async (theme: Theme) => {
@@ -20,6 +20,7 @@ export default function useAppTheme() {
     const theme = useAtomValue(themeAtom)
     const fontSize = useAtomValue(fontSizeAtom)
     const realTheme = useAtomValue(realThemeAtom)
+    const language = useAtomValue(languageAtom)
 
     useLayoutEffect(() => {
         switchTheme(theme)
@@ -44,11 +45,14 @@ export default function useAppTheme() {
         }
     }, [realTheme])
 
-    const themeObj = useMemo(() => createTheme(getThemeDesign(realTheme, fontSize)), [realTheme, fontSize])
+    const themeObj = useMemo(
+        () => createTheme(getThemeDesign(realTheme, fontSize, language)),
+        [realTheme, fontSize, language]
+    )
     return themeObj
 }
 
-export function getThemeDesign(realTheme: 'light' | 'dark', fontSize: number): ThemeOptions {
+export function getThemeDesign(realTheme: 'light' | 'dark', fontSize: number, language: Language): ThemeOptions {
     return {
         palette: {
             mode: realTheme,
@@ -64,7 +68,11 @@ export function getThemeDesign(realTheme: 'light' | 'dark', fontSize: number): T
         typography: {
             // In Chinese and Japanese the characters are usually larger,
             // so a smaller fontsize may be appropriate.
+            ...(language === 'ar' ? {
+                fontFamily: 'Cairo, Arial, sans-serif',
+            } : {}),
             fontSize,
         },
+        direction: language === 'ar' ? 'rtl' : 'ltr',
     }
 }

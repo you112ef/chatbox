@@ -12,13 +12,10 @@ import { drawerWidth } from './Sidebar'
 import { useIsSmallScreen } from './hooks/useScreenChange'
 import Header from './components/Header'
 
-interface Props {}
-
-export default function MainPane(props: Props) {
+export default function MainPane(props: {}) {
+    const language = useAtomValue(atoms.languageAtom)
     const [showSidebar] = useAtom(atoms.showSidebarAtom)
 
-    const atScrollTop = useAtomValue(atoms.messageScrollingAtTopAtom)
-    const atScrollBottom = useAtomValue(atoms.messageScrollingAtBottomAtom)
     const isSmallScreen = useIsSmallScreen()
 
     useEffect(() => {
@@ -32,9 +29,11 @@ export default function MainPane(props: Props) {
             className="h-full w-full"
             sx={{
                 flexGrow: 1,
-                ...(showSidebar && {
-                    marginLeft: { sm: `${drawerWidth}px` },
-                }),
+                ...(showSidebar
+                    ? language === 'ar'
+                        ? { marginRight: { sm: `${drawerWidth}px` } }
+                        : { marginLeft: { sm: `${drawerWidth}px` } }
+                    : {}),
             }}
         >
             <div className="flex flex-col h-full">
@@ -48,36 +47,54 @@ export default function MainPane(props: Props) {
                 }
                 <Header />
                 <MessageList />
-                <Box className="relative">
-                    <ButtonGroup
-                        sx={{
-                            position: 'absolute',
-                            right: '0.4rem',
-                            top: '-5.5rem',
-                            opacity: 0.6,
-                        }}
-                        orientation="vertical"
-                    >
-                        <IconButton
-                            onClick={() => scrollActions.scrollToTop()}
-                            sx={{
-                                visibility: atScrollTop ? 'hidden' : 'visible',
-                            }}
-                        >
-                            <ArrowCircleUpIcon />
-                        </IconButton>
-                        <IconButton
-                            onClick={() => scrollActions.scrollToBottom()}
-                            sx={{
-                                visibility: atScrollBottom ? 'hidden' : 'visible',
-                            }}
-                        >
-                            <ArrowCircleDownIcon />
-                        </IconButton>
-                    </ButtonGroup>
-                </Box>
+                <ScrollButtons />
                 <InputBox />
             </div>
+        </Box>
+    )
+}
+
+function ScrollButtons() {
+    const atScrollTop = useAtomValue(atoms.messageScrollingAtTopAtom)
+    const atScrollBottom = useAtomValue(atoms.messageScrollingAtBottomAtom)
+    const language = useAtomValue(atoms.languageAtom)
+    return (
+        <Box className="relative">
+            <ButtonGroup
+                sx={
+                    language === 'ar'
+                        ? {
+                              position: 'absolute',
+                              left: '0.4rem',
+                              top: '-5.5rem',
+                              opacity: 0.6,
+                          }
+                        : {
+                              position: 'absolute',
+                              right: '0.4rem',
+                              top: '-5.5rem',
+                              opacity: 0.6,
+                          }
+                }
+                orientation="vertical"
+            >
+                <IconButton
+                    onClick={() => scrollActions.scrollToTop()}
+                    sx={{
+                        visibility: atScrollTop ? 'hidden' : 'visible',
+                    }}
+                >
+                    <ArrowCircleUpIcon />
+                </IconButton>
+                <IconButton
+                    onClick={() => scrollActions.scrollToBottom()}
+                    sx={{
+                        visibility: atScrollBottom ? 'hidden' : 'visible',
+                    }}
+                >
+                    <ArrowCircleDownIcon />
+                </IconButton>
+            </ButtonGroup>
         </Box>
     )
 }

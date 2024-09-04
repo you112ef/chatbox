@@ -35,6 +35,7 @@ import MermaidDialog from './pages/MermaidDialog'
 
 function Main() {
     const spellCheck = useAtomValue(atoms.spellCheckAtom)
+    const language = useAtomValue(atoms.languageAtom)
 
     const setOpenWelcomeDialog = useSetAtom(atoms.openWelcomeDialogAtom)
     const setOpenAboutDialog = useSetAtom(atoms.openAboutDialogAtom)
@@ -68,7 +69,7 @@ function Main() {
     }, [])
 
     return (
-        <Box className="box-border App" spellCheck={spellCheck}>
+        <Box className="box-border App" spellCheck={spellCheck} dir={language === 'ar' ? 'rtl' : 'ltr'}>
             <Grid container className="h-full">
                 <Sidebar />
                 <MainPane />

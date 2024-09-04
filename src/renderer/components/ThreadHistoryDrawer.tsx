@@ -17,16 +17,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import StyledMenu from "@/components/StyledMenu";
 import { cn } from '@/lib/utils';
 import { useIsSmallScreen } from '@/hooks/useScreenChange';
+import * as atoms from '@/stores/atoms';
 
-interface Props {
-}
-
-export default function ThreadHistoryDrawer(props: Props) {
+export default function ThreadHistoryDrawer(props: {}) {
     const { t } = useTranslation()
+    const language = useAtomValue(atoms.languageAtom)
     const [showDrawer, setShowDrawer] = useAtom(showThreadHistoryDrawerAtom)
     const currentThreadHistoryHash = useAtomValue(currentThreadHistoryHashAtom)
     const currentSessionId = useAtomValue(currentSessionIdAtom)
-    const currentSession = useAtomValue(currentSessionAtom)
 
     const threadList = Object.values(currentThreadHistoryHash)
 
@@ -66,7 +64,7 @@ export default function ThreadHistoryDrawer(props: Props) {
 
     return (
         <Drawer
-            anchor={'right'}
+            anchor={language === 'ar' ? 'left' : 'right'}
             open={!!showDrawer}
             onClose={() => setShowDrawer(false)}
             sx={{

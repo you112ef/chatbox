@@ -34,6 +34,7 @@ export const drawerWidth = 240
 export default function Sidebar(props: {}) {
     const { t } = useTranslation()
     const versionHook = useVersion()
+    const language = useAtomValue(atoms.languageAtom)
     const [showSidebar, setShowSidebar] = useAtom(atoms.showSidebarAtom)
     const currentSessionId = useAtomValue(atoms.currentSessionIdAtom)
     const setOpenSettingDialog = useSetAtom(atoms.openSettingDialogAtom)
@@ -193,7 +194,7 @@ export default function Sidebar(props: {}) {
         <div>
             {/* 移动端 */}
             <SwipeableDrawer
-                anchor="left"
+                anchor={language === 'ar' ? 'right' : 'left'}
                 open={showSidebar}
                 onClose={() => setShowSidebar(false)}
                 onOpen={() => setShowSidebar(true)}
@@ -213,7 +214,7 @@ export default function Sidebar(props: {}) {
 
             {/* 桌面、宽屏幕 */}
             <SwipeableDrawer
-                anchor="left"
+                anchor={language === 'ar' ? 'right' : 'left'}
                 variant="persistent"
                 open={showSidebar}
                 onClose={() => setShowSidebar(false)}

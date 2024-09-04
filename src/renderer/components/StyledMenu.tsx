@@ -1,25 +1,31 @@
 import { Menu, MenuProps } from '@mui/material'
 import 'katex/dist/katex.min.css'
 import { styled, alpha } from '@mui/material/styles'
+import { useAtomValue } from 'jotai'
+import * as atoms from '@/stores/atoms'
 
-const StyledMenu = styled((props: MenuProps) => (
-    <Menu
-        elevation={0}
-        anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-        }}
-        transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-        }}
-        PopoverClasses={{
-            root: '',
-            paper: 'bg-white dark:bg-slate-800'
-        }}
-        {...props}
-    />
-))(({ theme }) => ({
+const StyledMenu = styled((props: MenuProps) => {
+    const language = useAtomValue(atoms.languageAtom)
+    return (
+        <Menu
+            dir={language === 'ar' ? 'rtl' : 'ltr'}
+            elevation={0}
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+            }}
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+            PopoverClasses={{
+                root: '',
+                paper: 'bg-white dark:bg-slate-800'
+            }}
+            {...props}
+        />
+    )
+})(({ theme }) => ({
     '& .MuiPaper-root': {
         backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[800] : theme.palette.grey[100],
         borderRadius: 6,

@@ -23,7 +23,11 @@ export default function DisplaySettingTab(props: {
                 )}
                 value={settingsEdit.language}
                 onChange={(language) => setSettingsEdit({ ...settingsEdit, language: language })}
-                options={languages.map((language) => ({ value: language, label: languageNameMap[language] }))}
+                options={languages.map((language) => ({
+                    value: language,
+                    label: languageNameMap[language],
+                    style: language === 'ar' ? { fontFamily: 'Cairo, Arial, sans-serif' } : {},
+                }))}
             />
             <SimpleSelect
                 label={t('Font Size')}

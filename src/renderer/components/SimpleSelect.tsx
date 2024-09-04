@@ -4,7 +4,7 @@ import * as React from 'react'
 export interface Props<T extends string | number> {
     label: string | React.ReactNode
     value: T
-    options: { value: T; label: React.ReactNode }[]
+    options: { value: T; label: React.ReactNode, style?: React.CSSProperties }[]
     onChange: (value: T) => void
     className?: string
     fullWidth?: boolean
@@ -26,7 +26,7 @@ export default function SimpleSelect<T extends string | number>(props: Props<T>)
             <InputLabel>{props.label}</InputLabel>
             <Select label={props.label} value={props.value} onChange={(e) => props.onChange(e.target.value as T)}>
                 {props.options.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
+                    <MenuItem key={option.value} value={option.value} style={option.style}>
                         {option.label}
                     </MenuItem>
                 ))}

@@ -11,6 +11,7 @@ import de from './locales/de/translation.json'
 import fr from './locales/fr/translation.json'
 import ptPT from './locales/pt-PT/translation.json'
 import es from './locales/es/translation.json'
+import ar from './locales/ar/translation.json'
 
 import changelogZhHans from './changelogs/changelog_zh_Hans'
 import changelogZhHant from './changelogs/changelog_zh_Hant'
@@ -47,7 +48,10 @@ i18n.use(initReactI18next).init({
         },
         es: {
             translation: es,
-        }
+        },
+        ar: {
+            translation: ar,
+        },
     },
     fallbackLng: 'en',
 
