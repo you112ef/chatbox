@@ -1,4 +1,12 @@
 const changelog = `
+### v1.4.1 - 2024.09.04
+
+1. Chatbox AI service users can now choose from a wider range of models
+2. Added Arabic language support (العربية)
+3. Improved LaTeX styling
+4. Fixed a rare issue that could cause data loss
+5. Various minor bug fixes and improvements
+
 ### v1.4.0 - 2024.08.18
 
 1. Added Mermaid chart preview, now you can preview AI-generated charts, flowcharts, mind maps, etc.
