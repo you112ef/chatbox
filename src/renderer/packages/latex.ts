@@ -44,7 +44,13 @@ export const processLaTeX = (_content: string) => {
     // Convert LaTeX expressions to a markdown compatible format
     processedContent = processedContent
         .replace(inlineLatex, (match: string, equation: string) => `$${equation}$`) // Convert inline LaTeX
-        .replace(blockLatex, (match: string, equation: string) => `$$\n${equation}\n$$`); // Convert block LaTeX
+        .replace(blockLatex, (match: string, equation: string) => {
+            let result = `$$\n${equation}\n$$`
+            if (equation.includes('\n')) {
+                result = `$$${equation}$$`
+            }
+            return result
+        }); // Convert block LaTeX
 
     // Restore code blocks
     return restoreCodeBlocks(processedContent, codeBlocks);
