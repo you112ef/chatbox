@@ -82,7 +82,10 @@ export default function MessageList(props: Props) {
                         )
                     }}
                     onWheel={(e) => {
-                        scrollActions.clearAutoScroll()
+                        scrollActions.clearAutoScroll() // 鼠标滚轮滚动时，清除自动滚动
+                    }}
+                    onTouchMove={(e) => {
+                        scrollActions.clearAutoScroll() // 手机上触摸屏幕滑动时，清除自动滚动
                     }}
                     onScroll={(e) => {
                         // 为什么不合并到 onWheel 中？
