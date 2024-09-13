@@ -23,7 +23,9 @@ export function MessageArtifact(props: {
     const { sessionId, messageId, messageContent } = props
     const autoPreviewArtifacts = useAtomValue(atoms.autoPreviewArtifactsAtom)
     const contextMessages = useMemo(() => {
-        return sessionActions.getMessageThreadContext(sessionId, messageId)
+        const messageList = sessionActions.getMessageThreadContext(sessionId, messageId)
+        const index = messageList.findIndex(m => m.id === messageId)
+        return messageList.slice(0, index)
     }, [sessionId, messageId])
     const htmlCode = useMemo(() => {
         return generateHtml([
@@ -147,8 +149,11 @@ export function Artifact(props: {
     }
     // 当 reloadSign 改变时，重新加载 iframe 内容
     useEffect(() => {
-        sendIframeMsg('html', '')
-        sendIframeMsg('html', htmlCode)
+        ; (async () => {
+            sendIframeMsg('html', '')
+            await new Promise(resolve => setTimeout(resolve, 1500))
+            sendIframeMsg('html', htmlCode)
+        })()
     }, [reloadSign])
 
     // 当 htmlCode 改变时，防抖地刷新 iframe 内容
