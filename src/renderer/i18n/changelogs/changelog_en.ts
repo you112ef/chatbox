@@ -1,5 +1,5 @@
 const changelog = `
-### v1.4.1 - 2024.09.13
+### v1.4.2 - 2024.09.13
 
 1. Added support for OpenAI's new o1 model series
 2. SVG image previews are now available
