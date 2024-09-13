@@ -1,4 +1,11 @@
 const changelog = `
+### v1.4.1 - 2024.09.13
+
+1. Added support for OpenAI's new o1 model series
+2. SVG image previews are now available
+3. Fixed display bugs with Artifact previews
+4. Fixed various minor bugs
+
 ### v1.4.1 - 2024.09.04
 
 1. Chatbox AI service users can now choose from a wider range of models
