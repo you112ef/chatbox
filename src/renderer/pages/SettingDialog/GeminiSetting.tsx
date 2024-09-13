@@ -1,12 +1,14 @@
-import { Box, Link } from '@mui/material'
-import { ModelSettings } from '../../../shared/types'
-import { useTranslation } from 'react-i18next'
+import { Box, Link, Alert } from '@mui/material'
+import { ModelSettings, ModelProvider } from '../../../shared/types'
+import { useTranslation, Trans } from 'react-i18next'
 import PasswordTextField from '@/components/PasswordTextField'
 import TemperatureSlider from '@/components/TemperatureSlider'
 import platform from '@/platform'
 import TextFieldReset from "@/components/TextFieldReset";
 import GeminiModelSelect from '@/components/GeminiModelSelect'
 import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
+import { remoteConfigAtom } from '@/stores/atoms'
+import { useAtomValue } from 'jotai'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -16,6 +18,7 @@ interface ModelConfigProps {
 export default function GeminiSetting(props: ModelConfigProps) {
     const { settingsEdit, setSettingsEdit } = props
     const { t } = useTranslation()
+    const remoteConfig = useAtomValue(remoteConfigAtom)
     return (
         <Box>
             <PasswordTextField
@@ -26,8 +29,8 @@ export default function GeminiSetting(props: ModelConfigProps) {
                 }}
                 helperText={
                     <Link
-                        className="cursor-pointer" 
-                        onClick={() =>  platform.openLink('https://makersuite.google.com/')}
+                        className="cursor-pointer"
+                        onClick={() => platform.openLink('https://makersuite.google.com/')}
                     >
                         {t('Get API key in Google AI Studio')}
                     </Link>
@@ -50,6 +53,23 @@ export default function GeminiSetting(props: ModelConfigProps) {
                     setSettingsEdit({ ...settingsEdit, geminiAPIHost: value })
                 }}
             />
+            {
+                settingsEdit.geminiAPIHost !== 'https://generativelanguage.googleapis.com' && remoteConfig.setting_chatboxai_first && (
+                    <Alert icon={false} severity='info' className='my-4'>
+                        <Trans i18nKey="Please note that as a client tool, Chatbox cannot guarantee the quality of service and data privacy of the model providers. If you are looking for a stable, reliable, and privacy-protecting model service, consider <a>Chatbox AI</a>."
+                            components={{
+                                a: <a className='cursor-pointer font-bold' onClick={() => {
+                                    setSettingsEdit({
+                                        ...settingsEdit,
+                                        aiProvider: ModelProvider.ChatboxAI,
+                                        selectedCustomProviderId: '',
+                                    })
+                                }}></a>,
+                            }}
+                        />
+                    </Alert>
+                )
+            }
             <GeminiModelSelect
                 value={settingsEdit.geminiModel}
                 onChange={(value) => setSettingsEdit({ ...settingsEdit, geminiModel: value })}

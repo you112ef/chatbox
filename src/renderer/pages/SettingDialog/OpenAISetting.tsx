@@ -1,6 +1,6 @@
 import { Button, Alert, TextField, Typography, Box } from '@mui/material'
-import { ModelSettings } from '../../../shared/types'
-import { useTranslation } from 'react-i18next'
+import { ModelSettings, ModelProvider } from '../../../shared/types'
+import { useTranslation, Trans } from 'react-i18next'
 import * as defaults from '../../../shared/defaults'
 import { Accordion, AccordionSummary, AccordionDetails } from '../../components/Accordion'
 import TemperatureSlider from '../../components/TemperatureSlider'
@@ -10,6 +10,8 @@ import MaxContextMessageCountSlider from '../../components/MaxContextMessageCoun
 import OpenAIModelSelect from '../../components/OpenAIModelSelect'
 // import TokenConfig from './TokenConfig'
 import TextFieldReset from '@/components/TextFieldReset'
+import { remoteConfigAtom } from '@/stores/atoms'
+import { useAtomValue } from 'jotai'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -19,6 +21,7 @@ interface ModelConfigProps {
 export default function OpenAISetting(props: ModelConfigProps) {
     const { settingsEdit, setSettingsEdit } = props
     const { t } = useTranslation()
+    const remoteConfig = useAtomValue(remoteConfigAtom)
     return (
         <Box>
             <PasswordTextField
@@ -48,6 +51,23 @@ export default function OpenAISetting(props: ModelConfigProps) {
                     }}
                 />
             </>
+            {
+                settingsEdit.apiHost !== 'https://api.openai.com' && remoteConfig.setting_chatboxai_first && (
+                    <Alert icon={false} severity='info' className='my-4'>
+                        <Trans i18nKey="Please note that as a client tool, Chatbox cannot guarantee the quality of service and data privacy of the model providers. If you are looking for a stable, reliable, and privacy-protecting model service, consider <a>Chatbox AI</a>."
+                            components={{
+                                a: <a className='cursor-pointer font-bold' onClick={() => {
+                                    setSettingsEdit({
+                                        ...settingsEdit,
+                                        aiProvider: ModelProvider.ChatboxAI,
+                                        selectedCustomProviderId: '',
+                                    })
+                                }}></a>,
+                            }}
+                        />
+                    </Alert>
+                )
+            }
             <Accordion>
                 <AccordionSummary aria-controls="panel1a-content">
                     <Typography>
