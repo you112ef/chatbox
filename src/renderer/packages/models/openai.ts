@@ -54,31 +54,36 @@ export default class OpenAI extends Base {
     }
 
     async _callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
-        let messages = await populateOpenAIMessage(rawMessages, this.options.model)
-
         const model = this.options.model === 'custom-model'
             ? this.options.openaiCustomModel || ''
             : this.options.model
-
         if (this.options.injectDefaultMetadata) {
-            messages = injectModelSystemPrompt(model, messages)
+            rawMessages = injectModelSystemPrompt(model, rawMessages)
         }
+        if (model.startsWith('o1')) {
+            const messages = await populateO1Message(rawMessages)
+            return this.requestChatCompletionsNotStream({ model, messages }, signal, onResultChange)
+        }
+        const messages = await populateGPTMessage(rawMessages, this.options.model)
+        return this.requestChatCompletionsStream({
+            messages,
+            model,
+            // vision 模型的默认 max_tokens 极低，基本很难回答完整，因此手动设置为模型最大值
+            max_tokens: this.options.model === 'gpt-4-vision-preview'
+                ? openaiModelConfigs['gpt-4-vision-preview'].maxTokens
+                : undefined,
+            temperature: this.options.temperature,
+            top_p: this.options.topP,
+            stream: true,
+        }, signal, onResultChange)
+    }
 
+    async requestChatCompletionsStream(requestBody: Record<string, any>, signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
         const apiPath = this.options.apiPath || '/v1/chat/completions'
         const response = await this.post(
             `${this.options.apiHost}${apiPath}`,
             this.getHeaders(),
-            {
-                messages,
-                model,
-                // vision 模型的默认 max_tokens 极低，基本很难回答完整，因此手动设置为模型最大值
-                max_tokens: this.options.model === 'gpt-4-vision-preview'
-                    ? openaiModelConfigs['gpt-4-vision-preview'].maxTokens
-                    : undefined,
-                temperature: this.options.temperature,
-                top_p: this.options.topP,
-                stream: true,
-            },
+            requestBody,
             signal
         )
         let result = ''
@@ -99,6 +104,24 @@ export default class OpenAI extends Base {
             }
         })
         return result
+    }
+
+    async requestChatCompletionsNotStream(requestBody: Record<string, any>, signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+        const apiPath = this.options.apiPath || '/v1/chat/completions'
+        const response = await this.post(
+            `${this.options.apiHost}${apiPath}`,
+            this.getHeaders(),
+            requestBody,
+            signal
+        )
+        const json = await response.json()
+        if (json.error) {
+            throw new ApiError(`Error from OpenAI: ${JSON.stringify(json)}`)
+        }
+        if (onResultChange) {
+            onResultChange(json.choices[0].message.content)
+        }
+        return json.choices[0].message.content
     }
 
     async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
@@ -252,6 +275,27 @@ export const openaiModelConfigs = {
         vision: true,
     },
 
+    'o1-preview': {
+        maxTokens: 32_768,
+        maxContextTokens: 128_000,
+        vision: false,
+    },
+    'o1-preview-2024-09-12': {
+        maxTokens: 32_768,
+        maxContextTokens: 128_000,
+        vision: false,
+    },
+    'o1-mini': {
+        maxTokens: 65_536,
+        maxContextTokens: 128_000,
+        vision: false,
+    },
+    'o1-mini-2024-09-12': {
+        maxTokens: 65_536,
+        maxContextTokens: 128_000,
+        vision: false,
+    },
+
     // 以下模型延长到了 2024 年 6 月
     // https://platform.openai.com/docs/models/continuous-model-upgrades
     'gpt-3.5-turbo-0301': {
@@ -281,12 +325,20 @@ export function isSupportVision(model: OpenAIModel | 'custom-model' | string): b
     )
 }
 
-export async function populateOpenAIMessage(rawMessages: Message[], model: OpenAIModel | 'custom-model'): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
+export async function populateGPTMessage(rawMessages: Message[], model: OpenAIModel | 'custom-model'): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
     if (isSupportVision(model) && rawMessages.some((m) => m.pictures && m.pictures.length > 0)) {
         return populateOpenAIMessageVision(rawMessages)
     } else {
         return populateOpenAIMessageText(rawMessages)
     }
+}
+
+export async function populateO1Message(rawMessages: Message[]): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
+    const messages: OpenAIMessage[] = rawMessages.map((m) => ({
+        role: m.role === 'system' ? 'user' : m.role,
+        content: m.content,
+    }))
+    return messages
 }
 
 export async function populateOpenAIMessageText(rawMessages: Message[]): Promise<OpenAIMessage[]> {
@@ -327,28 +379,21 @@ export async function populateOpenAIMessageVision(rawMessages: Message[]): Promi
  * @param messages 
  * @returns 
  */
-export function injectModelSystemPrompt(model: string, messages: OpenAIMessage[] | OpenAIMessageVision[]) {
+export function injectModelSystemPrompt(model: string, messages: Message[]) {
     const metadataPrompt = `
 Current model: ${model}
 Current date: ${new Date().toISOString()}
 
 `
-    for (const message of messages) {
-        if (message.role === 'system') {
-            if (typeof message.content == 'string') {
-                message.content = metadataPrompt + message.content
-            } else if (typeof message.content == 'object') {
-                for (const content of message.content) {
-                    if (content.type === 'text') {
-                        content.text = metadataPrompt + content.text
-                        break
-                    }
-                }
-            }
-            break
+    let hasInjected = false
+    return messages.map((m) => {
+        if (m.role === 'system' && !hasInjected) {
+            m = { ...m }    // 复制，防止原始数据在其他地方被直接渲染使用
+            m.content = metadataPrompt + m.content
+            hasInjected = true
         }
-    }
-    return messages
+        return m
+    })
 }
 
 // OpenAIMessage OpenAI API 消息类型。（对于业务追加的字段，应该放到 Message 中）

@@ -1,7 +1,7 @@
 import { Message } from 'src/shared/types'
 import Base, { onResultChange } from './base'
 import { ApiError } from './errors'
-import { injectModelSystemPrompt, openaiModelConfigs, populateOpenAIMessage } from './openai'
+import { injectModelSystemPrompt, openaiModelConfigs, populateGPTMessage } from './openai'
 
 interface Options {
     azureEndpoint: string
@@ -34,11 +34,11 @@ export default class AzureOpenAI extends Base {
     }
 
     async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
-        let messages = await populateOpenAIMessage(rawMessages, this.options.azureDeploymentName as any)
-
         if (this.options.injectDefaultMetadata) {
-            messages = injectModelSystemPrompt(this.options.azureDeploymentName, messages)
+            rawMessages = injectModelSystemPrompt(this.options.azureDeploymentName, rawMessages)
         }
+
+        let messages = await populateGPTMessage(rawMessages, this.options.azureDeploymentName as any)
 
         const origin = new URL((this.options.azureEndpoint || '').trim()).origin
         const apiVersion = this.getApiVersion()
