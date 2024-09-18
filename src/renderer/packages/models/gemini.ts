@@ -43,51 +43,54 @@ export default class Gemeni extends Base {
 
     async callChatCompletion(messages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
         const res = await this.post(
-            `${this.options.geminiAPIHost}/v1beta/models/${this.options.geminiModel}:generateContent?key=${this.options.geminiAPIKey}`,
+            `${this.options.geminiAPIHost}/v1beta/models/${this.options.geminiModel}:streamGenerateContent?alt=sse&key=${this.options.geminiAPIKey}`,
             {
                 'Content-Type': 'application/json',
             },
             {
                 "contents": await populateGeminiMessages(messages, this.options.geminiModel),
-                "generationConfig": {
-                    "temperature": this.options.temperature,
-                    "topK": 1,
-                    "topP": 1,
-                    // "maxOutputTokens": 2048,
-                    "stopSequences": []
-                },
-                "safetySettings": [
-                    {
-                        "category": "HARM_CATEGORY_HARASSMENT",
-                        "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-                    },
-                    {
-                        "category": "HARM_CATEGORY_HATE_SPEECH",
-                        "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-                    },
-                    {
-                        "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                        "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-                    },
-                    {
-                        "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-                        "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-                    }
-                ]
+                // "generationConfig": {
+                //     "temperature": this.options.temperature,
+                //     "topK": 1,
+                //     "topP": 1,
+                //     // "maxOutputTokens": 2048,
+                //     "stopSequences": []
+                // },
+                // "safetySettings": [
+                //     {
+                //         "category": "HARM_CATEGORY_HARASSMENT",
+                //         "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+                //     },
+                //     {
+                //         "category": "HARM_CATEGORY_HATE_SPEECH",
+                //         "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+                //     },
+                //     {
+                //         "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                //         "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+                //     },
+                //     {
+                //         "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                //         "threshold": "BLOCK_MEDIUM_AND_ABOVE"
+                //     }
+                // ]
             },
             signal,
         )
-        const json = await res.json()
-        if (res.status !== 200) {
-            throw new ApiError(JSON.stringify(json))
-        }
-        const result = json['candidates']?.[0]?.['content']?.['parts']?.[0]?.['text'] || null
-        if (result === null) {
-            throw new ApiError(JSON.stringify(json))
-        }
-        if (onResultChange) {
-            onResultChange(result)
-        }
+        let result = ''
+        await this.handleSSE(res, (message) => {
+            const data = JSON.parse(message)
+            if (data.error) {
+                throw new ApiError(`Error from Gemini: ${JSON.stringify(data)}`)
+            }
+            const text = data.candidates[0]?.content?.parts[0]?.text
+            if (text !== undefined) {
+                result += text
+                if (onResultChange) {
+                    onResultChange(result)
+                }
+            }
+        })
         return result
     }
 
