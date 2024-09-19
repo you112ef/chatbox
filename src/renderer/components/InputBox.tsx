@@ -24,6 +24,7 @@ import MiniButton from './MiniButton'
 import _ from 'lodash'
 import { ChatModelSelector } from './ModelSelector'
 import autosize from 'autosize'
+import platform from '@/platform'
 
 export default function InputBox(props: {}) {
     const theme = useTheme()
@@ -128,7 +129,8 @@ export default function InputBox(props: {}) {
             !event.shiftKey &&
             !event.ctrlKey &&
             !event.altKey &&
-            !event.metaKey
+            !event.metaKey &&
+            platform.type !== 'mobile'  // 移动端点击回车不会发送消息
         ) {
             event.preventDefault()
             handleSubmit()
