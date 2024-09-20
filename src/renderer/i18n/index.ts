@@ -10,6 +10,7 @@ import ru from './locales/ru/translation.json'
 import de from './locales/de/translation.json'
 import fr from './locales/fr/translation.json'
 import ptPT from './locales/pt-PT/translation.json'
+import itIT from './locales/it-IT/translation.json'
 import es from './locales/es/translation.json'
 import ar from './locales/ar/translation.json'
 
@@ -51,6 +52,9 @@ i18n.use(initReactI18next).init({
         },
         ar: {
             translation: ar,
+        },
+        'it-IT': {
+            translation: itIT,
         },
     },
     fallbackLng: 'en',
