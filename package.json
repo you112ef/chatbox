@@ -320,11 +320,6 @@
                 "bucket": "chatbox",
                 "endpoint": "https://323943171e765db4cc94a7f640e57cb0.r2.cloudflarestorage.com",
                 "path": "/releases"
-            },
-            {
-                "provider": "github",
-                "owner": "Bin-Huang",
-                "repo": "chatbox"
             }
         ]
     },
