@@ -25,6 +25,7 @@ import _ from 'lodash'
 import { ChatModelSelector } from './ModelSelector'
 import autosize from 'autosize'
 import platform from '@/platform'
+import { useDropzone } from 'react-dropzone'
 
 export default function InputBox(props: {}) {
     const theme = useTheme()
@@ -278,6 +279,15 @@ export default function InputBox(props: {}) {
     // 小彩蛋
     const [easterEgg, setEasterEgg] = useState(false)
 
+    // 拖拽上传
+    const { getRootProps, getInputProps } = useDropzone({
+        onDrop: (acceptedFiles: File[]) => {
+            insertFiles(acceptedFiles)
+        },
+        noClick: true,
+        noKeyboard: true,
+    });
+
     return (
         <div className='pl-1 pr-2 sm:pl-2 sm:pr-4' id={dom.InputBoxID}
             style={{
@@ -417,7 +427,8 @@ export default function InputBox(props: {}) {
                         </MiniButton>
                     </div>
                 </div>
-                <div className='w-full pl-1 pb-2'>
+                <div className='w-full pl-1 pb-2' {...getRootProps()}>
+                    <input {...getInputProps()} />
                     <textarea id={dom.messageInputID}
                         className={cn(
                             `w-full`,
