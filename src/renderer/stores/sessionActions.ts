@@ -678,7 +678,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
                 const throttledModifyMessage = throttle(({ text, cancel }: { text: string, cancel: () => void }) => {
                     targetMsg = { ...targetMsg, content: text, cancel }
                     modifyMessage(sessionId, targetMsg)
-                }, 100)
+                }, 50)
                 await model.chat(promptMsgs, throttledModifyMessage)
                 targetMsg = {
                     ...targetMsg,
