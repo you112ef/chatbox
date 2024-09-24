@@ -56,14 +56,14 @@ export default function MessageList(props: Props) {
                                             <span className='cursor-pointer font-bold border-solid border rounded-2xl py-2 px-3 border-slate-400/25'
                                                 onClick={() => setShowHistoryDrawer(currentThreadHash[msg.id].id)}
                                             >
-                                                #
+                                                <span className='pr-1'>#</span>
                                                 {
                                                     currentThreadHash[msg.id].name
                                                     || t('New Thread')
                                                 }
                                                 {
                                                     currentThreadHash[msg.id].createdAtLabel && (
-                                                        <span className="pl-1 opacity-70">
+                                                        <span className="pl-1 opacity-60 text-xs">
                                                             {currentThreadHash[msg.id].createdAtLabel}
                                                         </span>
                                                     )
