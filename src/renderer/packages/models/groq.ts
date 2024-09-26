@@ -5,6 +5,19 @@ import { populateOpenAIMessageText } from './openai'
 
 // https://console.groq.com/docs/models
 export const modelConfig = {
+    'llama-3.2-1b-preview': {
+        vision: false,
+    },
+    'llama-3.2-3b-preview': {
+        vision: false,
+    },
+    'llama-3.2-11b-text-preview': {
+        vision: false,
+    },
+    'llama-3.2-90b-text-preview': {
+        vision: false,
+    },
+
     'llama-3.1-70b-versatile': {
         vision: false,
     },

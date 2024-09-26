@@ -14,6 +14,15 @@ export const modelConfig = {
     'gemini-1.5-flash-latest': {
         vision: true,
     },
+    'gemini-1.5-pro-exp-0827': {
+        vision: true,
+    },
+    'gemini-1.5-flash-exp-0827': {
+        vision: true,
+    },
+    'gemini-1.5-flash-8b-exp-0924': {
+        vision: true,
+    },
     'gemini-pro': {
         vision: false,
     },
