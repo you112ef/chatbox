@@ -107,6 +107,34 @@ export default class Gemeni extends Base {
         return isSupportVision(model)
     }
 
+    async listModels(): Promise<string[]> {
+        // https://ai.google.dev/api/models#method:-models.list
+        type Response = {
+            models: {
+                name: string;
+                version: string;
+                displayName: string;
+                description: string;
+                inputTokenLimit: number;
+                outputTokenLimit: number;
+                supportedGenerationMethods: string[];
+                temperature: number;
+                topP: number;
+                topK: number;
+            }[]
+        }
+        const res = await this.get(`${this.options.geminiAPIHost}/v1beta/models?key=${this.options.geminiAPIKey}`, {})
+        const json: Response = await res.json()
+        if (!json['models']) {
+            throw new ApiError(JSON.stringify(json))
+        }
+        return json['models']
+            .filter((m) => m['supportedGenerationMethods'].some((method) => method.includes('generate')))
+            .filter((m) => m['name'].includes('gemini'))
+            .map((m) => m['name'].replace('models/', ''))
+            .sort()
+    }
+
 }
 
 interface Content {

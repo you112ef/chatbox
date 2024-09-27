@@ -25,6 +25,23 @@ export default class GeminiSettingUtil extends BaseConfig implements ModelSettin
         ]
     }
 
+    async getRemoteOptionGroups(settings: Settings) {
+        const remoteModels = await super.getRemoteOptionGroups(settings).catch(() => [])
+        const gemini = new Gemini(settings)
+        const geminiAPIModels = await gemini.listModels().catch(() => [])
+        return [
+            ...remoteModels,
+            {
+                options: geminiAPIModels.map(model => {
+                    return {
+                        label: model,
+                        value: model,
+                    }
+                })
+            }
+        ]
+    }
+
     selectSessionModel(settings: Session["settings"], selected: string): Session["settings"] {
         return {
             ...settings,
@@ -33,7 +50,7 @@ export default class GeminiSettingUtil extends BaseConfig implements ModelSettin
     }
 
     isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
-        return Gemini.isSupportVision(settings.geminiModel)
+        return true
     }
 
 }

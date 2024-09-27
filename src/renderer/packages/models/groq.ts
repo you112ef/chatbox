@@ -115,8 +115,19 @@ export default class Groq extends Base {
     }
 
     async listModels(): Promise<string[]> {
+        // https://console.groq.com/docs/api-reference#models-list
+        type Response = {
+            data: {
+                id: string;
+                object: string;
+                created: number;
+                owned_by: string;
+                active: boolean;
+                context_window: number;
+            }[]
+        }
         const res = await this.get(`https://api.groq.com/openai/v1/models`, this.getHeaders())
-        const json = await res.json()
+        const json: Response = await res.json()
         if (! json['data']) {
             throw new ApiError(JSON.stringify(json))
         }
