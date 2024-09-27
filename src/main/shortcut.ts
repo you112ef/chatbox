@@ -1,13 +1,20 @@
 import { BrowserWindow, globalShortcut } from 'electron'
 import * as store from './store-node'
 
+interface State {
+    getMainWindow: () => BrowserWindow | null
+    createWindow: () => Promise<BrowserWindow>
+}
+
 const shortcutMap = {
     'Alt+`': quickToggle,
     'Option+`': quickToggle,
 }
 
-function quickToggle(mainWindow: BrowserWindow | null) {
+export function quickToggle(state: State) {
+    const mainWindow = state.getMainWindow()
     if (!mainWindow) {
+        state.createWindow()
         return
     }
     if (mainWindow.isMinimized()) {
@@ -15,7 +22,12 @@ function quickToggle(mainWindow: BrowserWindow | null) {
         mainWindow.focus()
         mainWindow.webContents.send('window-show')
     } else if (mainWindow?.isFocused()) {
-        mainWindow.minimize()
+        // 解决MacOS全屏下隐藏将黑屏的问题
+        if (mainWindow.isFullScreen()) {
+            mainWindow.setFullScreen(false)
+        }
+        mainWindow.hide()
+        // mainWindow.minimize()
     } else {
         // 解决MacOS下无法聚焦的问题
         mainWindow.hide()
@@ -26,9 +38,9 @@ function quickToggle(mainWindow: BrowserWindow | null) {
     }
 }
 
-export function register(getMainWindow: () => BrowserWindow | null) {
+export function register(state: State) {
     for (const [shortcut, handler] of Object.entries(shortcutMap)) {
-        globalShortcut.register(shortcut, () => handler(getMainWindow()))
+        globalShortcut.register(shortcut, () => handler(state))
     }
 }
 
@@ -38,10 +50,10 @@ export function unregister() {
     }
 }
 
-export function init(getMainWindow: () => BrowserWindow | null) {
+export function init(state: State) {
     const settings = store.getSettings()
     if (settings.disableQuickToggleShortcut) {
         return
     }
-    register(getMainWindow)
+    register(state)
 }

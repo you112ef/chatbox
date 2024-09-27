@@ -23,6 +23,14 @@ export default class Locale {
 type TranslationKey = keyof typeof translations
 
 const translations = {
+    'Show/Hide': {
+        en: 'Show/Hide',
+        zh: '显示/隐藏',
+    },
+    Exit: {
+        en: 'Exit',
+        zh: '退出',
+    },
     New_Version: {
         en: 'New Version',
         zh: '新版本',

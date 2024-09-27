@@ -10,7 +10,7 @@
  */
 import os from 'os'
 import path from 'path'
-import { app, BrowserWindow, shell, ipcMain, nativeTheme, session, dialog } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, nativeTheme, session, dialog, Tray, Menu, nativeImage } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
 import MenuBuilder from './menu'
@@ -75,6 +75,53 @@ class AppUpdater {
     }
 }
 
+const RESOURCES_PATH = app.isPackaged
+    ? path.join(process.resourcesPath, 'assets')
+    : path.join(__dirname, '../../assets')
+
+const getAssetPath = (...paths: string[]): string => {
+    return path.join(RESOURCES_PATH, ...paths)
+}
+
+let tray: Tray | null = null
+
+function createTray() {
+    const locale = new Locale()
+
+    const showWindow = () => {
+        shortcuts.quickToggle({
+            getMainWindow: () => mainWindow,
+            createWindow: createWindow,
+        })
+    }
+    let iconPath = getAssetPath('icon.png')
+    if (process.platform === 'darwin') {
+        // 生成 iconTemplate.png 的命令
+        // gm convert -background none ./iconTemplateRawPreview.png -resize 130% -gravity center -extent 512x512 iconTemplateRaw.png
+        // gm convert ./iconTemplateRaw.png -colorspace gray -negate -threshold 50% -resize 16x16 -units PixelsPerInch -density 72 iconTemplate.png
+        // gm convert ./iconTemplateRaw.png -colorspace gray -negate -threshold 50% -resize 64x64 -units PixelsPerInch -density 144 iconTemplate@2x.png
+        iconPath = getAssetPath('iconTemplate.png')
+    } else if (process.platform === 'win32') {
+        iconPath = getAssetPath('icon.ico')
+    }
+    tray = new Tray(iconPath)
+    const contextMenu = Menu.buildFromTemplate([
+        {
+            label: locale.t('Show/Hide'),
+            click: showWindow,
+            accelerator: 'Alt+`',
+        },
+        {
+            label: locale.t('Exit'),
+            click: () => app.quit(),
+            accelerator: 'Command+Q',
+        },
+    ])
+    tray.setToolTip('Chatbox')
+    tray.setContextMenu(contextMenu)
+    tray.on('double-click', showWindow)
+}
+
 let mainWindow: BrowserWindow | null = null
 
 if (process.env.NODE_ENV === 'production') {
@@ -105,14 +152,6 @@ const createWindow = async () => {
     if (isDebug) {
         // 不在安装 DEBUG 浏览器插件。可能不兼容，所以不如直接在网页里debug
         // await installExtensions()
-    }
-
-    const RESOURCES_PATH = app.isPackaged
-        ? path.join(process.resourcesPath, 'assets')
-        : path.join(__dirname, '../../assets')
-
-    const getAssetPath = (...paths: string[]): string => {
-        return path.join(RESOURCES_PATH, ...paths)
     }
 
     const [state] = windowState.getState()
@@ -198,6 +237,8 @@ const createWindow = async () => {
     nativeTheme.on('updated', () => {
         mainWindow?.webContents.send('system-theme-updated')
     })
+
+    return mainWindow
 }
 
 /**
@@ -207,18 +248,27 @@ const createWindow = async () => {
 app.on('window-all-closed', () => {
     // Respect the OSX convention of having the application in memory even
     // after all windows have been closed
-    if (process.platform !== 'darwin') {
-        app.quit()
-    }
+    // if (process.platform !== 'darwin') {
+    //     app.quit()
+    // }
 })
 
 app.whenReady()
     .then(() => {
         createWindow()
+        if (tray === null) {
+            createTray()
+        }
         app.on('activate', () => {
             // On macOS it's common to re-create a window in the app when the
             // dock icon is clicked and there are no other windows open.
-            if (mainWindow === null) createWindow()
+            if (mainWindow === null) {
+                createWindow()
+            }
+            if (mainWindow && !mainWindow.isVisible()) {
+                mainWindow.show()
+                mainWindow.focus()
+            }
         })
         // 监听窗口大小位置变化的代码，很大程度参考了 VSCODE 的实现 /Users/benn/Documents/w/vscode/src/vs/platform/windows/electron-main/windowsStateHandler.ts
         // When a window looses focus, save all windows state. This allows to
@@ -229,10 +279,17 @@ app.whenReady()
                 windowState.saveState(mainWindow)
             }
         })
-        shortcuts.init(() => mainWindow)
+        shortcuts.init({
+            getMainWindow: () => mainWindow,
+            createWindow: createWindow,
+        })
         proxy.init()
         app.on('will-quit', () => {
             shortcuts.unregister()
+            if (tray) {
+                tray.destroy()
+                tray = null
+            }
         })
     })
     .catch(console.log)
@@ -311,7 +368,10 @@ ipcMain.handle('ensureShortcutConfig', (event, json) => {
     if (config.disableQuickToggleShortcut) {
         shortcuts.unregister()
     } else {
-        shortcuts.register(() => mainWindow)
+        shortcuts.register({
+            getMainWindow: () => mainWindow,
+            createWindow: createWindow,
+        })
     }
 })
 
