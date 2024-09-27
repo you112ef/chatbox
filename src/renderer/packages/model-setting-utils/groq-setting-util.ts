@@ -2,6 +2,7 @@ import { ModelSettings, Session, SessionType, Settings } from "src/shared/types"
 import { ModelSettingUtil } from "./interface";
 import { GroqModel, groqModels } from "../models/groq";
 import BaseConfig from "./base-config";
+import Groq from "../models/groq";
 
 export default class GroqSettingUtil extends BaseConfig implements ModelSettingUtil {
     async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
@@ -15,10 +16,27 @@ export default class GroqSettingUtil extends BaseConfig implements ModelSettingU
     getLocalOptionGroups(settings: Settings) {
         return [
             {
-                options: groqModels.map(value => {
+                options: [...groqModels].sort().map(value => {
                     return {
                         label: value,
                         value: value,
+                    }
+                })
+            }
+        ]
+    }
+
+    async getRemoteOptionGroups(settings: Settings) {
+        const remoteModels = await super.getRemoteOptionGroups(settings).catch(() => [])
+        const groq = new Groq(settings)
+        const groqAPIModels = await groq.listModels().catch(() => [])
+        return [
+            ...remoteModels,
+            {
+                options: groqAPIModels.map(model => {
+                    return {
+                        label: model,
+                        value: model,
                     }
                 })
             }
@@ -33,6 +51,6 @@ export default class GroqSettingUtil extends BaseConfig implements ModelSettingU
     }
 
     isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
-        return false
+        return true
     }
 }

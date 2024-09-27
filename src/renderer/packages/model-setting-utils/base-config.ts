@@ -1,5 +1,4 @@
 import { ModelOptionGroup, Settings } from '../../../shared/types'
-import { flatten } from 'lodash'
 import * as Sentry from '@sentry/react'
 import * as remote from '../../packages/remote'
 
@@ -30,16 +29,16 @@ export default class BaseConfig {
       * @returns 
       */
     mergeOptionGroups(localOptionGroups: ModelOptionGroup[], remoteOptionGroups: ModelOptionGroup[]) {
-        const ret = [...remoteOptionGroups]
-        const remoteOptionValues = flatten(remoteOptionGroups.map(group => group.options.map(option => option.value)))
-        const localOptions = flatten(localOptionGroups.map(group => group.options))
-        const missedLocalOptions = localOptions.filter(option => !remoteOptionValues.includes(option.value))
-        if (missedLocalOptions.length > 0) {
-            ret.unshift({
-                options: missedLocalOptions
+        const ret = [...localOptionGroups, ...remoteOptionGroups]
+        const existedOptionSet = new Set<string>()
+        for (const group of ret) {
+            group.options = group.options.filter(option => {
+                const existed = existedOptionSet.has(option.value)
+                existedOptionSet.add(option.value)
+                return !existed
             })
         }
-        return ret
+        return ret.filter(group => group.options.length > 0)
     }
 
     getCurrentModelOptionValue(settings: Settings) {

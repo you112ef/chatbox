@@ -113,4 +113,17 @@ export default class Groq extends Base {
         }
         return headers
     }
+
+    async listModels(): Promise<string[]> {
+        const res = await this.get(`https://api.groq.com/openai/v1/models`, this.getHeaders())
+        const json = await res.json()
+        if (! json['data']) {
+            throw new ApiError(JSON.stringify(json))
+        }
+        return json['data']
+            .filter((item: any) => item['active'] && item['context_window'] && item['object'] === 'model')
+            .map((m: any) => m['id'])
+            .filter((id: string) => !id.includes('whisper'))
+            .sort()
+    }
 }
