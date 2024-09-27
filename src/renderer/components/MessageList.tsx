@@ -27,7 +27,6 @@ export default function MessageList(props: Props) {
     const virtuoso = useRef<VirtuosoHandle>(null)
     const messageListRef = useRef<HTMLDivElement>(null)
 
-    const setMessageListElement = useSetAtom(atoms.messageListElementAtom)
     const setMessageScrollingAtom = useSetAtom(atoms.messageScrollingAtom)
     const setAtTop = useSetAtom(atoms.messageScrollingAtTopAtom)
     const setAtBottom = useSetAtom(atoms.messageScrollingAtBottomAtom)
@@ -36,10 +35,7 @@ export default function MessageList(props: Props) {
 
     useEffect(() => {
         setMessageScrollingAtom(virtuoso)
-    }, [])
-    useEffect(() => {
-        setMessageListElement(messageListRef)
-    }, [])
+    }, [virtuoso])
 
     const [threadMenuAnchorEl, setThreadMenuAnchorEl] = useState<null | HTMLElement>(null);
     const [threadMenuClickedTopicId, setThreadMenuClickedTopicId] = useState<null | string>(null);

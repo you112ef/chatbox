@@ -255,16 +255,7 @@ function _Message(props: Props) {
     }, [msg.generating])
     useEffect(() => {
         if (msg.generating && autoScrollId) {
-            const viewportHeight = scrollActions.getMessageListViewportHeight()
-            const currentHeight = ref.current?.clientHeight ?? 0
-            if (currentHeight > viewportHeight) {
-                // scrollActions.tickAutoScroll(autoScrollId)  // 清理之前，最后再滚动一次，确保非流式生成的消息也能滚动到底部
-                scrollActions.scrollToMessage(msg.id, 'start')
-                scrollActions.clearAutoScroll(autoScrollId)
-                setAutoScrollId(null)
-            } else {
-                scrollActions.tickAutoScroll(autoScrollId)
-            }
+            scrollActions.tickAutoScroll(autoScrollId)
         }
     }, [msg.content])
 

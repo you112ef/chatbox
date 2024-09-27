@@ -98,12 +98,3 @@ export function clearAutoScroll(id?: string) {
     autoScrollTask = null
     return true
 }
-
-export function getMessageListViewportHeight() {
-    const store = getDefaultStore()
-    const messageListElement = store.get(atoms.messageListElementAtom)
-    if (!messageListElement) {
-        return 0
-    }
-    return messageListElement.current?.clientHeight ?? 0
-}
