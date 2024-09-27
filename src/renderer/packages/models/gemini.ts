@@ -38,7 +38,13 @@ interface Options {
 }
 
 export function isSupportVision(model: GeminiModel): boolean {
-    return modelConfig[model]?.vision || false
+    if (model.startsWith('gemini-pro') && !model.includes('vision')) {
+        return false
+    }
+    if (model.startsWith('gemini-1.0')) {
+        return false
+    }
+    return true
 }
 
 export default class Gemeni extends Base {
