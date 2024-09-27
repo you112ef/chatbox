@@ -190,7 +190,7 @@
     "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend": "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend",
     "Save & Resend": "Save & Resend",
     "New Thread": "New Thread",
-    "Threads History": "Threads History",
+    "Thread History": "Thread History",
     "Switch": "Switch",
     "Continue this Thread": "Continue this Thread",
     "Back to Previous": "Back to Previous",
@@ -262,5 +262,8 @@
     "Auto-preview artifacts": "Auto-preview artifacts",
     "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)",
     "Mermaid Diagrams & Charts Rendering": "Mermaid Diagrams & Charts Rendering",
-    "Delete Current Session": "Delete Current Session"
+    "Delete Current Session": "Delete Current Session",
+    "Show in Thread List": "Show in Thread List",
+    "Continue this thread": "Continue this thread",
+    "Confirm deletion?": "Confirm deletion?"
 }

@@ -190,7 +190,7 @@
     "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend": "[Ctrl+Enter] حفظ، [Ctrl+Shift+Enter] حفظ وإعادة الإرسال",
     "Save & Resend": "حفظ وإعادة الإرسال",
     "New Thread": "موضوع جديد",
-    "Threads History": "تاريخ المواضيع",
+    "Thread History": "تاريخ المواضيع",
     "Switch": "تبديل",
     "Continue this Thread": "متابعة هذا الموضوع",
     "Back to Previous": "العودة إلى السابق",
@@ -262,5 +262,8 @@
     "Auto-preview artifacts": "معاينة تلقائية للتحف",
     "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "عرض التحف المتولدة تلقائيًا (مثل، HTML مع CSS، JS، Tailwind)",
     "Mermaid Diagrams & Charts Rendering": "عرض مخططات ورسوم Mermaid",
-    "Delete Current Session": "حذف الجلسة الحالية"
+    "Delete Current Session": "حذف الجلسة الحالية",
+    "Show in Thread List": "عرض في قائمة المحادثات",
+    "Continue this thread": "متابعة هذا الموضوع",
+    "Confirm deletion?": "تأكيد الحذف؟"
 }

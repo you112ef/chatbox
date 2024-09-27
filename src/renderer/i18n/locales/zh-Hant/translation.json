@@ -191,7 +191,7 @@
     "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend": "[Ctrl+Enter] 儲存, [Ctrl+Shift+Enter] 儲存後重發",
     "Save & Resend": "儲存並重發",
     "New Thread": "新話題",
-    "Threads History": "歷史話題",
+    "Thread History": "歷史話題",
     "Switch": "切換",
     "Continue this Thread": "繼續該話題",
     "Back to Previous": "回到上個話題",
@@ -263,5 +263,8 @@
     "Auto-preview artifacts": "自動預覽生成內容(Artifacts)",
     "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "自動渲染生成的內容（例如，帶有 CSS、JS、Tailwind 的 HTML）",
     "Mermaid Diagrams & Charts Rendering": "Mermaid 圖表與圖表渲染",
-    "Delete Current Session": "刪除當前會話"
+    "Delete Current Session": "刪除當前會話",
+    "Show in Thread List": "在話題列表中顯示",
+    "Continue this thread": "繼續該話題",
+    "Confirm deletion?": "確認刪除？"
 }

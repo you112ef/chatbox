@@ -183,6 +183,10 @@ export function remove(session: Session) {
  */
 export function removeThread(sessionId: string, threadId: string) {
     const store = getDefaultStore()
+    if (sessionId === threadId) {
+        removeCurrentThread(sessionId)
+        return
+    }
     store.set(atoms.sessionsAtom, (sessions) => sessions.map((s) => {
         if (s.id === sessionId && s.threads) {
             s = {
@@ -329,7 +333,7 @@ export function switchThread(sessionId: string, threadId: string) {
             }
         })
     })
-    setTimeout(() => scrollActions.scrollToBottom(), 300)
+    setTimeout(() => scrollActions.scrollToBottom('smooth'), 300)
 }
 
 /**

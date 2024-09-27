@@ -1,17 +1,26 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Message from './Message'
 import * as atoms from '../stores/atoms'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { Virtuoso } from 'react-virtuoso'
 import { VirtuosoHandle } from 'react-virtuoso'
 import * as scrollActions from '../stores/scrollActions'
+import * as sessionActions from '../stores/sessionActions'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
+import StyledMenu from './StyledMenu';
+import { MenuItem, useTheme } from '@mui/material';
+import SwapCallsIcon from '@mui/icons-material/SwapCalls';
+import DeleteIcon from '@mui/icons-material/Delete'
+import CheckIcon from '@mui/icons-material/Check';
+import SegmentIcon from '@mui/icons-material/Segment';
 
 interface Props { }
 
 export default function MessageList(props: Props) {
     const { t } = useTranslation()
+    const theme = useTheme()
+
     const currentSession = useAtomValue(atoms.currentSessionAtom)
     const currentMessageList = useAtomValue(atoms.currentMessageListAtom)
     const currentThreadHash = useAtomValue(atoms.currentThreadHistoryHashAtom)
@@ -32,6 +41,20 @@ export default function MessageList(props: Props) {
         setMessageListElement(messageListRef)
     }, [])
 
+    const [threadMenuAnchorEl, setThreadMenuAnchorEl] = useState<null | HTMLElement>(null);
+    const [threadMenuClickedTopicId, setThreadMenuClickedTopicId] = useState<null | string>(null);
+    const [threadMenuDelete, setThreadMenuDelete] = useState<boolean>(false)
+    const openThreadMenu = (event: React.MouseEvent<HTMLElement>, topicId: string) => {
+        setThreadMenuAnchorEl(event.currentTarget);
+        setThreadMenuClickedTopicId(topicId);
+        setThreadMenuDelete(false)
+    };
+    const closeThreadMenu = () => {
+        setThreadMenuAnchorEl(null);
+        setThreadMenuClickedTopicId(null);
+        setThreadMenuDelete(false)
+    };
+
     return (
         <div className={cn('w-full h-full mx-auto')}>
             <div className='overflow-auto h-full pr-0 pl-1 sm:pl-0' ref={messageListRef}>
@@ -51,12 +74,11 @@ export default function MessageList(props: Props) {
                             <>
                                 {
                                     index !== 0 && currentThreadHash[msg.id] && (
-                                        <div className='text-center pb-4 pt-8' key={'divider-' + msg.id}
-                                        >
+                                        <div className='text-center pb-4 pt-8' key={'divider-' + msg.id}>
                                             <span className='cursor-pointer font-bold border-solid border rounded-2xl py-2 px-3 border-slate-400/25'
-                                                onClick={() => setShowHistoryDrawer(currentThreadHash[msg.id].id)}
+                                                onClick={(event) => openThreadMenu(event, currentThreadHash[msg.id].id)}
                                             >
-                                                <span className='pr-1'>#</span>
+                                                <span className='pr-1 opacity-60'>#</span>
                                                 {
                                                     currentThreadHash[msg.id].name
                                                     || t('New Thread')
@@ -112,6 +134,79 @@ export default function MessageList(props: Props) {
                         }
                     }}
                 />
+                <StyledMenu
+                    anchorEl={threadMenuAnchorEl}
+                    open={Boolean(threadMenuAnchorEl)}
+                    onClose={closeThreadMenu}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }}
+                >
+                    <MenuItem disableRipple
+                        onClick={() => {
+                            setShowHistoryDrawer(threadMenuClickedTopicId || true)
+                            closeThreadMenu()
+                        }}
+                    >
+                        <SegmentIcon fontSize="small" />
+                        {t('Show in Thread List')}
+                    </MenuItem>
+                    <MenuItem disableRipple divider
+                        onClick={() => {
+                            if (threadMenuClickedTopicId) {
+                                sessionActions.switchThread(currentSession.id, threadMenuClickedTopicId)
+                            }
+                            closeThreadMenu()
+                        }}
+                    >
+                        <SwapCallsIcon fontSize="small" />
+                        {t('Continue this thread')}
+                    </MenuItem>
+                    {
+                        threadMenuDelete
+                            ? (
+                                <MenuItem disableRipple
+                                    onClick={() => {
+                                        if (threadMenuClickedTopicId) {
+                                            sessionActions.removeThread(currentSession.id, threadMenuClickedTopicId)
+                                        }
+                                        closeThreadMenu()
+                                    }}
+                                    sx={{
+                                        color: theme.palette.error.contrastText,
+                                        backgroundColor: theme.palette.error.main,
+                                        '&:hover': {
+                                            color: theme.palette.error.contrastText,
+                                            backgroundColor: theme.palette.error.main,
+                                        },
+                                    }}
+                                >
+                                    <CheckIcon fontSize="small" />
+                                    {t('Confirm deletion?')}
+                                </MenuItem>
+                            )
+                            : (
+                                <MenuItem disableRipple
+                                    onClick={() => {
+                                        setThreadMenuDelete(true)
+                                    }}
+                                    sx={{
+                                        '&:hover': {
+                                            backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                                        },
+                                    }}
+                                >
+                                    <DeleteIcon fontSize="small" />
+                                    {t('delete')}
+                                </MenuItem>
+                            )
+                    }
+                </StyledMenu>
             </div>
         </div>
     )

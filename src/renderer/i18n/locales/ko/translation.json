@@ -191,7 +191,7 @@
     "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend": "[Ctrl+Enter] 저장, [Ctrl+Shift+Enter] 저장 및 재전송",
     "Save & Resend": "저장 및 재전송",
     "New Thread": "새 스레드",
-    "Threads History": "스레드 기록",
+    "Thread History": "스레드 기록",
     "Switch": "전환",
     "Continue this Thread": "이 스레드 계속하기",
     "Back to Previous": "이전으로 돌아가기",
@@ -263,5 +263,8 @@
     "Auto-preview artifacts": "아티팩트 자동 미리보기",
     "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "생성된 아티팩트(예: CSS, JS, Tailwind가 포함된 HTML)를 자동으로 렌더링",
     "Mermaid Diagrams & Charts Rendering": "Mermaid 다이어그램 및 차트 렌더링",
-    "Delete Current Session": "현재 세션 삭제"
+    "Delete Current Session": "현재 세션 삭제",
+    "Show in Thread List": "스레드 목록에 표시",
+    "Continue this thread": "이 스레드 계속하기",
+    "Confirm deletion?": "삭제 확인?"
 }

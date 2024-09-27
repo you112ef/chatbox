@@ -77,7 +77,7 @@ export default function ThreadHistoryDrawer(props: {}) {
         >
             <Box className='ThreadHistoryDrawer flex flex-col h-full w-full'>
                 <Box sx={{ padding: '1rem 0.5rem 0.2rem 0.5rem', margin: '0.1rem 0.1rem 0.1rem 0.2rem' }} >
-                    <span className="text-xs opacity-80">{t('Threads History')}</span>
+                    <span className="text-xs opacity-80">{t('Thread History')}</span>
                 </Box>
                 <MenuList
                     sx={{

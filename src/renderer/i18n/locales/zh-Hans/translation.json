@@ -191,7 +191,7 @@
     "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend": "[Ctrl+Enter] 保存, [Ctrl+Shift+Enter] 保存并发送",
     "Save & Resend": "保存并发送",
     "New Thread": "新话题",
-    "Threads History": "历史话题",
+    "Thread History": "历史话题",
     "Switch": "切换",
     "Continue this Thread": "继续该话题",
     "Back to Previous": "回到上个话题",
@@ -263,5 +263,8 @@
     "Auto-preview artifacts": "自动预览生成物(Artifacts)",
     "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "自动渲染生成物（例如，带有 CSS、JS、Tailwind 的 HTML）",
     "Mermaid Diagrams & Charts Rendering": "Mermaid 图表与图表渲染",
-    "Delete Current Session": "删除当前会话"
+    "Delete Current Session": "删除当前会话",
+    "Show in Thread List": "在话题列表中显示",
+    "Continue this thread": "继续该话题",
+    "Confirm deletion?": "确认删除？"
 }

@@ -191,7 +191,7 @@
     "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend": "[Ctrl+Enter] Enregistrer, [Ctrl+Shift+Enter] Enregistrer et Renvoyer",
     "Save & Resend": "Enregistrer et Renvoyer",
     "New Thread": "Nouveau Sujet",
-    "Threads History": "Historique des Sujets",
+    "Thread History": "Historique des Sujets",
     "Switch": "Changer",
     "Continue this Thread": "Continuer ce Sujet",
     "Back to Previous": "Retour au Sujet Précédent",
@@ -263,5 +263,8 @@
     "Auto-preview artifacts": "Aperçu automatique des artefacts",
     "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "Rendu automatique des artefacts générés (par exemple, HTML avec CSS, JS, Tailwind)",
     "Mermaid Diagrams & Charts Rendering": "Rendu de diagrammes et de graphiques Mermaid",
-    "Delete Current Session": "Supprimer la session actuelle"
+    "Delete Current Session": "Supprimer la session actuelle",
+    "Show in Thread List": "Afficher dans la liste des sujets",
+    "Continue this thread": "Continuer ce sujet",
+    "Confirm deletion?": "Confirmer la suppression?"
 }

@@ -191,7 +191,7 @@
     "[Ctrl+Enter] Save, [Ctrl+Shift+Enter] Save and Resend": "[Ctrl+Enter] 保存, [Ctrl+Shift+Enter] 保存して再送信",
     "Save & Resend": "保存して再送信",
     "New Thread": "新しいスレッド",
-    "Threads History": "スレッド履歴",
+    "Thread History": "スレッド履歴",
     "Switch": "切り替え",
     "Continue this Thread": "このスレッドを続ける",
     "Back to Previous": "前のスレッドに戻る",
@@ -263,5 +263,8 @@
     "Auto-preview artifacts": "アーティファクトを自動プレビュー",
     "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "生成されたアーティファクト（HTML、CSS、JS、Tailwindなど）を自動的にレンダリング",
     "Mermaid Diagrams & Charts Rendering": "Mermaid ダイアグラムとチャートのレンダリング",
-    "Delete Current Session": "現在のセッションを削除"
+    "Delete Current Session": "現在のセッションを削除",
+    "Show in Thread List": "スレッドリストに表示",
+    "Continue this thread": "このスレッドを続ける",
+    "Confirm deletion?": "削除を確認しますか？"
 }
