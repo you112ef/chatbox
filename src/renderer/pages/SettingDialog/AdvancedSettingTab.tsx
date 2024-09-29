@@ -166,6 +166,26 @@ export default function AdvancedSettingTab(props: Props) {
                     <AnalyticsSetting />
                 </AccordionDetails>
             </Accordion>
+
+            {
+                platform.type === 'desktop' && (
+                    <Box className='mt-2'>
+                        <FormGroup>
+                            <FormControlLabel
+                                control={<Switch />}
+                                label={t('Launch at system startup')}
+                                checked={settingsEdit.autoLaunch}
+                                onChange={(e, checked) =>
+                                    setSettingsEdit({
+                                        ...settingsEdit,
+                                        autoLaunch: checked,
+                                    })
+                                }
+                            />
+                        </FormGroup>
+                    </Box>
+                )
+            }
         </Box>
     )
 }

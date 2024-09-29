@@ -264,6 +264,7 @@
     "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "Автоматически рендерить сгенерированные артефакты (например, HTML с CSS, JS, Tailwind)",
     "Mermaid Diagrams & Charts Rendering": "Рендеринг диаграмм и графиков Mermaid",
     "Delete Current Session": "Удалить текущую сессию",
+    "Launch at system startup": "Запуск при запуске системы",
     "Show in Thread List": "Показать в списке тем",
     "Continue this thread": "Продолжить эту тему",
     "Confirm deletion?": "Подтвердить удаление?"

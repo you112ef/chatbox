@@ -264,6 +264,7 @@
     "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "自动渲染生成物（例如，带有 CSS、JS、Tailwind 的 HTML）",
     "Mermaid Diagrams & Charts Rendering": "Mermaid 图表与图表渲染",
     "Delete Current Session": "删除当前会话",
+    "Launch at system startup": "开机自启动",
     "Show in Thread List": "在话题列表中显示",
     "Continue this thread": "继续该话题",
     "Confirm deletion?": "确认删除？"

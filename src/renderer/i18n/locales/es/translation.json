@@ -263,6 +263,7 @@
     "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "Renderizar automáticamente los artefactos generados (p. ej., HTML con CSS, JS, Tailwind)",
     "Mermaid Diagrams & Charts Rendering": "Renderizado de diagramas y gráficos Mermaid",
     "Delete Current Session": "Eliminar la sesión actual",
+    "Launch at system startup": "Iniciar automáticamente al reiniciar el sistema",
     "Show in Thread List": "Mostrar en la lista de hilos",
     "Continue this thread": "Continuar este hilo",
     "Confirm deletion?": "Confirmar eliminación?"

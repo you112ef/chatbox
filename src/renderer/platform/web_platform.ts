@@ -142,4 +142,8 @@ export default class WebPlatform implements Platform {
     public async appLog(level: string, message: string): Promise<void> {
         console.log(`APP_LOG: [${level}] ${message}`)
     }
+
+    public async ensureAutoLaunch(enable: boolean) {
+        return
+    }
 }

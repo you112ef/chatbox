@@ -264,6 +264,7 @@
     "Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)": "生成されたアーティファクト（HTML、CSS、JS、Tailwindなど）を自動的にレンダリング",
     "Mermaid Diagrams & Charts Rendering": "Mermaid ダイアグラムとチャートのレンダリング",
     "Delete Current Session": "現在のセッションを削除",
+    "Launch at system startup": "システム起動時に自動起動",
     "Show in Thread List": "スレッドリストに表示",
     "Continue this thread": "このスレッドを続ける",
     "Confirm deletion?": "削除を確認しますか？"

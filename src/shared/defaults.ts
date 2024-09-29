@@ -62,6 +62,8 @@ export function settings(): Settings {
         enableMermaidRendering: true,
         injectDefaultMetadata: true,
         autoPreviewArtifacts: false,
+
+        autoLaunch: false,
     }
 }
 

@@ -23,6 +23,7 @@ import * as windowState from './window_state'
 import * as fs from 'fs-extra'
 import * as analystic from './analystic-node'
 import sanitizeFilename from 'sanitize-filename'
+import * as autoLauncher from './autoLauncher'
 
 // 这行代码是解决 Windows 通知的标题和图标不正确的问题，标题会错误显示成 electron.app.Chatbox
 // 参考：https://stackoverflow.com/questions/65859634/notification-from-electron-shows-electron-app-electron
@@ -424,4 +425,12 @@ ipcMain.handle('appLog', (event, dataJson) => {
         default:
             log.info(data.message)
     }
+})
+
+ipcMain.handle('ensureAutoLaunch', (event, enable: boolean) => {
+    if (isDebug) {
+        log.info('ensureAutoLaunch: skip by debug mode')
+        return
+    }
+    return autoLauncher.ensure(enable)
 })

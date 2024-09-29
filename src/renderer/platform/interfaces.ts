@@ -48,6 +48,8 @@ export interface Platform {
     shouldShowAboutDialogWhenStartUp(): Promise<boolean>
 
     appLog(level: string, message: string): Promise<void>
+
+    ensureAutoLaunch(enable: boolean): Promise<void>
 }
 
 
