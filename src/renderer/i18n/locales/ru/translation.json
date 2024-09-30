@@ -267,5 +267,6 @@
     "Launch at system startup": "Запуск при запуске системы",
     "Show in Thread List": "Показать в списке тем",
     "Continue this thread": "Продолжить эту тему",
-    "Confirm deletion?": "Подтвердить удаление?"
+    "Confirm deletion?": "Подтвердить удаление?",
+    "Auto-Generate Chat Titles": "Автоматически генерировать названия чатов"
 }

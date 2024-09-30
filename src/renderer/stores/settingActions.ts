@@ -72,3 +72,8 @@ export function getSettings() {
     const store = getDefaultStore()
     return store.get(atoms.settingsAtom)
 }
+
+export function getAutoGenerateTitle() {
+    const store = getDefaultStore()
+    return store.get(atoms.autoGenerateTitleAtom)
+}

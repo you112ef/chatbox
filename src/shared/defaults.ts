@@ -63,6 +63,8 @@ export function settings(): Settings {
         injectDefaultMetadata: true,
         autoPreviewArtifacts: false,
 
+        autoGenerateTitle: true,
+
         autoLaunch: false,
     }
 }

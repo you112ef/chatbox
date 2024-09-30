@@ -266,5 +266,6 @@
     "Launch at system startup": "Avvia automaticamente al riavvio del sistema",
     "Show in Thread List": "Mostra nella lista dei thread",
     "Continue this thread": "Continua questo thread",
-    "Confirm deletion?": "Confermare la cancellazione?"
+    "Confirm deletion?": "Confermare la cancellazione?",
+    "Auto-Generate Chat Titles": "Auto-Genera titoli di chat"
 }

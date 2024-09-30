@@ -12,6 +12,7 @@ import { useIsSmallScreen } from '../hooks/useScreenChange'
 import { PanelRightClose } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import EditIcon from '@mui/icons-material/Edit';
+import * as settingActions from '../stores/settingActions'
 
 interface Props { }
 
@@ -26,6 +27,10 @@ export default function Header(props: Props) {
 
     // 会话名称自动生成
     useEffect(() => {
+        const autoGenerateTitle = settingActions.getAutoGenerateTitle()
+        if (!autoGenerateTitle) {
+            return
+        }
         if (
             currentSession.name === 'Untitled'
             && currentSession.messages.length >= 2

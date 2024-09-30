@@ -267,5 +267,6 @@
     "Launch at system startup": "开机自启动",
     "Show in Thread List": "在话题列表中显示",
     "Continue this thread": "继续该话题",
-    "Confirm deletion?": "确认删除？"
+    "Confirm deletion?": "确认删除？",
+    "Auto-Generate Chat Titles": "自动生成聊天标题"
 }

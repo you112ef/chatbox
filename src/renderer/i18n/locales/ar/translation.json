@@ -266,5 +266,6 @@
     "Launch at system startup": "تشغيل تلقائي عند بدء النظام",
     "Show in Thread List": "عرض في قائمة المحادثات",
     "Continue this thread": "متابعة هذا الموضوع",
-    "Confirm deletion?": "تأكيد الحذف؟"
+    "Confirm deletion?": "تأكيد الحذف؟",
+    "Auto-Generate Chat Titles": "تلقائيًا إنشاء عناوين المحادثات"
 }
