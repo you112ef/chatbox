@@ -1,4 +1,18 @@
 const changelog = `
+### v1.5.0 - 2024.10.05
+
+1. Added system tray icon, optimized show/hide shortcut
+2. Input box now supports direct drag-and-drop insertion of images or files
+3. Added option for launch at system startup (disabled by default, can be enabled in settings)
+4. Added thread title menu for quick thread switching and deletion
+5. Added toggle for automatic title generation to save tokens when disabled
+6. Added Italian language support
+7. Gemini and Groq models now support fetching the latest model lists remotely
+8. Gemini models now support sending images by default
+9. Ollama models now support sending images by default
+10. Updated model lists for various model providers
+11. Improved mobile experience, fixed issue with excessive bottom space after keyboard pop-up
+
 ### v1.4.2 - 2024.09.13
 
 1. Added support for OpenAI's new o1 model series
