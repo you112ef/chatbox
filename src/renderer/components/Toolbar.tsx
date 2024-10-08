@@ -140,7 +140,7 @@ export default function Toolbar() {
                 <MenuItem onClick={handleSessionClean} disableRipple
                     sx={{
                         '&:hover': {
-                            backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                            backgroundColor: 'rgba(255, 165, 0, 0.1)',
                         },
                     }}
                 >
