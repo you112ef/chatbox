@@ -279,57 +279,63 @@ async function showOrHideWindow() {
 
 // --------- 应用管理 ---------
 
-/**
- * Add event listeners...
- */
+const gotTheLock = app.requestSingleInstanceLock()
 
-app.on('window-all-closed', () => {
-    // Respect the OSX convention of having the application in memory even
-    // after all windows have been closed
-    // if (process.platform !== 'darwin') {
-    //     app.quit()
-    // }
-})
-
-app.whenReady()
-    .then(() => {
-        createWindow()
-        ensureTray()
-        app.on('activate', () => {
-            // On macOS it's common to re-create a window in the app when the
-            // dock icon is clicked and there are no other windows open.
-            if (mainWindow === null) {
-                createWindow()
-            }
-            if (mainWindow && !mainWindow.isVisible()) {
-                mainWindow.show()
-                mainWindow.focus()
-            }
-        })
-        // 监听窗口大小位置变化的代码，很大程度参考了 VSCODE 的实现 /Users/benn/Documents/w/vscode/src/vs/platform/windows/electron-main/windowsStateHandler.ts
-        // When a window looses focus, save all windows state. This allows to
-        // prevent loss of window-state data when OS is restarted without properly
-        // shutting down the application (https://github.com/microsoft/vscode/issues/87171)
-        app.on('browser-window-blur', () => {
-            if (mainWindow) {
-                windowState.saveState(mainWindow)
-            }
-        })
-        initShortcuts()
-        proxy.init()
-        app.on('will-quit', () => {
-            try {
-                unregisterShortcuts()
-            } catch (e) {
-                log.error('shortcut: failed to unregister', e)
-            }
-            destroyTray()
-        })
-        app.on('before-quit', () => {
-            destroyTray()
-        })
+if (!gotTheLock) {
+    app.quit()
+} else {
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+        showOrHideWindow()
     })
-    .catch(console.log)
+
+    app.on('window-all-closed', () => {
+        // Respect the OSX convention of having the application in memory even
+        // after all windows have been closed
+        // if (process.platform !== 'darwin') {
+        //     app.quit()
+        // }
+    })
+
+    app.whenReady()
+        .then(() => {
+            createWindow()
+            ensureTray()
+            app.on('activate', () => {
+                // On macOS it's common to re-create a window in the app when the
+                // dock icon is clicked and there are no other windows open.
+                if (mainWindow === null) {
+                    createWindow()
+                }
+                if (mainWindow && !mainWindow.isVisible()) {
+                    mainWindow.show()
+                    mainWindow.focus()
+                }
+            })
+            // 监听窗口大小位置变化的代码，很大程度参考了 VSCODE 的实现 /Users/benn/Documents/w/vscode/src/vs/platform/windows/electron-main/windowsStateHandler.ts
+            // When a window looses focus, save all windows state. This allows to
+            // prevent loss of window-state data when OS is restarted without properly
+            // shutting down the application (https://github.com/microsoft/vscode/issues/87171)
+            app.on('browser-window-blur', () => {
+                if (mainWindow) {
+                    windowState.saveState(mainWindow)
+                }
+            })
+            initShortcuts()
+            proxy.init()
+            app.on('will-quit', () => {
+                try {
+                    unregisterShortcuts()
+                } catch (e) {
+                    log.error('shortcut: failed to unregister', e)
+                }
+                destroyTray()
+            })
+            app.on('before-quit', () => {
+                destroyTray()
+            })
+        })
+        .catch(console.log)
+}
 
 // --------- IPC 监听 ---------
 
