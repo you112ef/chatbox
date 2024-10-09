@@ -1,4 +1,10 @@
 const changelog = `
+### v1.5.1 - 2024.10.09
+
+1. Fixed an issue on Windows where multiple application instances could be launched, causing duplicate icons in the system tray
+2. On macOS, System Events permission is now only requested when enabling the "launch at startup" option, rather than automatically requesting it when the application starts
+3. Fixed an issue where automatically generated titles were occasionally truncated
+
 ### v1.5.0 - 2024.10.05
 
 1. Added system tray icon, optimized show/hide shortcut
