@@ -84,6 +84,7 @@ const getAssetPath = (...paths: string[]): string => {
     return path.join(RESOURCES_PATH, ...paths)
 }
 
+let mainWindow: BrowserWindow | null = null
 let tray: Tray | null = null
 
 function createTray() {
@@ -149,8 +150,6 @@ function destroyTray() {
         log.error('tray: failed to destroy', e)
     }
 }
-
-let mainWindow: BrowserWindow | null = null
 
 if (process.env.NODE_ENV === 'production') {
     const sourceMapSupport = require('source-map-support')
