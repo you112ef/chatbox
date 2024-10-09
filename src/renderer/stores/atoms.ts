@@ -35,7 +35,7 @@ export const settingsAtom = atom(
             platform.ensureProxyConfig({ proxy: newSettings.proxy })
         }
         // 如果开机自启动配置发生变化，需要重新设置开机自启动
-        if (newSettings.autoLaunch !== settings.autoLaunch) {
+        if (Boolean(newSettings.autoLaunch) !== Boolean(settings.autoLaunch)) {
             platform.ensureAutoLaunch(newSettings.autoLaunch)
         }
         set(_settingsAtom, newSettings)
