@@ -88,7 +88,6 @@ let tray: Tray | null = null
 
 function createTray() {
     const locale = new Locale()
-
     const showWindow = () => {
         shortcuts.quickToggle({
             getMainWindow: () => mainWindow,
@@ -121,6 +120,34 @@ function createTray() {
     tray.setToolTip('Chatbox')
     tray.setContextMenu(contextMenu)
     tray.on('double-click', showWindow)
+    return tray
+}
+
+function ensureTray() {
+    if (tray) {
+        log.info('tray: already exists')
+        return tray
+    }
+    try {
+        createTray()
+        log.info('tray: created')
+    } catch (e) {
+        log.error('tray: failed to create', e)
+    }
+}
+
+function destroyTray() {
+    if (!tray) {
+        log.info('tray: skip destroy because it does not exist')
+        return
+    }
+    try {
+        tray.destroy()
+        tray = null
+        log.info('tray: destroyed')
+    } catch (e) {
+        log.error('tray: failed to destroy', e)
+    }
 }
 
 let mainWindow: BrowserWindow | null = null
@@ -257,9 +284,7 @@ app.on('window-all-closed', () => {
 app.whenReady()
     .then(() => {
         createWindow()
-        if (tray === null) {
-            createTray()
-        }
+        ensureTray()
         app.on('activate', () => {
             // On macOS it's common to re-create a window in the app when the
             // dock icon is clicked and there are no other windows open.
@@ -286,11 +311,15 @@ app.whenReady()
         })
         proxy.init()
         app.on('will-quit', () => {
-            shortcuts.unregister()
-            if (tray) {
-                tray.destroy()
-                tray = null
+            try {
+                shortcuts.unregister()
+            } catch (e) {
+                log.error('shortcut: failed to unregister', e)
             }
+            destroyTray()
+        })
+        app.on('before-quit', () => {
+            destroyTray()
         })
     })
     .catch(console.log)
