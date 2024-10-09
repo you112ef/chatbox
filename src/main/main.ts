@@ -39,8 +39,12 @@ const getAssetPath = (...paths: string[]): string => {
     return path.join(RESOURCES_PATH, ...paths)
 }
 
+// --------- 全局变量 ---------
+
 let mainWindow: BrowserWindow | null = null
 let tray: Tray | null = null
+
+// --------- Tray 图标 ---------
 
 function createTray() {
     const locale = new Locale()
@@ -106,6 +110,8 @@ function destroyTray() {
     }
 }
 
+// --------- 开发模式 ---------
+
 if (process.env.NODE_ENV === 'production') {
     const sourceMapSupport = require('source-map-support')
     sourceMapSupport.install()
@@ -129,6 +135,8 @@ if (isDebug) {
 //         )
 //         .catch(console.log)
 // }
+
+// --------- 窗口管理 ---------
 
 const createWindow = async () => {
     if (isDebug) {
@@ -223,6 +231,8 @@ const createWindow = async () => {
     return mainWindow
 }
 
+// --------- 应用管理 ---------
+
 /**
  * Add event listeners...
  */
@@ -278,7 +288,7 @@ app.whenReady()
     })
     .catch(console.log)
 
-// IPC
+// --------- IPC 监听 ---------
 
 ipcMain.handle('getStoreValue', (event, key) => {
     return store.get(key)
