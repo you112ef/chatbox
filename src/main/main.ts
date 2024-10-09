@@ -10,13 +10,12 @@
  */
 import os from 'os'
 import path from 'path'
-import { app, BrowserWindow, shell, ipcMain, nativeTheme, session, Tray, Menu } from 'electron'
+import { app, BrowserWindow, globalShortcut, shell, ipcMain, nativeTheme, session, Tray, Menu } from 'electron'
 import log from 'electron-log'
 import MenuBuilder from './menu'
 import { resolveHtmlPath } from './util'
 import Locale from './locales'
 import { store, getConfig, getSettings } from './store-node'
-import * as shortcuts from './shortcut'
 import * as proxy from './proxy'
 import * as windowState from './window_state'
 import * as fs from 'fs-extra'
@@ -44,16 +43,37 @@ const getAssetPath = (...paths: string[]): string => {
 let mainWindow: BrowserWindow | null = null
 let tray: Tray | null = null
 
+// --------- 快捷键 ---------
+
+const shortcutMap = {
+    'Alt+`': showOrHideWindow,
+    'Option+`': showOrHideWindow,
+}
+
+function registerShortcuts() {
+    for (const [shortcut, handler] of Object.entries(shortcutMap)) {
+        globalShortcut.register(shortcut, () => handler())
+    }
+}
+
+function unregisterShortcuts() {
+    for (const shortcut of Object.keys(shortcutMap)) {
+        globalShortcut.unregister(shortcut)
+    }
+}
+
+function initShortcuts() {
+    const settings = getSettings()
+    if (settings.disableQuickToggleShortcut) {
+        return
+    }
+    registerShortcuts()
+}
+
 // --------- Tray 图标 ---------
 
 function createTray() {
     const locale = new Locale()
-    const showWindow = () => {
-        shortcuts.quickToggle({
-            getMainWindow: () => mainWindow,
-            createWindow: createWindow,
-        })
-    }
     let iconPath = getAssetPath('icon.png')
     if (process.platform === 'darwin') {
         // 生成 iconTemplate.png 的命令
@@ -68,7 +88,7 @@ function createTray() {
     const contextMenu = Menu.buildFromTemplate([
         {
             label: locale.t('Show/Hide'),
-            click: showWindow,
+            click: showOrHideWindow,
             accelerator: 'Alt+`',
         },
         {
@@ -79,7 +99,7 @@ function createTray() {
     ])
     tray.setToolTip('Chatbox')
     tray.setContextMenu(contextMenu)
-    tray.on('double-click', showWindow)
+    tray.on('double-click', showOrHideWindow)
     return tray
 }
 
@@ -138,7 +158,7 @@ if (isDebug) {
 
 // --------- 窗口管理 ---------
 
-const createWindow = async () => {
+async function createWindow() {
     if (isDebug) {
         // 不在安装 DEBUG 浏览器插件。可能不兼容，所以不如直接在网页里debug
         // await installExtensions()
@@ -231,6 +251,32 @@ const createWindow = async () => {
     return mainWindow
 }
 
+async function showOrHideWindow() {
+    if (!mainWindow) {
+        await createWindow()
+        return
+    }
+    if (mainWindow.isMinimized()) {
+        mainWindow.restore()
+        mainWindow.focus()
+        mainWindow.webContents.send('window-show')
+    } else if (mainWindow?.isFocused()) {
+        // 解决MacOS全屏下隐藏将黑屏的问题
+        if (mainWindow.isFullScreen()) {
+            mainWindow.setFullScreen(false)
+        }
+        mainWindow.hide()
+        // mainWindow.minimize()
+    } else {
+        // 解决MacOS下无法聚焦的问题
+        mainWindow.hide()
+        mainWindow.show()
+        mainWindow.focus()
+        // 解决MacOS全屏下无法聚焦的问题
+        mainWindow.webContents.send('window-show')
+    }
+}
+
 // --------- 应用管理 ---------
 
 /**
@@ -269,14 +315,11 @@ app.whenReady()
                 windowState.saveState(mainWindow)
             }
         })
-        shortcuts.init({
-            getMainWindow: () => mainWindow,
-            createWindow: createWindow,
-        })
+        initShortcuts()
         proxy.init()
         app.on('will-quit', () => {
             try {
-                shortcuts.unregister()
+                unregisterShortcuts()
             } catch (e) {
                 log.error('shortcut: failed to unregister', e)
             }
@@ -360,12 +403,9 @@ ipcMain.handle('openLink', (event, link) => {
 ipcMain.handle('ensureShortcutConfig', (event, json) => {
     const config: { disableQuickToggleShortcut: boolean } = JSON.parse(json)
     if (config.disableQuickToggleShortcut) {
-        shortcuts.unregister()
+        unregisterShortcuts()
     } else {
-        shortcuts.register({
-            getMainWindow: () => mainWindow,
-            createWindow: createWindow,
-        })
+        registerShortcuts()
     }
 })
 
