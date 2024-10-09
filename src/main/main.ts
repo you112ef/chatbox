@@ -10,8 +10,7 @@
  */
 import os from 'os'
 import path from 'path'
-import { app, BrowserWindow, shell, ipcMain, nativeTheme, session, dialog, Tray, Menu, nativeImage } from 'electron'
-import { autoUpdater } from 'electron-updater'
+import { app, BrowserWindow, shell, ipcMain, nativeTheme, session, Tray, Menu } from 'electron'
 import log from 'electron-log'
 import MenuBuilder from './menu'
 import { resolveHtmlPath } from './util'
@@ -24,56 +23,12 @@ import * as fs from 'fs-extra'
 import * as analystic from './analystic-node'
 import sanitizeFilename from 'sanitize-filename'
 import * as autoLauncher from './autoLauncher'
+import { AppUpdater } from './app-updater'
 
 // 这行代码是解决 Windows 通知的标题和图标不正确的问题，标题会错误显示成 electron.app.Chatbox
 // 参考：https://stackoverflow.com/questions/65859634/notification-from-electron-shows-electron-app-electron
 if (process.platform === 'win32') {
     app.setAppUserModelId(app.name)
-}
-
-class AppUpdater {
-    constructor() {
-        log.transports.file.level = 'info'
-        const locale = new Locale()
-
-        autoUpdater.logger = log
-        autoUpdater.once('update-downloaded', (event) => {
-            dialog
-                .showMessageBox({
-                    type: 'info',
-                    buttons: [locale.t('Restart'), locale.t('Later')],
-                    title: locale.t('App_Update'),
-                    message: event.releaseName || locale.t('New_Version'),
-                    detail: locale.t('New_Version_Downloaded'),
-                })
-                .then((returnValue) => {
-                    if (returnValue.response === 0) autoUpdater.quitAndInstall()
-                })
-        })
-        this.tryUpdate()
-    }
-
-    async tryUpdate() {
-        const feedUrls = [
-            'https://chatboxai.app/api/auto_upgrade',
-            'https://api.chatboxai.app/api/auto_upgrade',
-            'https://api.ai-chatbox.com/api/auto_upgrade',
-            'https://api.chatboxapp.xyz/api/auto_upgrade',
-            'https://api.chatboxai.com/api/auto_upgrade',
-        ]
-        for (const url of feedUrls) {
-            try {
-                autoUpdater.setFeedURL(url)
-                const result = await autoUpdater.checkForUpdatesAndNotify()
-                if (result) {
-                    return result
-                }
-            } catch (e) {
-                log.error(`auto_updater: attempt failed: ${url}. `, e)
-            }
-        }
-        return null
-    }
 }
 
 const RESOURCES_PATH = app.isPackaged
