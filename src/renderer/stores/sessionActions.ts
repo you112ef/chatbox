@@ -13,6 +13,7 @@ import {
     ModelProvider,
     ExportChatScope,
     ExportChatFormat,
+    copySession,
 } from '../../shared/types'
 import * as atoms from './atoms'
 import * as promptFormat from '../packages/prompts'
@@ -225,8 +226,7 @@ export function clear(sessionId: string) {
  */
 export async function copy(source: Session) {
     const store = getDefaultStore()
-    const newSession = { ...source }
-    newSession.id = uuidv4()
+    const newSession = copySession(source)
     store.set(atoms.sessionsAtom, (sessions) => {
         let originIndex = sessions.findIndex((s) => s.id === source.id)
         if (originIndex < 0) {
@@ -956,7 +956,7 @@ export function mergeSettings(globalSettings: Settings, sessionSetting: Partial<
         ...specialSettings, // 会话配置优先级高于全局配置
     }
     // 对于自定义模型提供方，只有模型 model 可以被会话配置覆盖
-    if(ret.customProviders) {
+    if (ret.customProviders) {
         ret.customProviders = globalSettings.customProviders.map(provider => {
             if (specialSettings.customProviders) {
                 const specialProvider = specialSettings.customProviders.find(p => p.id === provider.id)

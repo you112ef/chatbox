@@ -347,3 +347,33 @@ export interface ModelOptionGroup {
     // hidden?: boolean
     collapsable?: boolean
 }
+
+export function copySession(source: Session): Session {
+    const newSession: Session = {
+        ...source,
+        messages: source.messages.map(copyMessage),
+        threads: copyThreads(source.threads),
+        id: uuidv4(),
+    }
+    return newSession
+}
+
+export function copyMessage(source: Message): Message {
+    return {
+        ...source,
+        cancel: undefined,
+        id: uuidv4(),
+    }
+}
+
+export function copyThreads(source?: SessionThread[]): SessionThread[] | undefined {
+    if (!source) {
+        return undefined
+    }
+    return source.map((thread) => ({
+        ...thread,
+        messages: thread.messages.map(copyMessage),
+        createdAt: Date.now(),
+        id: uuidv4(),
+    }))
+}
