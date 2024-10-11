@@ -3,7 +3,7 @@ import {
     currentThreadHistoryHashAtom, currentSessionIdAtom, showThreadHistoryDrawerAtom, currentSessionAtom
 } from "@/stores/atoms"
 import {
-    Tooltip, Box, SwipeableDrawer, MenuList, MenuItem, ListItemText, Typography, ListItemIcon, IconButton
+    Tooltip, Box, Drawer, MenuList, MenuItem, ListItemText, Typography, ListItemIcon, IconButton
 } from "@mui/material"
 import { useAtom, useAtomValue } from "jotai"
 import { scrollToMessage } from "@/stores/scrollActions";
@@ -63,10 +63,10 @@ export default function ThreadHistoryDrawer(props: {}) {
     }
 
     return (
-        <SwipeableDrawer
+        <Drawer
             anchor={language === 'ar' ? 'left' : 'right'}
             open={!!showDrawer}
-            onOpen={() => setShowDrawer(true)}
+            // onOpen={() => setShowDrawer(true)}
             onClose={() => setShowDrawer(false)}
             sx={{
                 '& .MuiDrawer-paper': {
@@ -119,7 +119,7 @@ export default function ThreadHistoryDrawer(props: {}) {
                     />
                 </MenuList>
             </Box>
-        </SwipeableDrawer>
+        </Drawer>
     )
 }
 
