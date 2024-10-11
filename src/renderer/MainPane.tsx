@@ -4,18 +4,14 @@ import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp'
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown'
 import SponsorChip from './components/SponsorChip'
 import * as atoms from './stores/atoms'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 import InputBox from './components/InputBox'
 import MessageList from './components/MessageList'
 import * as scrollActions from './stores/scrollActions'
-import { drawerWidth } from './Sidebar'
 import { useIsSmallScreen } from './hooks/useScreenChange'
 import Header from './components/Header'
 
 export default function MainPane(props: {}) {
-    const language = useAtomValue(atoms.languageAtom)
-    const [showSidebar] = useAtom(atoms.showSidebarAtom)
-
     const isSmallScreen = useIsSmallScreen()
 
     useEffect(() => {
@@ -25,17 +21,7 @@ export default function MainPane(props: {}) {
     }, [])
 
     return (
-        <Box
-            className="h-full w-full"
-            sx={{
-                flexGrow: 1,
-                ...(showSidebar
-                    ? language === 'ar'
-                        ? { marginRight: { sm: `${drawerWidth}px` } }
-                        : { marginLeft: { sm: `${drawerWidth}px` } }
-                    : {}),
-            }}
-        >
+        <Box className="h-full w-full">
             <div className="flex flex-col h-full">
                 {
                     // 小屏幕的广告UI

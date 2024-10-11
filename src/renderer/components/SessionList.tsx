@@ -61,9 +61,8 @@ export default function SessionList(props: Props) {
         <MenuList
             sx={{
                 width: '100%',
-                position: 'relative',
                 overflow: 'auto',
-                height: '60vh',
+                height: '100%',
                 '& ul': { padding: 0 },
             }}
             subheader={<Subheader openClearWindow={() => setOpenClearConversationListDialog(true)} />}
