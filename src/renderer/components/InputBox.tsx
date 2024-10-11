@@ -416,9 +416,13 @@ export default function InputBox(props: {}) {
                                     : theme.palette.primary.main,
                             }}
                             tooltipTitle={
-                                <Typography variant="caption">
-                                    {t('[Enter] send, [Shift+Enter] line break, [Ctrl+Enter] send without generating')}
-                                </Typography>
+                                isSmallScreen
+                                    ? undefined
+                                    : (
+                                        <Typography variant="caption">
+                                            {t('[Enter] send, [Shift+Enter] line break, [Ctrl+Enter] send without generating')}
+                                        </Typography>
+                                    )
                             }
                             tooltipPlacement='top'
                             onClick={() => handleSubmit()}
