@@ -3,7 +3,7 @@ import {
     currentThreadHistoryHashAtom, currentSessionIdAtom, showThreadHistoryDrawerAtom, currentSessionAtom
 } from "@/stores/atoms"
 import {
-    Tooltip, Box, Drawer, MenuList, MenuItem, ListItemText, Typography, ListItemIcon, IconButton
+    Tooltip, Box, SwipeableDrawer, MenuList, MenuItem, ListItemText, Typography, ListItemIcon, IconButton
 } from "@mui/material"
 import { useAtom, useAtomValue } from "jotai"
 import { scrollToMessage } from "@/stores/scrollActions";
@@ -63,9 +63,10 @@ export default function ThreadHistoryDrawer(props: {}) {
     }
 
     return (
-        <Drawer
+        <SwipeableDrawer
             anchor={language === 'ar' ? 'left' : 'right'}
             open={!!showDrawer}
+            onOpen={() => setShowDrawer(true)}
             onClose={() => setShowDrawer(false)}
             sx={{
                 '& .MuiDrawer-paper': {
@@ -74,6 +75,17 @@ export default function ThreadHistoryDrawer(props: {}) {
                     border: 'none',
                 },
             }}
+            {
+            // 解决 SwipeableDrawer 在全局 theme 为 rtl 时，drawer 展开起始位置错误的问题
+            ...(language === 'ar'
+                ? {
+                    SlideProps: { direction: 'right' },
+                    PaperProps: {
+                        sx: { direction: 'rtl' },
+                    },
+                }
+                : {})
+            }
         >
             <Box className='ThreadHistoryDrawer flex flex-col h-full w-full'>
                 <Box sx={{ padding: '1rem 0.5rem 0.2rem 0.5rem', margin: '0.1rem 0.1rem 0.1rem 0.2rem' }} >
@@ -107,7 +119,7 @@ export default function ThreadHistoryDrawer(props: {}) {
                     />
                 </MenuList>
             </Box>
-        </Drawer>
+        </SwipeableDrawer>
     )
 }
 
