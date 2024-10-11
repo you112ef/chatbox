@@ -16,6 +16,7 @@ function Toasts() {
                     onClose={() => toastActions.remove(toast.id)}
                     message={toast.content}
                     anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                    autoHideDuration={5000}
                 />
             ))}
         </>
