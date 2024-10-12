@@ -95,7 +95,9 @@ export default class DesktopPlatform implements Platform {
     }
 
     public initTracking(): void {
-        this.trackingEvent('user_engagement', {})
+        setTimeout(() => {
+            this.trackingEvent('user_engagement', {})
+        }, 4000)    // 怀疑应用初始化后需要一段时间才能正常工作
     }
     public trackingEvent(name: string, params: { [key: string]: string }) {
         const dataJson = JSON.stringify({ name, params })
