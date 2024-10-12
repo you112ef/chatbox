@@ -34,6 +34,7 @@ import { formatChatAsHtml, formatChatAsMarkdown, formatChatAsTxt } from "@/lib/f
 import { countWord } from '@/packages/word-count'
 import { estimateTokensFromMessages } from '@/packages/token'
 import { getModelDisplayName, isModelSupportImageInput } from '@/packages/model-setting-utils'
+import { languageNameMap } from '@/i18n/locales'
 
 /**
  * 创建一个新的会话
@@ -781,9 +782,9 @@ async function _generateName(sessionId: string, modifyName: (sessionId: string, 
     try {
         const model = getModel(settings, configs)
         let name = await model.chat(promptFormat.nameConversation(
-            session.messages.filter(m => m.role !== 'system')
-                .slice(0, 4))
-        )
+            session.messages.filter(m => m.role !== 'system').slice(0, 4),
+            languageNameMap[settings.language],
+        ))
         name = name.replace(/['"“”]/g, '')
         // name = name.slice(0, 10)    // 限制名字长度
         modifyName(session.id, name)

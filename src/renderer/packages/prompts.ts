@@ -1,6 +1,6 @@
 import { Message } from '../../shared/types'
 
-export function nameConversation(msgs: Message[]): Message[] {
+export function nameConversation(msgs: Message[], language: string): Message[] {
     const format = (msgs: string[]) => msgs.map((msg) => msg).join('\n\n---------\n\n')
     return [
         {
@@ -8,7 +8,7 @@ export function nameConversation(msgs: Message[]): Message[] {
             role: 'user',
             content: `Name the conversation based on the chat records.
 Please provide a concise name, within 10 characters and without quotation marks.
-Please use the speak language in the conversation.
+Please use the ${language} language.
 You only need to answer with the name.
 The following is the conversation:
 
@@ -19,7 +19,7 @@ ${
 \`\`\`
 
 Please provide a concise name, within 10 characters and without quotation marks.
-Please use the speak language in the conversation.
+Please use the ${language} language.
 You only need to answer with the name.
 The conversation is named:`,
         },
