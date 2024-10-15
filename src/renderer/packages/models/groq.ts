@@ -84,7 +84,7 @@ export default class Groq extends Base {
                 temperature,
                 stream: true,
             },
-            signal
+            { signal },
         )
         let result = ''
         await this.handleSSE(response, (message) => {

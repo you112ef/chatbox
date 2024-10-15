@@ -268,5 +268,7 @@
     "Show in Thread List": "Показать в списке тем",
     "Continue this thread": "Продолжить эту тему",
     "Confirm deletion?": "Подтвердить удаление?",
-    "Auto-Generate Chat Titles": "Автоматически генерировать названия чатов"
+    "Auto-Generate Chat Titles": "Автоматически генерировать названия чатов",
+    "Improve Network Compatibility": "Улучшить совместимость с сетью",
+    "Use proxy to resolve CORS and other network issues": "Использовать прокси для решения проблем CORS и других сетевых проблем"
 }

@@ -15,6 +15,7 @@ interface Options {
     temperature: number
     topP?: number
     injectDefaultMetadata: boolean
+    openaiUseProxy: boolean
 }
 
 export default class OpenAI extends Base {
@@ -84,7 +85,10 @@ export default class OpenAI extends Base {
             `${this.options.apiHost}${apiPath}`,
             this.getHeaders(),
             requestBody,
-            signal
+            {
+                signal,
+                useProxy: this.options.openaiUseProxy,
+            },
         )
         let result = ''
         await this.handleSSE(response, (message) => {
@@ -112,7 +116,10 @@ export default class OpenAI extends Base {
             `${this.options.apiHost}${apiPath}`,
             this.getHeaders(),
             requestBody,
-            signal
+            {
+                signal,
+                useProxy: this.options.openaiUseProxy,
+            },
         )
         const json = await response.json()
         if (json.error) {
@@ -137,7 +144,7 @@ export default class OpenAI extends Base {
                 model: 'dall-e-3',
                 style: this.options.dalleStyle,
             },
-            signal
+            { signal },
         )
         const json = await res.json()
         return json['data'][0]['b64_json']

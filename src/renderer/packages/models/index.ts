@@ -42,6 +42,7 @@ export function getModel(setting: Settings, config: Config) {
                 temperature: keepRange(setting.temperature, 0.1, 0.9),
                 topP: keepRange(setting.topP, 0.1, 0.9),
                 injectDefaultMetadata: setting.injectDefaultMetadata,
+                openaiUseProxy: customProvider.useProxy || false,
             })
         default:
             throw new Error('Cannot find model with provider: ' + setting.aiProvider)

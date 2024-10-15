@@ -98,7 +98,7 @@ export default class Claude extends Base {
     }
 
     async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
-	    // 经过测试，Bedrock Claude 3 的消息必须以 user 角色开始，并且 user 和 assistant 角色必须交替出现，否则都会出现回答异常
+        // 经过测试，Bedrock Claude 3 的消息必须以 user 角色开始，并且 user 和 assistant 角色必须交替出现，否则都会出现回答异常
         rawMessages = this.sequenceMessages(rawMessages)
 
         let prompt = ''
@@ -150,16 +150,6 @@ export default class Claude extends Base {
         let url = `${this.options.claudeApiHost}/v1/messages`
         const extraHeaders: Record<string, string> = {}
 
-        // 网页和移动版本的 Claude 会遇到 CORS 问题，需要使用代理
-        if (
-            platform.type !== 'desktop'
-            && this.options.claudeApiHost === defaults.settings().claudeApiHost
-        ) {
-            url = 'https://proxy.ai-chatbox.com/proxy-api/claude'
-            extraHeaders['CHATBOX-PLATFORM'] = 'web'
-            extraHeaders['CHATBOX-VERSION'] = 'web'
-        }
-
         const response = await this.post(
             url,
             {
@@ -177,7 +167,10 @@ export default class Claude extends Base {
                 messages: messages,
                 stream: true,
             },
-            signal
+            {
+                signal: signal,
+                useProxy: platform.type !== 'desktop' && this.options.claudeApiHost === defaults.settings().claudeApiHost
+            }
         )
         let result = ''
         await this.handleSSE(response, (message) => {

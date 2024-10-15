@@ -90,7 +90,7 @@ export default class Gemeni extends Base {
                 //     }
                 // ]
             },
-            signal,
+            { signal },
         )
         let result = ''
         await this.handleSSE(res, (message) => {

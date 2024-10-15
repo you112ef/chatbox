@@ -61,7 +61,7 @@ export default class ChatGLM extends Base {
                 history,
                 // temperature,
             },
-            signal,
+            { signal },
         )
         const json = await res.json()
         if (json.status !== 200) {

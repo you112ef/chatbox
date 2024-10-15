@@ -268,5 +268,7 @@
     "Show in Thread List": "スレッドリストに表示",
     "Continue this thread": "このスレッドを続ける",
     "Confirm deletion?": "削除を確認しますか？",
-    "Auto-Generate Chat Titles": "チャットのタイトルを自動生成"
+    "Auto-Generate Chat Titles": "チャットのタイトルを自動生成",
+    "Improve Network Compatibility": "ネットワークの互換性を向上",
+    "Use proxy to resolve CORS and other network issues": "プロキシを使用して CORS とその他のネットワーク問題を解決"
 }

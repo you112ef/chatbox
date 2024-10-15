@@ -268,5 +268,7 @@
     "Show in Thread List": "스레드 목록에 표시",
     "Continue this thread": "이 스레드 계속하기",
     "Confirm deletion?": "삭제 확인?",
-    "Auto-Generate Chat Titles": "채팅 제목 자동 생성"
+    "Auto-Generate Chat Titles": "채팅 제목 자동 생성",
+    "Improve Network Compatibility": "네트워크 호환성 개선",
+    "Use proxy to resolve CORS and other network issues": "프록시를 사용하여 CORS 및 기타 네트워크 문제 해결"
 }

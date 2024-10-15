@@ -268,5 +268,7 @@
     "Show in Thread List": "在話題列表中顯示",
     "Continue this thread": "繼續該話題",
     "Confirm deletion?": "確認刪除？",
-    "Auto-Generate Chat Titles": "自動生成聊天標題"
+    "Auto-Generate Chat Titles": "自動生成聊天標題",
+    "Improve Network Compatibility": "改善網路相容性",
+    "Use proxy to resolve CORS and other network issues": "使用代理解決 CORS 和其他網路問題"
 }

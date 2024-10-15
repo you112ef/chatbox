@@ -268,5 +268,7 @@
     "Show in Thread List": "Mostrar na lista de tópicos",
     "Continue this thread": "Continuar este tópico",
     "Confirm deletion?": "Confirmar exclusão?",
-    "Auto-Generate Chat Titles": "Auto-Gerar títulos de chat"
+    "Auto-Generate Chat Titles": "Auto-Gerar títulos de chat",
+    "Improve Network Compatibility": "Melhorar a compatibilidade com a rede",
+    "Use proxy to resolve CORS and other network issues": "Usar proxy para resolver problemas de CORS e outros problemas de rede"
 }

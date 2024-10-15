@@ -1,7 +1,6 @@
-import { Button, Alert, TextField, Typography, Box } from '@mui/material'
+import { FormLabel, Tooltip, Switch, FormGroup, Alert, FormControlLabel, Typography, Box } from '@mui/material'
 import { ModelSettings, ModelProvider } from '../../../shared/types'
 import { useTranslation, Trans } from 'react-i18next'
-import * as defaults from '../../../shared/defaults'
 import { Accordion, AccordionSummary, AccordionDetails } from '../../components/Accordion'
 import TemperatureSlider from '../../components/TemperatureSlider'
 import TopPSlider from '../../components/TopPSlider'
@@ -12,6 +11,7 @@ import OpenAIModelSelect from '../../components/OpenAIModelSelect'
 import TextFieldReset from '@/components/TextFieldReset'
 import { remoteConfigAtom } from '@/stores/atoms'
 import { useAtomValue } from 'jotai'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -68,6 +68,31 @@ export default function OpenAISetting(props: ModelConfigProps) {
                     </Alert>
                 )
             }
+            <FormGroup>
+                <FormControlLabel
+                    className='px-2 mb-2'
+                    control={<Switch size='small' />}
+                    label={
+                        <Typography variant='body2' className='flex items-center justify-center opacity-50'>
+                            {t('Improve Network Compatibility')}
+                            <Tooltip
+                                title={t('Use proxy to resolve CORS and other network issues')}
+                                className="cursor-pointer"
+                                placement='top'
+                            >
+                                <HelpOutlineIcon className='opacity-60 ml-0.5' fontSize='small' />
+                            </Tooltip>
+                        </Typography>
+                    }
+                    checked={settingsEdit.openaiUseProxy}
+                    onChange={(e, checked) =>
+                        setSettingsEdit({
+                            ...settingsEdit,
+                            openaiUseProxy: checked,
+                        })
+                    }
+                />
+            </FormGroup>
             <Accordion>
                 <AccordionSummary aria-controls="panel1a-content">
                     <Typography>

@@ -175,6 +175,7 @@ export interface ModelSettings {
     model: OpenAIModel | 'custom-model'
     openaiCustomModel?: string // OpenAI 自定义模型的 ID
     openaiCustomModelOptions: string[]
+    openaiUseProxy: boolean
 
     dalleStyle: 'vivid' | 'natural'
     imageGenerateNum: number // 生成图片的数量
@@ -237,6 +238,7 @@ export interface CustomProvider {
     key: string
     model: string
     modelOptions?: string[]
+    useProxy?: boolean
 }
 
 export interface Settings extends ModelSettings {

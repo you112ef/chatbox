@@ -45,7 +45,7 @@ export default class ChatboxAI extends Base {
                 uuid: this.config.uuid,
                 language: this.options.language,
             },
-            signal
+            { signal }
         )
         const json = await res.json()
         return json['data'][0]['b64_json']
@@ -65,7 +65,7 @@ export default class ChatboxAI extends Base {
                 language: this.options.language,
                 stream: true,
             },
-            signal
+            { signal }
         )
         let result = ''
         await this.handleSSE(response, (message) => {
@@ -102,9 +102,13 @@ export default class ChatboxAI extends Base {
         url: string,
         headers: Record<string, string>,
         body: Record<string, any>,
-        signal?: AbortSignal,
-        retry = 3
+        options?: {
+            signal?: AbortSignal
+            retry?: number
+            useProxy?: boolean
+        },
     ) {
+        const { signal, retry = 3, useProxy = false } = options || {}
         let requestError: ApiError | NetworkError | null = null
         for (let i = 0; i < retry + 1; i++) {
             try {

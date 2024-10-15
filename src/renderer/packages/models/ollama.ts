@@ -74,7 +74,7 @@ export default class Ollama extends Base {
                     temperature: this.options.temperature,
                 }
             },
-            signal,
+            { signal },
         )
         let result = ''
         await this.handleNdjson(res, (message) => {

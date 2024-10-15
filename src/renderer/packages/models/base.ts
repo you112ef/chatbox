@@ -2,7 +2,7 @@ import { Message } from 'src/shared/types'
 import { ApiError, NetworkError, AIProviderNoImplementedPaintError, BaseError, AIProviderNoImplementedChatError } from './errors'
 import { createParser } from 'eventsource-parser'
 import _ from 'lodash'
-import storage from '@/storage'
+import platform from '@/platform'
 
 export default class Base {
     public name = 'Unknown'
@@ -147,9 +147,25 @@ export default class Base {
         url: string,
         headers: Record<string, string>,
         body: Record<string, any>,
-        signal?: AbortSignal,
-        retry = 3
+        options?: {
+            signal?: AbortSignal,
+            retry?: number,
+            useProxy?: boolean
+        }
     ) {
+        const {
+            signal,
+            retry = 3,
+            useProxy = false
+        } = options || {}
+
+        if (useProxy) {
+            headers['CHATBOX-TARGET-URI'] = url
+            headers['CHATBOX-PLATFORM'] = platform.type
+            headers['CHATBOX-VERSION'] = await platform.getVersion()
+            url = 'https://proxy.ai-chatbox.com/proxy-api/completions'
+        }
+
         let requestError: ApiError | NetworkError | null = null
         for (let i = 0; i < retry + 1; i++) {
             try {

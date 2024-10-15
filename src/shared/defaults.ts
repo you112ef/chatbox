@@ -8,6 +8,7 @@ export function settings(): Settings {
         apiHost: 'https://api.openai.com',
         dalleStyle: 'vivid',
         imageGenerateNum: 3,
+        openaiUseProxy: false,
 
         azureApikey: '',
         azureDeploymentName: '',

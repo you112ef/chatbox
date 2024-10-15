@@ -1,4 +1,4 @@
-import { Box, MenuItem, Alert, FormControl, InputLabel, Select } from '@mui/material'
+import { FormControlLabel, Tooltip, Switch, FormGroup, Box, MenuItem, Alert, FormControl, InputLabel, Select, Typography } from '@mui/material'
 import { CustomProvider, ModelProvider, ModelSettings } from '../../../shared/types'
 import { Trans, useTranslation } from 'react-i18next'
 import PasswordTextField from '@/components/PasswordTextField'
@@ -7,6 +7,7 @@ import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSli
 import TextFieldReset from '@/components/TextFieldReset'
 import TopPSlider from '@/components/TopPSlider'
 import CreatableSelect from '@/components/CreatableSelect'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -104,6 +105,28 @@ export default function CustomProviderSetting(props: ModelConfigProps) {
                     setCustomProvider({ ...customProvider, path: value.trim() })
                 }}
             />
+            <FormGroup>
+                <FormControlLabel
+                    className='px-2 mb-2'
+                    control={<Switch size='small' />}
+                    label={
+                        <Typography variant='body2' className='flex items-center justify-center opacity-50'>
+                            {t('Improve Network Compatibility')}
+                            <Tooltip
+                                title={t('Use proxy to resolve CORS and other network issues')}
+                                className="cursor-pointer"
+                                placement='top'
+                            >
+                                <HelpOutlineIcon className='opacity-60 ml-0.5' fontSize='small' />
+                            </Tooltip>
+                        </Typography>
+                    }
+                    checked={customProvider.useProxy}
+                    onChange={(e, checked) =>
+                        setCustomProvider({ ...customProvider, useProxy: checked })
+                    }
+                />
+            </FormGroup>
             <PasswordTextField
                 label={t('api key')}
                 value={customProvider.key}

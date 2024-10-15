@@ -57,7 +57,7 @@ export default class AzureOpenAI extends Base {
                 top_p: this.options.topP,
                 stream: true,
             },
-            signal
+            { signal }
         )
         let result = ''
         await this.handleSSE(response, (message) => {
@@ -92,7 +92,7 @@ export default class AzureOpenAI extends Base {
                 model: 'dall-e-3',
                 style: this.options.dalleStyle,
             },
-            signal
+            { signal }
         )
         const json = await res.json()
         return json['data'][0]['b64_json']
