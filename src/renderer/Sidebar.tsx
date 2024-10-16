@@ -93,10 +93,10 @@ export default function Sidebar(props: {}) {
                             sx={
                                 isSmallScreen
                                     ? {
-                                          borderColor: theme.palette.action.hover,
-                                          borderStyle: 'solid',
-                                          borderWidth: 1,
-                                      }
+                                        borderColor: theme.palette.action.hover,
+                                        borderStyle: 'solid',
+                                        borderWidth: 1,
+                                    }
                                     : {}
                             }
                         >
@@ -208,6 +208,17 @@ export default function Sidebar(props: {}) {
                         width: drawerWidth,
                     },
                 }}
+                {
+                // 解决 SwipeableDrawer 在全局 theme 为 rtl 时，drawer 展开起始位置错误的问题
+                ...(language === 'ar'
+                    ? {
+                        SlideProps: { direction: 'left' },
+                        PaperProps: {
+                            sx: { direction: 'rtl' },
+                        },
+                    }
+                    : {})
+                }
             >
                 {stack}
             </SwipeableDrawer>
@@ -229,6 +240,17 @@ export default function Sidebar(props: {}) {
                         width: drawerWidth,
                     },
                 }}
+                {
+                // 解决 SwipeableDrawer 在全局 theme 为 rtl 时，drawer 展开起始位置错误的问题
+                ...(language === 'ar'
+                    ? {
+                        SlideProps: { direction: 'left' },
+                        PaperProps: {
+                            sx: { direction: 'rtl' },
+                        },
+                    }
+                    : {})
+                }
             >
                 {stack}
             </SwipeableDrawer>
