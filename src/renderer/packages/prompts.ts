@@ -6,11 +6,12 @@ export function nameConversation(msgs: Message[], language: string): Message[] {
         {
             id: '1',
             role: 'user',
-            content: `Name the conversation based on the chat records.
-Please provide a concise name, within 10 characters and without quotation marks.
-Please use the ${language} language.
-You only need to answer with the name.
-The following is the conversation:
+            content: `Based on the chat history, give this conversation a name.
+Keep it short - 10 characters max, no quotes.
+Use ${language}.
+Just provide the name, nothing else.
+
+Here's the conversation:
 
 \`\`\`
 ${
@@ -18,10 +19,11 @@ ${
 }
 \`\`\`
 
-Please provide a concise name, within 10 characters and without quotation marks.
-Please use the ${language} language.
-You only need to answer with the name.
-The conversation is named:`,
+Name this conversation in 10 characters or less.
+Use ${language}.
+Only give the name, nothing else.
+
+The name is:`,
         },
     ]
 }
