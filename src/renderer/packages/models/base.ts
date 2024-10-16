@@ -159,7 +159,7 @@ export default class Base {
             useProxy = false
         } = options || {}
 
-        if (useProxy) {
+        if (useProxy && !isLocalHost(url)) {
             headers['CHATBOX-TARGET-URI'] = url
             headers['CHATBOX-PLATFORM'] = platform.type
             headers['CHATBOX-VERSION'] = await platform.getVersion()
@@ -342,3 +342,22 @@ export default class Base {
 }
 
 export type onResultChange = (result: string) => void
+
+function isLocalHost(url: string): boolean {
+    const prefixes = [
+        'http://localhost:',
+        'https://localhost:',
+        'http://127.',
+        'https://127.',
+        'http://[::1]:',
+        'https://[::1]:',
+
+        'http://192.168.',
+        'https://192.168.',
+        'http://10.',
+        'https://10.',
+        'http://172.',
+        'https://172.'
+    ];
+    return prefixes.some(prefix => url.startsWith(prefix));
+};
