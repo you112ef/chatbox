@@ -1,95 +1,37 @@
 import { useEffect } from 'react'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
-import { Box } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import { RemoteConfig, ModelProvider } from '../shared/types'
+import SettingDialog from './pages/SettingDialog'
+import ChatConfigWindow from './pages/ChatConfigWindow'
+import CleanWidnow from './pages/CleanWindow'
+import AboutWindow from './pages/AboutWindow'
 import useAppTheme from './hooks/useAppTheme'
 import useShortcut from './hooks/useShortcut'
 import useScreenChange from './hooks/useScreenChange'
 import * as remote from './packages/remote'
+import CopilotWindow from './pages/CopilotWindow'
 import { useI18nEffect } from './hooks/useI18nEffect'
 import Toasts from './components/Toasts'
 import * as settingActions from './stores/settingActions'
+import RemoteDialogWindow from './pages/RemoteDialogWindow'
 import { useSystemLanguageWhenInit } from './hooks/useDefaultSystemLanguage'
+import ClearConversationListWindow from './pages/ClearConversationListWindow'
 import MainPane from './MainPane'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import * as atoms from './stores/atoms'
-import { Sidebar, SidebarDrawer } from './Sidebar'
+import SearchDialog from './pages/SearchDialog'
+import Sidebar from './Sidebar'
+import PictureDialog from './pages/PictureDialog'
+import MessageEditDialog from './pages/MessageEditDialog'
 import ThreadHistoryDrawer from './components/ThreadHistoryDrawer'
-import Dialogs from './pages/Dialogs'
+import WelcomeDialog from './pages/WelcomeDialog'
 import * as premiumActions from './stores/premiumActions'
 import platform from './platform'
-import { Allotment } from 'allotment'
-import 'allotment/dist/style.css'
-import { useIsSmallScreen } from './hooks/useScreenChange'
-import PaneSizesRecorder from './packages/pane_sizes_recorder'
-
-function MobileLayout() {
-    return (
-        <>
-            <SidebarDrawer />
-            <MainPane />
-        </>
-    )
-}
-
-function DesktopLayout() {
-    const language = useAtomValue(atoms.languageAtom)
-    const [showSidebar, setShowSidebar] = useAtom(atoms.showSidebarAtom)
-    const paneSizesRecorder = new PaneSizesRecorder(`desktop-main-layout${language === 'ar' ? '-ar' : ''}`)
-    let defaultSizes = showSidebar ? paneSizesRecorder.get() : undefined
-    if (defaultSizes && defaultSizes.some((size) => size === 0)) {
-        defaultSizes = undefined
-    }
-    return language !== 'ar' ? (
-        // 这里的 key 很关键，解决了语言切换后的宽度关联问题
-        <Allotment
-            key="allotment-split-pane"
-            defaultSizes={defaultSizes}
-            proportionalLayout={false}
-            onChange={(sizes) => {
-                paneSizesRecorder.set(sizes)
-            }}
-            onVisibleChange={(index, visible) => {
-                if (index === 0) {
-                    setShowSidebar(visible)
-                }
-            }}
-        >
-            <Allotment.Pane visible={showSidebar} preferredSize={240} minSize={80} snap>
-                <Sidebar />
-            </Allotment.Pane>
-            <Allotment.Pane minSize={300}>
-                <MainPane />
-            </Allotment.Pane>
-        </Allotment>
-    ) : (
-        <Allotment
-            key="allotment-split-pane-ar"
-            defaultSizes={defaultSizes}
-            onChange={(sizes) => {
-                paneSizesRecorder.set(sizes)
-            }}
-            onVisibleChange={(index, visible) => {
-                if (index === 1) {
-                    setShowSidebar(visible)
-                }
-            }}
-        >
-            <Allotment.Pane minSize={300}>
-                <MainPane />
-            </Allotment.Pane>
-            <Allotment.Pane visible={showSidebar} preferredSize={240} minSize={80} snap>
-                <Sidebar />
-            </Allotment.Pane>
-        </Allotment>
-    )
-}
-
-function Layout() {
-    const isSmallScreen = useIsSmallScreen()
-    return isSmallScreen ? <MobileLayout /> : <DesktopLayout />
-}
+import ExportChatDialog from '@/pages/ExportChatDialog'
+import ArtifactDialog from '@/pages/ArtifactDialog'
+import MermaidDialog from './pages/MermaidDialog'
 
 function Main() {
     const spellCheck = useAtomValue(atoms.spellCheckAtom)
@@ -97,8 +39,8 @@ function Main() {
 
     const setOpenWelcomeDialog = useSetAtom(atoms.openWelcomeDialogAtom)
     const setOpenAboutDialog = useSetAtom(atoms.openAboutDialogAtom)
-    const setRemoteConfig = useSetAtom(atoms.remoteConfigAtom)
 
+    const setRemoteConfig = useSetAtom(atoms.remoteConfigAtom)
     useEffect(() => {
         // 通过定时器延迟启动，防止处理状态底层存储的异步加载前错误的初始数据
         setTimeout(() => {
@@ -128,9 +70,25 @@ function Main() {
 
     return (
         <Box className="box-border App" spellCheck={spellCheck} dir={language === 'ar' ? 'rtl' : 'ltr'}>
-            <Layout />
-            <ThreadHistoryDrawer />
-            <Dialogs />
+            <Grid container className="h-full">
+                <Sidebar />
+                <MainPane />
+                <ThreadHistoryDrawer />
+            </Grid>
+            <SettingDialog />
+            <AboutWindow />
+            <ChatConfigWindow />
+            <CleanWidnow />
+            <CopilotWindow />
+            <RemoteDialogWindow />
+            <ClearConversationListWindow />
+            <SearchDialog />
+            <ExportChatDialog />
+            <PictureDialog />
+            <MessageEditDialog />
+            <WelcomeDialog />
+            <ArtifactDialog />
+            <MermaidDialog />
             <Toasts />
         </Box>
     )
