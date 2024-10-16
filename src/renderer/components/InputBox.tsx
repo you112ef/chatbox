@@ -8,7 +8,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import * as sessionActions from '../stores/sessionActions'
 import * as dom from '../hooks/dom'
 import { Shortcut } from './Shortcut'
-import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import { useInputBoxHeight, useIsSmallScreen } from '@/hooks/useScreenChange'
 import {
     Image, FolderClosed, Undo2, SendHorizontal,
     MessageSquareDashed, MessagesSquare,
@@ -45,6 +45,8 @@ export default function InputBox(props: {}) {
     const showRollbackThreadButtonTimerRef = useRef<null | NodeJS.Timeout>(null)
     const inputRef = useRef<HTMLTextAreaElement | null>(null)
     const [previousMessageQuickInputMark, setPreviousMessageQuickInputMark] = useState('')
+
+    const { min: minTextareaHeight, max: maxTextareaHeight } = useInputBoxHeight()
 
     useEffect(() => {
         if (quote !== '') {
@@ -91,9 +93,6 @@ export default function InputBox(props: {}) {
         }
         setTimeout(() => scrollToMessage(newMessage.id), 100)
     }
-
-    const minTextareaHeight = isSmallScreen ? 32 : 96
-    const maxTextareaHeight = 192
 
     // 自动调整输入框高度
     useEffect(() => {

@@ -8,14 +8,13 @@ import { useAtom, useAtomValue } from 'jotai'
 import InputBox from './components/InputBox'
 import MessageList from './components/MessageList'
 import * as scrollActions from './stores/scrollActions'
-import { drawerWidth } from './Sidebar'
-import { useIsSmallScreen } from './hooks/useScreenChange'
+import { useIsSmallScreen, useSidebarWidth } from './hooks/useScreenChange'
 import Header from './components/Header'
 
 export default function MainPane(props: {}) {
     const language = useAtomValue(atoms.languageAtom)
     const [showSidebar] = useAtom(atoms.showSidebarAtom)
-
+    const sidebarWidth = useSidebarWidth()
     const isSmallScreen = useIsSmallScreen()
 
     useEffect(() => {
@@ -31,8 +30,8 @@ export default function MainPane(props: {}) {
                 flexGrow: 1,
                 ...(showSidebar
                     ? language === 'ar'
-                        ? { marginRight: { sm: `${drawerWidth}px` } }
-                        : { marginLeft: { sm: `${drawerWidth}px` } }
+                        ? { marginRight: { sm: `${sidebarWidth}px` } }
+                        : { marginLeft: { sm: `${sidebarWidth}px` } }
                     : {}),
             }}
         >
