@@ -101,6 +101,17 @@ export default function DisplaySettingTab(props: {
                         })
                     }
                 />
+                <FormControlLabel
+                    control={<Switch />}
+                    label={t('Auto-collapse code blocks')}
+                    checked={settingsEdit.autoCollapseCodeBlock}
+                    onChange={(e, checked) =>
+                        setSettingsEdit({
+                            ...settingsEdit,
+                            autoCollapseCodeBlock: checked,
+                        })
+                    }
+                />
             </FormGroup>
         </Box>
     )

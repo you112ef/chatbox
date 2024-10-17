@@ -270,5 +270,7 @@
     "Confirm deletion?": "确认删除？",
     "Auto-Generate Chat Titles": "自动生成聊天标题",
     "Improve Network Compatibility": "改善网络兼容性",
-    "Use proxy to resolve CORS and other network issues": "解决 CORS 和其他网络问题"
+    "Use proxy to resolve CORS and other network issues": "使用代理解决 CORS 和其他网络问题",
+    "Show all ({{x}})": "显示全部 ({{x}})",
+    "Auto-collapse code blocks": "自动收起代码块"
 }

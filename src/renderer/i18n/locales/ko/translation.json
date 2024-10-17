@@ -270,5 +270,7 @@
     "Confirm deletion?": "삭제 확인?",
     "Auto-Generate Chat Titles": "채팅 제목 자동 생성",
     "Improve Network Compatibility": "네트워크 호환성 개선",
-    "Use proxy to resolve CORS and other network issues": "프록시를 사용하여 CORS 및 기타 네트워크 문제 해결"
+    "Use proxy to resolve CORS and other network issues": "프록시를 사용하여 CORS 및 기타 네트워크 문제 해결",
+    "Show all ({{x}})": "모두 보기 ({{x}})",
+    "Auto-collapse code blocks": "코드 블록 자동 숨기기"
 }

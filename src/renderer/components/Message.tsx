@@ -43,6 +43,8 @@ import {
     currentSessionAssistantAvatarKeyAtom,
     chatConfigDialogIdAtom,
     widthFullAtom,
+    autoPreviewArtifactsAtom,
+    autoCollapseCodeBlockAtom,
 } from '../stores/atoms'
 import { currsentSessionPicUrlAtom, showTokenUsedAtom } from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
@@ -75,9 +77,11 @@ export interface Props {
     collapseThreshold?: number  // 文本长度阀值, 超过这个长度则会被折叠
     hiddenButtonGroup?: boolean
     small?: boolean
+    preferCollapsedCodeBlock?: boolean
 }
 
 function _Message(props: Props) {
+    const { msg, className, collapseThreshold, hiddenButtonGroup, small, preferCollapsedCodeBlock } = props
     const { t } = useTranslation()
     const theme = useTheme()
 
@@ -99,8 +103,10 @@ function _Message(props: Props) {
     const setOpenSettingWindow = useSetAtom(openSettingDialogAtom)
     const setChatConfigDialog = useSetAtom(chatConfigDialogIdAtom);
     const widthFull = useAtomValue(widthFullAtom)
+    const autoPreviewArtifacts = useAtomValue(autoPreviewArtifactsAtom)
+    const autoCollapseCodeBlock = useAtomValue(autoCollapseCodeBlockAtom)
 
-    const { msg, className, collapseThreshold, hiddenButtonGroup, small } = props
+    const [previewArtifact, setPreviewArtifact] = useState(autoPreviewArtifacts)
 
     const needCollapse = collapseThreshold
         && props.sessionType !== 'picture'  // 绘图会话不折叠
@@ -456,6 +462,14 @@ function _Message(props: Props) {
                                             enableLaTeXRendering={enableLaTeXRendering}
                                             enableMermaidRendering={enableMermaidRendering}
                                             generating={msg.generating}
+                                            preferCollapsedCodeBlock={
+                                                autoCollapseCodeBlock
+                                                && (
+                                                    preferCollapsedCodeBlock
+                                                    || msg.role !== 'assistant'
+                                                    || previewArtifact
+                                                )
+                                            }
                                         >
                                             {content}
                                         </Markdown>
@@ -537,6 +551,8 @@ function _Message(props: Props) {
                                         sessionId={props.sessionId}
                                         messageId={msg.id}
                                         messageContent={msg.content}
+                                        preview={previewArtifact}
+                                        setPreview={setPreviewArtifact}
                                     />
                                 )
                             }

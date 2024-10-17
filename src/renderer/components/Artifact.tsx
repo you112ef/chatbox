@@ -19,14 +19,16 @@ export function MessageArtifact(props: {
     sessionId: string
     messageId: string
     messageContent: string
+    preview: boolean
+    setPreview: (preview: boolean) => void
 }) {
-    const { sessionId, messageId, messageContent } = props
-    const autoPreviewArtifacts = useAtomValue(atoms.autoPreviewArtifactsAtom)
+    const { sessionId, messageId, messageContent, preview, setPreview } = props
     const contextMessages = useMemo(() => {
         const messageList = sessionActions.getMessageThreadContext(sessionId, messageId)
         const index = messageList.findIndex(m => m.id === messageId)
         return messageList.slice(0, index)
     }, [sessionId, messageId])
+    // TODO: 这里的性能值得优化
     const htmlCode = useMemo(() => {
         return generateHtml([
             ...contextMessages.map(m => m.content),
@@ -40,17 +42,17 @@ export function MessageArtifact(props: {
         return null
     }
     return (
-        <ArtifactWithButtons htmlCode={htmlCode} defaultPreview={autoPreviewArtifacts} />
+        <ArtifactWithButtons htmlCode={htmlCode} preview={preview} setPreview={setPreview} />
     )
 }
 
 export function ArtifactWithButtons(props: {
     htmlCode: string
-    defaultPreview?: boolean
+    preview: boolean
+    setPreview: (preview: boolean) => void
 }) {
-    const { htmlCode, defaultPreview } = props
+    const { htmlCode, preview, setPreview } = props
     const { t } = useTranslation()
-    const [preview, setPreview] = useState(!!defaultPreview)
     const [reloadSign, setReloadSign] = useState(0)
     const isSmallScreen = useIsSmallScreen()
     const setArtifactDialogHtmlCode = useSetAtom(atoms.artifactDialogHtmlCodeAtom)

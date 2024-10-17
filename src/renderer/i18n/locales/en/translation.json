@@ -269,5 +269,7 @@
     "Confirm deletion?": "Confirm deletion?",
     "Auto-Generate Chat Titles": "Auto-Generate Chat Titles",
     "Improve Network Compatibility": "Improve Network Compatibility",
-    "Use proxy to resolve CORS and other network issues": "Use proxy to resolve CORS and other network issues"
+    "Use proxy to resolve CORS and other network issues": "Use proxy to resolve CORS and other network issues",
+    "Show all ({{x}})": "Show all ({{x}})",
+    "Auto-collapse code blocks": "Auto-collapse code blocks"
 }

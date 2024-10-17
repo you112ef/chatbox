@@ -5,7 +5,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import { Mermaid } from '@/components/Mermaid'
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch"
 import { useEffect, useState } from 'react'
-import { CodeBlock } from '@/components/Markdown'
+import { CodeRenderer } from '@/components/Markdown'
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CodeIcon from '@mui/icons-material/Code';
 import { cn } from '@/lib/utils'
@@ -74,9 +74,9 @@ export default function MermaidDialog(props: {}) {
                         tab !== 1 ? "hidden" : "",
                     )}
                 >
-                    <CodeBlock className={`language-mermaid`}>
+                    <CodeRenderer className={`language-mermaid`}>
                         {source}
-                    </CodeBlock>
+                    </CodeRenderer>
                 </div>
             </DialogContent>
             <DialogActions>

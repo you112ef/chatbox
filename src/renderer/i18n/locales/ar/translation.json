@@ -269,5 +269,7 @@
     "Confirm deletion?": "تأكيد الحذف؟",
     "Auto-Generate Chat Titles": "تلقائيًا إنشاء عناوين المحادثات",
     "Improve Network Compatibility": "تحسين توافق الشبكة",
-    "Use proxy to resolve CORS and other network issues": "استخدام البروكسي لحل مشاكل CORS وغيرها من مشاكل الشبكة"
+    "Use proxy to resolve CORS and other network issues": "استخدام البروكسي لحل مشاكل CORS وغيرها من مشاكل الشبكة",
+    "Show all ({{x}})": "عرض الكل ({{x}})",
+    "Auto-collapse code blocks": "تلقائيًا إخفاء الكتل البرمجية"
 }

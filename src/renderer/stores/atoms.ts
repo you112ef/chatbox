@@ -60,6 +60,7 @@ export const enableMermaidRenderingAtom = focusAtom(settingsAtom, (optic) => opt
 export const selectedCustomProviderIdAtom = focusAtom(settingsAtom, (optic) => optic.prop('selectedCustomProviderId'))
 export const autoPreviewArtifactsAtom = focusAtom(settingsAtom, (optic) => optic.prop('autoPreviewArtifacts'))
 export const autoGenerateTitleAtom = focusAtom(settingsAtom, (optic) => optic.prop('autoGenerateTitle'))
+export const autoCollapseCodeBlockAtom = focusAtom(settingsAtom, (optic) => optic.prop('autoCollapseCodeBlock'))
 
 export const licenseDetailAtom = focusAtom(settingsAtom, (optic) => optic.prop('licenseDetail'))
 

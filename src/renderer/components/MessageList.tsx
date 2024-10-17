@@ -98,6 +98,7 @@ export default function MessageList(props: Props) {
                                     sessionType={currentSession.type || 'chat'}
                                     className={index === 0 ? 'pt-4' : ''}
                                     collapseThreshold={msg.role === 'system' ? 150 : undefined}
+                                    preferCollapsedCodeBlock={index < currentMessageList.length - 10}
                                 />
                             </>
                             // </div>

@@ -46,6 +46,7 @@ export default function SearchDialog(props: Props) {
             ? [sessionAction.getCurrentSession()]
             : sessionAction.getSortedSessions()
 
+        // TODO: 这里值得优化：多关键词搜索、性能优化
         const safeInput = searchInput.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
         const regexp = new RegExp(safeInput, 'i')
         const result: Session[] = []
@@ -226,6 +227,7 @@ export default function SearchDialog(props: Props) {
                                                     className='w-full'
                                                     hiddenButtonGroup
                                                     small
+                                                    preferCollapsedCodeBlock
                                                 />
                                             </CommandItem>
                                         ))}
