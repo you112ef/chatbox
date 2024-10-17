@@ -68,7 +68,7 @@ export default function OpenAISetting(props: ModelConfigProps) {
                     </Alert>
                 )
             }
-            <FormGroup>
+            {/* <FormGroup>
                 <FormControlLabel
                     className='px-2 mb-2'
                     control={<Switch size='small' />}
@@ -92,7 +92,7 @@ export default function OpenAISetting(props: ModelConfigProps) {
                         })
                     }
                 />
-            </FormGroup>
+            </FormGroup> */}
             <Accordion>
                 <AccordionSummary aria-controls="panel1a-content">
                     <Typography>
