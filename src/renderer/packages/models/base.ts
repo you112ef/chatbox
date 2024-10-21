@@ -162,7 +162,7 @@ export default class Base {
         if (useProxy && !isLocalHost(url)) {
             headers['CHATBOX-TARGET-URI'] = url
             headers['CHATBOX-PLATFORM'] = platform.type
-            headers['CHATBOX-VERSION'] = await platform.getVersion()
+            headers['CHATBOX-VERSION'] = (await platform.getVersion()) || 'unknown'
             url = 'https://proxy.ai-chatbox.com/proxy-api/completions'
         }
 
