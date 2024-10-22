@@ -63,6 +63,7 @@ export default function SessionList(props: Props) {
                 width: '100%',
                 overflow: 'auto',
                 '& ul': { padding: 0 },
+                flexGrow: 1,
             }}
             subheader={<Subheader openClearWindow={() => setOpenClearConversationListDialog(true)} />}
             component="div"
