@@ -236,10 +236,13 @@ export const openCopilotDialogAtom = atom(false) // 是否展示copilot窗口
 export const openClearConversationListDialogAtom = atom(false) // 是否展示会话列表清理窗口
 
 export const artifactDialogHtmlCodeAtom = atom('')  // artifact 预览弹窗（当 html 不为空时则弹窗）
-export const mermaidDialogSourceAtom = atom('')  // mermaid 预览弹窗（当 source 不为空时则弹窗）
 
 // 图片展示窗口的图片
-export const pictureShowAtom = atom<MessagePicture | null>(null)
+export const pictureShowAtom = atom<{
+    picture: MessagePicture,
+    ExtraButtons?: React.ReactNode[],
+    onSave?: () => void
+} | null>(null)
 
 // 会话编辑窗口
 export const messageEditDialogShowAtom = atom<{ msg: Message, sessionId: string } | null>(null)

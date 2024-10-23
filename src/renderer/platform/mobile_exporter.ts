@@ -72,7 +72,7 @@ export default class MobileExporter implements Exporter {
             type = 'image/png'
             data = base64Data
         }
-        const ext = type.split('/')[1]
+        const ext = (type.split('/')[1] || 'png').split('+')[0] // 处理 svg+xml 的情况
         const filename = basename + '.' + ext
         // 保存
         if (CHATBOX_BUILD_PLATFORM === 'ios') {

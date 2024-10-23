@@ -52,7 +52,7 @@ import * as toastActions from '../stores/toastActions'
 import * as scrollActions from '../stores/scrollActions'
 import Markdown from '@/components/Markdown'
 import '../static/Block.css'
-import { ImageInStorage, Image } from './Image'
+import { ImageInStorage, Img } from './Image'
 import SouthIcon from '@mui/icons-material/South'
 import ImageIcon from '@mui/icons-material/Image'
 import MessageErrTips from './MessageErrTips'
@@ -499,7 +499,7 @@ function _Message(props: Props) {
                                                     bg-white dark:bg-slate-800
                                                     border-solid border-slate-400/20 rounded-md
                                                     hover:cursor-pointer hover:border-slate-800/20 transition-all duration-200"
-                                                onClick={() => setPictureShow(pic)}
+                                                onClick={() => setPictureShow({ picture: pic })}
                                             >
                                                 {
                                                     pic.loading && !pic.storageKey && !pic.url && (
@@ -513,7 +513,7 @@ function _Message(props: Props) {
                                                 }
                                                 {
                                                     pic.url && (
-                                                        <Image src={pic.url} className='w-full' />
+                                                        <Img src={pic.url} className='w-full' />
                                                     )
                                                 }
                                             </div>

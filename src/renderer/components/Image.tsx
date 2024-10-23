@@ -27,7 +27,7 @@ export function ImageInStorage(props: {
     return <img src={picBase64} className={`max-w-full max-h-full ${props.className || ''}`} />
 }
 
-export function Image(props: {
+export function Img(props: {
     src: string
     className?: string
 }) {

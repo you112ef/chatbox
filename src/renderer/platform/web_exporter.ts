@@ -33,7 +33,7 @@ export default class WebExporter implements Exporter {
             type = 'image/png'
             data = base64Data
         }
-        const ext = type.split('/')[1]
+        const ext = (type.split('/')[1] || 'png').split('+')[0] // 处理 svg+xml 的情况
         const filename = basename + '.' + ext
 
         const raw = window.atob(data)
