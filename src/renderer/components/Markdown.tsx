@@ -15,7 +15,7 @@ import * as latex from '../packages/latex'
 import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for you
 import { copyToClipboard } from '@/packages/navigator'
 import { MessageMermaid, SVGPreview } from './Mermaid'
-import { ChevronsDownUp, Copy } from 'lucide-react'
+import { ChevronsDownUp, Copy, ChevronUp } from 'lucide-react'
 
 export default function Markdown(props: {
     children: string
@@ -265,6 +265,25 @@ function BlockCode(props: {
                     >
                         <span className='text-white mb-2 font-bold'>
                             {t('Show all ({{x}})', { x: lines.length })}
+                        </span>
+                    </div>
+                )}
+                {!isCollapsed && shouldCollapse && (
+                    <div className='group absolute h-5 bottom-0 left-0 right-0 flex justify-center'>
+                        <span
+                            className='cursor-pointer 
+                                opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                                text-white font-bold bg-slate-600/80 py-1 px-4 rounded-t-md'
+                            onClick={(event) => {
+                                event.stopPropagation()
+                                event.preventDefault()
+                                setIsCollapsed(true)
+                            }}
+                        >
+                            <ChevronUp
+                                className='text-white'
+                                size={theme.typography.h6.fontSize}
+                            />
                         </span>
                     </div>
                 )}
