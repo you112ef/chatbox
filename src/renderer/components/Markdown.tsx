@@ -15,7 +15,9 @@ import * as latex from '../packages/latex'
 import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for you
 import { copyToClipboard } from '@/packages/navigator'
 import { MessageMermaid, SVGPreview } from './Mermaid'
-import { ChevronsDownUp, Copy, ChevronUp } from 'lucide-react'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 export default function Markdown(props: {
     children: string
@@ -171,6 +173,7 @@ function BlockCode(props: {
     return (
         <div>
             <div
+                className='py-0.5 px-1'
                 style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -184,32 +187,45 @@ function BlockCode(props: {
                     borderBottomRightRadius: '0',
                 }}
             >
-                <span
-                    style={{
-                        textDecoration: 'none',
-                        color: 'gray',
-                        padding: '2px',
-                        margin: '2px 10px 0 10px',
-                    }}
-                >
-                    {'<' + language.toUpperCase() + '>'}
-                </span>
-                <div className='flex items-center px-1'>
-                    {!isCollapsed && shouldCollapse && (
-                        <ChevronsDownUp
-                            className='cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1.5'
-                            size={theme.typography.h5.fontSize}
-                            onClick={(event) => {
-                                event.stopPropagation() // 优化搜索窗口中的展开逻辑
-                                event.preventDefault()
-                                setIsCollapsed(!isCollapsed)
-                            }}
-                        />
+                <div className='flex items-center'>
+                    <span className='text-gray-400/30 mx-1'
+                        style={{
+                            fontSize: theme.typography.body1.fontSize,
+                        }}
+                    >
+                        {language.toUpperCase()}
+                    </span>
+                </div>
+                <div className='flex items-center'>
+                    {shouldCollapse && (
+                        isCollapsed
+                            ? (
+                                <ArrowForwardIosIcon
+                                    className='cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1'
+                                    fontSize='small'
+                                    onClick={(event) => {
+                                        event.stopPropagation() // 优化搜索窗口中的展开逻辑
+                                        event.preventDefault()
+                                        setIsCollapsed(!isCollapsed)
+                                    }}
+                                />
+                            )
+                            : (
+                                <ArrowForwardIosIcon
+                                    className='cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1 rotate-90'
+                                    fontSize='small'
+                                    onClick={(event) => {
+                                        event.stopPropagation() // 优化搜索窗口中的展开逻辑
+                                        event.preventDefault()
+                                        setIsCollapsed(!isCollapsed)
+                                    }}
+                                />
+                            )
                     )}
                     {!hiddenCodeCopyButton && (
-                        <Copy
-                            className='cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1.5'
-                            size={theme.typography.h5.fontSize}
+                        <ContentCopyIcon
+                            className='cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1'
+                            fontSize='small'
                             onClick={(event) => {
                                 event.stopPropagation() // 优化搜索窗口中的展开逻辑
                                 event.preventDefault()
@@ -280,10 +296,7 @@ function BlockCode(props: {
                                 setIsCollapsed(true)
                             }}
                         >
-                            <ChevronUp
-                                className='text-white'
-                                size={theme.typography.h6.fontSize}
-                            />
+                            <ExpandLessIcon className='text-white' fontSize='small' />
                         </span>
                     </div>
                 )}
