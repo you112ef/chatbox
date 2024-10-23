@@ -12,7 +12,7 @@ import * as atoms from '@/stores/atoms'
 import FullscreenIcon from "./icons/FullscreenIcon";
 import ArrowRightIcon from "./icons/ArrowRightIcon";
 
-const CODE_BLOCK_LANGUAGES = ['html', 'js', 'javascript', 'css', 'svg'] as const
+const CODE_BLOCK_LANGUAGES = ['html', 'js', 'javascript', 'css'] as const
 export type CodeBlockLanguage = (typeof CODE_BLOCK_LANGUAGES)[number]
 
 export function MessageArtifact(props: {
@@ -183,7 +183,6 @@ function generateHtml(markdowns: string[]): string {
         js: [],
         javascript: [],
         css: [],
-        svg: [],
     }
     const languages = Array.from(Object.keys(codeBlocks)) as (keyof typeof codeBlocks)[]
     let currentType: keyof typeof codeBlocks | null = null
@@ -223,9 +222,8 @@ function generateHtml(markdowns: string[]): string {
     codeBlocks.css = codeBlocks.css.slice(-1)
     codeBlocks.javascript = codeBlocks.javascript.slice(-1)
     codeBlocks.js = codeBlocks.js.slice(-1)
-    codeBlocks.svg = codeBlocks.svg.slice(-1)
 
-    if (codeBlocks.html.length === 0 && codeBlocks.svg.length === 0) {
+    if (codeBlocks.html.length === 0) {
         return ''
     }
 
@@ -233,7 +231,6 @@ function generateHtml(markdowns: string[]): string {
 <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
 
 ${codeBlocks.html.join('\n')}
-${codeBlocks.svg.join('\n')}
 
 <style>
 ${codeBlocks.css.join('\n')}

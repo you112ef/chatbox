@@ -14,7 +14,7 @@ import * as latex from '../packages/latex'
 
 import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for you
 import { copyToClipboard } from '@/packages/navigator'
-import { MessageMermaid } from './Mermaid'
+import { MessageMermaid, SVGPreview } from './Mermaid'
 import { ChevronsDownUp, Copy } from 'lucide-react'
 
 export default function Markdown(props: {
@@ -101,6 +101,23 @@ export function CodeRenderer(props: {
                     theme={theme.palette.mode}
                     generating={generating}
                 />
+            )
+        }
+        if (language === 'svg') {
+            return (
+                <div>
+                    <BlockCode
+                        children={children}
+                        hiddenCodeCopyButton={hiddenCodeCopyButton}
+                        language={language}
+                        preferCollapsed={true}
+                    />
+                    <SVGPreview
+                        xmlCode={String(children)}
+                        className='max-w-sm'
+                        generating={generating}
+                    />
+                </div>
             )
         }
         return (
