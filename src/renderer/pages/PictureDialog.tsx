@@ -7,10 +7,12 @@ import storage from '@/storage'
 import SaveIcon from '@mui/icons-material/Save'
 import platform from '@/platform'
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch"
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 export default function PictureDialog(props: {}) {
     const { t } = useTranslation()
     const [pictureShow, setPictureShow] = useAtom(atoms.pictureShowAtom)
+    const isSmallScreen = useIsSmallScreen()
 
     if (!pictureShow) {
         return null
@@ -39,7 +41,11 @@ export default function PictureDialog(props: {}) {
         }
     }
     return (
-        <Dialog open={!!picture} onClose={onClose} fullWidth maxWidth="lg" classes={{ paper: 'h-4/5' }}>
+        <Dialog open={!!picture} onClose={onClose}
+            fullWidth
+            maxWidth="lg"
+            classes={{ paper: isSmallScreen ? '' : 'h-4/5' }}
+        >
             <DialogTitle></DialogTitle>
             <DialogContent style={{ padding: '0', margin: '0' }}>
                 <div className="w-full h-full text-center">
