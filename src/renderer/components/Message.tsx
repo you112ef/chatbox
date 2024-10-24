@@ -66,7 +66,7 @@ import { Loader } from 'lucide-react'
 import { copyToClipboard } from '@/packages/navigator'
 import { estimateTokensFromMessages } from '@/packages/token'
 import { countWord } from '@/packages/word-count'
-import { MessageArtifact } from './Artifact'
+import { isContainRenderableCode, MessageArtifact } from './Artifact'
 
 export interface Props {
     id?: string
@@ -246,6 +246,14 @@ function _Message(props: Props) {
         }
     }
 
+    // 是否需要渲染 Aritfact 组件
+    const needArtifact = useMemo(() => {
+        if (msg.role !== 'assistant') {
+            return false
+        }
+        return isContainRenderableCode(msg.content)
+    }, [msg.content, msg.role])
+
     // 消息生成中自动跟踪滚动
     useEffect(() => {
         if (msg.generating) {
@@ -261,9 +269,22 @@ function _Message(props: Props) {
     }, [msg.generating])
     useEffect(() => {
         if (msg.generating && autoScrollId) {
-            scrollActions.tickAutoScroll(autoScrollId)
+            if (needArtifact) {
+                scrollActions.tickAutoScroll(autoScrollId)
+                return
+            }
+            const viewportHeight = scrollActions.getMessageListViewportHeight()
+            const currentHeight = ref.current?.clientHeight ?? 0
+            if (currentHeight > viewportHeight) {
+                // scrollActions.tickAutoScroll(autoScrollId)  // 清理之前，最后再滚动一次，确保非流式生成的消息也能滚动到底部
+                scrollActions.scrollToMessage(msg.id, 'start')
+                scrollActions.clearAutoScroll(autoScrollId)
+                setAutoScrollId(null)
+            } else {
+                scrollActions.tickAutoScroll(autoScrollId)
+            }
         }
-    }, [msg.content])
+    }, [msg.content, needArtifact])
 
     let content = msg.content   // 消息正文
     if (typeof msg.content !== 'string') {
@@ -546,7 +567,7 @@ function _Message(props: Props) {
                                 needCollapse && !isCollapsed && CollapseButton
                             }
                             {
-                                msg.role === 'assistant' && (
+                                needArtifact && (
                                     <MessageArtifact
                                         sessionId={props.sessionId}
                                         messageId={msg.id}

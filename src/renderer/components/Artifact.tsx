@@ -12,8 +12,16 @@ import * as atoms from '@/stores/atoms'
 import FullscreenIcon from "./icons/FullscreenIcon";
 import ArrowRightIcon from "./icons/ArrowRightIcon";
 
-const CODE_BLOCK_LANGUAGES = ['html', 'js', 'javascript', 'css'] as const
+const RENDERABLE_CODE_LANGUAGES = ['html'] as const
+export type RenderableCodeLanguage = (typeof RENDERABLE_CODE_LANGUAGES)[number]
+
+const CODE_BLOCK_LANGUAGES = [...RENDERABLE_CODE_LANGUAGES, 'js', 'javascript', 'css'] as const
 export type CodeBlockLanguage = (typeof CODE_BLOCK_LANGUAGES)[number]
+
+export function isContainRenderableCode(markdown: string): boolean {
+    return RENDERABLE_CODE_LANGUAGES.some(l => markdown.includes('```' + l + '\n'))
+        || RENDERABLE_CODE_LANGUAGES.some(l => markdown.includes('```' + l.toUpperCase() + '\n'))
+}
 
 export function MessageArtifact(props: {
     sessionId: string
@@ -28,19 +36,12 @@ export function MessageArtifact(props: {
         const index = messageList.findIndex(m => m.id === messageId)
         return messageList.slice(0, index)
     }, [sessionId, messageId])
-    // TODO: 这里的性能值得优化
     const htmlCode = useMemo(() => {
         return generateHtml([
             ...contextMessages.map(m => m.content),
             messageContent,
         ])
     }, [contextMessages, messageContent])
-    if (!htmlCode) {
-        return null
-    }
-    if (!isContainRenderingCode(messageContent)) {
-        return null
-    }
     return (
         <ArtifactWithButtons htmlCode={htmlCode} preview={preview} setPreview={setPreview} />
     )
@@ -242,9 +243,4 @@ ${codeBlocks.javascript.join('\n\n// ----------- \n\n')}
 </script>
     `
     return srcDoc
-}
-
-function isContainRenderingCode(markdown: string): boolean {
-    return CODE_BLOCK_LANGUAGES.some(l => markdown.includes('```' + l))
-        || CODE_BLOCK_LANGUAGES.some(l => markdown.includes('```' + l.toUpperCase()))
 }

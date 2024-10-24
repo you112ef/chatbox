@@ -214,6 +214,7 @@ export const remoteConfigAtom = atomWithStorage<{ setting_chatboxai_first?: bool
 
 // message scrolling
 
+export const messageListElementAtom = atom<null | RefObject<HTMLDivElement>>(null)
 export const messageScrollingAtom = atom<null | RefObject<VirtuosoHandle>>(null)
 export const messageScrollingAtTopAtom = atom(false)
 export const messageScrollingAtBottomAtom = atom(false)
