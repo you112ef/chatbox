@@ -5,6 +5,7 @@ import { CircularProgress } from '@mui/material'
 export function ImageInStorage(props: {
     storageKey: string
     className?: string
+    onClick?: (e: React.MouseEvent<HTMLImageElement>) => void
 }) {
     const [base64, setPic] = useState<string>('')
     useEffect(() => {
@@ -16,7 +17,7 @@ export function ImageInStorage(props: {
     }, [props.storageKey])
     if (!base64) {
         return (
-            <div className={`bg-slate-300/50 w-full h-full ${props.className || ''}`}>
+            <div className={`bg-slate-300/50 w-full h-full ${props.className || ''}`} onClick={props.onClick}>
                 <div className="w-full h-full flex items-center justify-center">
                     <CircularProgress className='block max-w-full max-h-full opacity-50' color='secondary' />
                 </div>
@@ -24,14 +25,15 @@ export function ImageInStorage(props: {
         )
     }
     const picBase64 = base64.startsWith('data:image/') ? base64 : `data:image/png;base64,${base64}`
-    return <img src={picBase64} className={`max-w-full max-h-full ${props.className || ''}`} />
+    return <img src={picBase64} className={`max-w-full max-h-full ${props.className || ''}`} onClick={props.onClick} />
 }
 
 export function Img(props: {
     src: string
     className?: string
+    onClick?: (e: React.MouseEvent<HTMLImageElement>) => void
 }) {
-    return <img src={props.src} className={`max-w-full max-h-full ${props.className || ''}`} />
+    return <img src={props.src} className={`max-w-full max-h-full ${props.className || ''}`} onClick={props.onClick} />
 }
 
 export function handleImageInputAndSave(event: React.ChangeEvent<HTMLInputElement>, key: string, updateKey?: (key: string) => void) {
