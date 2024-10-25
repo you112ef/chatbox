@@ -73,13 +73,10 @@ export function SVGPreview(props: {
         <div
             className={cn("cursor-pointer my-2", className)}
             onClick={async () => {
+                // 图片预览窗口中直接显示 png 图片。因为在实际测试中发现，桌面端无法正常显示 SVG 图片，但网页端可以。
+                const pngBase64 = await svgToPngBase64(svgBase64)
                 setPictureShow({
-                    picture: { url: svgBase64 },
-                    onSave: async () => {
-                        const pngBase64 = await svgToPngBase64(svgBase64)
-                        const basename = `export_${Math.random().toString(36).substring(7)}`
-                        await platform.exporter.exportImageFile(basename, pngBase64)
-                    },
+                    picture: { url: pngBase64 },
                 })
             }}
         >
