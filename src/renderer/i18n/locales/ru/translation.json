@@ -178,8 +178,6 @@
     "Natural": "более реалистичный",
     "Image Creator Intro": "Привет! Я Chatbox Image Creator, ваш художественный AI-соратник, предан созданию поразительных визуальных образов из ваших слов. Если вы можете это мечтать, я могу это создать — от очаровывающих пейзажей, динамичных персонажей, значков приложений до абстракции и за её пределы.\n\nЯ тихий робот, просто **скажите мне описание изображения, которое у вас в голове**, и я сосредоточу все мои пиксели на воплощении вашего видения.\n\nДавайте творить искусство!",
     "Create a New Image-Creator Conversation": "Создать новый разговор с Image-Creator",
-    "Chatbox AI 3.5 Quota": "Квота Chatbox AI 3.5",
-    "Chatbox AI 4 Quota": "Квота Chatbox AI 4",
     "Chatbox AI Image Quota": "Квота на изображения Chatbox AI",
     "Quota Reset": "Сброс квоты",
     "License Expiry": "Истечение лицензии",
@@ -272,5 +270,7 @@
     "Improve Network Compatibility": "Улучшить совместимость с сетью",
     "Use proxy to resolve CORS and other network issues": "Использовать прокси для решения проблем CORS и других сетевых проблем",
     "Show all ({{x}})": "Показать все ({{x}})",
-    "Auto-collapse code blocks": "Автоматически скрывать блоки кода"
+    "Auto-collapse code blocks": "Автоматически скрывать блоки кода",
+    "Chatbox AI Standard Model Quota": "Квота стандартной модели Chatbox AI",
+    "Chatbox AI Advanced Model Quota": "Квота расширенной модели Chatbox AI"
 }

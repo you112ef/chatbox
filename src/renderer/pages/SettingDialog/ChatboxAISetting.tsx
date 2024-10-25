@@ -332,7 +332,7 @@ function LicenseDetail(props: { licenseKey?: string }) {
                                 <Tooltip title={`${(licenseDetail.remaining_quota_35 * 100).toFixed(2)} %`}>
                                     <Box className='mr-4 mb-4' >
                                         <Typography className=''>
-                                            {t('Chatbox AI 3.5 Quota')}
+                                            {t('Chatbox AI Standard Model Quota')}
                                         </Typography>
                                         <BorderLinearProgress className='mt-1' variant="determinate"
                                             value={Math.floor(licenseDetail.remaining_quota_35 * 100)} />
@@ -341,7 +341,7 @@ function LicenseDetail(props: { licenseKey?: string }) {
                                 <Tooltip title={`${(licenseDetail.remaining_quota_4 * 100).toFixed(2)} %`}>
                                     <Box className='mr-4 mb-4' >
                                         <Typography className=''>
-                                            {t('Chatbox AI 4 Quota')}
+                                            {t('Chatbox AI Advanced Model Quota')}
                                         </Typography>
                                         <BorderLinearProgress className='mt-1' variant="determinate"
                                             value={Math.floor(licenseDetail.remaining_quota_4 * 100)} />

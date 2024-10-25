@@ -178,8 +178,6 @@
     "Natural": "よりリアル",
     "Image Creator Intro": "こんにちは！私はChatbox Image Creator、あなたのアーティスティックなAIコンパニオンです。あなたの言葉を魅力的なビジュアルに変えることに特化しています。あなたが夢見ることができれば、私が創造できますー魅惑的な風景、ダイナミックなキャラクター、アプリアイコンから抽象的なものまで。\n\n私は静かなロボットです、だから**単にあなたが心に描くイメージの説明を教えてください**、そして私は私の全ピクセルを集中してあなたのビジョンを形作ります。\n\nアートを作りましょう！",
     "Create a New Image-Creator Conversation": "新しい画像作成会話を作成",
-    "Chatbox AI 3.5 Quota": "Chatbox AI 3.5 クオータ",
-    "Chatbox AI 4 Quota": "Chatbox AI 4 クオータ",
     "Chatbox AI Image Quota": "Chatbox AI 画像クオータ",
     "Quota Reset": "クオータリセット",
     "License Expiry": "ライセンス有効期限",
@@ -272,5 +270,7 @@
     "Improve Network Compatibility": "ネットワークの互換性を向上",
     "Use proxy to resolve CORS and other network issues": "プロキシを使用して CORS とその他のネットワーク問題を解決",
     "Show all ({{x}})": "すべて表示 ({{x}})",
-    "Auto-collapse code blocks": "コードブロックを自動的に折りたたむ"
+    "Auto-collapse code blocks": "コードブロックを自動的に折りたたむ",
+    "Chatbox AI Standard Model Quota": "Chatbox AI 標準モデルクオータ",
+    "Chatbox AI Advanced Model Quota": "Chatbox AI 高度モデルクオータ"
 }

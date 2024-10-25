@@ -177,8 +177,6 @@
     "Natural": "Naturale",
     "Image Creator Intro": "Ciao! Sono Chatbox Image Creator, il tuo compagno artistico AI dedicato a trasformare le tue parole in immagini sorprendenti. Se puoi sognarlo, io posso crearlo—da paesaggi incantevoli, personaggi dinamici, icone di app fino all'astratto e oltre.\n\nSono un robot silenzioso, **basta che tu mi dica la descrizione dell'immagine che hai in mente**, e concentrerò tutti i miei pixel per realizzare la tua visione.\n\nFacciamo arte!",
     "Create a New Image-Creator Conversation": "Crea una nuova conversazione Image-Creator",
-    "Chatbox AI 3.5 Quota": "Quota Chatbox AI 3.5",
-    "Chatbox AI 4 Quota": "Quota Chatbox AI 4",
     "Chatbox AI Image Quota": "Quota immagini Chatbox AI",
     "Quota Reset": "Ripristino quota",
     "License Expiry": "Scadenza licenza",
@@ -271,5 +269,7 @@
     "Improve Network Compatibility": "Migliora la compatibilità della rete",
     "Use proxy to resolve CORS and other network issues": "Usa proxy per risolvere problemi di CORS e altri problemi di rete",
     "Show all ({{x}})": "Mostra tutti ({{x}})",
-    "Auto-collapse code blocks": "Auto-nascondi blocchi di codice"
+    "Auto-collapse code blocks": "Auto-nascondi blocchi di codice",
+    "Chatbox AI Standard Model Quota": "Quota del modello standard Chatbox AI",
+    "Chatbox AI Advanced Model Quota": "Quota del modello avanzato Chatbox AI"
 }

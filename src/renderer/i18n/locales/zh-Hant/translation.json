@@ -178,8 +178,6 @@
     "Natural": "寫實",
     "Image Creator Intro": "Hi！我是 Chatbox Image Creator，圖片製造機。我可以根據你的描述生成精美圖片，只要你能想像得到，我就能創造出來——迷人的風景、生動的角色、App 圖示、或者抽象的構思……\n\n(๑•́ ₃ •̀๑) 呃…我是一個有點自閉的機器人，所以**請直接告訴我你想要圖片的文字描述**，我會集中我所有的像素去實現你的想像。\n\n現在請發揮你的想像力吧！",
     "Create a New Image-Creator Conversation": "創建新的圖片製造機對話",
-    "Chatbox AI 3.5 Quota": "Chatbox AI 3.5 餘額",
-    "Chatbox AI 4 Quota": "Chatbox AI 4 餘額",
     "Chatbox AI Image Quota": "Chatbox AI 圖片餘額",
     "Quota Reset": "額度重置",
     "License Expiry": "License 到期",
@@ -272,5 +270,7 @@
     "Improve Network Compatibility": "改善網路相容性",
     "Use proxy to resolve CORS and other network issues": "使用代理解決 CORS 和其他網路問題",
     "Show all ({{x}})": "顯示全部 ({{x}})",
-    "Auto-collapse code blocks": "自動收起代碼塊"
+    "Auto-collapse code blocks": "自動收起代碼塊",
+    "Chatbox AI Standard Model Quota": "Chatbox AI 標準模型配額",
+    "Chatbox AI Advanced Model Quota": "Chatbox AI 高級模型配額"
 }
