@@ -44,7 +44,9 @@ export default function PictureDialog(props: {}) {
         <Dialog open={!!picture} onClose={onClose}
             fullWidth
             maxWidth="lg"
-            classes={{ paper: isSmallScreen ? '' : 'h-4/5' }}
+            classes={{
+                paper: isSmallScreen ? '' : 'h-full max-h-[80vh]',
+            }}
         >
             <DialogTitle></DialogTitle>
             <DialogContent style={{ padding: '0', margin: '0' }}>
