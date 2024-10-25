@@ -1,23 +1,55 @@
-import { Button, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material'
+import { Fab } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import * as atoms from '../stores/atoms'
-import { useAtom } from 'jotai'
-import { ImageInStorage, Img } from '@/components/Image'
+import { useSetAtom, useAtomValue } from 'jotai'
+import { Img } from '@/components/Image'
 import storage from '@/storage'
 import SaveIcon from '@mui/icons-material/Save'
+import CloseIcon from '@mui/icons-material/Close'
 import platform from '@/platform'
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch"
-import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import { MessagePicture } from 'src/shared/types'
+import { useEffect, useState, useCallback } from 'react'
 
 export default function PictureDialog(props: {}) {
-    const { t } = useTranslation()
-    const [pictureShow, setPictureShow] = useAtom(atoms.pictureShowAtom)
-    const isSmallScreen = useIsSmallScreen()
-
+    const pictureShow = useAtomValue(atoms.pictureShowAtom)
     if (!pictureShow) {
         return null
     }
-    const { picture, ExtraButtons, onSave } = pictureShow
+    if (!pictureShow.picture.url && !pictureShow.picture.storageKey) {
+        return null
+    }
+    return (
+        <_PictureDialog
+            picture={pictureShow.picture}
+            onSave={pictureShow.onSave}
+        />
+    )
+}
+
+function _PictureDialog(props: {
+    picture: MessagePicture
+    onSave?: () => void
+}) {
+    const { picture, onSave } = props
+    const { t } = useTranslation()
+    const setPictureShow = useSetAtom(atoms.pictureShowAtom)
+    const [url, setUrl] = useState(picture.url)
+
+    useEffect(() => {
+        ; (async () => {
+            if (picture.url) {
+                return
+            }
+            if (picture.storageKey) {
+                const base64 = await storage.getBlob(picture.storageKey)
+                if (base64) {
+                    const picBase64 = base64.startsWith('data:image/') ? base64 : `data:image/png;base64,${base64}`
+                    setUrl(picBase64)
+                }
+            }
+        })()
+    }, [picture.url, picture.storageKey])
 
     const onClose = () => setPictureShow(null)
     const onSaveDefault = async () => {
@@ -40,43 +72,123 @@ export default function PictureDialog(props: {}) {
             platform.exporter.exportByUrl(`${basename}.png`, picture.url)
         }
     }
+
+    // 点击 Esc 关闭
+    const onKeyDown = useCallback((e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+            onClose()
+        }
+    }, [onClose])
+    useEffect(() => {
+        window.addEventListener('keydown', onKeyDown)
+        return () => {
+            window.removeEventListener('keydown', onKeyDown)
+        }
+    }, [onKeyDown])
+
     return (
-        <Dialog open={!!picture} onClose={onClose}
-            fullWidth
-            maxWidth="lg"
-            classes={{ paper: isSmallScreen ? '' : 'h-4/5' }}
+        <div
+            style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100vw',
+                height: '100vh',
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                zIndex: 2000,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
+            }}
+            onClick={onClose}
+            tabIndex={0}
         >
-            <DialogTitle></DialogTitle>
-            <DialogContent style={{ padding: '0', margin: '0' }}>
-                <div className="w-full h-full text-center">
-                    <TransformWrapper
-                        initialScale={1}
-                        initialPositionX={0}
-                        initialPositionY={0}
+            <div
+                style={{
+                    position: 'absolute',
+                    top: 20,
+                    right: 20,
+                    zIndex: 1001,
+                    display: 'flex',
+                    gap: '12px'
+                }}
+            >
+                <Fab color="primary" aria-label="save"
+                    onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        onSaveDefault()
+                    }}
+                >
+                    <SaveIcon />
+                </Fab>
+                <Fab aria-label="close"
+                    onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        onClose()
+                    }}
+                >
+                    <CloseIcon />
+                </Fab>
+            </div>
+            {
+                url && (
+                    <div
+                        className='animate-in fade-in duration-300 ease-in-out'
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            overflow: 'hidden',
+                        }}
                     >
-                        {({ zoomIn, zoomOut, resetTransform }) => (
-                            <>
-                                <TransformComponent
-                                    wrapperClass='w-full h-full'
-                                    contentClass='w-full h-full flex items-center justify-center'
-                                >
-                                    <div className="w-full h-full flex items-center justify-center">
-                                        {picture?.storageKey && <ImageInStorage storageKey={picture.storageKey} className='max-w-full max-h-full w-auto h-auto object-contain' />}
-                                        {picture?.url && <Img src={picture.url} className='max-w-full max-h-full w-auto h-auto object-contain' />}
-                                    </div>
-                                </TransformComponent>
-                            </>
-                        )}
-                    </TransformWrapper>
-                </div>
-            </DialogContent>
-            <DialogActions>
-                {ExtraButtons}
-                <Button onClick={onSave || onSaveDefault} startIcon={<SaveIcon />}>
-                    {t('save')}
-                </Button>
-                <Button onClick={onClose}>{t('close')}</Button>
-            </DialogActions>
-        </Dialog>
+                        <TransformWrapper
+                            initialScale={1}
+                            centerOnInit={true}
+                            minScale={0.1}
+                            maxScale={8}
+                            limitToBounds={false}
+                        >
+                            <TransformComponent
+                                wrapperStyle={{
+                                    width: '100%',
+                                    height: '100%',
+                                }}
+                                wrapperProps={{
+                                    onClick: (e) => {
+                                        onClose()
+                                    }
+                                }}
+                                contentStyle={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                                contentProps={{
+                                    onClick: (e) => {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                    }
+                                }}
+                            >
+                                {/* 这里不能使用异步的 ImageInStorage，否则会导致图片位置不对 */}
+                                <Img src={url} className='max-w-[90vw] max-h-[90vh] w-auto h-auto object-contain'
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                    }}
+                                />
+                            </TransformComponent>
+                        </TransformWrapper>
+                    </div>
+                )
+            }
+        </div>
     )
 }
