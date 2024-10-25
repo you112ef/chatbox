@@ -520,7 +520,6 @@ function _Message(props: Props) {
                                                     bg-white dark:bg-slate-800
                                                     border-solid border-slate-400/20 rounded-md
                                                     hover:cursor-pointer hover:border-slate-800/20 transition-all duration-200"
-                                                onClick={() => setPictureShow({ picture: pic })}
                                             >
                                                 {
                                                     pic.loading && !pic.storageKey && !pic.url && (
@@ -529,12 +528,16 @@ function _Message(props: Props) {
                                                 }
                                                 {
                                                     pic.storageKey && (
-                                                        <ImageInStorage className='w-full' storageKey={pic.storageKey} />
+                                                        <ImageInStorage className='w-full' storageKey={pic.storageKey}
+                                                            onClick={() => setPictureShow({ picture: pic })}
+                                                        />
                                                     )
                                                 }
                                                 {
                                                     pic.url && (
-                                                        <Img src={pic.url} className='w-full' />
+                                                        <Img src={pic.url} className='w-full'
+                                                            onClick={() => setPictureShow({ picture: pic })}
+                                                        />
                                                     )
                                                 }
                                             </div>
