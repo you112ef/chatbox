@@ -131,6 +131,17 @@ export class ChatboxAIAPIError extends BaseError {
             code: 20014,
             i18nKey: 'The current model {{model}} does not support sending images.'
         },
+        // 当前模型不支持发送链接
+        'model_not_support_link': {
+            name: 'model_not_support_link',
+            code: 20015,
+            i18nKey: 'The current model {{model}} does not support sending links. Currently supported models: Chatbox AI models.'
+        },
+        'model_not_support_link_2': {
+            name: 'model_not_support_link_2',
+            code: 20016,
+            i18nKey: 'The current model {{model}} does not support sending links.'
+        },
     }
     static fromCodeName(response: string, codeName: string) {
         if (!codeName) {

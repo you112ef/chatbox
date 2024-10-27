@@ -272,5 +272,10 @@
     "Show all ({{x}})": "すべて表示 ({{x}})",
     "Auto-collapse code blocks": "コードブロックを自動的に折りたたむ",
     "Chatbox AI Standard Model Quota": "Chatbox AI 標準モデルクオータ",
-    "Chatbox AI Advanced Model Quota": "Chatbox AI 高度モデルクオータ"
+    "Chatbox AI Advanced Model Quota": "Chatbox AI 高度モデルクオータ",
+    "The current model {{model}} does not support sending links. Currently supported models: Chatbox AI models.": "現在のモデル{{model}}はリンクの送信をサポートしていません。現在サポートされているモデル：Chatbox AIモデル。",
+    "The current model {{model}} does not support sending links.": "現在のモデル{{model}}はリンクの送信をサポートしていません。",
+    "Loading webpage...": "Webページを読み込んでいます...",
+    "Attach Link": "リンクを添付",
+    "submit": "送信"
 }

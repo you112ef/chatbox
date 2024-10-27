@@ -3,6 +3,7 @@ import {
     Settings,
     createMessage,
     Message,
+    MessageLink,
     Session,
     settings2SessionSettings,
     pickPictureSettings,
@@ -517,8 +518,9 @@ export async function submitNewUserMessage(params: {
     newUserMsg: Message
     needGenerating: boolean
     attachments: File[]
+    links: {url: string}[]
 }) {
-    const { currentSessionId, newUserMsg, needGenerating, attachments } = params
+    const { currentSessionId, newUserMsg, needGenerating, attachments, links } = params
     // 如果存在附件，现在发送消息中构建空白的文件信息，用于占位，等待上传完成后再修改
     if (attachments && attachments.length > 0) {
         newUserMsg.files = attachments.map((f, ix) => ({
@@ -527,12 +529,23 @@ export async function submitNewUserMessage(params: {
             fileType: f.type,
         }))
     }
+    // 如果存在链接，现在发送消息中构建空白的链接信息，用于占位，等待解析完成后再修改
+    if (links && links.length > 0) {
+        newUserMsg.links = links.map((l, ix) => ({
+            id: ix.toString(),
+            url: l.url,
+            title: l.url.replace(/^https?:\/\//, ''),
+        }))
+    }
     // 先在聊天列表中插入发送的用户消息
     insertMessage(currentSessionId, newUserMsg)
     // 根据需要，插入空白的回复消息
     let newAssistantMsg = createMessage('assistant', '')
     if (attachments && attachments.length > 0) {
         newAssistantMsg.status = [{ type: 'sending_file' }]
+    }
+    if (links && links.length > 0) {
+        newAssistantMsg.status = [{ type: 'loading_webpage' }]
     }
     if (needGenerating) {
         newAssistantMsg.generating = true
@@ -576,6 +589,29 @@ export async function submitNewUserMessage(params: {
                 })
             }
             modifyMessage(currentSessionId, { ...newUserMsg, files: newFiles }, false)
+        }
+        // 如果本次发送消息携带了链接，应该在这次发送中解析链接并构造链接信息(link uuid)
+        if (links && links.length > 0) {
+            const licenseKey = settingActions.getLicenseKey()
+            // 检查模型。当前仅支持 Chatbox AI
+            if (settings.aiProvider !== ModelProvider.ChatboxAI) {
+                // 根据当前 IP，判断是否在错误中推荐 Chatbox AI 4
+                if (remoteConfig.setting_chatboxai_first) {
+                    throw ChatboxAIAPIError.fromCodeName('model_not_support_link', 'model_not_support_link')
+                } else {
+                    throw ChatboxAIAPIError.fromCodeName('model_not_support_link', 'model_not_support_link_2')
+                }
+            }
+            const newLinks: MessageLink[] = await Promise.all(links.map(async (l) => {
+                const parsed = await remote.parseUserLink({ licenseKey: licenseKey || '', url: l.url })
+                return {
+                    id: parsed.uuid,
+                    url: l.url,
+                    title: parsed.title,
+                    chatboxAILinkUUID: parsed.uuid,
+                }
+            }))
+            modifyMessage(currentSessionId, { ...newUserMsg, links: newLinks }, false)
         }
     } catch (err: any) {
         // 如果文件上传失败，一定会出现带有错误信息的回复消息

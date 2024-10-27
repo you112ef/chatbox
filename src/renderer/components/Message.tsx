@@ -5,7 +5,6 @@ import MenuItem from '@mui/material/MenuItem'
 import {
     CircularProgress,
     IconButton,
-    Divider,
     Typography,
     Grid,
     Tooltip,
@@ -56,13 +55,13 @@ import { ImageInStorage, Img } from './Image'
 import SouthIcon from '@mui/icons-material/South'
 import ImageIcon from '@mui/icons-material/Image'
 import MessageErrTips from './MessageErrTips'
+import MessageLoading from './MessageLoading'
+import { MessageAttachment } from './Attachments'
 import StyledMenu from './StyledMenu'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import * as dom from '@/hooks/dom'
 import * as dateFns from "date-fns"
 import { cn } from '@/lib/utils'
-import FileIcon from './FileIcon'
-import { Loader } from 'lucide-react'
 import { copyToClipboard } from '@/packages/navigator'
 import { estimateTokensFromMessages } from '@/packages/token'
 import { countWord } from '@/packages/word-count'
@@ -452,18 +451,12 @@ function _Message(props: Props) {
                     <Grid item xs>
                         {
                             msg.status && msg.status.length > 0 && msg.status[0].type === 'sending_file' && (
-                                <div className='flex flex-row items-start justify-start overflow-x-auto overflow-y-hidden'>
-                                    <div className='flex justify-start items-center mb-1 px-1 py-2
-                                                    border-solid border-blue-400/20 shadow-md rounded-lg
-                                                    bg-blue-100
-                                                    '
-                                    >
-                                        <Loader className='w-6 h-6 ml-1 mr-2 text-black animate-spin' />
-                                        <span className='mr-4 animate-pulse font-bold text-gray-800/70'>
-                                            {t('Reading file...')}
-                                        </span>
-                                    </div>
-                                </div>
+                                <MessageLoading>{t('Reading file...')}</MessageLoading>
+                            )
+                        }
+                        {
+                            msg.status && msg.status.length > 0 && msg.status[0].type === 'loading_webpage' && (
+                                <MessageLoading>{t('Loading webpage...')}</MessageLoading>
                             )
                         }
                         <div className={cn(
@@ -546,20 +539,16 @@ function _Message(props: Props) {
                                 </div>
                             )}
                             {
-                                msg.files && (
+                                (msg.files || msg.links) && (
                                     <div className='flex flex-row items-start justify-start overflow-x-auto overflow-y-hidden pb-1'>
                                         {
-                                            msg.files.map((file, index) => (
-                                                <div key={index} className='flex justify-start items-center mb-2 p-1.5
-                                                    border-solid border-slate-400/20 rounded 
-                                                    bg-white dark:bg-slate-800
-                                                    '
-                                                >
-                                                    <FileIcon filename={file.name} className='w-6 h-6 ml-1 mr-2 text-black dark:text-white' />
-                                                    <Typography className='w-32' noWrap>
-                                                        {file.name}
-                                                    </Typography>
-                                                </div>
+                                            msg.files?.map((file, index) => (
+                                                <MessageAttachment key={index} label={file.name} filename={file.name} />
+                                            ))
+                                        }
+                                        {
+                                            msg.links?.map((link, index) => (
+                                                <MessageAttachment key={index} label={link.title} url={link.url} />
                                             ))
                                         }
                                     </div>

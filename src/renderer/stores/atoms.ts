@@ -235,6 +235,9 @@ export const openWelcomeDialogAtom = atom(false)
 export const openAboutDialogAtom = atom(false)  // 是否展示相关信息的窗口
 export const openCopilotDialogAtom = atom(false) // 是否展示copilot窗口
 export const openClearConversationListDialogAtom = atom(false) // 是否展示会话列表清理窗口
+export const openAttachLinkDialogAtom = atom(false) // 是否展示链接插入窗口
+
+export const inputBoxLinksAtom = atom<{url: string}[]>([])
 
 export const artifactDialogHtmlCodeAtom = atom('')  // artifact 预览弹窗（当 html 不为空时则弹窗）
 

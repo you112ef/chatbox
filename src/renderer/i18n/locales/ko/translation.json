@@ -272,5 +272,10 @@
     "Show all ({{x}})": "모두 보기 ({{x}})",
     "Auto-collapse code blocks": "코드 블록 자동 숨기기",
     "Chatbox AI Standard Model Quota": "Chatbox AI 표준 모델 할당량",
-    "Chatbox AI Advanced Model Quota": "Chatbox AI 고급 모델 할당량"
+    "Chatbox AI Advanced Model Quota": "Chatbox AI 고급 모델 할당량",
+    "The current model {{model}} does not support sending links. Currently supported models: Chatbox AI models.": "현재 모델 {{model}}은 링크 전송을 지원하지 않습니다. 현재 지원되는 모델: Chatbox AI 모델.",
+    "The current model {{model}} does not support sending links.": "현재 모델 {{model}}은 링크 전송을 지원하지 않습니다.",
+    "Loading webpage...": "웹 페이지를 로드하는 중...",
+    "Attach Link": "링크 첨부",
+    "submit": "제출"
 }

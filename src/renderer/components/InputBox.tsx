@@ -10,7 +10,7 @@ import * as dom from '../hooks/dom'
 import { Shortcut } from './Shortcut'
 import { useInputBoxHeight, useIsSmallScreen } from '@/hooks/useScreenChange'
 import {
-    Image, FolderClosed, Undo2, SendHorizontal,
+    Image, FolderClosed, Link, Undo2, SendHorizontal,
     MessageSquareDashed, MessagesSquare,
     Settings2,
 } from 'lucide-react'
@@ -19,7 +19,7 @@ import { scrollToMessage } from '@/stores/scrollActions'
 import icon from '../static/icon.png'
 import { trackingEvent } from '@/packages/event'
 import storage from '@/storage'
-import { FileMiniCard, ImageMiniCard } from './Attachments'
+import { FileMiniCard, ImageMiniCard, LinkMiniCard } from './Attachments'
 import MiniButton from './MiniButton'
 import _ from 'lodash'
 import { ChatModelSelector } from './ModelSelector'
@@ -39,12 +39,14 @@ export default function InputBox(props: {}) {
     const [messageInput, setMessageInput] = useState('')
     const [pictureKeys, setPictureKeys] = useState<string[]>([])
     const [attachments, setAttachments] = useState<File[]>([])
+    const [links, setLinks] = useAtom(atoms.inputBoxLinksAtom)
     const pictureInputRef = useRef<HTMLInputElement | null>(null)
     const fileInputRef = useRef<HTMLInputElement | null>(null)
     const [showRollbackThreadButton, setShowRollbackThreadButton] = useState(false)
     const showRollbackThreadButtonTimerRef = useRef<null | NodeJS.Timeout>(null)
     const inputRef = useRef<HTMLTextAreaElement | null>(null)
     const [previousMessageQuickInputMark, setPreviousMessageQuickInputMark] = useState('')
+    const setOpenAttachLinkDialog = useSetAtom(atoms.openAttachLinkDialogAtom)
 
     const { min: minTextareaHeight, max: maxTextareaHeight } = useInputBoxHeight()
 
@@ -78,11 +80,13 @@ export default function InputBox(props: {}) {
             currentSessionId: currentSessionId,
             newUserMsg: newMessage,
             needGenerating,
-            attachments
+            attachments,
+            links,
         })
         setMessageInput('')
         setPictureKeys([])
         setAttachments([])
+        setLinks([])
         trackingEvent('send_message', { event_category: 'user' })
         // 重置清理上下文按钮
         if (showRollbackThreadButton) {
@@ -216,6 +220,15 @@ export default function InputBox(props: {}) {
         sessionActions.removeCurrentThread(currentSessionId)
     }
 
+    const insertLinks = (urls: string[]) => {
+        setLinks(links => {
+            let newLinks = [...links, ...urls.map(u => ({ url: u }))]
+            newLinks = _.uniqBy(newLinks, 'url')
+            newLinks = newLinks.slice(-6) // 最多插入 6 个链接
+            return newLinks
+        })
+    }
+
     const insertFiles = async (files: File[]) => {
         for (const file of files) {
             // 文件和图片插入方法复用，会导致 svg、gif 这类不支持的图片也被插入，但暂时没看到有什么问题
@@ -263,13 +276,23 @@ export default function InputBox(props: {}) {
         if (event.clipboardData && event.clipboardData.items) {
             for (let item of event.clipboardData.items) {
                 if (item.kind === 'file') {
+                    // 复制文件
                     event.preventDefault()
                     const file = item.getAsFile();
                     if (file) {
                         insertFiles([file])
                     }
-                } else {
-                    break
+                } else if (item.kind === 'string' && item.type === 'text/plain') {
+                    // 复制链接
+                    item.getAsString((text) => {
+                        const raw = text.trim()
+                        if (raw.startsWith('http://') || raw.startsWith('https://')) {
+                            const urls = raw.split(/\s+/)
+                                .map(url => url.trim())
+                                .filter(url => url.startsWith('http://') || url.startsWith('https://'))
+                            insertLinks(urls)
+                        }
+                    })
                 }
             }
         }
@@ -380,6 +403,19 @@ export default function InputBox(props: {}) {
                         >
                             <FolderClosed size='22' strokeWidth={1} />
                         </MiniButton>
+                        <MiniButton
+                            className={cn('mr-1 sm:mr-2', currentSessionType !== 'picture' ? '' : 'hidden')}
+                            style={{ color: theme.palette.text.primary }}
+                            onClick={() => setOpenAttachLinkDialog(true)}
+                            tooltipTitle={
+                                <div className='text-center inline-block'>
+                                    <span>{t('Attach Link')}</span>
+                                </div>
+                            }
+                            tooltipPlacement='top'
+                        >
+                            <Link size='22' strokeWidth={1} />
+                        </MiniButton>
                         <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
                             onClick={() => setChatConfigDialogSessionId(sessionActions.getCurrentSession().id)}
                             tooltipTitle={
@@ -471,6 +507,15 @@ export default function InputBox(props: {}) {
                                     name={file.name}
                                     fileType={file.type}
                                     onDelete={() => setAttachments(files => files.filter(f => f.name != file.name))}
+                                />
+                            ))
+                        }
+                        {
+                            links.map((link, ix) => (
+                                <LinkMiniCard
+                                    key={ix}
+                                    url={link.url}
+                                    onDelete={() => setLinks(links => links.filter(l => l.url != link.url))}
                                 />
                             ))
                         }

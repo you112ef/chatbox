@@ -271,5 +271,10 @@
     "Show all ({{x}})": "Mostra tutti ({{x}})",
     "Auto-collapse code blocks": "Auto-nascondi blocchi di codice",
     "Chatbox AI Standard Model Quota": "Quota del modello standard Chatbox AI",
-    "Chatbox AI Advanced Model Quota": "Quota del modello avanzato Chatbox AI"
+    "Chatbox AI Advanced Model Quota": "Quota del modello avanzato Chatbox AI",
+    "The current model {{model}} does not support sending links. Currently supported models: Chatbox AI models.": "Il modello attuale {{model}} non supporta l'invio di link. Modelli attualmente supportati: Chatbox AI.",
+    "The current model {{model}} does not support sending links.": "Il modello attuale {{model}} non supporta l'invio di link.",
+    "Loading webpage...": "Caricamento pagina web...",
+    "Attach Link": "Allega link",
+    "submit": "Invia"
 }

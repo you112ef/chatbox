@@ -31,6 +31,7 @@ import * as premiumActions from './stores/premiumActions'
 import platform from './platform'
 import ExportChatDialog from '@/pages/ExportChatDialog'
 import ArtifactDialog from '@/pages/ArtifactDialog'
+import OpenAttachLinkDialog from './pages/OpenAttachLinkDialog'
 
 function Main() {
     const spellCheck = useAtomValue(atoms.spellCheckAtom)
@@ -87,6 +88,7 @@ function Main() {
             <MessageEditDialog />
             <WelcomeDialog />
             <ArtifactDialog />
+            <OpenAttachLinkDialog />
             <Toasts />
         </Box>
     )

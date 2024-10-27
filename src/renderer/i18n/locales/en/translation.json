@@ -271,5 +271,10 @@
     "Show all ({{x}})": "Show all ({{x}})",
     "Auto-collapse code blocks": "Auto-collapse code blocks",
     "Chatbox AI Standard Model Quota": "Chatbox AI Standard Model Quota",
-    "Chatbox AI Advanced Model Quota": "Chatbox AI Advanced Model Quota"
+    "Chatbox AI Advanced Model Quota": "Chatbox AI Advanced Model Quota",
+    "The current model {{model}} does not support sending links. Currently supported models: Chatbox AI models.": "The current model {{model}} does not support sending links. Currently supported models: Chatbox AI models.",
+    "The current model {{model}} does not support sending links.": "The current model {{model}} does not support sending links.",
+    "Loading webpage...": "Loading webpage...",
+    "Attach Link": "Attach Link",
+    "submit": "Submit"
 }

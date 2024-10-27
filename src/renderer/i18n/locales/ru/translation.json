@@ -272,5 +272,10 @@
     "Show all ({{x}})": "Показать все ({{x}})",
     "Auto-collapse code blocks": "Автоматически скрывать блоки кода",
     "Chatbox AI Standard Model Quota": "Квота стандартной модели Chatbox AI",
-    "Chatbox AI Advanced Model Quota": "Квота расширенной модели Chatbox AI"
+    "Chatbox AI Advanced Model Quota": "Квота расширенной модели Chatbox AI",
+    "The current model {{model}} does not support sending links. Currently supported models: Chatbox AI models.": "Текущая модель {{model}} не поддерживает отправку ссылок. Текущие поддерживаемые модели: Chatbox AI.",
+    "The current model {{model}} does not support sending links.": "Текущая модель {{model}} не поддерживает отправку ссылок.",
+    "Loading webpage...": "Загрузка веб-страницы...",
+    "Attach Link": "Прикрепить ссылку",
+    "submit": "Отправить"
 }

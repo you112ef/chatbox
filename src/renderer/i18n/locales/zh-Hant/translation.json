@@ -272,5 +272,10 @@
     "Show all ({{x}})": "顯示全部 ({{x}})",
     "Auto-collapse code blocks": "自動收起代碼塊",
     "Chatbox AI Standard Model Quota": "Chatbox AI 標準模型配額",
-    "Chatbox AI Advanced Model Quota": "Chatbox AI 高級模型配額"
+    "Chatbox AI Advanced Model Quota": "Chatbox AI 高級模型配額",
+    "The current model {{model}} does not support sending links. Currently supported models: Chatbox AI models.": "當前模型 {{model}} 不支持發送鏈接。目前支持的模型：Chatbox AI 模型。",
+    "The current model {{model}} does not support sending links.": "當前模型 {{model}} 不支持發送鏈接。",
+    "Loading webpage...": "加載網頁中...",
+    "Attach Link": "添加鏈接",
+    "submit": "提交"
 }

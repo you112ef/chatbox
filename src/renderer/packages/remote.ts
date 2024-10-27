@@ -257,6 +257,25 @@ export async function uploadAndCreateUserFile(licenseKey: string, file: File) {
     return result.uuid
 }
 
+export async function parseUserLink(params: { licenseKey: string, url: string }) {
+    type Response = {
+        data: {
+            uuid: string
+            title: string
+        }
+    }
+    const res = await afetch(`${API_ORIGIN}/api/links/parse`, {
+        method: 'POST',
+        headers: {
+            Authorization: params.licenseKey,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(params),
+    }, { parseChatboxRemoteError: true })
+    const json: Response = await res.json()
+    return json['data']
+}
+
 export async function activateLicense(params: {
     licenseKey: string,
     instanceName: string

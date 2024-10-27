@@ -271,5 +271,10 @@
     "Show all ({{x}})": "عرض الكل ({{x}})",
     "Auto-collapse code blocks": "تلقائيًا إخفاء الكتل البرمجية",
     "Chatbox AI Standard Model Quota": "حصة Chatbox AI القياسية",
-    "Chatbox AI Advanced Model Quota": "حصة Chatbox AI المتقدمة"
+    "Chatbox AI Advanced Model Quota": "حصة Chatbox AI المتقدمة",
+    "The current model {{model}} does not support sending links. Currently supported models: Chatbox AI models.": "النموذج الحالي {{model}} لا يدعم إرسال الروابط. النماذج المدعومة حاليًا: Chatbox AI.",
+    "The current model {{model}} does not support sending links.": "النموذج الحالي {{model}} لا يدعم إرسال الروابط.",
+    "Loading webpage...": "جارٍ تحميل الصفحة الإنترنت...",
+    "Attach Link": "إرفاق رابط",
+    "submit": "إرسال"
 }

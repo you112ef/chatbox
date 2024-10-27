@@ -14,6 +14,13 @@ export interface MessageFile {
     chatboxAIFileUUID?: string
 }
 
+export interface MessageLink {
+    id: string
+    url: string
+    title: string
+    chatboxAILinkUUID?: string
+}
+
 export interface MessagePicture {
     url?: string
     storageKey?: string
@@ -46,15 +53,14 @@ export interface Message {
     pictures?: MessagePicture[]
 
     files?: MessageFile[]
+    links?: MessageLink[]
 
     errorCode?: number
     error?: string
     errorExtra?: {
         [key: string]: any
     }
-    status?: {
-        type: 'sending_file'
-    }[]
+    status?: ({ type: 'sending_file' } | { type: 'loading_webpage' })[]
 
     wordCount?: number // 当前消息的字数
     tokenCount?: number // 当前消息的 token 数量

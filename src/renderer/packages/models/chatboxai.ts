@@ -201,6 +201,10 @@ export interface ChatboxAIMessage {
     files?: {
         uuid: string
     }[]
+    links?: {
+        uuid: string
+        url: string
+    }[]
 }
 
 export async function populateChatboxAIMessage(rawMessages: Message[]): Promise<ChatboxAIMessage[]> {
@@ -232,6 +236,15 @@ export async function populateChatboxAIMessage(rawMessages: Message[]): Promise<
                 newMessage.files = []
             }
             newMessage.files.push({ uuid: file.chatboxAIFileUUID })
+        }
+        for (const link of (raw.links || [])) {
+            if (!link.chatboxAILinkUUID || !link.url) {
+                continue
+            }
+            if (!newMessage.links) {
+                newMessage.links = []
+            }
+            newMessage.links.push({ uuid: link.chatboxAILinkUUID, url: link.url })
         }
         messages.push(newMessage)
     }
