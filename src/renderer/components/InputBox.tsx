@@ -10,10 +10,7 @@ import * as dom from '../hooks/dom'
 import { Shortcut } from './Shortcut'
 import { useInputBoxHeight, useIsSmallScreen } from '@/hooks/useScreenChange'
 import {
-    Image, FolderClosed, Link, Undo2, SendHorizontal,
-    MessageSquareDashed, MessagesSquare,
-    Settings2,
-} from 'lucide-react'
+    Image, FolderClosed, Link, Undo2, SendHorizontal, Eraser, Settings2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { scrollToMessage } from '@/stores/scrollActions'
 import icon from '../static/icon.png'
@@ -33,7 +30,6 @@ export default function InputBox(props: {}) {
     const currentSessionId = useAtomValue(atoms.currentSessionIdAtom)
     const currentSessionType = useAtomValue(atoms.currentSessionTypeAtom)
     const isSmallScreen = useIsSmallScreen()
-    const setThreadHistoryDrawerOpen = useSetAtom(atoms.showThreadHistoryDrawerAtom)
     const setChatConfigDialogSessionId = useSetAtom(atoms.chatConfigDialogIdAtom)
     const { t } = useTranslation()
     const [messageInput, setMessageInput] = useState('')
@@ -354,22 +350,12 @@ export default function InputBox(props: {}) {
                                     tooltipPlacement='top'
                                     onClick={startNewThread}
                                 >
-                                    {/* <ListRestart size='22' strokeWidth={1} /> */}
-                                    <MessageSquareDashed size='22' strokeWidth={1} />
+                                    <Eraser size='22' strokeWidth={1} />
                                 </MiniButton>
                             )
                         }
-                        <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
-                            onClick={() => setThreadHistoryDrawerOpen(true)}
-                            tooltipTitle={
-                                <div className='text-center inline-block'>
-                                    <span>{t('View historical threads')}</span>
-                                </div>
-                            }
-                            tooltipPlacement='top'
-                        >
-                            <MessagesSquare size='22' strokeWidth={1} />
-                        </MiniButton>
+
+ 
                         <input type='file' ref={pictureInputRef} className='hidden' onChange={onFileInputChange}
                             // accept="image/png, image/jpeg, image/gif" 
                             accept="image/png, image/jpeg"
