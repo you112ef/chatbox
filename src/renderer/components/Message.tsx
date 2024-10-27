@@ -471,6 +471,13 @@ function _Message(props: Props) {
                                 }
                             >
                                 {
+                                    // 这里的空行仅仅是为了在只发送文件时消息气泡的美观
+                                    // 正常情况下，应该考虑优化 msg-content 的样式。现在这里是一个临时的偷懒方式。
+                                    msg.content.trim() === '' && (
+                                        <p></p>
+                                    )
+                                }
+                                {
                                     enableMarkdownRendering && !isCollapsed ? (
                                         <Markdown
                                             enableLaTeXRendering={enableLaTeXRendering}

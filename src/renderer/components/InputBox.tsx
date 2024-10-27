@@ -65,7 +65,12 @@ export default function InputBox(props: {}) {
 
     const handleSubmit = (needGenerating = true) => {
         setPreviousMessageQuickInputMark('')
-        if (messageInput.trim() === '') {
+        if (
+            messageInput.trim() === ''
+            && links.length === 0
+            && attachments.length === 0
+            && pictureKeys.length === 0
+        ) {
             return
         }
         const newMessage = createMessage('user', messageInput)
