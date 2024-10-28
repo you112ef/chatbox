@@ -264,14 +264,21 @@ export async function parseUserLink(params: { licenseKey: string, url: string })
             title: string
         }
     }
-    const res = await afetch(`${API_ORIGIN}/api/links/parse`, {
-        method: 'POST',
-        headers: {
-            Authorization: params.licenseKey,
-            'Content-Type': 'application/json',
+    const res = await afetch(
+        `${API_ORIGIN}/api/links/parse`,
+        {
+            method: 'POST',
+            headers: {
+                Authorization: params.licenseKey,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(params),
         },
-        body: JSON.stringify(params),
-    }, { parseChatboxRemoteError: true })
+        {
+            parseChatboxRemoteError: true,
+            retry: 2,
+        }
+    )
     const json: Response = await res.json()
     return json['data']
 }
