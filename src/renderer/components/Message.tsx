@@ -450,12 +450,12 @@ function _Message(props: Props) {
                 <Grid item xs sm container sx={{ width: '0px', paddingRight: '15px' }}>
                     <Grid item xs>
                         {
-                            msg.status && msg.status.length > 0 && msg.status[0].type === 'sending_file' && (
+                            msg.status && msg.status.length > 0 && msg.status.some((s) => s.type === 'sending_file') && (
                                 <MessageLoading>{t('Reading file...')}</MessageLoading>
                             )
                         }
                         {
-                            msg.status && msg.status.length > 0 && msg.status[0].type === 'loading_webpage' && (
+                            msg.status && msg.status.length > 0 && msg.status.some((s) => s.type === 'loading_webpage') && (
                                 <MessageLoading>{t('Loading webpage...')}</MessageLoading>
                             )
                         }

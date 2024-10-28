@@ -542,10 +542,16 @@ export async function submitNewUserMessage(params: {
     // 根据需要，插入空白的回复消息
     let newAssistantMsg = createMessage('assistant', '')
     if (attachments && attachments.length > 0) {
-        newAssistantMsg.status = [{ type: 'sending_file' }]
+        if (!newAssistantMsg.status) {
+            newAssistantMsg.status = []
+        }
+        newAssistantMsg.status.push({ type: 'sending_file' })
     }
     if (links && links.length > 0) {
-        newAssistantMsg.status = [{ type: 'loading_webpage' }]
+        if (!newAssistantMsg.status) {
+            newAssistantMsg.status = []
+        }
+        newAssistantMsg.status.push({ type: 'loading_webpage' })
     }
     if (needGenerating) {
         newAssistantMsg.generating = true
