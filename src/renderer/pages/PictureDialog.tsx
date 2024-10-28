@@ -1,4 +1,4 @@
-import { Fab } from '@mui/material'
+import { Fab, useTheme } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import * as atoms from '../stores/atoms'
 import { useSetAtom, useAtomValue } from 'jotai'
@@ -31,8 +31,8 @@ function _PictureDialog(props: {
     picture: MessagePicture
     onSave?: () => void
 }) {
-    const { picture, onSave } = props
-    const { t } = useTranslation()
+    const { picture } = props
+    const theme = useTheme()
     const setPictureShow = useSetAtom(atoms.pictureShowAtom)
     const [url, setUrl] = useState(picture.url)
 
@@ -169,6 +169,7 @@ function _PictureDialog(props: {
                                     display: 'flex',
                                     justifyContent: 'center',
                                     alignItems: 'center',
+                                    backgroundColor: theme.palette.background.default,  // 透明的流程图、线框图需要背景色
                                 }}
                                 contentProps={{
                                     onClick: (e) => {
