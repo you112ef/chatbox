@@ -67,89 +67,93 @@ export default function AdvancedSettingTab(props: Props) {
                     />
                 </AccordionDetails>
             </Accordion>
-            <Accordion>
-                <AccordionSummary aria-controls="panel1a-content">
-                    <Typography>{t('Keyboard Shortcuts')}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <TableContainer component={Paper}>
-                        <Table size="small">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>{t('Description')}</TableCell>
-                                    <TableCell align="center">{t('Key Combination')}</TableCell>
-                                    <TableCell align="center">{t('Toggle')}</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell component="th" scope="row">
-                                        {t('Show/Hide the Application Window')}
-                                    </TableCell>
-                                    <TableCell align="center">
-                                        <Shortcut keys={['alt', '`']} />
-                                    </TableCell>
-                                    <TableCell align="center">
-                                        <Switch
-                                            size="small"
-                                            checked={!props.settingsEdit.disableQuickToggleShortcut}
-                                            onChange={(e) =>
-                                                props.setSettingsEdit({
-                                                    ...props.settingsEdit,
-                                                    disableQuickToggleShortcut: !e.target.checked,
-                                                })
-                                            }
-                                        />
-                                    </TableCell>
-                                </TableRow>
-                                {[
-                                    { description: t('Navigate to the Next Conversation'), keys: ['Ctrl', 'Tab'] },
-                                    {
-                                        description: t('Navigate to the Previous Conversation'),
-                                        keys: ['Ctrl', 'Shift', 'Tab'],
-                                    },
-                                    {
-                                        description: t('Navigate to the Specific Conversation'),
-                                        keys: ['Ctrl', t('any number key')],
-                                    },
-                                    { description: t('Create a New Conversation'), keys: ['Ctrl', 'N'] },
-                                    {
-                                        description: t('Create a New Image-Creator Conversation'),
-                                        keys: ['Ctrl', 'Shift', 'N'],
-                                    },
-                                    { description: t('Focus on the Input Box'), keys: ['Ctrl', 'I'] },
-                                    { description: t('Send'), keys: ['enter'] },
-                                    { description: t('Insert a New Line into the Input Box'), keys: ['Shift', 'enter'] },
-                                    { description: t('Send Without Generating Response'), keys: ['Ctrl', 'enter'] },
-                                    { description: t('Refresh Context, Start a New Thread'), keys: ['alt', 'R'] },
-                                    { description: t('Show/Hide the Search Dialog'), keys: ['Ctrl', 'K'] },
-                                    {
-                                        description: t('Navigate to the Previous Option (in search dialog)'),
-                                        keys: ['↑'],
-                                    },
-                                    { description: t('Navigate to the Next Option (in search dialog)'), keys: ['↓'] },
-                                    {
-                                        description: t('Select the Current Option (in search dialog)'),
-                                        keys: ['enter'],
-                                    },
-                                ].map((item, ix) => (
-                                    <TableRow key={ix}>
-                                        <TableCell component="th" scope="row">
-                                            {item.description}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            <Shortcut keys={item.keys} />
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            <Switch size="small" checked disabled />
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </AccordionDetails>
-            </Accordion>
+            {
+                !isSmallScreen && (
+                    <Accordion>
+                        <AccordionSummary aria-controls="panel1a-content">
+                            <Typography>{t('Keyboard Shortcuts')}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <TableContainer component={Paper}>
+                                <Table size="small">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>{t('Description')}</TableCell>
+                                            <TableCell align="center">{t('Key Combination')}</TableCell>
+                                            <TableCell align="center">{t('Toggle')}</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        <TableRow>
+                                            <TableCell component="th" scope="row">
+                                                {t('Show/Hide the Application Window')}
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <Shortcut keys={['alt', '`']} />
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <Switch
+                                                    size="small"
+                                                    checked={!props.settingsEdit.disableQuickToggleShortcut}
+                                                    onChange={(e) =>
+                                                        props.setSettingsEdit({
+                                                            ...props.settingsEdit,
+                                                            disableQuickToggleShortcut: !e.target.checked,
+                                                        })
+                                                    }
+                                                />
+                                            </TableCell>
+                                        </TableRow>
+                                        {[
+                                            { description: t('Navigate to the Next Conversation'), keys: ['Ctrl', 'Tab'] },
+                                            {
+                                                description: t('Navigate to the Previous Conversation'),
+                                                keys: ['Ctrl', 'Shift', 'Tab'],
+                                            },
+                                            {
+                                                description: t('Navigate to the Specific Conversation'),
+                                                keys: ['Ctrl', t('any number key')],
+                                            },
+                                            { description: t('Create a New Conversation'), keys: ['Ctrl', 'N'] },
+                                            {
+                                                description: t('Create a New Image-Creator Conversation'),
+                                                keys: ['Ctrl', 'Shift', 'N'],
+                                            },
+                                            { description: t('Focus on the Input Box'), keys: ['Ctrl', 'I'] },
+                                            { description: t('Send'), keys: ['enter'] },
+                                            { description: t('Insert a New Line into the Input Box'), keys: ['Shift', 'enter'] },
+                                            { description: t('Send Without Generating Response'), keys: ['Ctrl', 'enter'] },
+                                            { description: t('Refresh Context, Start a New Thread'), keys: ['alt', 'R'] },
+                                            { description: t('Show/Hide the Search Dialog'), keys: ['Ctrl', 'K'] },
+                                            {
+                                                description: t('Navigate to the Previous Option (in search dialog)'),
+                                                keys: ['↑'],
+                                            },
+                                            { description: t('Navigate to the Next Option (in search dialog)'), keys: ['↓'] },
+                                            {
+                                                description: t('Select the Current Option (in search dialog)'),
+                                                keys: ['enter'],
+                                            },
+                                        ].map((item, ix) => (
+                                            <TableRow key={ix}>
+                                                <TableCell component="th" scope="row">
+                                                    {item.description}
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    <Shortcut keys={item.keys} />
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    <Switch size="small" checked disabled />
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </AccordionDetails>
+                    </Accordion>
+                )
+            }
             <Accordion>
                 <AccordionSummary aria-controls="panel1a-content">
                     <Typography>{t('Data Backup and Restore')}</Typography>
