@@ -964,6 +964,24 @@ async function genMessageContext(settings: Settings, msgs: Message[]) {
                 }
             }
         }
+        // 如果消息中包含本地链接（消息中携带有本地链接的storageKey），则将链接内容也作为 prompt 的一部分
+        if (msg.links && msg.links.length > 0) {
+            for (const [linkIndex, link] of msg.links.entries()) {
+                if (link.storageKey) {
+                    msg = { ...msg }
+                    const content = await storage.getBlob(link.storageKey).catch(() => '')
+                    if (content) {
+                        msg.content += `\n\n<ATTACHMENT_LINK>\n`
+                        msg.content += `<LINK_INDEX>${linkIndex + 1}</LINK_INDEX>\n`
+                        msg.content += `<LINK_URL>${link}</LINK_URL>\n`
+                        msg.content += `<LINK_CONTENT>\n`
+                        msg.content += content + '\n'
+                        msg.content += '</LINK_CONTENT>\n'
+                        msg.content += `</ATTACHMENT_LINK>\n`
+                    }
+                }
+            }
+        }
 
         prompts = [msg, ...prompts]
         totalLen += size
