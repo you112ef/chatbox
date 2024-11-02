@@ -475,8 +475,8 @@ ipcMain.handle('parseFile', async (event, filePath: string) => {
 })
 
 ipcMain.handle('parseUrl', async (event, url: string) => {
-    const result = await readability(url)
+    const result = await readability(url, { maxLength: 700 })
     const key = 'parseUrl-' + uuidv4()
-    await setStoreBlob(key, result.text.slice(0, 1000)) // 只保存前1000字符，避免文件过大
+    await setStoreBlob(key, result.text)
     return JSON.stringify({ key, title: result.title })
 })

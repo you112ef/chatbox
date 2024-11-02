@@ -11,3 +11,16 @@ export function resolveHtmlPath(htmlFileName: string) {
     }
     return `file://${path.resolve(__dirname, '../renderer/', htmlFileName)}`
 }
+
+export function sliceTextWithEllipsis(text: string, maxLength: number) {
+    if (text.length <= maxLength) {
+        return text
+    }
+    // 保留首尾各50%的内容
+    const headLength = Math.floor(maxLength * 0.5)
+    const tailLength = Math.floor(maxLength * 0.5)
+    const head = text.slice(0, headLength)
+    const tail = text.slice(-tailLength)
+
+    return head + tail
+}
