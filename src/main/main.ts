@@ -475,7 +475,7 @@ ipcMain.handle('parseFile', async (event, filePath: string) => {
 })
 
 ipcMain.handle('parseUrl', async (event, url: string) => {
-    const result = await readability(url, { maxLength: 700 })
+    const result = await readability(url, { maxLength: 1000 })
     const key = 'parseUrl-' + uuidv4()
     await setStoreBlob(key, result.text)
     return JSON.stringify({ key, title: result.title })
