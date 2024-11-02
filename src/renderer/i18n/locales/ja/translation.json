@@ -280,5 +280,8 @@
     "Oops! This model {{model}} can't handle files yet. You can either:<br />• Get <LinkToHomePage>the desktop app</LinkToHomePage> for local file processing": "申し訳ありません！このモデル{{model}}はまだファイルを処理できません。以下のいずれかの対応をお願いします：<br />• <LinkToHomePage>デスクトップアプリ</LinkToHomePage>をご利用ください",
     "Local Mode": "ローカルモード",
     "Advanced Mode": "高度モード",
-    "Due to local processing limitations, <Link>Chatbox AI Service</Link> is recommended for enhanced document processing capabilities and better results.": "ローカル処理の制限により、より高度な文書処理機能と優れた結果を得るために<Link>Chatbox AIサービス</Link>をご利用いただくことをお勧めします。"
+    "Due to local processing limitations, <Link>Chatbox AI Service</Link> is recommended for enhanced document processing capabilities and better results.": "ローカル処理の制限により、より高度な文書処理機能と優れた結果を得るために<Link>Chatbox AIサービス</Link>をご利用いただくことをお勧めします。",
+    "Due to local processing limitations, <Link>Chatbox AI Service</Link> is recommended to enhance webpage parsing capabilities, especially for dynamic pages.": "ローカル処理の制限により、より高度なWebページ解析機能を得るために<Link>Chatbox AIサービス</Link>をご利用いただくことをお勧めします。",
+    "The {{model}} API does not support links. Please use <LinkToHomePagePricing>Chatbox AI models</LinkToHomePagePricing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.": "{{model}} APIはリンクをサポートしていません。代わりに<LinkToHomePagePricing>Chatbox AIモデル</LinkToHomePagePricing>をご利用ください、またはローカル処理のために<LinkToHomePage>デスクトップアプリ</LinkToHomePage>をダウンロードしてください。",
+    "The {{model}} API does not support links. Please download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.": "{{model}} APIはリンクをサポートしていません。ローカル処理のために<LinkToHomePage>デスクトップアプリ</LinkToHomePage>をダウンロードしてください。"
 }

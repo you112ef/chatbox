@@ -559,7 +559,10 @@ export async function submitNewUserMessage(params: {
         if (!newAssistantMsg.status) {
             newAssistantMsg.status = []
         }
-        newAssistantMsg.status.push({ type: 'loading_webpage' })
+        newAssistantMsg.status.push({
+            type: 'loading_webpage',
+            mode: isChatboxAI ? 'advanced' : 'local',
+        })
     }
     if (needGenerating) {
         newAssistantMsg.generating = true
@@ -625,26 +628,47 @@ export async function submitNewUserMessage(params: {
         }
         // 如果本次发送消息携带了链接，应该在这次发送中解析链接并构造链接信息(link uuid)
         if (links && links.length > 0) {
-            const licenseKey = settingActions.getLicenseKey()
-            // 检查模型。当前仅支持 Chatbox AI
-            if (settings.aiProvider !== ModelProvider.ChatboxAI) {
-                // 根据当前 IP，判断是否在错误中推荐 Chatbox AI 4
-                if (remoteConfig.setting_chatboxai_first) {
-                    throw ChatboxAIAPIError.fromCodeName('model_not_support_link', 'model_not_support_link')
-                } else {
-                    throw ChatboxAIAPIError.fromCodeName('model_not_support_link', 'model_not_support_link_2')
+            if (isChatboxAI) {
+                // Chatbox AI 方案
+                const licenseKey = settingActions.getLicenseKey()
+                const newLinks: MessageLink[] = await Promise.all(links.map(async (l) => {
+                    const parsed = await remote.parseUserLink({ licenseKey: licenseKey || '', url: l.url })
+                    return {
+                        id: parsed.uuid,
+                        url: l.url,
+                        title: parsed.title,
+                        chatboxAILinkUUID: parsed.uuid,
+                    }
+                }))
+                modifyMessage(currentSessionId, { ...newUserMsg, links: newLinks }, false)
+            } else {
+                // 桌面端的本地方案
+                if (platform.type !== 'desktop') {
+                    // 根据当前 IP，判断是否在错误中推荐 Chatbox AI 4
+                    if (remoteConfig.setting_chatboxai_first) {
+                        throw ChatboxAIAPIError.fromCodeName('model_not_support_link', 'model_not_support_link')
+                    } else {
+                        throw ChatboxAIAPIError.fromCodeName('model_not_support_link', 'model_not_support_link_2')
+                    }
                 }
+                const newLinks: MessageLink[] = []
+                for (const link of links) {
+                    const { key, title } = await platform.parseUrl(link.url)
+                    newLinks.push({
+                        id: key,
+                        url: link.url,
+                        title,
+                        storageKey: key,
+                    })
+                    // 等待一段时间，方便显示提示
+                    if (links.length === 1) {
+                        await new Promise(resolve => setTimeout(resolve, 4500))
+                    } else {
+                        await new Promise(resolve => setTimeout(resolve, 2500))
+                    }
+                }
+                modifyMessage(currentSessionId, { ...newUserMsg, links: newLinks }, false)
             }
-            const newLinks: MessageLink[] = await Promise.all(links.map(async (l) => {
-                const parsed = await remote.parseUserLink({ licenseKey: licenseKey || '', url: l.url })
-                return {
-                    id: parsed.uuid,
-                    url: l.url,
-                    title: parsed.title,
-                    chatboxAILinkUUID: parsed.uuid,
-                }
-            }))
-            modifyMessage(currentSessionId, { ...newUserMsg, links: newLinks }, false)
         }
     } catch (err: any) {
         // 如果文件上传失败，一定会出现带有错误信息的回复消息

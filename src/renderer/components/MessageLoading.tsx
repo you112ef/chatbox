@@ -69,8 +69,33 @@ function MessageStatus(props: {
         return (
             <div>
                 <LoadingBubble>
-                    {t('Loading webpage...')}
+                    <span className='flex flex-col'>
+                        <span>{t('Loading webpage...')}</span>
+                        {
+                            status.mode && (
+                                <span className='text-[10px] opacity-70 font-normal'>
+                                    {
+                                        status.mode === 'local'
+                                            ? t('Local Mode')
+                                            : t('Advanced Mode')
+                                    }
+                                </span>
+                            )
+                        }
+                    </span>
                 </LoadingBubble>
+                {
+                    status.mode === 'local' && remoteConfig.setting_chatboxai_first && (
+                        <Typography variant="body2" sx={{ opacity: 0.5 }} className='pb-1'>
+                            <Trans
+                                i18nKey='Due to local processing limitations, <Link>Chatbox AI Service</Link> is recommended to enhance webpage parsing capabilities, especially for dynamic pages.'
+                                components={{
+                                    Link: <LinkTargetBlank href='https://chatboxai.com/#pricing'></LinkTargetBlank>,
+                                }}
+                            />
+                        </Typography>
+                    )
+                }
             </div>
         )
     }

@@ -135,12 +135,12 @@ export class ChatboxAIAPIError extends BaseError {
         'model_not_support_link': {
             name: 'model_not_support_link',
             code: 20015,
-            i18nKey: 'The current model {{model}} does not support sending links. Currently supported models: Chatbox AI models.'
+            i18nKey: 'The {{model}} API does not support links. Please use <LinkToHomePagePricing>Chatbox AI models</LinkToHomePagePricing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.'
         },
         'model_not_support_link_2': {
             name: 'model_not_support_link_2',
             code: 20016,
-            i18nKey: 'The current model {{model}} does not support sending links.'
+            i18nKey: 'The {{model}} API does not support links. Please download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.'
         },
     }
     static fromCodeName(response: string, codeName: string) {

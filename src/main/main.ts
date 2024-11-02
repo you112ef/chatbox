@@ -31,6 +31,7 @@ import * as autoLauncher from './autoLauncher'
 import { AppUpdater } from './app-updater'
 import { parseFile } from './file-parser'
 import { v4 as uuidv4 } from 'uuid'
+import { readability } from './readability'
 
 // 这行代码是解决 Windows 通知的标题和图标不正确的问题，标题会错误显示成 electron.app.Chatbox
 // 参考：https://stackoverflow.com/questions/65859634/notification-from-electron-shows-electron-app-electron
@@ -471,4 +472,11 @@ ipcMain.handle('parseFile', async (event, filePath: string) => {
     const key = 'parseFile-' + uuidv4()
     await setStoreBlob(key, data.slice(0, 1000)) // 只保存前1000字符，避免文件过大
     return key
+})
+
+ipcMain.handle('parseUrl', async (event, url: string) => {
+    const result = await readability(url)
+    const key = 'parseUrl-' + uuidv4()
+    await setStoreBlob(key, result.text.slice(0, 1000)) // 只保存前1000字符，避免文件过大
+    return JSON.stringify({ key, title: result.title })
 })

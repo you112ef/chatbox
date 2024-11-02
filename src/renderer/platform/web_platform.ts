@@ -150,4 +150,7 @@ export default class WebPlatform implements Platform {
     public async parseFile(filePath: string): Promise<string> {
         throw new Error('Not implemented')
     }
+    public async parseUrl(url: string): Promise<{ key: string, title: string }> {
+        throw new Error('Not implemented')
+    }
 }

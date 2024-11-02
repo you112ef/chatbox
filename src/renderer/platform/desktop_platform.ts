@@ -119,4 +119,8 @@ export default class DesktopPlatform implements Platform {
     public async parseFile(filePath: string): Promise<string> {
         return this.ipc.invoke('parseFile', filePath)
     }
+    public async parseUrl(url: string): Promise<{ key: string, title: string }> {
+        const json = await this.ipc.invoke('parseUrl', url)
+        return JSON.parse(json)
+    }
 }

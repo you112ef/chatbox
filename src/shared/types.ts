@@ -18,6 +18,7 @@ export interface MessageLink {
     id: string
     url: string
     title: string
+    storageKey?: string
     chatboxAILinkUUID?: string
 }
 
@@ -67,6 +68,7 @@ export interface Message {
           }
         | {
               type: 'loading_webpage'
+              mode?: 'local' | 'advanced'
           }
     )[]
 
