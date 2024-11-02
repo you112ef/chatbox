@@ -10,6 +10,7 @@ import { Link } from '@mui/material'
 import { ChatboxAIAPIError } from '@/packages/models/errors'
 import platform from '@/platform'
 import { trackingEvent } from '@/packages/event'
+import LinkTargetBlank from './Link'
 
 export default function MessageErrTips(props: { msg: Message }) {
     const { msg } = props
@@ -80,14 +81,13 @@ export default function MessageErrTips(props: { msg: Message }) {
                             }}></Link>
                         ),
                         LinkToHomePage: (
-                            <Link className="cursor-pointer italic" onClick={() => {
-                                platform.openLink('https://chatboxai.app')
-                            }}></Link>
+                            <LinkTargetBlank href="https://chatboxai.app"></LinkTargetBlank>
                         ),
-                        LinkToHomePagePricing: (
-                            <Link className="cursor-pointer italic" onClick={() => {
-                                platform.openLink('https://chatboxai.app/#pricing')
-                            }}></Link>
+                        LinkToAdvancedFileProcessing: (
+                            <LinkTargetBlank href="https://chatboxai.app/redirect_app/advanced_file_processing"></LinkTargetBlank>
+                        ),
+                        LinkToAdvancedUrlProcessing: (
+                            <LinkTargetBlank href="https://chatboxai.app/redirect_app/advanced_url_processing"></LinkTargetBlank>
                         ),
                     }}
                 />

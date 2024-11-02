@@ -275,12 +275,12 @@
     "Loading webpage...": "جارٍ تحميل الصفحة الإنترنت...",
     "Attach Link": "إرفاق رابط",
     "submit": "إرسال",
-    "The {{model}} API does not support files. Please use <LinkToHomePagePricing>Chatbox AI models</LinkToHomePagePricing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.": "لا يدعم API {{model}} الملفات. يرجى استخدام <LinkToHomePagePricing>نماذج Chatbox AI</LinkToHomePagePricing> بدلاً من ذلك، أو تحميل <LinkToHomePage>تطبيق سطح المكتب</LinkToHomePage> لمعالجة محلية.",
+    "The {{model}} API does not support files. Please use <LinkToAdvancedFileProcessing>Chatbox AI models</LinkToAdvancedFileProcessing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.": "لا يدعم API {{model}} الملفات. يرجى استخدام <LinkToAdvancedFileProcessing>نماذج Chatbox AI</LinkToAdvancedFileProcessing> بدلاً من ذلك، أو تحميل <LinkToHomePage>تطبيق سطح المكتب</LinkToHomePage> لمعالجة محلية.",
     "The {{model}} API does not support files. Please download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.": "لا يدعم API {{model}} الملفات. يرجى تحميل <LinkToHomePage>تطبيق سطح المكتب</LinkToHomePage> لمعالجة محلية.",
     "Local Mode": "وضع محلي",
     "Advanced Mode": "وضع متقدم",
     "Due to local processing limitations, <Link>Chatbox AI Service</Link> is recommended for enhanced document processing capabilities and better results.": "بسبب قيود المعالجة المحلية، يُعد <Link>خدمة Chatbox AI</Link> مناسبًا لمعالجة الملفات المتقدمة والحصول على نتائج أفضل.",
     "Due to local processing limitations, <Link>Chatbox AI Service</Link> is recommended to enhance webpage parsing capabilities, especially for dynamic pages.": "بسبب قيود المعالجة المحلية، يُعد <Link>خدمة Chatbox AI</Link> مناسبًا لتحسين قدرات تحليل صفحات الويب، خاصةً للصفحات الديناميكية.",
-    "The {{model}} API does not support links. Please use <LinkToHomePagePricing>Chatbox AI models</LinkToHomePagePricing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.": "لا يدعم API {{model}} الروابط. يرجى استخدام <LinkToHomePagePricing>نماذج Chatbox AI</LinkToHomePagePricing> بدلاً من ذلك، أو تحميل <LinkToHomePage>تطبيق سطح المكتب</LinkToHomePage> لمعالجة محلية.",
+    "The {{model}} API does not support links. Please use <LinkToAdvancedUrlProcessing>Chatbox AI models</LinkToAdvancedUrlProcessing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.": "لا يدعم API {{model}} الروابط. يرجى استخدام <LinkToAdvancedUrlProcessing>نماذج Chatbox AI</LinkToAdvancedUrlProcessing> بدلاً من ذلك، أو تحميل <LinkToHomePage>تطبيق سطح المكتب</LinkToHomePage> لمعالجة محلية.",
     "The {{model}} API does not support links. Please download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.": "لا يدعم API {{model}} الروابط. يرجى تحميل <LinkToHomePage>تطبيق سطح المكتب</LinkToHomePage> لمعالجة محلية."
 }

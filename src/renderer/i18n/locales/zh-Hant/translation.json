@@ -276,12 +276,12 @@
     "Loading webpage...": "加載網頁中...",
     "Attach Link": "添加鏈接",
     "submit": "提交",
-    "The {{model}} API does not support files. Please use <LinkToHomePagePricing>Chatbox AI models</LinkToHomePagePricing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.": "{{model}} API 不支持文件。請使用 <LinkToHomePagePricing>Chatbox AI 模型</LinkToHomePagePricing>，或下載 <LinkToHomePage>桌面版應用</LinkToHomePage>來實現本地處理。",
+    "The {{model}} API does not support files. Please use <LinkToAdvancedFileProcessing>Chatbox AI models</LinkToAdvancedFileProcessing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.": "{{model}} API 不支持文件。請使用 <LinkToAdvancedFileProcessing>Chatbox AI 模型</LinkToAdvancedFileProcessing>，或下載 <LinkToHomePage>桌面版應用</LinkToHomePage>來實現本地處理。",
     "The {{model}} API does not support files. Please download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.": "{{model}} API 不支持文件。請下載 <LinkToHomePage>桌面版應用</LinkToHomePage>來實現本地處理。",
     "Local Mode": "本地模式",
     "Advanced Mode": "高級模式",
     "Due to local processing limitations, <Link>Chatbox AI Service</Link> is recommended for enhanced document processing capabilities and better results.": "由於本地處理能力有限，建議使用 <Link>Chatbox AI 服務</Link>以獲得更強大的文件處理功能和更好的效果。",
     "Due to local processing limitations, <Link>Chatbox AI Service</Link> is recommended to enhance webpage parsing capabilities, especially for dynamic pages.": "由於本地處理能力有限，建議使用 <Link>Chatbox AI 服務</Link>以增強網頁解析能力，特別是動態網頁。",
-    "The {{model}} API does not support links. Please use <LinkToHomePagePricing>Chatbox AI models</LinkToHomePagePricing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.": "{{model}} API 不支持鏈接。請使用 <LinkToHomePagePricing>Chatbox AI 模型</LinkToHomePagePricing>，或下載 <LinkToHomePage>桌面版應用</LinkToHomePage>來實現本地處理。",
+    "The {{model}} API does not support links. Please use <LinkToAdvancedUrlProcessing>Chatbox AI models</LinkToAdvancedUrlProcessing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.": "{{model}} API 不支持鏈接。請使用 <LinkToAdvancedUrlProcessing>Chatbox AI 模型</LinkToAdvancedUrlProcessing>，或下載 <LinkToHomePage>桌面版應用</LinkToHomePage>來實現本地處理。",
     "The {{model}} API does not support links. Please download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.": "{{model}} API 不支持鏈接。請下載 <LinkToHomePage>桌面版應用</LinkToHomePage>來實現本地處理。"
 }

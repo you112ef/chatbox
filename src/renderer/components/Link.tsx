@@ -16,7 +16,11 @@ export default function LinkTargetBlank(props: {
                 color: theme.palette.primary.main,
                 ...style,
             }}
-            onClick={() => platform.openLink(href)}
+            onClick={(event) => {
+                event.stopPropagation()
+                event.preventDefault()
+                platform.openLink(href)
+            }}
             href={href}
             target='_blank'
         >

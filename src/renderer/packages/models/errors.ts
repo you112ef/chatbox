@@ -113,7 +113,7 @@ export class ChatboxAIAPIError extends BaseError {
         'model_not_support_file': {
             name: 'model_not_support_file',
             code: 20011,
-            i18nKey: "The {{model}} API does not support files. Please use <LinkToHomePagePricing>Chatbox AI models</LinkToHomePagePricing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing."
+            i18nKey: "The {{model}} API does not support files. Please use <LinkToAdvancedFileProcessing>Chatbox AI models</LinkToAdvancedFileProcessing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing."
         },
         'model_not_support_file_2': {
             name: 'model_not_support_file_2',
@@ -135,7 +135,7 @@ export class ChatboxAIAPIError extends BaseError {
         'model_not_support_link': {
             name: 'model_not_support_link',
             code: 20015,
-            i18nKey: 'The {{model}} API does not support links. Please use <LinkToHomePagePricing>Chatbox AI models</LinkToHomePagePricing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.'
+            i18nKey: 'The {{model}} API does not support links. Please use <LinkToAdvancedUrlProcessing>Chatbox AI models</LinkToAdvancedUrlProcessing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.'
         },
         'model_not_support_link_2': {
             name: 'model_not_support_link_2',
