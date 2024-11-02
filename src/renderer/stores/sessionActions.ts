@@ -518,7 +518,7 @@ export async function submitNewUserMessage(params: {
     newUserMsg: Message
     needGenerating: boolean
     attachments: File[]
-    links: {url: string}[]
+    links: { url: string }[]
 }) {
     const { currentSessionId, newUserMsg, needGenerating, attachments, links } = params
     // 如果存在附件，现在发送消息中构建空白的文件信息，用于占位，等待上传完成后再修改
@@ -539,13 +539,21 @@ export async function submitNewUserMessage(params: {
     }
     // 先在聊天列表中插入发送的用户消息
     insertMessage(currentSessionId, newUserMsg)
+
+    const settings = getCurrentSessionMergedSettings()
+    const isChatboxAI = settings.aiProvider === ModelProvider.ChatboxAI
+    const remoteConfig = settingActions.getRemoteConfig()
+
     // 根据需要，插入空白的回复消息
     let newAssistantMsg = createMessage('assistant', '')
     if (attachments && attachments.length > 0) {
         if (!newAssistantMsg.status) {
             newAssistantMsg.status = []
         }
-        newAssistantMsg.status.push({ type: 'sending_file' })
+        newAssistantMsg.status.push({
+            type: 'sending_file',
+            mode: isChatboxAI ? 'advanced' : 'local',
+        })
     }
     if (links && links.length > 0) {
         if (!newAssistantMsg.status) {
@@ -557,9 +565,8 @@ export async function submitNewUserMessage(params: {
         newAssistantMsg.generating = true
         insertMessage(currentSessionId, newAssistantMsg)
     }
-    const settings = getCurrentSessionMergedSettings()
+
     try {
-        const remoteConfig = settingActions.getRemoteConfig()
         // 如果本次发送消息携带了图片，检查当前模型是否支持
         if (newUserMsg.pictures && newUserMsg.pictures.length > 0) {
             if (!isModelSupportImageInput(settings)) {
@@ -573,28 +580,48 @@ export async function submitNewUserMessage(params: {
         }
         // 如果本次发送消息携带了附件，应该在这次发送中上传文件并构造文件信息(file uuid)
         if (attachments && attachments.length > 0) {
-            const licenseKey = settingActions.getLicenseKey()
-            // 检查模型。当前仅支持 Chatbox AI 4
-            if (settings.aiProvider !== ModelProvider.ChatboxAI) {
-                // 根据当前 IP，判断是否在错误中推荐 Chatbox AI 4
-                if (remoteConfig.setting_chatboxai_first) {
-                    throw ChatboxAIAPIError.fromCodeName('model_not_support_file', 'model_not_support_file')
-                } else {
-                    throw ChatboxAIAPIError.fromCodeName('model_not_support_file', 'model_not_support_file_2')
+            if (settings.aiProvider === ModelProvider.ChatboxAI) {
+                // Chatbox AI 方案
+                const licenseKey = settingActions.getLicenseKey()
+                const newFiles: MessageFile[] = []
+                for (const attachment of (attachments || [])) {
+                    const fileUUID = await remote.uploadAndCreateUserFile(licenseKey || '', attachment)
+                    newFiles.push({
+                        id: fileUUID,
+                        name: attachment.name,
+                        fileType: attachment.type,
+                        chatboxAIFileUUID: fileUUID,
+                    })
                 }
+                modifyMessage(currentSessionId, { ...newUserMsg, files: newFiles }, false)
+            } else {
+                // 桌面端的本地方案
+                if (platform.type !== 'desktop') {
+                    // 根据当前 IP，判断是否在错误中推荐 Chatbox AI
+                    if (remoteConfig.setting_chatboxai_first) {
+                        throw ChatboxAIAPIError.fromCodeName('model_not_support_file', 'model_not_support_file')
+                    } else {
+                        throw ChatboxAIAPIError.fromCodeName('model_not_support_file', 'model_not_support_file_2')
+                    }
+                }
+                const newFiles: MessageFile[] = []
+                for (const attachment of attachments) {
+                    const key = await platform.parseFile(attachment.path)
+                    newFiles.push({
+                        id: key,
+                        name: attachment.name,
+                        fileType: attachment.type,
+                        storageKey: key,
+                    })
+                    // 等待一段时间，方便显示提示
+                    if (attachments.length === 1) {
+                        await new Promise(resolve => setTimeout(resolve, 4500))
+                    } else {
+                        await new Promise(resolve => setTimeout(resolve, 2500))
+                    }
+                }
+                modifyMessage(currentSessionId, { ...newUserMsg, files: newFiles }, false)
             }
-            // 上传文件
-            const newFiles: MessageFile[] = []
-            for (const attachment of (attachments || [])) {
-                const fileUUID = await remote.uploadAndCreateUserFile(licenseKey || '', attachment)
-                newFiles.push({
-                    id: fileUUID,
-                    name: attachment.name,
-                    fileType: attachment.type,
-                    chatboxAIFileUUID: fileUUID,
-                })
-            }
-            modifyMessage(currentSessionId, { ...newUserMsg, files: newFiles }, false)
         }
         // 如果本次发送消息携带了链接，应该在这次发送中解析链接并构造链接信息(link uuid)
         if (links && links.length > 0) {
@@ -721,7 +748,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
             // 对话消息生成
             case 'chat':
             case undefined:
-                const promptMsgs = genMessageContext(settings, messages.slice(0, targetMsgIx))
+                const promptMsgs = await genMessageContext(settings, messages.slice(0, targetMsgIx))
                 const throttledModifyMessage = throttle(({ text, cancel }: { text: string, cancel: () => void }) => {
                     targetMsg = { ...targetMsg, content: text, cancel }
                     modifyMessage(sessionId, targetMsg)
@@ -861,7 +888,7 @@ export function clearConversationList(keepNum: number) {
 /**
  * 从历史消息中生成 prompt 上下文
  */
-function genMessageContext(settings: Settings, msgs: Message[]) {
+async function genMessageContext(settings: Settings, msgs: Message[]) {
     const {
         // openaiMaxContextTokens,
         openaiMaxContextMessageCount
@@ -876,7 +903,7 @@ function genMessageContext(settings: Settings, msgs: Message[]) {
     let totalLen = head ? estimateTokensFromMessages([head]) : 0
     let prompts: Message[] = []
     for (let i = msgs.length - 1; i >= 0; i--) {
-        const msg = msgs[i]
+        let msg = msgs[i]
         // 跳过错误消息
         if (msg.error || msg.errorCode) {
             continue
@@ -894,6 +921,26 @@ function genMessageContext(settings: Settings, msgs: Message[]) {
         ) {
             break
         }
+
+        // 如果消息中包含本地文件（消息中携带有本地文件的storageKey），则将文件内容也作为 prompt 的一部分
+        if (msg.files && msg.files.length > 0) {
+            for (const [fileIndex, file] of msg.files.entries()) {
+                if (file.storageKey) {
+                    msg = { ...msg }    // 复制一份消息，避免修改原始消息
+                    const content = await storage.getBlob(file.storageKey).catch(() => '')
+                    if (content) {
+                        msg.content += `\n\n<ATTACHMENT_FILE>\n`
+                        msg.content += `<FILE_INDEX>File ${fileIndex + 1}</FILE_INDEX>\n`
+                        msg.content += `<FILE_NAME>${file.name}</FILE_NAME>\n`
+                        msg.content += '<FILE_CONTENT>\n'
+                        msg.content += content + '\n'
+                        msg.content += '</FILE_CONTENT>\n'
+                        msg.content += `</ATTACHMENT_FILE>\n`
+                    }
+                }
+            }
+        }
+
         prompts = [msg, ...prompts]
         totalLen += size
     }

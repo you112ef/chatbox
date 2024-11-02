@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react'
+import React, { useEffect, useState, useRef, useMemo } from 'react'
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import MenuItem from '@mui/material/MenuItem'
@@ -55,7 +55,7 @@ import { ImageInStorage, Img } from './Image'
 import SouthIcon from '@mui/icons-material/South'
 import ImageIcon from '@mui/icons-material/Image'
 import MessageErrTips from './MessageErrTips'
-import MessageLoading from './MessageLoading'
+import MessageStatuses from './MessageLoading'
 import { MessageAttachment } from './Attachments'
 import StyledMenu from './StyledMenu'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
@@ -449,16 +449,7 @@ function _Message(props: Props) {
                 </Grid>
                 <Grid item xs sm container sx={{ width: '0px', paddingRight: '15px' }}>
                     <Grid item xs>
-                        {
-                            msg.status && msg.status.length > 0 && msg.status.some((s) => s.type === 'sending_file') && (
-                                <MessageLoading>{t('Reading file...')}</MessageLoading>
-                            )
-                        }
-                        {
-                            msg.status && msg.status.length > 0 && msg.status.some((s) => s.type === 'loading_webpage') && (
-                                <MessageLoading>{t('Loading webpage...')}</MessageLoading>
-                            )
-                        }
+                        <MessageStatuses statuses={msg.status} />
                         <div className={cn(
                             'max-w-full inline-block',
                             msg.role !== 'assistant'

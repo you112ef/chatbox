@@ -233,8 +233,6 @@
     "The file you sent has expired. To protect your privacy, all file-related cache data has been cleared. You need to create a new conversation or refresh the context, and then send the file again.": "보낸 파일이 만료되었습니다. 개인 정보 보호를 위해 모든 파일 관련 캐시 데이터가 지워졌습니다. 새 대화를 만들거나 컨텍스트를 새로 고친 후 파일을 다시 보내야 합니다.",
     "The cache data for the file was not found. Please create a new conversation or refresh the context, and then send the file again.": "파일의 캐시 데이터를 찾을 수 없습니다. 새 대화를 만들거나 컨텍스트를 새로 고친 후 파일을 다시 보내야 합니다.",
     "The file size exceeds the limit of 50MB. Please reduce the file size and try again.": "파일 크기가 50MB 제한을 초과합니다. 파일 크기를 줄이고 다시 시도하세요.",
-    "The current model {{model}} does not support sending files. Currently supported models: Chatbox AI 4.": "현재 모델 {{model}}은 파일 전송을 지원하지 않습니다. 현재 지원되는 모델: Chatbox AI 4.",
-    "The current model {{model}} does not support sending files.": "현재 모델 {{model}}은 파일 전송을 지원하지 않습니다.",
     "The current model {{model}} does not support sending images. Recommended model: Chatbox AI 4.": "현재 모델 {{model}}은 이미지 전송을 지원하지 않습니다. 권장 모델: Chatbox AI 4.",
     "The current model {{model}} does not support sending images.": "현재 모델 {{model}}은 이미지 전송을 지원하지 않습니다.",
     "Reading file...": "파일 읽는 중...",
@@ -277,5 +275,10 @@
     "The current model {{model}} does not support sending links.": "현재 모델 {{model}}은 링크 전송을 지원하지 않습니다.",
     "Loading webpage...": "웹 페이지를 로드하는 중...",
     "Attach Link": "링크 첨부",
-    "submit": "제출"
+    "submit": "제출",
+    "Oops! This model {{model}} can't handle files yet. You can either:<br />• Switch to <LinkToHomePagePricing>Chatbox AI models</LinkToHomePagePricing><br />• Or get <LinkToHomePage>the desktop app</LinkToHomePage> for local file processing": "죄송합니다! {{model}} 모델은 아직 파일을 처리할 수 없습니다. 다음 중 하나를 선택하실 수 있습니다:<br />• <LinkToHomePagePricing>Chatbox AI 모델</LinkToHomePagePricing>로 전환하기<br />• 또는 로컬 파일 처리를 위해 <LinkToHomePage>데스크톱 앱</LinkToHomePage> 다운로드하기",
+    "Oops! This model {{model}} can't handle files yet. You can either:<br />• Get <LinkToHomePage>the desktop app</LinkToHomePage> for local file processing": "죄송합니다! {{model}} 모델은 아직 파일을 처리할 수 없습니다. 다음 중 하나를 선택하실 수 있습니다:<br />• <LinkToHomePage>데스크톱 앱</LinkToHomePage> 다운로드하기",
+    "Local Mode": "로컬 모드",
+    "Advanced Mode": "고급 모드",
+    "Due to local processing limitations, <Link>Chatbox AI Service</Link> is recommended for enhanced document processing capabilities and better results.": "로컬 처리의 한계로 인해, 향상된 문서 처리 기능과 더 나은 결과를 위해 <Link>Chatbox AI 서비스</Link>를 권장합니다."
 }

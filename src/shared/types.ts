@@ -60,7 +60,15 @@ export interface Message {
     errorExtra?: {
         [key: string]: any
     }
-    status?: ({ type: 'sending_file' } | { type: 'loading_webpage' })[]
+    status?: (
+        | {
+              type: 'sending_file'
+              mode?: 'local' | 'advanced'
+          }
+        | {
+              type: 'loading_webpage'
+          }
+    )[]
 
     wordCount?: number // 当前消息的字数
     tokenCount?: number // 当前消息的 token 数量

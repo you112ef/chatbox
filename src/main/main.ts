@@ -15,14 +15,22 @@ import log from 'electron-log'
 import MenuBuilder from './menu'
 import { resolveHtmlPath } from './util'
 import Locale from './locales'
-import { store, getConfig, getSettings } from './store-node'
+import {
+    store,
+    getConfig,
+    getSettings,
+    delStoreBlob,
+    setStoreBlob,
+    listStoreBlobKeys,
+    getStoreBlob,
+} from './store-node'
 import * as proxy from './proxy'
 import * as windowState from './window_state'
-import * as fs from 'fs-extra'
 import * as analystic from './analystic-node'
-import sanitizeFilename from 'sanitize-filename'
 import * as autoLauncher from './autoLauncher'
 import { AppUpdater } from './app-updater'
+import { parseFile } from './file-parser'
+import { v4 as uuidv4 } from 'uuid'
 
 // 这行代码是解决 Windows 通知的标题和图标不正确的问题，标题会错误显示成 electron.app.Chatbox
 // 参考：https://stackoverflow.com/questions/65859634/notification-from-electron-shows-electron-app-electron
@@ -357,34 +365,18 @@ ipcMain.handle('setAllStoreValues', (event, dataJson) => {
     const data = JSON.parse(dataJson)
     store.store = data
 })
+
 ipcMain.handle('getStoreBlob', async (event, key) => {
-    const filename = path.resolve(app.getPath('userData'), 'chatbox-blobs', sanitizeFilename(key))
-    const exists = await fs.pathExists(filename)
-    if (!exists) {
-        return null
-    }
-    return fs.readFile(filename, { encoding: 'utf-8' })
+    return getStoreBlob(key)
 })
 ipcMain.handle('setStoreBlob', async (event, key, value: string) => {
-    const filename = path.resolve(app.getPath('userData'), 'chatbox-blobs', sanitizeFilename(key))
-    await fs.ensureDir(path.dirname(filename))
-    return fs.writeFile(filename, value, { encoding: 'utf-8' })
+    return setStoreBlob(key, value)
 })
 ipcMain.handle('delStoreBlob', async (event, key) => {
-    const filename = path.resolve(app.getPath('userData'), 'chatbox-blobs', sanitizeFilename(key))
-    const exists = await fs.pathExists(filename)
-    if (!exists) {
-        return
-    }
-    await fs.remove(filename)
+    return delStoreBlob(key)
 })
 ipcMain.handle('listStoreBlobKeys', async (event) => {
-    const dir = path.resolve(app.getPath('userData'), 'chatbox-blobs')
-    const exists = await fs.pathExists(dir)
-    if (!exists) {
-        return []
-    }
-    return fs.readdir(dir)
+    return listStoreBlobKeys()
 })
 
 ipcMain.handle('getVersion', () => {
@@ -472,4 +464,11 @@ ipcMain.handle('ensureAutoLaunch', (event, enable: boolean) => {
         return
     }
     return autoLauncher.ensure(enable)
+})
+
+ipcMain.handle('parseFile', async (event, filePath: string) => {
+    const data = await parseFile(filePath)
+    const key = 'parseFile-' + uuidv4()
+    await setStoreBlob(key, data.slice(0, 1000)) // 只保存前1000字符，避免文件过大
+    return key
 })

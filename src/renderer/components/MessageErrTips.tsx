@@ -78,7 +78,17 @@ export default function MessageErrTips(props: { msg: Message }) {
                                 platform.openLink('https://chatboxai.app/redirect_app/view_more_plans')
                                 trackingEvent('click_view_more_plans_button_from_upgrade_error_tips', { event_category: 'user' })
                             }}></Link>
-                        )
+                        ),
+                        LinkToHomePage: (
+                            <Link className="cursor-pointer italic" onClick={() => {
+                                platform.openLink('https://chatboxai.app')
+                            }}></Link>
+                        ),
+                        LinkToHomePagePricing: (
+                            <Link className="cursor-pointer italic" onClick={() => {
+                                platform.openLink('https://chatboxai.app/#pricing')
+                            }}></Link>
+                        ),
                     }}
                 />
             )

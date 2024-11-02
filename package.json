@@ -188,6 +188,7 @@
         "material-ui-popup-state": "^5.0.4",
         "mermaid": "^10.9.1",
         "ofetch": "^1.0.1",
+        "officeparser": "^5.0.0",
         "optics-ts": "^2.4.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",

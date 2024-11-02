@@ -6,6 +6,7 @@ import path from 'path'
 import { app } from 'electron'
 import * as fs from 'fs-extra'
 import { powerMonitor } from 'electron'
+import sanitizeFilename from 'sanitize-filename'
 
 const configPath = path.resolve(app.getPath('userData'), 'config.json')
 
@@ -170,4 +171,37 @@ function checkConfigValid(filepath: string) {
         return false
     }
     return true
+}
+
+export async function getStoreBlob(key: string) {
+    const filename = path.resolve(app.getPath('userData'), 'chatbox-blobs', sanitizeFilename(key))
+    const exists = await fs.pathExists(filename)
+    if (!exists) {
+        return null
+    }
+    return fs.readFile(filename, { encoding: 'utf-8' })
+}
+
+export async function setStoreBlob(key: string, value: string) {
+    const filename = path.resolve(app.getPath('userData'), 'chatbox-blobs', sanitizeFilename(key))
+    await fs.ensureDir(path.dirname(filename))
+    return fs.writeFile(filename, value, { encoding: 'utf-8' })
+}
+
+export async function delStoreBlob(key: string) {
+    const filename = path.resolve(app.getPath('userData'), 'chatbox-blobs', sanitizeFilename(key))
+    const exists = await fs.pathExists(filename)
+    if (!exists) {
+        return
+    }
+    await fs.remove(filename)
+}
+
+export async function listStoreBlobKeys() {
+    const dir = path.resolve(app.getPath('userData'), 'chatbox-blobs')
+    const exists = await fs.pathExists(dir)
+    if (!exists) {
+        return []
+    }
+    return fs.readdir(dir)
 }

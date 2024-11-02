@@ -232,8 +232,6 @@
     "The file you sent has expired. To protect your privacy, all file-related cache data has been cleared. You need to create a new conversation or refresh the context, and then send the file again.": "El archivo que envió ha expirado. Para proteger su privacidad, se han borrado todos los datos de caché relacionados con el archivo. Debe crear una nueva conversación o actualizar el contexto, y luego enviar el archivo nuevamente.",
     "The cache data for the file was not found. Please create a new conversation or refresh the context, and then send the file again.": "No se encontraron los datos de caché del archivo. Por favor, cree una nueva conversación o actualice el contexto, y luego envíe el archivo nuevamente.",
     "The file size exceeds the limit of 50MB. Please reduce the file size and try again.": "El tamaño del archivo supera el límite de 50MB. Por favor, reduzca el tamaño del archivo e inténtelo de nuevo.",
-    "The current model {{model}} does not support sending files. Currently supported models: Chatbox AI 4.": "El modelo actual {{model}} no admite el envío de archivos. Modelos actualmente compatibles: Chatbox AI 4.",
-    "The current model {{model}} does not support sending files.": "El modelo actual {{model}} no admite el envío de archivos.",
     "The current model {{model}} does not support sending images. Recommended model: Chatbox AI 4.": "El modelo actual {{model}} no admite el envío de imágenes. Modelo recomendado: Chatbox AI 4.",
     "The current model {{model}} does not support sending images.": "El modelo actual {{model}} no admite el envío de imágenes.",
     "Reading file...": "Leyendo archivo...",
@@ -276,5 +274,10 @@
     "The current model {{model}} does not support sending links.": "El modelo actual {{model}} no admite el envío de enlaces.",
     "Loading webpage...": "Cargando página web...",
     "Attach Link": "Adjuntar enlace",
-    "submit": "Enviar"
+    "submit": "Enviar",
+    "Oops! This model {{model}} can't handle files yet. You can either:<br />• Switch to <LinkToHomePagePricing>Chatbox AI models</LinkToHomePagePricing><br />• Or get <LinkToHomePage>the desktop app</LinkToHomePage> for local file processing": "¡Oops! Este modelo {{model}} aún no puede manejar archivos. Puedes:<br />• Cambiar a <LinkToHomePagePricing>modelos Chatbox AI</LinkToHomePagePricing><br />• O obtener <LinkToHomePage>la aplicación de escritorio</LinkToHomePage> para procesar archivos locales",
+    "Oops! This model {{model}} can't handle files yet. You can either:<br />• Get <LinkToHomePage>the desktop app</LinkToHomePage> for local file processing": "¡Oops! Este modelo {{model}} aún no puede manejar archivos. Puedes:<br />• Obtener <LinkToHomePage>la aplicación de escritorio</LinkToHomePage> para procesar archivos locales",
+    "Local Mode": "Modo local",
+    "Advanced Mode": "Modo avanzado",
+    "Due to local processing limitations, <Link>Chatbox AI Service</Link> is recommended for enhanced document processing capabilities and better results.": "Limitado por el procesamiento local. Para obtener mejores resultados, cambie a <Link>Chatbox AI Service</Link> para el procesamiento avanzado de documentos."
 }

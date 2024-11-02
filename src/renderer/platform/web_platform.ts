@@ -146,4 +146,8 @@ export default class WebPlatform implements Platform {
     public async ensureAutoLaunch(enable: boolean) {
         return
     }
+
+    public async parseFile(filePath: string): Promise<string> {
+        throw new Error('Not implemented')
+    }
 }

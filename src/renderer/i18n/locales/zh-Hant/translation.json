@@ -233,8 +233,6 @@
     "The file you sent has expired. To protect your privacy, all file-related cache data has been cleared. You need to create a new conversation or refresh the context, and then send the file again.": "您發送的文件已過期。為了保護您的隱私，所有與文件相關的緩存數據已被清除。您需要創建一個新對話或刷新上下文，然後重新發送文件。",
     "The cache data for the file was not found. Please create a new conversation or refresh the context, and then send the file again.": "未找到文件的緩存數據。請創建一個新對話或刷新上下文，然後重新發送文件。",
     "The file size exceeds the limit of 50MB. Please reduce the file size and try again.": "文件大小超過 50MB 的限制。請減小文件大小並重試。",
-    "The current model {{model}} does not support sending files. Currently supported models: Chatbox AI 4.": "當前模型 {{model}} 不支持發送文件。目前支持的模型：Chatbox AI 4。",
-    "The current model {{model}} does not support sending files.": "當前模型 {{model}} 不支持發送文件。",
     "The current model {{model}} does not support sending images. Recommended model: Chatbox AI 4.": "當前模型 {{model}} 不支持發送圖片。建議使用的模型：Chatbox AI 4。",
     "The current model {{model}} does not support sending images.": "當前模型 {{model}} 不支持發送圖片。",
     "Reading file...": "讀取文件中...",
@@ -277,5 +275,10 @@
     "The current model {{model}} does not support sending links.": "當前模型 {{model}} 不支持發送鏈接。",
     "Loading webpage...": "加載網頁中...",
     "Attach Link": "添加鏈接",
-    "submit": "提交"
+    "submit": "提交",
+    "Oops! This model {{model}} can't handle files yet. You can either:<br />• Switch to <LinkToHomePagePricing>Chatbox AI models</LinkToHomePagePricing><br />• Or get <LinkToHomePage>the desktop app</LinkToHomePage> for local file processing": "抱歉，{{model}} 暫不支持處理文件。您可以：<br />• 切換到<LinkToHomePagePricing>Chatbox AI 模型</LinkToHomePagePricing><br />• 或者下載<LinkToHomePage>桌面版應用</LinkToHomePage>來實現本地文件處理",
+    "Oops! This model {{model}} can't handle files yet. You can either:<br />• Get <LinkToHomePage>the desktop app</LinkToHomePage> for local file processing": "抱歉，{{model}} 暫不支持處理文件。您可以：<br />• 下載<LinkToHomePage>桌面版應用</LinkToHomePage>來實現本地文件處理",
+    "Local Mode": "本地模式",
+    "Advanced Mode": "高級模式",
+    "Due to local processing limitations, <Link>Chatbox AI Service</Link> is recommended for enhanced document processing capabilities and better results.": "由於本地處理能力有限，建議使用 <Link>Chatbox AI 服務</Link>以獲得更強大的文件處理功能和更好的效果。"
 }

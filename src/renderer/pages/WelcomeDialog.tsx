@@ -8,7 +8,7 @@ import {
 import icon from '../static/icon.png'
 import { useTranslation } from 'react-i18next'
 import { AllowReportingAndTrackingCheckbox } from './SettingDialog/AdvancedSettingTab'
-import Link from '@/components/Link'
+import LinkTargetBlank from '@/components/Link'
 import { useAtom, useSetAtom } from 'jotai'
 import * as atoms from '@/stores/atoms'
 
@@ -67,12 +67,12 @@ export default function WelcomeDialog(props: {}) {
                     </div>
                 </Paper>
                 <div className='text-center mt-4 text-xs'>
-                    <Link href="https://chatboxai.app/privacy" className='mx-2'>
+                    <LinkTargetBlank href="https://chatboxai.app/privacy" className='mx-2'>
                         Privacy Policy
-                    </Link>
-                    <Link href="https://chatboxai.app/terms" className='mx-2'>
+                    </LinkTargetBlank>
+                    <LinkTargetBlank href="https://chatboxai.app/terms" className='mx-2'>
                         User Terms
-                    </Link>
+                    </LinkTargetBlank>
                 </div>
             </DialogContent>
         </Dialog>

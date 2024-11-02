@@ -1,8 +1,8 @@
 import platform from '@/platform'
 import { useTheme } from '@mui/material'
 
-export default function Link(props: {
-    children: string
+export default function LinkTargetBlank(props: {
+    children?: string
     href: string
     className?: string
     style?: React.CSSProperties
@@ -17,6 +17,8 @@ export default function Link(props: {
                 ...style,
             }}
             onClick={() => platform.openLink(href)}
+            href={href}
+            target='_blank'
         >
             {children}
         </a>

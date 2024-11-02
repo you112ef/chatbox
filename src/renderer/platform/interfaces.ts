@@ -50,6 +50,8 @@ export interface Platform {
     appLog(level: string, message: string): Promise<void>
 
     ensureAutoLaunch(enable: boolean): Promise<void>
+
+    parseFile(filePath: string): Promise<string>
 }
 
 

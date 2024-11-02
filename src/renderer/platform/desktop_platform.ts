@@ -115,4 +115,8 @@ export default class DesktopPlatform implements Platform {
     public async ensureAutoLaunch(enable: boolean) {
         return this.ipc.invoke('ensureAutoLaunch', enable)
     }
+
+    public async parseFile(filePath: string): Promise<string> {
+        return this.ipc.invoke('parseFile', filePath)
+    }
 }
