@@ -113,12 +113,12 @@ export class ChatboxAIAPIError extends BaseError {
         'model_not_support_file': {
             name: 'model_not_support_file',
             code: 20011,
-            i18nKey: "Oops! This model {{model}} can't handle files yet. You can either:<br />• Switch to <LinkToHomePagePricing>Chatbox AI models</LinkToHomePagePricing><br />• Or get <LinkToHomePage>the desktop app</LinkToHomePage> for local file processing"
+            i18nKey: "The {{model}} API does not support files. Please use <LinkToHomePagePricing>Chatbox AI models</LinkToHomePagePricing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing."
         },
         'model_not_support_file_2': {
             name: 'model_not_support_file_2',
             code: 20012,
-            i18nKey: "Oops! This model {{model}} can't handle files yet. You can either:<br />• Get <LinkToHomePage>the desktop app</LinkToHomePage> for local file processing"
+            i18nKey: "The {{model}} API does not support files. Please download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing."
         },
         // 当前模型不支持发送图片，推荐模型：Chatbox AI 4
         'model_not_support_image': {
