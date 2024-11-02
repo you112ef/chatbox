@@ -16,8 +16,8 @@ export function sliceTextWithEllipsis(text: string, maxLength: number) {
     if (text.length <= maxLength) {
         return text
     }
-    // 保留首尾各50%的内容
-    const headLength = Math.floor(maxLength * 0.5)
+    // 这里添加了一些根据文本的随机性，避免内容被截断
+    const headLength = Math.floor(maxLength * 0.4) + Math.floor(text.length * 0.1)
     const tailLength = Math.floor(maxLength * 0.5)
     const head = text.slice(0, headLength)
     const tail = text.slice(-tailLength)
