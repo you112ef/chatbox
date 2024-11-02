@@ -973,7 +973,7 @@ async function genMessageContext(settings: Settings, msgs: Message[]) {
                     if (content) {
                         msg.content += `\n\n<ATTACHMENT_LINK>\n`
                         msg.content += `<LINK_INDEX>${linkIndex + 1}</LINK_INDEX>\n`
-                        msg.content += `<LINK_URL>${link}</LINK_URL>\n`
+                        msg.content += `<LINK_URL>${link.url}</LINK_URL>\n`
                         msg.content += `<LINK_CONTENT>\n`
                         msg.content += content + '\n'
                         msg.content += '</LINK_CONTENT>\n'
