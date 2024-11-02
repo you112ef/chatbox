@@ -56,7 +56,7 @@ function MessageStatus(props: {
                             <Trans
                                 i18nKey='Due to local processing limitations, <Link>Chatbox AI Service</Link> is recommended for enhanced document processing capabilities and better results.'
                                 components={{
-                                    Link: <LinkTargetBlank href='https://chatboxai.com/#pricing'></LinkTargetBlank>,
+                                    Link: <LinkTargetBlank href='https://chatboxai.app/redirect_app/advanced_file_processing'></LinkTargetBlank>,
                                 }}
                             />
                         </Typography>
@@ -90,7 +90,7 @@ function MessageStatus(props: {
                             <Trans
                                 i18nKey='Due to local processing limitations, <Link>Chatbox AI Service</Link> is recommended to enhance webpage parsing capabilities, especially for dynamic pages.'
                                 components={{
-                                    Link: <LinkTargetBlank href='https://chatboxai.com/#pricing'></LinkTargetBlank>,
+                                    Link: <LinkTargetBlank href='https://chatboxai.app/redirect_app/advanced_url_processing'></LinkTargetBlank>,
                                 }}
                             />
                         </Typography>
