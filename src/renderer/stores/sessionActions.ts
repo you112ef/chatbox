@@ -608,7 +608,7 @@ export async function submitNewUserMessage(params: {
                     }
                 }
                 const newFiles: MessageFile[] = []
-                for (const attachment of attachments) {
+                for (const attachment of attachments.slice(0, 2)) { // 桌面端本地方案，最多解析2个附件
                     const key = await platform.parseFile(attachment.path)
                     newFiles.push({
                         id: key,
@@ -652,7 +652,7 @@ export async function submitNewUserMessage(params: {
                     }
                 }
                 const newLinks: MessageLink[] = []
-                for (const link of links) {
+                for (const link of links.slice(0, 2)) { // 桌面端本地方案，最多解析2个链接
                     const { key, title } = await platform.parseUrl(link.url)
                     newLinks.push({
                         id: key,

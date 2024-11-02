@@ -7,11 +7,12 @@ export async function parseFile(filePath: string) {
     if (isOfficeFile(filePath)) {
         try {
             const data = await officeParser.parseOfficeAsync(filePath)
-            return data
+            return data.slice(0, 600)
         } catch (error) {
             log.error(error)
             throw error
         }
     }
-    return fs.readFile(filePath, 'utf8')
+    const data = await fs.readFile(filePath, 'utf8')
+    return data.slice(0, 2000)
 }

@@ -470,7 +470,7 @@ ipcMain.handle('ensureAutoLaunch', (event, enable: boolean) => {
 ipcMain.handle('parseFile', async (event, filePath: string) => {
     const data = await parseFile(filePath)
     const key = 'parseFile-' + uuidv4()
-    await setStoreBlob(key, data.slice(0, 1000)) // 只保存前1000字符，避免文件过大
+    await setStoreBlob(key, data)
     return key
 })
 
