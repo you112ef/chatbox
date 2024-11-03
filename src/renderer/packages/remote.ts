@@ -14,6 +14,7 @@ import { ofetch } from 'ofetch'
 import { afetch, uploadFile } from './request'
 import * as cache from './cache'
 import { uniq } from 'lodash'
+import platform from '@/platform'
 
 // ========== API ORIGIN 根据可用性维护 ==========
 
@@ -257,7 +258,7 @@ export async function uploadAndCreateUserFile(licenseKey: string, file: File) {
     return result.uuid
 }
 
-export async function parseUserLink(params: { licenseKey: string, url: string }) {
+export async function parseUserLinkPro(params: { licenseKey: string, url: string }) {
     type Response = {
         data: {
             uuid: string
@@ -281,6 +282,27 @@ export async function parseUserLink(params: { licenseKey: string, url: string })
     )
     const json: Response = await res.json()
     return json['data']
+}
+
+export async function parseUserLinkFree(params: { url: string }) {
+    type Response = {
+            title: string
+            text: string
+    }
+    const res = await afetch(
+        `https://proxy.ai-chatbox.com/api/fetch-webpage`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'CHATBOX-PLATFORM': platform.type,
+                'CHATBOX-VERSION': (await platform.getVersion()) || 'unknown',
+            },
+            body: JSON.stringify(params),
+        },
+    )
+    const json: Response = await res.json()
+    return json
 }
 
 export async function activateLicense(params: {

@@ -110,16 +110,16 @@ export class ChatboxAIAPIError extends BaseError {
             i18nKey: 'The file size exceeds the limit of 50MB. Please reduce the file size and try again.'
         },
         // 当前模型不支持发送文件。目前支持的模型有 Chatbox AI 4
-        'model_not_support_file': {
-            name: 'model_not_support_file',
-            code: 20011,
-            i18nKey: "The {{model}} API does not support files. Please use <LinkToAdvancedFileProcessing>Chatbox AI models</LinkToAdvancedFileProcessing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing."
-        },
-        'model_not_support_file_2': {
-            name: 'model_not_support_file_2',
-            code: 20012,
-            i18nKey: "The {{model}} API does not support files. Please download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing."
-        },
+        // 'model_not_support_file': {
+        //     name: 'model_not_support_file',
+        //     code: 20011,
+        //     i18nKey: "The {{model}} API does not support files. Please use <LinkToAdvancedFileProcessing>Chatbox AI models</LinkToAdvancedFileProcessing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing."
+        // },
+        // 'model_not_support_file_2': {
+        //     name: 'model_not_support_file_2',
+        //     code: 20012,
+        //     i18nKey: "The {{model}} API does not support files. Please download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing."
+        // },
         // 当前模型不支持发送图片，推荐模型：Chatbox AI 4
         'model_not_support_image': {
             name: 'model_not_support_image',
@@ -132,16 +132,16 @@ export class ChatboxAIAPIError extends BaseError {
             i18nKey: 'The current model {{model}} does not support sending images.'
         },
         // 当前模型不支持发送链接
-        'model_not_support_link': {
-            name: 'model_not_support_link',
-            code: 20015,
-            i18nKey: 'The {{model}} API does not support links. Please use <LinkToAdvancedUrlProcessing>Chatbox AI models</LinkToAdvancedUrlProcessing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.'
-        },
-        'model_not_support_link_2': {
-            name: 'model_not_support_link_2',
-            code: 20016,
-            i18nKey: 'The {{model}} API does not support links. Please download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.'
-        },
+        // 'model_not_support_link': {
+        //     name: 'model_not_support_link',
+        //     code: 20015,
+        //     i18nKey: 'The {{model}} API does not support links. Please use <LinkToAdvancedUrlProcessing>Chatbox AI models</LinkToAdvancedUrlProcessing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.'
+        // },
+        // 'model_not_support_link_2': {
+        //     name: 'model_not_support_link_2',
+        //     code: 20016,
+        //     i18nKey: 'The {{model}} API does not support links. Please download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.'
+        // },
         "model_not_support_non_text_file": {
             name: 'model_not_support_non_text_file',
             code: 20017,

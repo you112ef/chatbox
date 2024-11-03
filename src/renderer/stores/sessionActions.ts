@@ -37,7 +37,7 @@ import { estimateTokensFromMessages } from '@/packages/token'
 import { getModelDisplayName, isModelSupportImageInput } from '@/packages/model-setting-utils'
 import { languageNameMap } from '@/i18n/locales'
 import { isTextFilePath } from 'src/shared/file-extensions'
-import { parseTextFile } from '@/packages/parse-text-file'
+import * as localParser from '@/packages/local-parser'
 
 /**
  * 创建一个新的会话
@@ -612,7 +612,7 @@ export async function submitNewUserMessage(params: {
                             throw ChatboxAIAPIError.fromCodeName('model_not_support_non_text_file_2', 'model_not_support_non_text_file_2')
                         }
                     }
-                    const { key } = await parseTextFile(attachment, { maxLength: 20 * 1000 })
+                    const { key } = await localParser.parseTextFile(attachment, { maxLength: 20 * 1000 })
                     newFiles.push({
                         id: key,
                         name: attachment.name,
@@ -629,7 +629,7 @@ export async function submitNewUserMessage(params: {
                 // Chatbox AI 方案
                 const licenseKey = settingActions.getLicenseKey()
                 const newLinks: MessageLink[] = await Promise.all(links.map(async (l) => {
-                    const parsed = await remote.parseUserLink({ licenseKey: licenseKey || '', url: l.url })
+                    const parsed = await remote.parseUserLinkPro({ licenseKey: licenseKey || '', url: l.url })
                     return {
                         id: parsed.uuid,
                         url: l.url,
@@ -639,18 +639,10 @@ export async function submitNewUserMessage(params: {
                 }))
                 modifyMessage(currentSessionId, { ...newUserMsg, links: newLinks }, false)
             } else {
-                // 桌面端的本地方案
-                if (platform.type !== 'desktop') {
-                    // 根据当前 IP，判断是否在错误中推荐 Chatbox AI 4
-                    if (remoteConfig.setting_chatboxai_first) {
-                        throw ChatboxAIAPIError.fromCodeName('model_not_support_link', 'model_not_support_link')
-                    } else {
-                        throw ChatboxAIAPIError.fromCodeName('model_not_support_link', 'model_not_support_link_2')
-                    }
-                }
+                // 本地方案
                 const newLinks: MessageLink[] = []
                 for (const link of links) {
-                    const { key, title } = await platform.parseUrl(link.url)
+                    const { key, title } = await localParser.parseUrl(link.url)
                     newLinks.push({
                         id: key,
                         url: link.url,
@@ -659,7 +651,7 @@ export async function submitNewUserMessage(params: {
                     })
                     // 等待一段时间，方便显示提示
                     if (links.length === 1) {
-                        await new Promise(resolve => setTimeout(resolve, 4500))
+                        await new Promise(resolve => setTimeout(resolve, 5000))
                     } else {
                         await new Promise(resolve => setTimeout(resolve, 2500))
                     }
