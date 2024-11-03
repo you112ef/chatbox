@@ -142,6 +142,16 @@ export class ChatboxAIAPIError extends BaseError {
             code: 20016,
             i18nKey: 'The {{model}} API does not support links. Please download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.'
         },
+        "model_not_support_non_text_file": {
+            name: 'model_not_support_non_text_file',
+            code: 20017,
+            i18nKey: "The {{model}} API itself does not support sending files. Due to the complexity of file parsing locally, Chatbox only processes text-based files (including code). For additional file formats and enhanced document understanding capabilities, <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> is recommended.",
+        },
+        "model_not_support_non_text_file_2": {
+            name: 'model_not_support_non_text_file_2',
+            code: 20018,
+            i18nKey: "The {{model}} API itself does not support sending files. Due to the complexity of file parsing locally, Chatbox only processes text-based files (including code)."
+        }
     }
     static fromCodeName(response: string, codeName: string) {
         if (!codeName) {

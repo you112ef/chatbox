@@ -29,7 +29,7 @@ import * as windowState from './window_state'
 import * as analystic from './analystic-node'
 import * as autoLauncher from './autoLauncher'
 import { AppUpdater } from './app-updater'
-import { parseFile } from './file-parser'
+// import { parseFile } from './file-parser'
 import { v4 as uuidv4 } from 'uuid'
 import { readability } from './readability'
 
@@ -468,10 +468,11 @@ ipcMain.handle('ensureAutoLaunch', (event, enable: boolean) => {
 })
 
 ipcMain.handle('parseFile', async (event, filePath: string) => {
-    const data = await parseFile(filePath)
-    const key = 'parseFile-' + uuidv4()
-    await setStoreBlob(key, data)
-    return key
+    return ''
+    // const data = await parseFile(filePath)
+    // const key = 'parseFile-' + uuidv4()
+    // await setStoreBlob(key, data)
+    // return key
 })
 
 ipcMain.handle('parseUrl', async (event, url: string) => {

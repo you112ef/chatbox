@@ -36,6 +36,8 @@ import { countWord } from '@/packages/word-count'
 import { estimateTokensFromMessages } from '@/packages/token'
 import { getModelDisplayName, isModelSupportImageInput } from '@/packages/model-setting-utils'
 import { languageNameMap } from '@/i18n/locales'
+import { isTextFilePath } from 'src/shared/file-extensions'
+import { parseTextFile } from '@/packages/parse-text-file'
 
 /**
  * 创建一个新的会话
@@ -598,30 +600,25 @@ export async function submitNewUserMessage(params: {
                 }
                 modifyMessage(currentSessionId, { ...newUserMsg, files: newFiles }, false)
             } else {
-                // 桌面端的本地方案
-                if (platform.type !== 'desktop') {
-                    // 根据当前 IP，判断是否在错误中推荐 Chatbox AI
-                    if (remoteConfig.setting_chatboxai_first) {
-                        throw ChatboxAIAPIError.fromCodeName('model_not_support_file', 'model_not_support_file')
-                    } else {
-                        throw ChatboxAIAPIError.fromCodeName('model_not_support_file', 'model_not_support_file_2')
-                    }
-                }
+                // 本地方案
                 const newFiles: MessageFile[] = []
-                for (const attachment of attachments.slice(0, 2)) { // 桌面端本地方案，最多解析2个附件
-                    const key = await platform.parseFile(attachment.path)
+                for (const attachment of attachments) {
+                    await new Promise(resolve => setTimeout(resolve, 1000)) // 等待一段时间，方便显示提示
+                    if (!isTextFilePath(attachment.name)) { // 只在桌面端有 attachment.path，网页版本只有 attachment.name
+                        // 根据当前 IP，判断是否在错误中推荐 Chatbox AI
+                        if (remoteConfig.setting_chatboxai_first) {
+                            throw ChatboxAIAPIError.fromCodeName('model_not_support_non_text_file', 'model_not_support_non_text_file')
+                        } else {
+                            throw ChatboxAIAPIError.fromCodeName('model_not_support_non_text_file_2', 'model_not_support_non_text_file_2')
+                        }
+                    }
+                    const { key } = await parseTextFile(attachment, { maxLength: 20 * 1000 })
                     newFiles.push({
                         id: key,
                         name: attachment.name,
                         fileType: attachment.type,
                         storageKey: key,
                     })
-                    // 等待一段时间，方便显示提示
-                    if (attachments.length === 1) {
-                        await new Promise(resolve => setTimeout(resolve, 4500))
-                    } else {
-                        await new Promise(resolve => setTimeout(resolve, 2500))
-                    }
                 }
                 modifyMessage(currentSessionId, { ...newUserMsg, files: newFiles }, false)
             }
@@ -652,7 +649,7 @@ export async function submitNewUserMessage(params: {
                     }
                 }
                 const newLinks: MessageLink[] = []
-                for (const link of links.slice(0, 2)) { // 桌面端本地方案，最多解析2个链接
+                for (const link of links) {
                     const { key, title } = await platform.parseUrl(link.url)
                     newLinks.push({
                         id: key,

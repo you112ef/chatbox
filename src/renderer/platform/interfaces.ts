@@ -51,7 +51,7 @@ export interface Platform {
 
     ensureAutoLaunch(enable: boolean): Promise<void>
 
-    parseFile(filePath: string): Promise<string>
+    // parseFile(filePath: string): Promise<string>
     parseUrl(url: string): Promise<{ key: string, title: string }>
 }
 

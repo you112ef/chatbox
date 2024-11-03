@@ -1,9 +1,7 @@
-import path from 'path'
-
 export const officeExts = ['.pdf', '.docx', '.pptx', '.xlsx', '.odt', '.odp', '.ods']
 
-export function isOfficeFile(filePath: string) {
-    return officeExts.includes(path.extname(filePath))
+export function isOfficeFilePath(filePath: string) {
+    return officeExts.some((ext) => filePath.endsWith(ext))
 }
 
 export const textExts = [
@@ -94,6 +92,6 @@ export const textExts = [
     '.java', // Java 代码文件
 ]
 
-export function isTextFile(filePath: string) {
-    return textExts.includes(path.extname(filePath))
+export function isTextFilePath(filePath: string) {
+    return textExts.some((ext) => filePath.endsWith(ext))
 }
