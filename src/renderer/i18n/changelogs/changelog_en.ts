@@ -1,4 +1,20 @@
 const changelog = `
+### v1.6.0 - 2024.11.03
+
+1. Now you can send web links. Chatbox will automatically fetch webpage content and include it in the chat context. Works with all models.
+2. Now you can send text files to any models. Chatbox will parse file content locally and include it in the chat context.
+3. Added collapsible code blocks. Long code blocks in chat history are automatically collapsed (can be disabled in settings).
+4. Redesigned image preview window.
+5. Redesigned SVG image preview and save functionality.
+6. Redesigned Mermaid diagram preview and save functionality.
+7. Improved auto-scroll behavior: auto-scroll stops when generated message fills the screen for better readability.
+8. Optimized overall app layout and spacing.
+9. Auto-fetch model options from remote
+10. Support sending attachments (images/links/files) without text
+11. Fixed language preference issues in auto-generated titles.
+12. Fixed data issues when editing messages in copied conversations.
+13. Fixed drawer direction issues in Arabic.
+
 ### v1.5.1 - 2024.10.09
 
 1. Fixed an issue on Windows where multiple application instances could be launched, causing duplicate icons in the system tray
