@@ -121,6 +121,7 @@ html[data-theme='light'] {
 .App {
     width: 100vw;
     height: 100vh;
+    /* 解决移动端浏览器地址栏导致高度计算问题 */
     height: calc(var(--vh, 1vh) * 100);
 
     /* 移动端异形屏的显示问题 */
