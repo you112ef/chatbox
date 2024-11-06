@@ -25,11 +25,17 @@ export default class OpenAI extends Base {
     constructor(options: Options) {
         super()
         this.options = options
-        if (this.options.apiHost && this.options.apiHost.trim().length === 0) {
+        if (this.options.apiHost) {
+            this.options.apiHost = this.options.apiHost.trim()
+        }
+        if (!this.options.apiHost) {
             this.options.apiHost = 'https://api.openai.com'
         }
-        if (this.options.apiHost && this.options.apiHost.startsWith('https://openrouter.ai/api/v1')) {
+        if (this.options.apiHost.startsWith('https://openrouter.ai/api/v1')) {
             this.options.apiHost = 'https://openrouter.ai/api'
+        }
+        if (this.options.apiHost.endsWith('/')) {
+            this.options.apiHost = this.options.apiHost.slice(0, -1)
         }
         if (this.options.apiPath && !this.options.apiPath.startsWith('/')) {
             this.options.apiPath = '/' + this.options.apiPath
