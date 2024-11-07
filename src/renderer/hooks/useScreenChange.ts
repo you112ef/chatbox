@@ -53,11 +53,11 @@ export function useInputBoxHeight(): { min: number, max: number } {
     // const lg = useMediaQuery(theme.breakpoints.up('lg'))
     const xl = useMediaQuery(theme.breakpoints.up('xl'))
     if (xl) {
-        return { min: 96, max: 192 }
+        return { min: 96, max: 480 }
     } else if (md) {
-        return { min: 72, max: 192 }
+        return { min: 72, max: 384 }
     } else if (sm) {
-        return { min: 56, max: 192 }
+        return { min: 56, max: 288 }
     } else {
         return { min: 32, max: 192 }
     }
