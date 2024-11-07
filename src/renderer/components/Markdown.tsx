@@ -236,7 +236,7 @@ function BlockCode(props: {
                     )}
                 </div>
             </div>
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative' }} className='group'>
                 <div className={isCollapsed ? 'max-h-28 overflow-hidden' : ''}>
                     <SyntaxHighlighter
                         children={children.replace(/\n$/, '')}
@@ -285,20 +285,19 @@ function BlockCode(props: {
                     </div>
                 )}
                 {!isCollapsed && shouldCollapse && (
-                    <div className='group absolute h-5 bottom-0 left-0 right-0 flex justify-center'>
-                        <span
-                            className='cursor-pointer 
-                                opacity-0 group-hover:opacity-100 transition-opacity duration-300
-                                text-white font-bold bg-slate-600/80 py-1 px-4 rounded-t-md'
-                            onClick={(event) => {
-                                event.stopPropagation()
-                                event.preventDefault()
-                                setIsCollapsed(true)
-                            }}
-                        >
-                            <ExpandLessIcon className='text-white' fontSize='small' />
-                        </span>
-                    </div>
+                    <span
+                        className='
+                                absolute bottom-0 left-0 right-0 w-12 mx-auto
+                                cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                                text-white font-bold bg-slate-600/80 py-0 px-4 rounded-t-md'
+                        onClick={(event) => {
+                            event.stopPropagation()
+                            event.preventDefault()
+                            setIsCollapsed(true)
+                        }}
+                    >
+                        <ExpandLessIcon className='text-white' fontSize='small' />
+                    </span>
                 )}
             </div>
         </div>
