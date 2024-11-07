@@ -106,7 +106,7 @@ export default class OpenAI extends Base {
                 throw new ApiError(`Error from OpenAI: ${JSON.stringify(data)}`)
             }
             const text = data.choices[0]?.delta?.content
-            if (text !== undefined) {
+            if (typeof text === 'string') {
                 result += text
                 if (onResultChange) {
                     onResultChange(result)
