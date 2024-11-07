@@ -490,6 +490,16 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                             }}
                             className={specificSettings.customProviders === undefined ? 'opacity-50' : ''}
                         />
+                        <MaxContextMessageCountSlider
+                            value={mergedSettings.openaiMaxContextMessageCount}
+                            onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
+                            className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
+                        />
+                        <TemperatureSlider
+                            value={mergedSettings.temperature}
+                            onChange={(v) => updateSettingsEdit({ temperature: v })}
+                            className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
+                        />
                     </>
                 )
             }
