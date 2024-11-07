@@ -188,7 +188,7 @@
         "lucide-react": "^0.419.0",
         "mark.js": "^8.11.1",
         "material-ui-popup-state": "^5.0.4",
-        "mermaid": "^10.9.1",
+        "mermaid": "^11.4.0",
         "ofetch": "^1.0.1",
         "officeparser": "^5.0.0",
         "optics-ts": "^2.4.0",
