@@ -23,6 +23,7 @@ export default function PictureDialog(props: {}) {
         <_PictureDialog
             picture={pictureShow.picture}
             onSave={pictureShow.onSave}
+            extraButtons={pictureShow.extraButtons}
         />
     )
 }
@@ -30,8 +31,12 @@ export default function PictureDialog(props: {}) {
 function _PictureDialog(props: {
     picture: MessagePicture
     onSave?: () => void
+    extraButtons?: {
+        onClick: () => void,
+        icon: React.ReactNode,
+    }[]
 }) {
-    const { picture } = props
+    const { picture, onSave, extraButtons } = props
     const theme = useTheme()
     const setPictureShow = useSetAtom(atoms.pictureShowAtom)
     const [url, setUrl] = useState(picture.url)
@@ -113,6 +118,20 @@ function _PictureDialog(props: {
                     gap: '12px'
                 }}
             >
+                {
+                    extraButtons?.map((button, index) => (
+                        <Fab key={index}
+                            onClick={(e) => {
+                                e.preventDefault()
+                                e.stopPropagation()
+                                button.onClick()
+                                onClose()
+                            }}
+                        >
+                            {button.icon}
+                        </Fab>
+                    ))
+                }
                 <Fab color="primary" aria-label="save"
                     onClick={(e) => {
                         e.preventDefault()

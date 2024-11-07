@@ -244,7 +244,10 @@ export const artifactDialogHtmlCodeAtom = atom('')  // artifact 预览弹窗（�
 // 图片展示窗口的图片
 export const pictureShowAtom = atom<{
     picture: MessagePicture,
-    ExtraButtons?: React.ReactNode[],
+    extraButtons?: {
+        onClick: () => void,
+        icon: React.ReactNode,
+    }[],
     onSave?: () => void
 } | null>(null)
 

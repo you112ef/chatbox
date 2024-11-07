@@ -4,8 +4,11 @@ import { useEffect, useState, useMemo } from "react"
 import * as atoms from "@/stores/atoms"
 import { ChartBarStacked } from "lucide-react"
 import { Img } from "./Image"
-import platform from "@/platform"
+import { copyToClipboard } from '@/packages/navigator'
 import { cn } from "@/lib/utils"
+import DataObjectIcon from '@mui/icons-material/DataObject';
+import * as toastActions from '../stores/toastActions'
+import { useTranslation } from "react-i18next"
 
 export function MessageMermaid(props: {
     source: string,
@@ -35,7 +38,7 @@ export function MessageMermaid(props: {
 
     return (
         // <SVGPreview xmlCode={svgCode} />
-        <SVGPreviewDangerous svgId={svgId} xmlCode={svgCode} />
+        <MermaidSVGPreviewDangerous svgId={svgId} svgCode={svgCode} mermaidCode={source} />
     )
 }
 
@@ -53,15 +56,17 @@ export function Loading() {
  * 经过各种测试，发现有时候 mermaid 生成的 svg 代码并不规范，直接转化 base64 将无法完整显示。
  * 这里的做法是直接将 svg 代码注入到页面中，通过浏览器自身的修复能力处理 svg 代码，再通过 serializeToString 得到规范的 svg 代码。
  */
-export function SVGPreviewDangerous(props: {
-    xmlCode: string
+export function MermaidSVGPreviewDangerous(props: {
+    svgCode: string
     svgId: string
+    mermaidCode: string
     className?: string
     generating?: boolean
 }) {
-    const { svgId, xmlCode, className, generating } = props
+    const { svgId, svgCode, mermaidCode, className, generating } = props
+    const { t } = useTranslation()
     const setPictureShow = useSetAtom(atoms.pictureShowAtom)
-    if (!xmlCode.includes('</svg') && generating) {
+    if (!svgCode.includes('</svg') && generating) {
         return <Loading />
     }
     return (
@@ -76,12 +81,21 @@ export function SVGPreviewDangerous(props: {
                 const base64 = svgCodeToBase64(serializedSvgCode)
                 const pngBase64 = await svgToPngBase64(base64)
                 setPictureShow({
-                    picture: { url: pngBase64 },
+                    picture: {
+                        url: pngBase64,
+                    },
+                    extraButtons: [{
+                        onClick: () => {
+                            copyToClipboard(mermaidCode)
+                            toastActions.add(t('copied to clipboard'))
+                        },
+                        icon: <DataObjectIcon />
+                    }]
                 })
             }}
         >
             {/* 这里直接注入了 svg 代码 */}
-            <div dangerouslySetInnerHTML={{ __html: xmlCode }} />
+            <div dangerouslySetInnerHTML={{ __html: svgCode }} />
         </div>
     )
 }
