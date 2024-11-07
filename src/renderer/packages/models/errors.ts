@@ -151,6 +151,16 @@ export class ChatboxAIAPIError extends BaseError {
             name: 'model_not_support_non_text_file_2',
             code: 20018,
             i18nKey: "The {{model}} API itself does not support sending files. Due to the complexity of file parsing locally, Chatbox only processes text-based files (including code)."
+        },
+        "system_error": {
+            name: 'system_error',
+            code: 20019,
+            i18nKey: "An error occurred while processing your request. Please try again later. If this error continues, please send an email to hi@benn.app for support."
+        },
+        "unknown": {
+            name: 'unknown',
+            code: 20020,
+            i18nKey: "An unknown error occurred. Please try again later. If this error continues, please send an email to hi@benn.app for support."
         }
     }
     static fromCodeName(response: string, codeName: string) {
