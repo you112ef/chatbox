@@ -162,7 +162,9 @@ export default class OpenAI extends Base {
             'Content-Type': 'application/json',
         }
         if (this.options.apiHost.includes('openrouter.ai')) {
-            headers['HTTP-Referer'] = 'https://localhost:3000/' // 支持 OpenRouter，需要设置这个表头才能正常工作
+            // 希望可以得到 https://openrouter.ai/ 的排名
+            headers['HTTP-Referer'] = 'https://chatboxai.app'
+            headers['X-Title'] = 'Chatbox AI'
         }
         return headers
     }
