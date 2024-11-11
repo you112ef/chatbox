@@ -10,7 +10,8 @@ import * as dom from '../hooks/dom'
 import { Shortcut } from './Shortcut'
 import { useInputBoxHeight, useIsSmallScreen } from '@/hooks/useScreenChange'
 import {
-    Image, FolderClosed, Link, Undo2, SendHorizontal, Eraser, Settings2 } from 'lucide-react'
+    Image, FolderClosed, Link, Undo2, SendHorizontal, Eraser, Settings2
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { scrollToMessage } from '@/stores/scrollActions'
 import icon from '../static/icon.png'
@@ -275,16 +276,23 @@ export default function InputBox(props: {}) {
             return
         }
         if (event.clipboardData && event.clipboardData.items) {
+            // 对于 Doc/PPT/XLS 等文件中的内容，粘贴时一般会有 4 个 items，分别是 text 文本、html、某格式和图片
+            // 因为 getAsString 为异步操作，无法根据 items 中的内容来定制不同的粘贴行为，因此这里选择了最简单的做法：
+            // 保持默认的粘贴行为，这时候会粘贴从文档中复制的文本和图片。我认为应该保留图片，因为文档中的表格、图表等图片信息也很重要，很难通过文本格式来表述。
+            // 仅在只粘贴图片或文件时阻止默认行为，防止插入文件或图片的名字
+            let hasText = false
             for (let item of event.clipboardData.items) {
                 if (item.kind === 'file') {
-                    // 复制文件
-                    event.preventDefault()
+                    // 插入文件和图片
                     const file = item.getAsFile();
                     if (file) {
                         insertFiles([file])
                     }
-                } else if (item.kind === 'string' && item.type === 'text/plain') {
-                    // 复制链接
+                    continue
+                }
+                hasText = true
+                if (item.kind === 'string' && item.type === 'text/plain') {
+                    // 插入链接：如果复制的是链接，则插入链接
                     item.getAsString((text) => {
                         const raw = text.trim()
                         if (raw.startsWith('http://') || raw.startsWith('https://')) {
@@ -294,7 +302,12 @@ export default function InputBox(props: {}) {
                             insertLinks(urls)
                         }
                     })
+                    continue
                 }
+            }
+            // 如果没有任何文本，则说明只是复制了图片或文件。这里阻止默认行为，防止插入文件或图片的名字
+            if (!hasText) {
+                event.preventDefault()
             }
         }
     }
@@ -360,7 +373,7 @@ export default function InputBox(props: {}) {
                             )
                         }
 
- 
+
                         <input type='file' ref={pictureInputRef} className='hidden' onChange={onFileInputChange}
                             // accept="image/png, image/jpeg, image/gif" 
                             accept="image/png, image/jpeg"
