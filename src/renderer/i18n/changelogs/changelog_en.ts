@@ -1,4 +1,13 @@
 const changelog = `
+### v1.6.1 - 2024.11.12
+
+1. Added context length and temperature controls in custom provider conversation settings.
+2. Adjusted the maximum height of the input box. The input area now automatically expands when handling larger amounts of text.
+3. Added a copy button for Mermaid code blocks.
+4. Fixed text display issues when rendering complex Mermaid flowcharts.
+5. Fixed an issue where only images were being inserted when copying content from doc/ppt/xlsx/pdf files.
+6. Fixed an issue where the floating collapse button below code blocks was overlapping with the horizontal scrollbar.
+
 ### v1.6.0 - 2024.11.03
 
 1. Now you can send web links. Chatbox will automatically fetch webpage content and include it in the chat context. Works with all models.
