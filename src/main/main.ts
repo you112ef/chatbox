@@ -237,10 +237,6 @@ async function createWindow() {
     // https://www.computerhope.com/jargon/m/menubar.htm
     mainWindow.setMenuBarVisibility(false)
 
-    // Remove this if your app does not use auto updates
-    // eslint-disable-next-line
-    new AppUpdater()
-
     // 网络问题
     session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
         callback({
@@ -309,6 +305,9 @@ if (!gotTheLock) {
         .then(() => {
             createWindow()
             ensureTray()
+            // Remove this if your app does not use auto updates
+            // eslint-disable-next-line
+            new AppUpdater()
             app.on('activate', () => {
                 // On macOS it's common to re-create a window in the app when the
                 // dock icon is clicked and there are no other windows open.
