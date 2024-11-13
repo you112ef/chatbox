@@ -431,3 +431,20 @@ export async function getModelConfigsWithCache(params: {
     )
     return remoteOptionGroups
 }
+
+export async function reportContent(params: {
+    id: string,
+    type: string,
+    details: string,
+}) {
+    await afetch(
+        `${API_ORIGIN}/api/report_content`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(params),
+        },
+    )
+}

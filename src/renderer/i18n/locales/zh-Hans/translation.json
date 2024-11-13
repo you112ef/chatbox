@@ -287,5 +287,19 @@
     "The {{model}} API itself does not support sending files. Due to the complexity of file parsing locally, Chatbox only processes text-based files (including code). For additional file formats and enhanced document understanding capabilities, <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> is recommended.": "{{model}} API 本身不支持发送文件。由于本地文件解析的复杂性，Chatbox 只能处理基于文本的文件（包括代码）。对于更多的文件格式和增强的文档理解能力，建议使用 <LinkToAdvancedFileProcessing>Chatbox AI 服务</LinkToAdvancedFileProcessing>。",
     "The {{model}} API itself does not support sending files. Due to the complexity of file parsing locally, Chatbox only processes text-based files (including code).": "{{model}} API 本身不支持发送文件。由于本地文件解析的复杂性，Chatbox 只能处理基于文本的文件（包括代码）。",
     "An error occurred while processing your request. Please try again later. If this error continues, please send an email to hi@benn.app for support.": "处理您的请求时发生错误。请稍后再试。如果此错误持续发生，请发送电子邮件至 hi@benn.app 以获得支持。",
-    "An unknown error occurred. Please try again later. If this error continues, please send an email to hi@benn.app for support.": "发生未知错误。请稍后再试。如果此错误持续发生，请发送电子邮件至 hi@benn.app 以获得支持。"
+    "An unknown error occurred. Please try again later. If this error continues, please send an email to hi@benn.app for support.": "发生未知错误。请稍后再试。如果此错误持续发生，请发送电子邮件至 hi@benn.app 以获得支持。",
+    "report": "举报",
+    "Report Content": "举报内容",
+    "Report Content ID": "举报内容 ID",
+    "Report Type": "举报类型",
+    "Harmful or offensive content": "有害或不适当的内容",
+    "Misleading information": "误导信息",
+    "Spam or advertising": "垃圾广告",
+    "Violence or dangerous content": "暴力或危险内容",
+    "Child-inappropriate content": "儿童不宜内容",
+    "Sexual content": "色情内容",
+    "Hate speech or harassment": "仇恨言论或骚扰",
+    "Other concerns": "其他问题",
+    "Details": "详情",
+    "Please describe the content you want to report (Optional)": "请描述您想要举报的内容（可选）"
 }

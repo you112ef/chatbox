@@ -287,5 +287,19 @@
     "The {{model}} API itself does not support sending files. Due to the complexity of file parsing locally, Chatbox only processes text-based files (including code). For additional file formats and enhanced document understanding capabilities, <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> is recommended.": "Die {{model}}-API selbst unterstützt keine Dateien. Aufgrund der Komplexität der lokalen Dateiverarbeitung verarbeitet Chatbox nur textbasierte Dateien (einschließlich Code). Für zusätzliche Dateiformate und erweiterte Dokumentenverarbeitungsfähigkeiten empfiehlt sich <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing>.",
     "The {{model}} API itself does not support sending files. Due to the complexity of file parsing locally, Chatbox only processes text-based files (including code).": "Die {{model}}-API selbst unterstützt keine Dateien. Aufgrund der Komplexität der lokalen Dateiverarbeitung verarbeitet Chatbox nur textbasierte Dateien (einschließlich Code).",
     "An error occurred while processing your request. Please try again later. If this error continues, please send an email to hi@benn.app for support.": "Beim Verarbeiten Ihrer Anfrage ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut. Wenn dieser Fehler weiterhin besteht, senden Sie eine E-Mail an hi@benn.app für Unterstützung.",
-    "An unknown error occurred. Please try again later. If this error continues, please send an email to hi@benn.app for support.": "Ein unbekannter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut. Wenn dieser Fehler weiterhin besteht, senden Sie eine E-Mail an hi@benn.app für Unterstützung."
+    "An unknown error occurred. Please try again later. If this error continues, please send an email to hi@benn.app for support.": "Ein unbekannter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut. Wenn dieser Fehler weiterhin besteht, senden Sie eine E-Mail an hi@benn.app für Unterstützung.",
+    "report": "Melden",
+    "Report Content": "Inhalt melden",
+    "Report Content ID": "Inhalt-ID melden",
+    "Report Type": "Meldetyp",
+    "Harmful or offensive content": "Schädlich oder beleidigend",
+    "Misleading information": "Irreführende Informationen",
+    "Spam or advertising": "Spam oder Werbung",
+    "Violence or dangerous content": "Gewalt oder gefährliche Inhalte",
+    "Child-inappropriate content": "Kindgerechte Inhalte",
+    "Sexual content": "Sexuelle Inhalte",
+    "Hate speech or harassment": "Hassrede oder Belästigung",
+    "Other concerns": "Andere Bedenken",
+    "Details": "Details",
+    "Please describe the content you want to report (Optional)": "Bitte beschreiben Sie den Inhalt, den Sie melden möchten (optional)"
 }

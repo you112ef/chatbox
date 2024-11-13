@@ -287,5 +287,19 @@
     "The {{model}} API itself does not support sending files. Due to the complexity of file parsing locally, Chatbox only processes text-based files (including code). For additional file formats and enhanced document understanding capabilities, <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> is recommended.": "{{model}} API 自体はファイルの送信をサポートしていません。ローカル処理の複雑さにより、Chatbox はテキストベースのファイル（コードを含む）のみを処理します。追加のファイル形式と強化されたドキュメント理解能力をサポートするには、<LinkToAdvancedFileProcessing>Chatbox AI サービス</LinkToAdvancedFileProcessing>をお勧めします。",
     "The {{model}} API itself does not support sending files. Due to the complexity of file parsing locally, Chatbox only processes text-based files (including code).": "{{model}} API 自体はファイルの送信をサポートしていません。ローカル処理の複雑さにより、Chatbox はテキストベースのファイル（コードを含む）のみを処理します。",
     "An error occurred while processing your request. Please try again later. If this error continues, please send an email to hi@benn.app for support.": "リクエストの処理中にエラーが発生しました。後でもう一度お試しください。このエラーが続く場合は、hi@benn.appにメールを送信してください。",
-    "An unknown error occurred. Please try again later. If this error continues, please send an email to hi@benn.app for support.": "不明なエラーが発生しました。後でもう一度お試しください。このエラーが続く場合は、hi@benn.appにメールを送信してください。"
+    "An unknown error occurred. Please try again later. If this error continues, please send an email to hi@benn.app for support.": "不明なエラーが発生しました。後でもう一度お試しください。このエラーが続く場合は、hi@benn.appにメールを送信してください。",
+    "report": "報告",
+    "Report Content": "報告内容",
+    "Report Content ID": "報告内容ID",
+    "Report Type": "報告タイプ",
+    "Harmful or offensive content": "有害または不適切な内容",
+    "Misleading information": "誤った情報",
+    "Spam or advertising": "スパムまたは広告",
+    "Violence or dangerous content": "暴力または危険な内容",
+    "Child-inappropriate content": "子供に不適切な内容",
+    "Sexual content": "性的な内容",
+    "Hate speech or harassment": "憎悪発言または虐待",
+    "Other concerns": "その他の問題",
+    "Details": "詳細",
+    "Please describe the content you want to report (Optional)": "報告したい内容を説明してください（オプション）"
 }

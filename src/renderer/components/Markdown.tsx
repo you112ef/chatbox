@@ -105,7 +105,12 @@ export function CodeRenderer(props: {
                 />
             )
         }
-        if (language === 'svg') {
+        if (
+            language === 'svg'
+            || (language === 'text' && String(children).startsWith('<svg'))
+            || (language === 'xml' && String(children).startsWith('<svg'))
+            || (language === 'html' && String(children).startsWith('<svg'))
+        ) {
             return (
                 <div>
                     <BlockCode

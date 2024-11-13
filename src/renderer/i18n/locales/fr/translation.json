@@ -287,5 +287,19 @@
     "The {{model}} API itself does not support sending files. Due to the complexity of file parsing locally, Chatbox only processes text-based files (including code). For additional file formats and enhanced document understanding capabilities, <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> is recommended.": "L'API {{model}} en elle-même ne prend pas en charge l'envoi de fichiers. En raison de la complexité du traitement de fichiers localement, Chatbox ne traite que les fichiers basés sur du texte (y compris le code). Pour des formats de fichiers supplémentaires et des capacités d'interprétation de documents améliorées, <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> est recommandé.",
     "The {{model}} API itself does not support sending files. Due to the complexity of file parsing locally, Chatbox only processes text-based files (including code).": "L'API {{model}} en elle-même ne prend pas en charge l'envoi de fichiers. En raison de la complexité du traitement de fichiers localement, Chatbox ne traite que les fichiers basés sur du texte (y compris le code).",
     "An error occurred while processing your request. Please try again later. If this error continues, please send an email to hi@benn.app for support.": "Une erreur s'est produite lors du traitement de votre requête. Veuillez réessayer plus tard. Si cette erreur persiste, veuillez envoyer un email à hi@benn.app pour obtenir de l'aide.",
-    "An unknown error occurred. Please try again later. If this error continues, please send an email to hi@benn.app for support.": "Une erreur inconnue s'est produite. Veuillez réessayer plus tard. Si cette erreur persiste, veuillez envoyer un email à hi@benn.app pour obtenir de l'aide."
+    "An unknown error occurred. Please try again later. If this error continues, please send an email to hi@benn.app for support.": "Une erreur inconnue s'est produite. Veuillez réessayer plus tard. Si cette erreur persiste, veuillez envoyer un email à hi@benn.app pour obtenir de l'aide.",
+    "report": "Signaler",
+    "Report Content": "Contenu à signaler",
+    "Report Content ID": "ID du contenu à signaler",
+    "Report Type": "Type de signalement",
+    "Harmful or offensive content": "Contenu nocif ou offensant",
+    "Misleading information": "Informations trompeuses",
+    "Spam or advertising": "Spam ou publicité",
+    "Violence or dangerous content": "Contenu violent ou dangereux",
+    "Child-inappropriate content": "Contenu inapproprié pour les enfants",
+    "Sexual content": "Contenu sexuel",
+    "Hate speech or harassment": "Discours ou harcèlement haineux",
+    "Other concerns": "Autres préoccupations",
+    "Details": "Détails",
+    "Please describe the content you want to report (Optional)": "Veuillez décrire le contenu que vous souhaitez signaler (optionnel)"
 }

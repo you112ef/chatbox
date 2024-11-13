@@ -236,6 +236,7 @@ export const openAboutDialogAtom = atom(false)  // 是否展示相关信息的�
 export const openCopilotDialogAtom = atom(false) // 是否展示copilot窗口
 export const openClearConversationListDialogAtom = atom(false) // 是否展示会话列表清理窗口
 export const openAttachLinkDialogAtom = atom(false) // 是否展示链接插入窗口
+export const reportContentDialogAtom = atom<{id: string} | null>(null) // 是否展示举报内容窗口
 
 export const inputBoxLinksAtom = atom<{url: string}[]>([])
 

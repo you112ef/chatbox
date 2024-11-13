@@ -44,6 +44,7 @@ import {
     widthFullAtom,
     autoPreviewArtifactsAtom,
     autoCollapseCodeBlockAtom,
+    reportContentDialogAtom,
 } from '../stores/atoms'
 import { currsentSessionPicUrlAtom, showTokenUsedAtom } from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
@@ -66,6 +67,8 @@ import { copyToClipboard } from '@/packages/navigator'
 import { estimateTokensFromMessages } from '@/packages/token'
 import { countWord } from '@/packages/word-count'
 import { isContainRenderableCode, MessageArtifact } from './Artifact'
+import ReportIcon from '@mui/icons-material/Report';
+import platform from '@/platform'
 
 export interface Props {
     id?: string
@@ -104,6 +107,7 @@ function _Message(props: Props) {
     const widthFull = useAtomValue(widthFullAtom)
     const autoPreviewArtifacts = useAtomValue(autoPreviewArtifactsAtom)
     const autoCollapseCodeBlock = useAtomValue(autoCollapseCodeBlockAtom)
+    const setReportObject = useSetAtom(reportContentDialogAtom)
 
     const [previewArtifact, setPreviewArtifact] = useState(autoPreviewArtifacts)
 
@@ -154,6 +158,11 @@ function _Message(props: Props) {
         copyToClipboard(msg.content)
         toastActions.add(t('copied to clipboard'))
         setAnchorEl(null)
+    }
+
+    const onReport = () => {
+        setAnchorEl(null)
+        setReportObject({ id: msg.content || msg.id })
     }
 
     const setMsg = (updated: Message) => {
@@ -511,7 +520,17 @@ function _Message(props: Props) {
                                                     bg-white dark:bg-slate-800
                                                     border-solid border-slate-400/20 rounded-md
                                                     hover:cursor-pointer hover:border-slate-800/20 transition-all duration-200"
-                                                onClick={() => setPictureShow({ picture: pic })}
+                                                onClick={() => {
+                                                    setPictureShow({
+                                                        picture: pic,
+                                                        extraButtons: msg.role === 'assistant' && platform.type === 'mobile' ? [
+                                                            {
+                                                                onClick: onReport,
+                                                                icon: <ReportIcon />,
+                                                            },
+                                                        ] : undefined,
+                                                    })
+                                                }}
                                             >
                                                 {
                                                     pic.loading && !pic.storageKey && !pic.url && (
@@ -699,6 +718,14 @@ function _Message(props: Props) {
                                                     <FormatQuoteIcon fontSize="small" />
                                                     {t('quote')}
                                                 </MenuItem>
+                                                {
+                                                    msg.role === 'assistant' && platform.type === 'mobile' && (
+                                                        <MenuItem key={msg.id + 'report'} onClick={onReport} disableRipple>
+                                                            <ReportIcon fontSize="small" />
+                                                            {t('report')}
+                                                        </MenuItem>
+                                                    )
+                                                }
                                                 <MenuItem key={msg.id + 'del'} onClick={onDelMsg} disableRipple
                                                     sx={{
                                                         '&:hover': {

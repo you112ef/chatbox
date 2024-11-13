@@ -286,5 +286,19 @@
     "The {{model}} API itself does not support sending files. Due to the complexity of file parsing locally, Chatbox only processes text-based files (including code). For additional file formats and enhanced document understanding capabilities, <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> is recommended.": "The {{model}} API itself does not support sending files. Due to the complexity of file parsing locally, Chatbox only processes text-based files (including code). For additional file formats and enhanced document understanding capabilities, <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> is recommended.",
     "The {{model}} API itself does not support sending files. Due to the complexity of file parsing locally, Chatbox only processes text-based files (including code).": "The {{model}} API itself does not support sending files. Due to the complexity of file parsing locally, Chatbox only processes text-based files (including code).",
     "An error occurred while processing your request. Please try again later. If this error continues, please send an email to hi@benn.app for support.": "An error occurred while processing your request. Please try again later. If this error continues, please send an email to hi@benn.app for support.",
-    "An unknown error occurred. Please try again later. If this error continues, please send an email to hi@benn.app for support.": "An unknown error occurred. Please try again later. If this error continues, please send an email to hi@benn.app for support."
+    "An unknown error occurred. Please try again later. If this error continues, please send an email to hi@benn.app for support.": "An unknown error occurred. Please try again later. If this error continues, please send an email to hi@benn.app for support.",
+    "report": "Report",
+    "Report Content": "Report Content",
+    "Report Content ID": "Report Content ID",
+    "Report Type": "Report Type",
+    "Harmful or offensive content": "Harmful or offensive content",
+    "Misleading information": "Misleading information",
+    "Spam or advertising": "Spam or advertising",
+    "Violence or dangerous content": "Violence or dangerous content",
+    "Child-inappropriate content": "Child-inappropriate content",
+    "Sexual content": "Sexual content",
+    "Hate speech or harassment": "Hate speech or harassment",
+    "Other concerns": "Other concerns",
+    "Details": "Details",
+    "Please describe the content you want to report (Optional)": "Please describe the content you want to report (Optional)"
 }
