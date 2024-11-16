@@ -73,11 +73,7 @@ function Main() {
 
     return (
         <Box className="box-border App" spellCheck={spellCheck} dir={language === 'ar' ? 'rtl' : 'ltr'}>
-            {
-                platform.type === 'desktop' && (getOS() === 'Windows' || getOS() === 'Linux') && (
-                    <ExitFullscreenButton />
-                )
-            }
+            {platform.type === 'desktop' && (getOS() === 'Windows' || getOS() === 'Linux') && <ExitFullscreenButton />}
             <Grid container className="h-full">
                 <Sidebar />
                 <MainPane />
