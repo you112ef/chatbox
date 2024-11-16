@@ -123,4 +123,12 @@ export default class DesktopPlatform implements Platform {
         const json = await this.ipc.invoke('parseUrl', url)
         return JSON.parse(json)
     }
+
+    public async isFullscreen() {
+        return this.ipc.invoke('isFullscreen')
+    }
+
+    public async setFullscreen(enabled: boolean) {
+        return this.ipc.invoke('setFullscreen', enabled)
+    }
 }

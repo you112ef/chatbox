@@ -153,4 +153,12 @@ export default class WebPlatform implements Platform {
     public async parseUrl(url: string): Promise<{ key: string, title: string }> {
         throw new Error('Not implemented')
     }
+
+    public async isFullscreen() {
+        return true
+    }
+
+    public async setFullscreen(enabled: boolean): Promise<void> {
+        return
+    }
 }

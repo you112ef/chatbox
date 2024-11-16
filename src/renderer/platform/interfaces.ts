@@ -53,6 +53,9 @@ export interface Platform {
 
     // parseFile(filePath: string): Promise<string>
     // parseUrl(url: string): Promise<{ key: string, title: string }>
+
+    isFullscreen(): Promise<boolean>
+    setFullscreen(enabled: boolean): Promise<void>
 }
 
 

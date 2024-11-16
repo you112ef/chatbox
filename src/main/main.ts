@@ -481,3 +481,22 @@ ipcMain.handle('parseUrl', async (event, url: string) => {
     // return JSON.stringify({ key, title: result.title })
     return JSON.stringify({ key: '', title: '' })
 })
+
+ipcMain.handle('isFullscreen', () => {
+    return mainWindow?.isFullScreen() || false
+})
+
+ipcMain.handle('setFullscreen', (event, enable: boolean) => {
+    if (!mainWindow) {
+        return
+    }
+    if (enable) {
+        mainWindow.setFullScreen(true)
+    } else {
+        // 解决MacOS全屏下隐藏将黑屏的问题
+        if (mainWindow.isFullScreen()) {
+            mainWindow.setFullScreen(false)
+        }
+        mainWindow.hide()
+    }
+})

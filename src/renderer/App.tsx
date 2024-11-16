@@ -33,6 +33,8 @@ import ExportChatDialog from '@/pages/ExportChatDialog'
 import ArtifactDialog from '@/pages/ArtifactDialog'
 import OpenAttachLinkDialog from './pages/OpenAttachLinkDialog'
 import ReportContentDialog from './pages/ReportContentDialog'
+import { getOS } from './packages/navigator'
+import ExitFullscreenButton from './components/ExitFullscreenButton'
 
 function Main() {
     const spellCheck = useAtomValue(atoms.spellCheckAtom)
@@ -71,6 +73,11 @@ function Main() {
 
     return (
         <Box className="box-border App" spellCheck={spellCheck} dir={language === 'ar' ? 'rtl' : 'ltr'}>
+            {
+                platform.type === 'desktop' && (getOS() === 'Windows' || getOS() === 'Linux') && (
+                    <ExitFullscreenButton />
+                )
+            }
             <Grid container className="h-full">
                 <Sidebar />
                 <MainPane />
