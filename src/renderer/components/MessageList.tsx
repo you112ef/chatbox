@@ -9,11 +9,14 @@ import * as sessionActions from '../stores/sessionActions'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import StyledMenu from './StyledMenu';
-import { MenuItem, useTheme } from '@mui/material';
+import { MenuItem, useTheme, IconButton } from '@mui/material';
 import SwapCallsIcon from '@mui/icons-material/SwapCalls';
 import DeleteIcon from '@mui/icons-material/Delete'
 import CheckIcon from '@mui/icons-material/Check';
 import SegmentIcon from '@mui/icons-material/Segment';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { Session } from 'src/shared/types'
 
 interface Props { }
 
@@ -104,6 +107,15 @@ export default function MessageList(props: Props) {
                                     collapseThreshold={msg.role === 'system' ? 150 : undefined}
                                     preferCollapsedCodeBlock={index < currentMessageList.length - 10}
                                 />
+                                {
+                                    currentSession.messageForksHash?.[msg.id] && (
+                                        <ForkNav
+                                            key={`fork_nav_${msg.id}`}
+                                            msgId={msg.id}
+                                            forks={currentSession.messageForksHash?.[msg.id]}
+                                        />
+                                    )
+                                }
                             </>
                             // </div>
                         )
@@ -208,6 +220,60 @@ export default function MessageList(props: Props) {
                             )
                     }
                 </StyledMenu>
+            </div>
+        </div>
+    )
+}
+
+function ForkNav(props: {
+    msgId: string
+    forks: NonNullable<Session['messageForksHash']>[string]
+}) {
+    const { msgId, forks } = props
+    const widthFull = useAtomValue(atoms.widthFullAtom)
+    const [flash, setFlash] = useState(false)
+    const prevLength = useRef(forks.lists.length)
+
+    useEffect(() => {
+        if (forks.lists.length > prevLength.current) {
+            setFlash(true)
+            const timer = setTimeout(() => setFlash(false), 2000)
+            return () => clearTimeout(timer)
+        }
+        prevLength.current = forks.lists.length
+    }, [forks.lists.length])
+
+    return (
+        <div className={cn('flex items-center justify-end',
+            widthFull ? 'w-full' : 'max-w-4xl mx-auto',
+        )}
+        >
+            <div className={cn(
+                'mt-[-35px] pr-4 inline-flex items-center gap-2',
+                'opacity-50 hover:opacity-100',
+                flash && 'animate-flash opacity-100 font-bold'
+            )}>
+                <IconButton
+                    aria-label="fork-left"
+                    size="small"
+                    className="hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
+                    onClick={() => sessionActions.switchFork(msgId, 'prev')}
+                >
+                    <ChevronLeftIcon className="w-5 h-5" />
+                </IconButton>
+                <div className='flex items-center gap-1 text-xs'>
+                    <span>{forks.position + 1}</span>
+                    <span>/</span>
+                    <span>{forks.lists.length}</span>
+                </div>
+                <IconButton
+                    aria-label="fork-right"
+                    size="small"
+                    className="hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
+                    onClick={() => sessionActions.switchFork(msgId, 'next')}
+                >
+                    <ChevronRightIcon className="w-5 h-5" />
+                </IconButton>
             </div>
         </div>
     )

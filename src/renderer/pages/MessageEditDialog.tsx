@@ -33,7 +33,7 @@ export default function MessageEditDialog(props: Props) {
             return
         }
         onSave()
-        sessionActions.refreshMessage(data.sessionId, data.msg, true)
+        sessionActions.generateMoreInNewFork(data.sessionId, data.msg.id)
     }
 
     const onRoleSelect = (e: SelectChangeEvent) => {

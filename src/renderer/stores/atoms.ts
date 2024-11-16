@@ -147,6 +147,7 @@ export const currentMessageListAtom = selectAtom(currentSessionAtom, (s) => {
             messageContext = messageContext.concat(thread.messages)
         }
     }
+    // const lastThreadMessageIndex = messageContext.length - 1
     if (s.messages) {
         messageContext = messageContext.concat(s.messages)
     }

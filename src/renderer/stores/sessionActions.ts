@@ -284,6 +284,7 @@ export function refreshContextAndCreateNewThread(sessionId: string) {
                     ? [systemPrompt]
                     : [createMessage('system', defaults.getDefaultPrompt())],
                 threadName: '',
+                messageForksHash: undefined,
             }
         })
     })
@@ -840,14 +841,34 @@ export async function generate(sessionId: string, targetMsg: Message) {
     }
 }
 
-export async function refreshMessage(sessionId: string, msg: Message, alwayInsertNew = false) {
-    if (msg.role === 'assistant' && !alwayInsertNew) {
-        await generate(sessionId, msg)
-    } else {
-        const newAssistantMsg = createMessage('assistant', '...')
-        insertMessageAfter(sessionId, newAssistantMsg, msg.id)
-        await generate(sessionId, newAssistantMsg)
+/**
+ * 在目标消息下方插入并生成一条新消息
+ * @param sessionId 会话ID
+ * @param msgId 消息ID
+ */
+export async function generateMore(sessionId: string, msgId: string) {
+    const newAssistantMsg = createMessage('assistant', '...')
+    insertMessageAfter(sessionId, newAssistantMsg, msgId)
+    await generate(sessionId, newAssistantMsg)
+}
+
+export async function generateMoreInNewFork(sessionId: string, msgId: string) {
+    await createNewFork(msgId)
+    await generateMore(sessionId, msgId)
+}
+
+export async function regenerateInNewFork(sessionId: string, msg: Message) {
+    const messageList = getCurrentMessages()
+    const messageIndex = messageList.findIndex((m) => m.id === msg.id)
+    const previousMessageIndex = messageIndex - 1
+    if (previousMessageIndex < 0) {
+        // 如果目标消息是第一条消息，则直接重新生成
+        generate(sessionId, msg)
+        return
     }
+    const forkMessage = messageList[previousMessageIndex]
+    await createNewFork(forkMessage.id)
+    return generateMore(sessionId, forkMessage.id)
 }
 
 async function _generateName(sessionId: string, modifyName: (sessionId: string, name: string) => void) {
@@ -1139,4 +1160,130 @@ export async function exportCurrentSessionChat(content: ExportChatScope, format:
     const store = getDefaultStore()
     const currentSession = store.get(atoms.currentSessionAtom)
     await exportChat(currentSession, content, format)
+}
+
+export async function createNewFork(forkMessageId: string) {
+    const store = getDefaultStore()
+    const currentSession = store.get(atoms.currentSessionAtom)
+    const messageForksHash = currentSession.messageForksHash || {}
+
+    const updateFn = (data: Message[]): { data: Message[], updated: boolean } => {
+        const forkMessageIndex = data.findIndex(m => m.id === forkMessageId)
+        if (forkMessageIndex < 0) {
+            return { data, updated: false }
+        }
+        const forks = messageForksHash[forkMessageId] || {
+            position: 0,
+            lists: [
+                {
+                    id: `fork_list_${uuidv4()}`,
+                    messages: [],
+                },
+            ],
+            createdAt: Date.now()
+        }
+        // 下方消息存储到当前游标位置
+        const backupMessages = data.slice(forkMessageIndex + 1)
+        if (backupMessages.length === 0) {
+            return { data, updated: false }
+        }
+        forks.lists[forks.position] = {
+            id: `fork_list_${uuidv4()}`,
+            messages: backupMessages,
+        }
+        // 创建另一个新分支，作为新的游标位置
+        forks.lists.push({
+            id: `fork_list_${uuidv4()}`,
+            messages: [],
+        })
+        forks.position = forks.lists.length - 1
+
+        messageForksHash[forkMessageId] = forks
+        data = data.slice(0, forkMessageIndex + 1)
+
+        // 限制分叉数量，超过20个则清理掉最旧
+        const keys = Object.keys(messageForksHash)
+        if (keys.length > 20) {
+            keys.sort((a, b) => messageForksHash[a].createdAt - messageForksHash[b].createdAt)
+            keys.slice(0, keys.length - 20).forEach(k => {
+                delete messageForksHash[k]
+            })
+        }
+
+        return { data, updated: true }
+    }
+
+    let { data, updated } = updateFn(currentSession.messages)
+    if (updated) {
+        modify({ ...currentSession, messages: data, messageForksHash })
+        // scrollActions.scrollToMessage(forkMessageId, 'start')
+        return
+    }
+    for (let i = (currentSession.threads || []).length - 1; i >= 0; i--) {
+        const thread = (currentSession.threads || [])[i]
+        const { data, updated } = updateFn(thread.messages)
+        if (updated) {
+            modify({
+                ...currentSession,
+                threads: currentSession.threads?.map(t => t.id === thread.id ? { ...t, messages: data } : t),
+                messageForksHash,
+            })
+            // scrollActions.scrollToMessage(forkMessageId, 'start')
+            return
+        }
+    }
+}
+
+export async function switchFork(forkMessageId: string, direction: 'next' | 'prev') {
+    const store = getDefaultStore()
+    const currentSession = store.get(atoms.currentSessionAtom)
+    if (!currentSession.messageForksHash) {
+        return
+    }
+    const messageForksHash = currentSession.messageForksHash
+
+    const updateFn = (data: Message[]): { data: Message[], updated: boolean } => {
+        const forks = messageForksHash[forkMessageId]
+        if (forks.lists.length === 0) {
+            return { data, updated: false }
+        }
+        const forkMessageIndex = data.findIndex(m => m.id === forkMessageId)
+        if (forkMessageIndex < 0) {
+            return { data, updated: false }
+        }
+        const newPosition = direction === 'next'
+            ? (forks.position + 1) % forks.lists.length
+            : (forks.position - 1 + forks.lists.length) % forks.lists.length
+        // 当前被分叉的消息存储在当前的游标位置
+        forks.lists[forks.position].messages = data.slice(forkMessageIndex + 1)
+        // 当前消息列表中移除被分叉的消息，并且添加新的游标位置的消息
+        data = data.slice(0, forkMessageIndex + 1)
+            .concat(forks.lists[newPosition].messages)
+        // 更新游标位置
+        forks.position = newPosition
+        // 清空新的游标位置的消息（因为已经在主分支了，所以清理以节省空间）
+        forks.lists[newPosition].messages = []
+        messageForksHash[forkMessageId] = forks
+        return { data, updated: true }
+    }
+
+    let { data, updated } = updateFn(currentSession.messages)
+    if (updated) {
+        modify({ ...currentSession, messages: data, messageForksHash })
+        // scrollActions.scrollToMessage(forkMessageId, 'start')
+        return
+    }
+    for (let i = (currentSession.threads || []).length - 1; i >= 0; i--) {
+        const thread = (currentSession.threads || [])[i]
+        const { data, updated } = updateFn(thread.messages)
+        if (updated) {
+            modify({
+                ...currentSession,
+                threads: currentSession.threads?.map(t => t.id === thread.id ? { ...t, messages: data } : t),
+                messageForksHash,
+            })
+            // scrollActions.scrollToMessage(forkMessageId, 'start')
+            return
+        }
+    }
 }

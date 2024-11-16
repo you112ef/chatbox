@@ -105,6 +105,17 @@ export interface Session {
     settings?: Partial<ReturnType<typeof settings2SessionSettings>>
     threads?: SessionThread[] // 历史话题列表
     threadName?: string // 当前话题名称
+    messageForksHash?: Record<
+        string,
+        {
+            position: number // 当前分叉列表的游标
+            lists: {
+                id: string // fork list id
+                messages: Message[]
+            }[]
+            createdAt: number
+        }
+    > // 消息 ID 对应的分叉数据
 }
 
 // 话题

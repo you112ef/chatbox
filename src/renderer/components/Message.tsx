@@ -147,11 +147,12 @@ function _Message(props: Props) {
 
     const handleRefresh = () => {
         handleStop()
-        sessionActions.refreshMessage(props.sessionId, msg)
+        sessionActions.regenerateInNewFork(props.sessionId, msg)
+        // sessionActions.generate(props.sessionId, msg)
     }
 
     const onGenerateMore = () => {
-        sessionActions.refreshMessage(props.sessionId, msg, true)
+        sessionActions.generateMore(props.sessionId, msg.id)
     }
 
     const onCopyMsg = () => {
@@ -638,11 +639,11 @@ function _Message(props: Props) {
                                                     </Tooltip>
                                                 )
                                             }
-                                            {!msg.generating && msg.role === 'user' && (
+                                            {msg.role !== 'assistant' && (
                                                 <Tooltip title={t('Reply Again Below')} placement="top">
                                                     <IconButton
                                                         aria-label="Reply Again Below"
-                                                        onClick={handleRefresh}
+                                                        onClick={onGenerateMore}
                                                         color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
                                                     >
                                                         <SouthIcon fontSize="small" />
