@@ -18,7 +18,7 @@ export default function ExitFullscreenButton() {
         // 监听窗口变化事件
         const handleResize = debounce(() => {
             checkFullscreen()
-        }, 5 * 1000)
+        }, 1 * 1000)
         window.addEventListener('resize', handleResize)
         return () => {
             window.removeEventListener('resize', handleResize)
