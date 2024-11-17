@@ -43,8 +43,8 @@ export default function AIProviderSelect(props: ModelConfigProps) {
             id: `custom-provider-${Date.now()}`,
             name: t('Untitled'),
             api: 'openai',
-            host: 'https://api.openai.com',
-            path: '/v1/chat/completions',
+            host: 'https://api.openai.com/v1',
+            path: '/chat/completions',
             key: '',
             model: 'gpt-4o',
         }

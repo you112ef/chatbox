@@ -82,8 +82,8 @@ export default function CustomProviderSetting(props: ModelConfigProps) {
                 fullWidth
                 variant="outlined"
                 value={customProvider.host}
-                placeholder="https://api.openai.com"
-                defaultValue='https://api.openai.com'
+                placeholder="https://api.openai.com/v1"
+                defaultValue='https://api.openai.com/v1'
                 onValueChange={(value) => {
                     value = value.trim()
                     if (value.length > 4 && !value.startsWith('http')) {
@@ -99,8 +99,8 @@ export default function CustomProviderSetting(props: ModelConfigProps) {
                 fullWidth
                 variant="outlined"
                 value={customProvider.path}
-                placeholder="/v1/chat/completions"
-                defaultValue="/v1/chat/completions"
+                placeholder="/chat/completions"
+                defaultValue="/chat/completions"
                 onValueChange={(value) => {
                     setCustomProvider({ ...customProvider, path: value.trim() })
                 }}
