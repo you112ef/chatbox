@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/react'
 import platform from '../platform'
+import { CHATBOX_BUILD_TARGET, CHATBOX_BUILD_PLATFORM } from '@/variables'
 
 ;(async () => {
     const settings = await platform.getSettings()
@@ -24,5 +25,14 @@ import platform from '../platform'
         replaysSessionSampleRate: 0.05, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
         replaysOnErrorSampleRate: 0.05, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
         release: version,
+        // 设置全局标签
+        initialScope: {
+            tags: {
+                platform: platform.type,
+                app_version: version,
+                build_target: CHATBOX_BUILD_TARGET,
+                build_platform: CHATBOX_BUILD_PLATFORM,
+            },
+        },
     })
 })()
