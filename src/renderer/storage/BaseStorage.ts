@@ -4,6 +4,10 @@ export default class BaseStorage {
     constructor() {}
 
     public async setItem<T>(key: string, value: T): Promise<void> {
+        return this.setItemNow(key, value)
+    }
+
+    public async setItemNow<T>(key: string, value: T): Promise<void> {
         return platform.setStoreValue(key, value)
     }
 
@@ -12,7 +16,7 @@ export default class BaseStorage {
         let value: any = await platform.getStoreValue(key)
         if (value === undefined || value === null) {
             value = initialValue
-            this.setItem(key, value)
+            this.setItemNow(key, value)
         }
         return value
     }

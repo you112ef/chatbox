@@ -17,27 +17,27 @@ async function _migrate() {
     if (configVersion < 1) {
         await migrate_0_to_1()
         configVersion = 1
-        await storage.setItem(StorageKey.ConfigVersion, configVersion)
+        await storage.setItemNow(StorageKey.ConfigVersion, configVersion)
     }
     if (configVersion < 2) {
         await migrate_1_to_2()
         configVersion = 2
-        await storage.setItem(StorageKey.ConfigVersion, configVersion)
+        await storage.setItemNow(StorageKey.ConfigVersion, configVersion)
     }
     if (configVersion < 3) {
         await migrate_2_to_3()
         configVersion = 3
-        await storage.setItem(StorageKey.ConfigVersion, configVersion)
+        await storage.setItemNow(StorageKey.ConfigVersion, configVersion)
     }
     if (configVersion < 4) {
         await migrate_3_to_4()
         configVersion = 4
-        await storage.setItem(StorageKey.ConfigVersion, configVersion)
+        await storage.setItemNow(StorageKey.ConfigVersion, configVersion)
     }
     if (configVersion < 5) {
         const needRelaunch = await migrate_4_to_5()
         configVersion = 5
-        await storage.setItem(StorageKey.ConfigVersion, configVersion)
+        await storage.setItemNow(StorageKey.ConfigVersion, configVersion)
         if (needRelaunch) {
             await platform.relaunch()
         }
@@ -45,7 +45,7 @@ async function _migrate() {
     if (configVersion < 6) {
         await migrate_5_to_6()
         configVersion = 6
-        await storage.setItem(StorageKey.ConfigVersion, configVersion)
+        await storage.setItemNow(StorageKey.ConfigVersion, configVersion)
     }
 }
 
@@ -124,7 +124,7 @@ async function migrate_4_to_5(): Promise<boolean> {
         return false
     }
     for (const key of keys) {
-        await storage.setItem(key, oldStore.get(key))
+        await storage.setItemNow(key, oldStore.get(key))
     }
     return true
 }

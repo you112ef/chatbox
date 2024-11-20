@@ -26,10 +26,10 @@ export default class StoreStorage extends BaseStorage {
             } else {
                 value = defaultSessionsForEN as T
             }
-            await super.setItem(key, value)
+            await super.setItemNow(key, value)
         }
         if (key === StorageKey.Configs && value === initialValue) {
-            await super.setItem(key, initialValue) // 持久化初始生成的 uuid
+            await super.setItemNow(key, initialValue) // 持久化初始生成的 uuid
         }
 
         return value
@@ -38,9 +38,13 @@ export default class StoreStorage extends BaseStorage {
     // 对 setItem 进行防抖，应对消息生成时频繁写入时导致的性能问题
     // 实际用户反馈中发现，频繁写入时，会导致内存占用过高甚至卡顿，尤其是一些安全软件会自动扫描新创建的 JSON 文件
     private setItemWithDebounce = debounce((key: string, value: any) => {
-        return super.setItem(key, value)
+        return super.setItemNow(key, value)
     }, 1000, { maxWait: 60 * 1000 })
 
+    /**
+     * 异步写入（防抖）
+     * @deprecated 此方法仅用于兼容 jotail 的 atomWithStorage 的写入，不建议直接使用
+     */
     public async setItem<T>(key: string, value: T): Promise<void> {
         return this.setItemWithDebounce(key, value)
     }
