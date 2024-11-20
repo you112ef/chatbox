@@ -1,7 +1,6 @@
 import BaseStorage from './BaseStorage'
 import { defaultSessionsForEN, defaultSessionsForCN } from '../packages/initial_data'
 import platform from '@/platform'
-import { debounce } from 'lodash'
 
 export enum StorageKey {
     ChatSessions = 'chat-sessions',
@@ -34,15 +33,4 @@ export default class StoreStorage extends BaseStorage {
 
         return value
     }
-
-    // 对 setItem 进行防抖，应对消息生成时频繁写入时导致的性能问题
-    // 实际用户反馈中发现，频繁写入时，会导致内存占用过高甚至卡顿，尤其是一些安全软件会自动扫描新创建的 JSON 文件
-    private setItemWithDebounce = debounce((key: string, value: any) => {
-        return super.setItem(key, value)
-    }, 1000, { maxWait: 60 * 1000 })
-
-    public async setItem<T>(key: string, value: T): Promise<void> {
-        return this.setItemWithDebounce(key, value)
-    }
-
 }
