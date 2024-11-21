@@ -1,9 +1,8 @@
-import platforms from "@/platform";
-
+import platforms from '@/platform'
 ;(() => {
     try {
         platforms.initTracking()
-    } catch(e) {
+    } catch (e) {
         console.error(e)
     }
-})();
+})()

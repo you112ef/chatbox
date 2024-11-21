@@ -5,12 +5,12 @@ import { useAtomValue } from 'jotai'
 import { Sparkles, ChevronsUpDown } from 'lucide-react'
 import MiniButton from './MiniButton'
 import _ from 'lodash'
-import MenuItem from '@mui/material/MenuItem';
+import MenuItem from '@mui/material/MenuItem'
 import StyledMenu from './StyledMenu'
 import * as sessionActions from '@/stores/sessionActions'
 import { getModelSettingUtil } from '@/packages/model-setting-utils'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
-import Divider from '@mui/material/Divider';
+import Divider from '@mui/material/Divider'
 import useModelConfig from '@/hooks/useModelConfig'
 import { chatboxAIModelLabelHash } from './ChatboxAIModelSelect'
 import { ModelProvider } from '../../shared/types'
@@ -21,31 +21,27 @@ export function ChatModelSelector(props: {}) {
     const theme = useTheme()
     const currentSessionId = useAtomValue(atoms.currentSessionIdAtom)
 
-    const {
-        optionGroups,
-        currentModelOptionValue,
-        currentOption,
-        refreshWithRemoteOptionGroups,
-    } = useModelConfig(currentMergedSettings)
+    const { optionGroups, currentModelOptionValue, currentOption, refreshWithRemoteOptionGroups } =
+        useModelConfig(currentMergedSettings)
 
     const modelSettingUtil = getModelSettingUtil(currentMergedSettings.aiProvider)
 
     const [expandedGroups, setExpandedGroups] = useState<string[]>([])
     const onClickGroupName = (groupName: string) => {
         if (expandedGroups.includes(groupName)) {
-            setExpandedGroups(prev => prev.filter(name => name !== groupName))
+            setExpandedGroups((prev) => prev.filter((name) => name !== groupName))
         } else {
-            setExpandedGroups(prev => [...prev, groupName])
+            setExpandedGroups((prev) => [...prev, groupName])
         }
     }
 
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+    const open = Boolean(anchorEl)
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
+        setAnchorEl(event.currentTarget)
     }
     const handleMenuClose = () => {
-        setAnchorEl(null);
+        setAnchorEl(null)
     }
     const handleMenuItemSelect = (option: string) => {
         const currentSession = sessionActions.getSession(currentSessionId)
@@ -59,7 +55,7 @@ export function ChatModelSelector(props: {}) {
         handleMenuClose()
     }
 
-    const ITEM_HEIGHT = 48;
+    const ITEM_HEIGHT = 48
 
     useEffect(() => {
         if (open) {
@@ -71,35 +67,29 @@ export function ChatModelSelector(props: {}) {
 
     const isSmallScreen = useIsSmallScreen()
 
-    const labelHash = currentMergedSettings.aiProvider === ModelProvider.ChatboxAI
-        ? chatboxAIModelLabelHash
-        : {}
+    const labelHash = currentMergedSettings.aiProvider === ModelProvider.ChatboxAI ? chatboxAIModelLabelHash : {}
 
     return (
         <div>
-            {
-                isSmallScreen
-                    ? (
-                        <MiniButton className='w-auto flex items-center'
-                            style={{ color: theme.palette.text.primary }}
-                            onClick={handleMenuOpen}
-                        >
-                            <Sparkles size='20' strokeWidth={1} />
-                            <ChevronsUpDown size='16' strokeWidth={1} className='opacity-50' />
-                        </MiniButton>
-                    )
-                    : (
-                        <MiniButton className='mr-2 w-auto flex items-center'
-                            style={{ color: theme.palette.text.primary }}
-                            onClick={handleMenuOpen}
-                        >
-                            <span className='text-sm opacity-70'>
-                                {currentOption.label}
-                            </span>
-                            <ChevronsUpDown size='16' strokeWidth={1} className='opacity-50' />
-                        </MiniButton>
-                    )
-            }
+            {isSmallScreen ? (
+                <MiniButton
+                    className="w-auto flex items-center"
+                    style={{ color: theme.palette.text.primary }}
+                    onClick={handleMenuOpen}
+                >
+                    <Sparkles size="20" strokeWidth={1} />
+                    <ChevronsUpDown size="16" strokeWidth={1} className="opacity-50" />
+                </MiniButton>
+            ) : (
+                <MiniButton
+                    className="mr-2 w-auto flex items-center"
+                    style={{ color: theme.palette.text.primary }}
+                    onClick={handleMenuOpen}
+                >
+                    <span className="text-sm opacity-70">{currentOption.label}</span>
+                    <ChevronsUpDown size="16" strokeWidth={1} className="opacity-50" />
+                </MiniButton>
+            )}
             <StyledMenu
                 MenuListProps={{
                     'aria-labelledby': '',
@@ -123,57 +113,56 @@ export function ChatModelSelector(props: {}) {
                 }}
                 elevation={0}
             >
-                {optionGroups.map((group, index) => {
-                    const items: React.ReactNode[] = [];
-                    const isExpanded = expandedGroups.includes(group.group_name ?? '');
-                    if (index > 0 && group.group_name) {
-                        items.push(
-                            <MenuItem
-                                key={`group-${index}-group-name`}
-                                disabled={!group.collapsable}
-                                dense
-                                sx={{
-                                    opacity: group.collapsable && !isExpanded
-                                        ? 1
-                                        : 0.5,
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                }}
-                                onClick={() => onClickGroupName(group.group_name ?? '')}
-                            >
-                                <span>
-                                    {group.group_name}
-                                </span>
-                                {
-                                    group.collapsable && (
-                                        isExpanded
-                                            ? <ChevronDown className='w-4 h-4' strokeWidth={1} />
-                                            : <ChevronRight className='w-4 h-4' strokeWidth={1} />
-                                    )
-                                }
-                            </MenuItem>
-                        )
-                    }
-                    if (!group.collapsable || isExpanded) {
-                        items.push(...group.options.map(option => (
-                            <MenuItem
-                                key={`group-${index}-option-${option.value}`}
-                                selected={option.value === currentModelOptionValue}
-                                onClick={() => handleMenuItemSelect(option.value)}
-                                dense
-                            >
-                                {labelHash[option.value] || option.label}
-                            </MenuItem>
-                        )))
-                    }
-                    if (index < optionGroups.length - 1) {
-                        items.push(<Divider key={`group-${index}-divider`} />);
-                    }
-                    return items
-                }).flat()}
+                {optionGroups
+                    .map((group, index) => {
+                        const items: React.ReactNode[] = []
+                        const isExpanded = expandedGroups.includes(group.group_name ?? '')
+                        if (index > 0 && group.group_name) {
+                            items.push(
+                                <MenuItem
+                                    key={`group-${index}-group-name`}
+                                    disabled={!group.collapsable}
+                                    dense
+                                    sx={{
+                                        opacity: group.collapsable && !isExpanded ? 1 : 0.5,
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                    }}
+                                    onClick={() => onClickGroupName(group.group_name ?? '')}
+                                >
+                                    <span>{group.group_name}</span>
+                                    {group.collapsable &&
+                                        (isExpanded ? (
+                                            <ChevronDown className="w-4 h-4" strokeWidth={1} />
+                                        ) : (
+                                            <ChevronRight className="w-4 h-4" strokeWidth={1} />
+                                        ))}
+                                </MenuItem>
+                            )
+                        }
+                        if (!group.collapsable || isExpanded) {
+                            items.push(
+                                ...group.options.map((option) => (
+                                    <MenuItem
+                                        key={`group-${index}-option-${option.value}`}
+                                        selected={option.value === currentModelOptionValue}
+                                        onClick={() => handleMenuItemSelect(option.value)}
+                                        dense
+                                    >
+                                        {labelHash[option.value] || option.label}
+                                    </MenuItem>
+                                ))
+                            )
+                        }
+                        if (index < optionGroups.length - 1) {
+                            items.push(<Divider key={`group-${index}-divider`} />)
+                        }
+                        return items
+                    })
+                    .flat()}
             </StyledMenu>
         </div>
-    );
+    )
 }

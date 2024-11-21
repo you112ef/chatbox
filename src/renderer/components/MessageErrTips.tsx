@@ -72,17 +72,23 @@ export default function MessageErrTips(props: { msg: Message }) {
                     }}
                     components={{
                         OpenSettingButton: (
-                            <Link className="cursor-pointer italic" onClick={() => setOpenSettingDialogAtom('ai')}></Link>
+                            <Link
+                                className="cursor-pointer italic"
+                                onClick={() => setOpenSettingDialogAtom('ai')}
+                            ></Link>
                         ),
                         OpenMorePlanButton: (
-                            <Link className="cursor-pointer italic" onClick={() => {
-                                platform.openLink('https://chatboxai.app/redirect_app/view_more_plans')
-                                trackingEvent('click_view_more_plans_button_from_upgrade_error_tips', { event_category: 'user' })
-                            }}></Link>
+                            <Link
+                                className="cursor-pointer italic"
+                                onClick={() => {
+                                    platform.openLink('https://chatboxai.app/redirect_app/view_more_plans')
+                                    trackingEvent('click_view_more_plans_button_from_upgrade_error_tips', {
+                                        event_category: 'user',
+                                    })
+                                }}
+                            ></Link>
                         ),
-                        LinkToHomePage: (
-                            <LinkTargetBlank href="https://chatboxai.app"></LinkTargetBlank>
-                        ),
+                        LinkToHomePage: <LinkTargetBlank href="https://chatboxai.app"></LinkTargetBlank>,
                         LinkToAdvancedFileProcessing: (
                             <LinkTargetBlank href="https://chatboxai.app/redirect_app/advanced_file_processing"></LinkTargetBlank>
                         ),
@@ -108,16 +114,18 @@ export default function MessageErrTips(props: { msg: Message }) {
     }
     return (
         <Alert icon={false} severity="error">
-            {tips.map((tip, i) => (<b key={i}>{tip}</b>))}
-            {
-                onlyShowTips
-                    ? <></>
-                    : <>
-                        <br />
-                        <br />
-                        {msg.error}
-                    </>
-            }
+            {tips.map((tip, i) => (
+                <b key={i}>{tip}</b>
+            ))}
+            {onlyShowTips ? (
+                <></>
+            ) : (
+                <>
+                    <br />
+                    <br />
+                    {msg.error}
+                </>
+            )}
         </Alert>
     )
 }

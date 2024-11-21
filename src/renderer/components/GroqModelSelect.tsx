@@ -16,7 +16,7 @@ export default function GropModelSelect(props: Props) {
     const { t } = useTranslation()
     const [optionGroups, setOptionGroups] = useState<ModelOptionGroup[]>([])
     useEffect(() => {
-        ; (async () => {
+        ;(async () => {
             // 先获取本地模型选项组
             const modelConfig = new GroqSettingUtil()
             const settings = settingActions.getSettings()

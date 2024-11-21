@@ -23,10 +23,7 @@ import rustIcon from '../static/icons/icons8-rust-48.png'
 import shellIcon from '../static/icons/icons8-shell-48.png'
 import xmlIcon from '../static/icons/icons8-xml-48.png'
 
-export default function FileIcon(props: {
-    filename: string
-    className?: string
-}) {
+export default function FileIcon(props: { filename: string; className?: string }) {
     const { filename, className } = props
     const ext = filename.split('.').pop() || ''
     // txt, md, html, doc, docx, pdf, excel, pptx, csv, and all text-based files, including code files.
@@ -79,12 +76,8 @@ export default function FileIcon(props: {
     }
     const src = extIconHash[ext]
     if (src) {
-        return (
-            <img src={src} className={className} />
-        )
+        return <img src={src} className={className} />
     } else {
-        return (
-            <FileText className={className} strokeWidth={1} />
-        )
+        return <FileText className={className} strokeWidth={1} />
     }
 }

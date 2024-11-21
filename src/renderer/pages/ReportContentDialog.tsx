@@ -42,7 +42,7 @@ export default function ReportContentDialog(props: {}) {
             <DialogContent>
                 <TextField
                     label={t('Report Content ID')}
-                    className='w-full'
+                    className="w-full"
                     autoFocus={!isSmallScreen}
                     value={reportObject.id}
                     // onChange={(e) => setReportObject({ ...reportObject, id: e.target.value })}
@@ -70,8 +70,8 @@ export default function ReportContentDialog(props: {}) {
                 />
                 <TextField
                     label={t('Details')}
-                    type='text'
-                    className='w-full'
+                    type="text"
+                    className="w-full"
                     autoFocus={!isSmallScreen}
                     multiline // multiline 需要和 maxRows 一起使用，否则长文本可能会导致退出编辑？
                     minRows={2}

@@ -19,11 +19,12 @@ export default function OpenAttachLinkDialog(props: {}) {
             return
         }
         const raw = input.trim()
-        const urls = raw.split(/\s+/)
-            .map(url => url.trim())
-            .map(url => url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`)
-        setInputBoxLinks(links => {
-            let newLinks = [...links, ...urls.map(u => ({ url: u }))]
+        const urls = raw
+            .split(/\s+/)
+            .map((url) => url.trim())
+            .map((url) => (url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`))
+        setInputBoxLinks((links) => {
+            let newLinks = [...links, ...urls.map((u) => ({ url: u }))]
             newLinks = _.uniqBy(newLinks, 'url')
             newLinks = newLinks.slice(-6) // 最多插入 6 个链接
             return newLinks
@@ -54,7 +55,7 @@ export default function OpenAttachLinkDialog(props: {}) {
             <DialogTitle>{t('Attach Link')}</DialogTitle>
             <DialogContent>
                 <TextField
-                    className='w-full'
+                    className="w-full"
                     autoFocus
                     multiline // multiline 需要和 maxRows 一起使用，否则长文本可能会导致退出编辑？
                     minRows={5}

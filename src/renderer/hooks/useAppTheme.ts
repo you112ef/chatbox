@@ -59,18 +59,20 @@ export function getThemeDesign(realTheme: 'light' | 'dark', fontSize: number, la
             ...(realTheme === 'light'
                 ? {}
                 : {
-                    background: {
-                        default: 'rgb(40, 40, 40)',
-                        paper: 'rgb(40, 40, 40)',
-                    },
-                }),
+                      background: {
+                          default: 'rgb(40, 40, 40)',
+                          paper: 'rgb(40, 40, 40)',
+                      },
+                  }),
         },
         typography: {
             // In Chinese and Japanese the characters are usually larger,
             // so a smaller fontsize may be appropriate.
-            ...(language === 'ar' ? {
-                fontFamily: 'Cairo, Arial, sans-serif',
-            } : {}),
+            ...(language === 'ar'
+                ? {
+                      fontFamily: 'Cairo, Arial, sans-serif',
+                  }
+                : {}),
             fontSize,
         },
         direction: language === 'ar' ? 'rtl' : 'ltr',

@@ -8,9 +8,9 @@ import * as settingActions from '../stores/settingActions'
 import { flatten } from 'lodash'
 
 export interface Props {
-    model: ModelSettings['model'],
-    openaiCustomModel: ModelSettings['openaiCustomModel'],
-    openaiCustomModelOptions: ModelSettings['openaiCustomModelOptions'],
+    model: ModelSettings['model']
+    openaiCustomModel: ModelSettings['openaiCustomModel']
+    openaiCustomModelOptions: ModelSettings['openaiCustomModelOptions']
     onUpdateModel(updated: ModelSettings['model']): void
     onUpdateOpenaiCustomModel(updated: ModelSettings['openaiCustomModel']): void
     onUpdateOpenaiCustomModelOptions(updated: ModelSettings['openaiCustomModelOptions']): void
@@ -18,11 +18,19 @@ export interface Props {
 }
 
 export default function OpenAIModelSelect(props: Props) {
-    const { model, openaiCustomModel, openaiCustomModelOptions, onUpdateModel, onUpdateOpenaiCustomModel, onUpdateOpenaiCustomModelOptions, className } = props
+    const {
+        model,
+        openaiCustomModel,
+        openaiCustomModelOptions,
+        onUpdateModel,
+        onUpdateOpenaiCustomModel,
+        onUpdateOpenaiCustomModelOptions,
+        className,
+    } = props
     const { t } = useTranslation()
     const [optionGroups, setOptionGroups] = useState<ModelOptionGroup[]>([])
     useEffect(() => {
-        ; (async () => {
+        ;(async () => {
             // 先获取本地模型选项组
             const modelConfig = new OpenAISettingUtil()
             const settings = settingActions.getSettings()

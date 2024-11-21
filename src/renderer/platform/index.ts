@@ -1,8 +1,8 @@
-import DesktopPlatform from "./desktop_platform"
-import { Platform } from "./interfaces"
-import WebPlatform from "./web_platform"
-import MobilePlatform from "./mobile_platform"
-import { CHATBOX_BUILD_TARGET } from "@/variables"
+import DesktopPlatform from './desktop_platform'
+import { Platform } from './interfaces'
+import WebPlatform from './web_platform'
+import MobilePlatform from './mobile_platform'
+import { CHATBOX_BUILD_TARGET } from '@/variables'
 
 function initPlatform(): Platform {
     if (CHATBOX_BUILD_TARGET === 'mobile_app') {

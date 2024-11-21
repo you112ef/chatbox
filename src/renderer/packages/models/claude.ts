@@ -87,7 +87,7 @@ export const modelConfig = {
         contextWindow: 100_000,
         maxOutput: 4096,
         vision: false,
-    }
+    },
 }
 
 export const claudeModels: ClaudeModel[] = Object.keys(modelConfig) as ClaudeModel[]
@@ -107,7 +107,11 @@ export default class Claude extends Base {
         this.options = options
     }
 
-    async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+    async callChatCompletion(
+        rawMessages: Message[],
+        signal?: AbortSignal,
+        onResultChange?: onResultChange
+    ): Promise<string> {
         // 经过测试，Bedrock Claude 3 的消息必须以 user 角色开始，并且 user 和 assistant 角色必须交替出现，否则都会出现回答异常
         rawMessages = this.sequenceMessages(rawMessages)
 
@@ -170,7 +174,7 @@ export default class Claude extends Base {
             },
             {
                 model: this.options.claudeModel,
-                max_tokens: modelConfig[this.options.claudeModel]   // 兼容旧版本的问题（不一定存在）
+                max_tokens: modelConfig[this.options.claudeModel] // 兼容旧版本的问题（不一定存在）
                     ? modelConfig[this.options.claudeModel].maxOutput
                     : 4096,
                 system: prompt,
@@ -179,7 +183,8 @@ export default class Claude extends Base {
             },
             {
                 signal: signal,
-                useProxy: platform.type !== 'desktop' && this.options.claudeApiHost === defaults.settings().claudeApiHost
+                useProxy:
+                    platform.type !== 'desktop' && this.options.claudeApiHost === defaults.settings().claudeApiHost,
             }
         )
         let result = ''
@@ -202,15 +207,18 @@ export default class Claude extends Base {
 
 export interface ClaudeMessage {
     role: 'assistant' | 'user'
-    content: ({
-        text: string
-        type: 'text'
-    } | {
-        type: "image",
-        source: {
-            type: "base64",
-            media_type: string
-            data: string
-        },
-    })[]
+    content: (
+        | {
+              text: string
+              type: 'text'
+          }
+        | {
+              type: 'image'
+              source: {
+                  type: 'base64'
+                  media_type: string
+                  data: string
+              }
+          }
+    )[]
 }

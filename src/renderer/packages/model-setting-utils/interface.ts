@@ -1,4 +1,4 @@
-import { ModelSettings, Session, SessionType, Settings, ModelOptionGroup } from "src/shared/types"
+import { ModelSettings, Session, SessionType, Settings, ModelOptionGroup } from 'src/shared/types'
 
 export interface ModelSettingUtil {
     getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string>

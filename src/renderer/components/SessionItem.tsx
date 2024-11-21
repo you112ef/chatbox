@@ -15,8 +15,8 @@ import * as sessionActions from '../stores/sessionActions'
 import * as atoms from '@/stores/atoms'
 import { cn } from '@/lib/utils'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
-import VrpanoIcon from '@mui/icons-material/Vrpano';
-import { ImageInStorage } from "@/components/Image";
+import VrpanoIcon from '@mui/icons-material/Vrpano'
+import { ImageInStorage } from '@/components/Image'
 
 export interface Props {
     session: Session
@@ -51,12 +51,11 @@ function _SessionItem(props: Props) {
                 selected={selected}
                 onClick={onClick}
                 sx={{ padding: '0.1rem', margin: '0.1rem' }}
-                className='group/session-item'
+                className="group/session-item"
             >
                 <ListItemIcon>
-                    <IconButton
-                        onClick={onClick}>
-                        { session.assistantAvatarKey ? (
+                    <IconButton onClick={onClick}>
+                        {session.assistantAvatarKey ? (
                             <Avatar
                                 sizes={medianSize}
                                 sx={{
@@ -65,12 +64,17 @@ function _SessionItem(props: Props) {
                                     backgroundColor: theme.palette.primary.main,
                                 }}
                             >
-                                <ImageInStorage storageKey={session.assistantAvatarKey}
-                                                className='object-cover object-center w-full h-full' />
-
+                                <ImageInStorage
+                                    storageKey={session.assistantAvatarKey}
+                                    className="object-cover object-center w-full h-full"
+                                />
                             </Avatar>
                         ) : session.picUrl ? (
-                            <Avatar sizes={medianSize} sx={{ width: medianSize, height: medianSize }} src={session.picUrl} />
+                            <Avatar
+                                sizes={medianSize}
+                                sx={{ width: medianSize, height: medianSize }}
+                                src={session.picUrl}
+                            />
                         ) : session.type === 'picture' ? (
                             <VrpanoIcon fontSize="small" />
                         ) : (
@@ -83,13 +87,15 @@ function _SessionItem(props: Props) {
                         {session.name}
                     </Typography>
                 </ListItemText>
-                <span className={cn(session.starred || anchorEl || isSmallScreen ? 'inline-flex' : 'hidden group-hover/session-item:inline-flex')}>
+                <span
+                    className={cn(
+                        session.starred || anchorEl || isSmallScreen
+                            ? 'inline-flex'
+                            : 'hidden group-hover/session-item:inline-flex'
+                    )}
+                >
                     <IconButton onClick={handleMenuClick} sx={{ color: 'primary.main' }}>
-                        {session.starred ? (
-                            <StarIcon fontSize="small" />
-                        ) : (
-                            <MoreHorizOutlinedIcon fontSize="small" />
-                        )}
+                        {session.starred ? <StarIcon fontSize="small" /> : <MoreHorizOutlinedIcon fontSize="small" />}
                     </IconButton>
                 </span>
             </MenuItem>

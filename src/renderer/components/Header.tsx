@@ -11,10 +11,10 @@ import Toolbar from './Toolbar'
 import { useIsSmallScreen } from '../hooks/useScreenChange'
 import { PanelRightClose } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from '@mui/icons-material/Edit'
 import * as settingActions from '../stores/settingActions'
 
-interface Props { }
+interface Props {}
 
 export default function Header(props: Props) {
     const { t } = useTranslation()
@@ -31,17 +31,11 @@ export default function Header(props: Props) {
         if (!autoGenerateTitle) {
             return
         }
-        if (
-            currentSession.name === 'Untitled'
-            && currentSession.messages.length >= 2
-        ) {
+        if (currentSession.name === 'Untitled' && currentSession.messages.length >= 2) {
             sessionActions.generateNameAndThreadName(currentSession.id)
-            return  // 生成了会话名称，就不再生成 thread 名称
+            return // 生成了会话名称，就不再生成 thread 名称
         }
-        if (
-            !currentSession.threadName
-            && currentSession.messages.length >= 2
-        ) {
+        if (!currentSession.threadName && currentSession.messages.length >= 2) {
             sessionActions.generateThreadName(currentSession.id)
         }
     }, [currentSession.messages.length])
@@ -51,13 +45,15 @@ export default function Header(props: Props) {
     }
 
     let EditButton: React.ReactNode | null = null
-    if (isChatSession(currentSession) && (currentSession.settings)) {
+    if (isChatSession(currentSession) && currentSession.settings) {
         EditButton = (
             <Tooltip
                 title={t('Current conversation configured with specific model settings')}
                 className="cursor-pointer"
             >
-                <EditIcon className="ml-1 cursor-pointer w-4 h-4 opacity-30" fontSize="small"
+                <EditIcon
+                    className="ml-1 cursor-pointer w-4 h-4 opacity-30"
+                    fontSize="small"
                     style={{ color: theme.palette.warning.main }}
                 />
             </Tooltip>
@@ -79,20 +75,12 @@ export default function Header(props: Props) {
             </Tooltip>
         )
     } else {
-        EditButton = (
-            <EditIcon className="ml-1 cursor-pointer w-4 h-4 opacity-30" fontSize="small"
-            />
-        )
+        EditButton = <EditIcon className="ml-1 cursor-pointer w-4 h-4 opacity-30" fontSize="small" />
     }
 
     return (
         <div
-            className={cn(
-                'flex flex-row',
-                isSmallScreen
-                    ? ''
-                    : showSidebar ? 'sm:pl-3 sm:pr-2' : 'pr-2',
-            )}
+            className={cn('flex flex-row', isSmallScreen ? '' : showSidebar ? 'sm:pl-3 sm:pr-2' : 'pr-2')}
             style={{
                 borderBottomWidth: '1px',
                 borderBottomStyle: 'solid',
@@ -100,30 +88,23 @@ export default function Header(props: Props) {
             }}
         >
             {(!showSidebar || isSmallScreen) && (
-                <Box className={cn(
-                    'px-1',
-                    "pt-3 pb-2",
-                )}
-                    onClick={() => setShowSidebar(!showSidebar)}
-                >
-                    <IconButton sx={
-                        isSmallScreen
-                            ? {
-                                borderColor: theme.palette.action.hover,
-                                borderStyle: 'solid',
-                                borderWidth: 1,
-                            }
-                            : {}
-                    }>
-                        <PanelRightClose size='20' strokeWidth={1.5} />
+                <Box className={cn('px-1', 'pt-3 pb-2')} onClick={() => setShowSidebar(!showSidebar)}>
+                    <IconButton
+                        sx={
+                            isSmallScreen
+                                ? {
+                                      borderColor: theme.palette.action.hover,
+                                      borderStyle: 'solid',
+                                      borderWidth: 1,
+                                  }
+                                : {}
+                        }
+                    >
+                        <PanelRightClose size="20" strokeWidth={1.5} />
                     </IconButton>
                 </Box>
-            )
-            }
-            <div className={cn(
-                'w-full mx-auto flex flex-row',
-                'pt-3 pb-2',
-            )}>
+            )}
+            <div className={cn('w-full mx-auto flex flex-row', 'pt-3 pb-2')}>
                 <Typography
                     variant="h6"
                     color="inherit"
@@ -152,6 +133,6 @@ export default function Header(props: Props) {
                 }
                 <Toolbar />
             </div>
-        </div >
+        </div>
     )
 }

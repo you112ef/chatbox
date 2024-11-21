@@ -25,13 +25,19 @@ import * as scrollActions from './scrollActions'
 import storage from '../storage'
 import i18n from '../i18n'
 import { getModel } from '@/packages/models'
-import { AIProviderNoImplementedPaintError, NetworkError, ApiError, BaseError, ChatboxAIAPIError } from '@/packages/models/errors'
+import {
+    AIProviderNoImplementedPaintError,
+    NetworkError,
+    ApiError,
+    BaseError,
+    ChatboxAIAPIError,
+} from '@/packages/models/errors'
 import platform from '../platform'
 import * as dom from '@/hooks/dom'
 import * as remote from '@/packages/remote'
 import { throttle } from 'lodash'
 import * as settingActions from './settingActions'
-import { formatChatAsHtml, formatChatAsMarkdown, formatChatAsTxt } from "@/lib/format-chat";
+import { formatChatAsHtml, formatChatAsMarkdown, formatChatAsTxt } from '@/lib/format-chat'
 import { countWord } from '@/packages/word-count'
 import { estimateTokensFromMessages } from '@/packages/token'
 import { getModelDisplayName, isModelSupportImageInput } from '@/packages/model-setting-utils'
@@ -111,7 +117,7 @@ export function createEmpty(type: 'chat' | 'picture') {
 /**
  * 创建 n 个空图片消息（loading 中，用于占位）
  * @param n 空消息数量
- * @returns 
+ * @returns
  */
 export function createLoadingPictures(n: number): MessagePicture[] {
     const ret: MessagePicture[] = []
@@ -134,8 +140,8 @@ export function switchCurrentSession(sessionId: string) {
 
 /**
  * 切换当前会话，根据排序后的索引
- * @param index 
- * @returns 
+ * @param index
+ * @returns
  */
 export function switchToIndex(index: number) {
     const store = getDefaultStore()
@@ -150,7 +156,7 @@ export function switchToIndex(index: number) {
 /**
  * 将当前会话切换到下一个，根据排序后到会话列表顺序
  * @param reversed 是否反向切换到上一个
- * @returns 
+ * @returns
  */
 export function switchToNext(reversed?: boolean) {
     const store = getDefaultStore()
@@ -174,7 +180,7 @@ export function switchToNext(reversed?: boolean) {
 
 /**
  * 删除会话，根据 id
- * @param session 
+ * @param session
  */
 export function remove(session: Session) {
     const store = getDefaultStore()
@@ -192,21 +198,23 @@ export function removeThread(sessionId: string, threadId: string) {
         removeCurrentThread(sessionId)
         return
     }
-    store.set(atoms.sessionsAtom, (sessions) => sessions.map((s) => {
-        if (s.id === sessionId && s.threads) {
-            s = {
-                ...s,
-                threads: s.threads.filter((t) => t.id !== threadId)
+    store.set(atoms.sessionsAtom, (sessions) =>
+        sessions.map((s) => {
+            if (s.id === sessionId && s.threads) {
+                s = {
+                    ...s,
+                    threads: s.threads.filter((t) => t.id !== threadId),
+                }
             }
-        }
-        return s
-    }))
+            return s
+        })
+    )
 }
 
 /**
  * 清空会话中的所有消息，仅保留 system prompt
  * @param sessionId
- * @returns 
+ * @returns
  */
 export function clear(sessionId: string) {
     const store = getDefaultStore()
@@ -245,7 +253,7 @@ export async function copy(source: Session) {
 /**
  * 根据 id 获取会话的最新数据，一般用于无需监听会话变化的场景下查询数据
  * @param sessionId
- * @returns 
+ * @returns
  */
 export function getSession(sessionId: string) {
     const store = getDefaultStore()
@@ -260,7 +268,7 @@ export function getSession(sessionId: string) {
 export function refreshContextAndCreateNewThread(sessionId: string) {
     const store = getDefaultStore()
     store.set(atoms.sessionsAtom, (sessions) => {
-        return sessions.map(s => {
+        return sessions.map((s) => {
             if (s.id !== sessionId) {
                 return s
             }
@@ -280,9 +288,7 @@ export function refreshContextAndCreateNewThread(sessionId: string) {
             return {
                 ...s,
                 threads: s.threads ? [...s.threads, newThread] : [newThread],
-                messages: systemPrompt
-                    ? [systemPrompt]
-                    : [createMessage('system', defaults.getDefaultPrompt())],
+                messages: systemPrompt ? [systemPrompt] : [createMessage('system', defaults.getDefaultPrompt())],
                 threadName: '',
                 messageForksHash: undefined,
             }
@@ -298,32 +304,32 @@ export function startNewThread() {
     setTimeout(() => {
         scrollActions.scrollToBottom()
         dom.focusMessageInput()
-    }, 100);
+    }, 100)
 }
 
 /**
  * 切换到历史记录中的某个上下文，原有上下文存储到历史记录中
- * @param sessionId 
- * @param threadId 
+ * @param sessionId
+ * @param threadId
  */
 export function switchThread(sessionId: string, threadId: string) {
     const store = getDefaultStore()
     store.set(atoms.sessionsAtom, (sessions) => {
-        return sessions.map(s => {
+        return sessions.map((s) => {
             if (s.id !== sessionId) {
                 return s
             }
             if (!s.threads) {
                 return s
             }
-            const target = s.threads.find(h => h.id === threadId)
+            const target = s.threads.find((h) => h.id === threadId)
             if (!target) {
                 return s
             }
             for (const m of s.messages) {
                 m?.cancel?.()
             }
-            const newThreads = s.threads.filter(h => h.id !== threadId)
+            const newThreads = s.threads.filter((h) => h.id !== threadId)
             newThreads.push({
                 id: uuidv4(),
                 name: s.threadName || s.name,
@@ -348,13 +354,13 @@ export function switchThread(sessionId: string, threadId: string) {
 export function removeCurrentThread(sessionId: string) {
     const store = getDefaultStore()
     store.set(atoms.sessionsAtom, (sessions) => {
-        return sessions.map(s => {
+        return sessions.map((s) => {
             if (s.id !== sessionId) {
                 return s
             }
             const newSession: Session = {
                 ...s,
-                messages: s.messages.filter(m => m.role === 'system').slice(0, 1),  // 仅保留一条系统提示
+                messages: s.messages.filter((m) => m.role === 'system').slice(0, 1), // 仅保留一条系统提示
                 threadName: undefined,
             }
             if (s.threads && s.threads.length > 0) {
@@ -370,8 +376,8 @@ export function removeCurrentThread(sessionId: string) {
 
 /**
  * 在当前主题的最后插入一条消息。
- * @param sessionId 
- * @param msg 
+ * @param sessionId
+ * @param msg
  */
 export function insertMessage(sessionId: string, msg: Message) {
     const store = getDefaultStore()
@@ -394,9 +400,9 @@ export function insertMessage(sessionId: string, msg: Message) {
 
 /**
  * 在某条消息后面插入新消息。如果消息在历史主题中，也能支持插入
- * @param sessionId 
- * @param msg 
- * @param afterMsgId 
+ * @param sessionId
+ * @param msg
+ * @param afterMsgId
  */
 export function insertMessageAfter(sessionId: string, msg: Message, afterMsgId: string) {
     const store = getDefaultStore()
@@ -420,7 +426,7 @@ export function insertMessageAfter(sessionId: string, msg: Message, afterMsgId: 
             }
             s.messages = handle(s.messages)
             if (s.threads && !hasHandled) {
-                s.threads = s.threads.map(h => {
+                s.threads = s.threads.map((h) => {
                     h.messages = handle(h.messages)
                     return h
                 })
@@ -432,9 +438,9 @@ export function insertMessageAfter(sessionId: string, msg: Message, afterMsgId: 
 
 /**
  * 根据 id 修改消息。如果消息在历史主题中，也能支持修改
- * @param sessionId 
- * @param updated 
- * @param refreshCounting 
+ * @param sessionId
+ * @param updated
+ * @param refreshCounting
  */
 export function modifyMessage(sessionId: string, updated: Message, refreshCounting?: boolean) {
     const store = getDefaultStore()
@@ -463,7 +469,7 @@ export function modifyMessage(sessionId: string, updated: Message, refreshCounti
             }
             s.messages = handle(s.messages)
             if (s.threads && !hasHandled) {
-                s.threads = s.threads.map(h => {
+                s.threads = s.threads.map((h) => {
                     h.messages = handle(h.messages)
                     return h
                 })
@@ -475,8 +481,8 @@ export function modifyMessage(sessionId: string, updated: Message, refreshCounti
 
 /**
  * 在会话中删除消息。如果消息存在于历史主题中，也能支持删除
- * @param sessionId 
- * @param messageId 
+ * @param sessionId
+ * @param messageId
  */
 export function removeMessage(sessionId: string, messageId: string) {
     const store = getDefaultStore()
@@ -487,16 +493,16 @@ export function removeMessage(sessionId: string, messageId: string) {
             }
             s.messages = s.messages.filter((m) => m.id !== messageId)
             if (s.threads) {
-                s.threads = s.threads.map(h => ({
+                s.threads = s.threads.map((h) => ({
                     ...h,
-                    messages: h.messages.filter((m) => m.id !== messageId)
+                    messages: h.messages.filter((m) => m.id !== messageId),
                 }))
-                s.threads = s.threads.filter(h => h.messages.length > 0)
+                s.threads = s.threads.filter((h) => h.messages.length > 0)
             }
             return { ...s }
         })
         // 如果某个对话的消息为空，尽量使用上一个话题的消息
-        newSessions = newSessions.map(s => {
+        newSessions = newSessions.map((s) => {
             if (s.messages && s.messages.length > 0) {
                 return s
             }
@@ -590,7 +596,7 @@ export async function submitNewUserMessage(params: {
                 // Chatbox AI 方案
                 const licenseKey = settingActions.getLicenseKey()
                 const newFiles: MessageFile[] = []
-                for (const attachment of (attachments || [])) {
+                for (const attachment of attachments || []) {
                     const fileUUID = await remote.uploadAndCreateUserFile(licenseKey || '', attachment)
                     newFiles.push({
                         id: fileUUID,
@@ -604,13 +610,20 @@ export async function submitNewUserMessage(params: {
                 // 本地方案
                 const newFiles: MessageFile[] = []
                 for (const attachment of attachments) {
-                    await new Promise(resolve => setTimeout(resolve, 1000)) // 等待一段时间，方便显示提示
-                    if (!isTextFilePath(attachment.name)) { // 只在桌面端有 attachment.path，网页版本只有 attachment.name
+                    await new Promise((resolve) => setTimeout(resolve, 1000)) // 等待一段时间，方便显示提示
+                    if (!isTextFilePath(attachment.name)) {
+                        // 只在桌面端有 attachment.path，网页版本只有 attachment.name
                         // 根据当前 IP，判断是否在错误中推荐 Chatbox AI
                         if (remoteConfig.setting_chatboxai_first) {
-                            throw ChatboxAIAPIError.fromCodeName('model_not_support_non_text_file', 'model_not_support_non_text_file')
+                            throw ChatboxAIAPIError.fromCodeName(
+                                'model_not_support_non_text_file',
+                                'model_not_support_non_text_file'
+                            )
                         } else {
-                            throw ChatboxAIAPIError.fromCodeName('model_not_support_non_text_file_2', 'model_not_support_non_text_file_2')
+                            throw ChatboxAIAPIError.fromCodeName(
+                                'model_not_support_non_text_file_2',
+                                'model_not_support_non_text_file_2'
+                            )
                         }
                     }
                     const { key } = await localParser.parseTextFile(attachment, { maxLength: 20 * 1000 })
@@ -629,15 +642,17 @@ export async function submitNewUserMessage(params: {
             if (isChatboxAI) {
                 // Chatbox AI 方案
                 const licenseKey = settingActions.getLicenseKey()
-                const newLinks: MessageLink[] = await Promise.all(links.map(async (l) => {
-                    const parsed = await remote.parseUserLinkPro({ licenseKey: licenseKey || '', url: l.url })
-                    return {
-                        id: parsed.uuid,
-                        url: l.url,
-                        title: parsed.title,
-                        chatboxAILinkUUID: parsed.uuid,
-                    }
-                }))
+                const newLinks: MessageLink[] = await Promise.all(
+                    links.map(async (l) => {
+                        const parsed = await remote.parseUserLinkPro({ licenseKey: licenseKey || '', url: l.url })
+                        return {
+                            id: parsed.uuid,
+                            url: l.url,
+                            title: parsed.title,
+                            chatboxAILinkUUID: parsed.uuid,
+                        }
+                    })
+                )
                 modifyMessage(currentSessionId, { ...newUserMsg, links: newLinks }, false)
             } else {
                 // 本地方案
@@ -652,9 +667,9 @@ export async function submitNewUserMessage(params: {
                     })
                     // 等待一段时间，方便显示提示
                     if (links.length === 1) {
-                        await new Promise(resolve => setTimeout(resolve, 5000))
+                        await new Promise((resolve) => setTimeout(resolve, 5000))
                     } else {
-                        await new Promise(resolve => setTimeout(resolve, 2500))
+                        await new Promise((resolve) => setTimeout(resolve, 2500))
                     }
                 }
                 modifyMessage(currentSessionId, { ...newUserMsg, links: newLinks }, false)
@@ -665,7 +680,13 @@ export async function submitNewUserMessage(params: {
         if (!(err instanceof Error)) {
             err = new Error(`${err}`)
         }
-        if (!(err instanceof ApiError || err instanceof NetworkError || err instanceof AIProviderNoImplementedPaintError)) {
+        if (
+            !(
+                err instanceof ApiError ||
+                err instanceof NetworkError ||
+                err instanceof AIProviderNoImplementedPaintError
+            )
+        ) {
             Sentry.captureException(err) // unexpected error should be reported
         }
         let errorCode: number | undefined = undefined
@@ -687,7 +708,7 @@ export async function submitNewUserMessage(params: {
         } else {
             insertMessage(currentSessionId, newAssistantMsg)
         }
-        return  // 文件上传失败，不再继续生成回复
+        return // 文件上传失败，不再继续生成回复
     }
     // 根据需要，生成这条回复消息
     if (needGenerating) {
@@ -699,7 +720,7 @@ export async function submitNewUserMessage(params: {
  * 执行消息生成，会修改消息的状态
  * @param sessionId
  * @param targetMsg
- * @returns 
+ * @returns
  */
 export async function generate(sessionId: string, targetMsg: Message) {
     // 获得依赖的数据
@@ -710,18 +731,14 @@ export async function generate(sessionId: string, targetMsg: Message) {
     if (!session) {
         return
     }
-    const settings = session.settings
-        ? mergeSettings(globalSettings, session.settings, session.type)
-        : globalSettings
+    const settings = session.settings ? mergeSettings(globalSettings, session.settings, session.type) : globalSettings
 
     // 将消息的状态修改成初始状态
     const placeholder = session.type === 'picture' ? `[${i18n.t('Please wait about 20 seconds')}]` : '...'
     targetMsg = {
         ...targetMsg,
         content: placeholder,
-        pictures: session.type === 'picture'
-            ? createLoadingPictures(settings.imageGenerateNum)
-            : targetMsg.pictures,
+        pictures: session.type === 'picture' ? createLoadingPictures(settings.imageGenerateNum) : targetMsg.pictures,
         cancel: undefined,
         aiProvider: settings.aiProvider,
         model: await getModelDisplayName(settings, session.type || 'chat'),
@@ -763,7 +780,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
             case 'chat':
             case undefined:
                 const promptMsgs = await genMessageContext(settings, messages.slice(0, targetMsgIx))
-                const throttledModifyMessage = throttle(({ text, cancel }: { text: string, cancel: () => void }) => {
+                const throttledModifyMessage = throttle(({ text, cancel }: { text: string; cancel: () => void }) => {
                     targetMsg = { ...targetMsg, content: text, cancel }
                     modifyMessage(sessionId, targetMsg)
                 }, 100)
@@ -817,7 +834,13 @@ export async function generate(sessionId: string, targetMsg: Message) {
         if (!(err instanceof Error)) {
             err = new Error(`${err}`)
         }
-        if (!(err instanceof ApiError || err instanceof NetworkError || err instanceof AIProviderNoImplementedPaintError)) {
+        if (
+            !(
+                err instanceof ApiError ||
+                err instanceof NetworkError ||
+                err instanceof AIProviderNoImplementedPaintError
+            )
+        ) {
             Sentry.captureException(err) // unexpected error should be reported
         }
         let errorCode: number | undefined = undefined
@@ -878,16 +901,16 @@ async function _generateName(sessionId: string, modifyName: (sessionId: string, 
     if (!session) {
         return
     }
-    const settings = session.settings
-        ? mergeSettings(globalSettings, session.settings, session.type)
-        : globalSettings
+    const settings = session.settings ? mergeSettings(globalSettings, session.settings, session.type) : globalSettings
     const configs = await platform.getConfig()
     try {
         const model = getModel(settings, configs)
-        let name = await model.chat(promptFormat.nameConversation(
-            session.messages.filter(m => m.role !== 'system').slice(0, 4),
-            languageNameMap[settings.language],
-        ))
+        let name = await model.chat(
+            promptFormat.nameConversation(
+                session.messages.filter((m) => m.role !== 'system').slice(0, 4),
+                languageNameMap[settings.language]
+            )
+        )
         name = name.replace(/['"“”]/g, '')
         // name = name.slice(0, 10)    // 限制名字长度
         modifyName(session.id, name)
@@ -925,7 +948,7 @@ export function clearConversationList(keepNum: number) {
 async function genMessageContext(settings: Settings, msgs: Message[]) {
     const {
         // openaiMaxContextTokens,
-        openaiMaxContextMessageCount
+        openaiMaxContextMessageCount,
     } = settings
     if (msgs.length === 0) {
         throw new Error('No messages to replay')
@@ -960,7 +983,7 @@ async function genMessageContext(settings: Settings, msgs: Message[]) {
         if (msg.files && msg.files.length > 0) {
             for (const [fileIndex, file] of msg.files.entries()) {
                 if (file.storageKey) {
-                    msg = { ...msg }    // 复制一份消息，避免修改原始消息
+                    msg = { ...msg } // 复制一份消息，避免修改原始消息
                     const content = await storage.getBlob(file.storageKey).catch(() => '')
                     if (content) {
                         msg.content += `\n\n<ATTACHMENT_FILE>\n`
@@ -1079,7 +1102,11 @@ export function getMessageThreadContext(sessionId: string, messageId: string): M
     return []
 }
 
-export function mergeSettings(globalSettings: Settings, sessionSetting: Partial<ModelSettings>, sessionType?: 'picture' | 'chat'): Settings {
+export function mergeSettings(
+    globalSettings: Settings,
+    sessionSetting: Partial<ModelSettings>,
+    sessionType?: 'picture' | 'chat'
+): Settings {
     let specialSettings = sessionSetting
     // 过滤掉会话专属设置中不应该存在的设置项，为了兼容旧版本数据和防止疏漏
     switch (sessionType) {
@@ -1099,9 +1126,9 @@ export function mergeSettings(globalSettings: Settings, sessionSetting: Partial<
     }
     // 对于自定义模型提供方，只有模型 model 可以被会话配置覆盖
     if (ret.customProviders) {
-        ret.customProviders = globalSettings.customProviders.map(provider => {
+        ret.customProviders = globalSettings.customProviders.map((provider) => {
             if (specialSettings.customProviders) {
-                const specialProvider = specialSettings.customProviders.find(p => p.id === provider.id)
+                const specialProvider = specialSettings.customProviders.find((p) => p.id === provider.id)
                 if (specialProvider) {
                     return {
                         ...provider,
@@ -1148,10 +1175,10 @@ export async function exportChat(session: Session, scope: ExportChatScope, forma
         const content = formatChatAsMarkdown(session.name, threads)
         platform.exporter.exportTextFile(`${session.name}.md`, content)
     } else if (format == 'TXT') {
-        const content = formatChatAsTxt(session.name, threads);
+        const content = formatChatAsTxt(session.name, threads)
         platform.exporter.exportTextFile(`${session.name}.txt`, content)
     } else if (format == 'HTML') {
-        const content = await formatChatAsHtml(session.name, threads);
+        const content = await formatChatAsHtml(session.name, threads)
         platform.exporter.exportTextFile(`${session.name}.html`, content)
     }
 }
@@ -1167,8 +1194,8 @@ export async function createNewFork(forkMessageId: string) {
     const currentSession = store.get(atoms.currentSessionAtom)
     const messageForksHash = currentSession.messageForksHash || {}
 
-    const updateFn = (data: Message[]): { data: Message[], updated: boolean } => {
-        const forkMessageIndex = data.findIndex(m => m.id === forkMessageId)
+    const updateFn = (data: Message[]): { data: Message[]; updated: boolean } => {
+        const forkMessageIndex = data.findIndex((m) => m.id === forkMessageId)
         if (forkMessageIndex < 0) {
             return { data, updated: false }
         }
@@ -1180,7 +1207,7 @@ export async function createNewFork(forkMessageId: string) {
                     messages: [],
                 },
             ],
-            createdAt: Date.now()
+            createdAt: Date.now(),
         }
         // 下方消息存储到当前游标位置
         const backupMessages = data.slice(forkMessageIndex + 1)
@@ -1205,7 +1232,7 @@ export async function createNewFork(forkMessageId: string) {
         const keys = Object.keys(messageForksHash)
         if (keys.length > 20) {
             keys.sort((a, b) => messageForksHash[a].createdAt - messageForksHash[b].createdAt)
-            keys.slice(0, keys.length - 20).forEach(k => {
+            keys.slice(0, keys.length - 20).forEach((k) => {
                 delete messageForksHash[k]
             })
         }
@@ -1225,7 +1252,7 @@ export async function createNewFork(forkMessageId: string) {
         if (updated) {
             modify({
                 ...currentSession,
-                threads: currentSession.threads?.map(t => t.id === thread.id ? { ...t, messages: data } : t),
+                threads: currentSession.threads?.map((t) => (t.id === thread.id ? { ...t, messages: data } : t)),
                 messageForksHash,
             })
             // scrollActions.scrollToMessage(forkMessageId, 'start')
@@ -1242,23 +1269,23 @@ export async function switchFork(forkMessageId: string, direction: 'next' | 'pre
     }
     const messageForksHash = currentSession.messageForksHash
 
-    const updateFn = (data: Message[]): { data: Message[], updated: boolean } => {
+    const updateFn = (data: Message[]): { data: Message[]; updated: boolean } => {
         const forks = messageForksHash[forkMessageId]
         if (forks.lists.length === 0) {
             return { data, updated: false }
         }
-        const forkMessageIndex = data.findIndex(m => m.id === forkMessageId)
+        const forkMessageIndex = data.findIndex((m) => m.id === forkMessageId)
         if (forkMessageIndex < 0) {
             return { data, updated: false }
         }
-        const newPosition = direction === 'next'
-            ? (forks.position + 1) % forks.lists.length
-            : (forks.position - 1 + forks.lists.length) % forks.lists.length
+        const newPosition =
+            direction === 'next'
+                ? (forks.position + 1) % forks.lists.length
+                : (forks.position - 1 + forks.lists.length) % forks.lists.length
         // 当前被分叉的消息存储在当前的游标位置
         forks.lists[forks.position].messages = data.slice(forkMessageIndex + 1)
         // 当前消息列表中移除被分叉的消息，并且添加新的游标位置的消息
-        data = data.slice(0, forkMessageIndex + 1)
-            .concat(forks.lists[newPosition].messages)
+        data = data.slice(0, forkMessageIndex + 1).concat(forks.lists[newPosition].messages)
         // 更新游标位置
         forks.position = newPosition
         // 清空新的游标位置的消息（因为已经在主分支了，所以清理以节省空间）
@@ -1279,7 +1306,7 @@ export async function switchFork(forkMessageId: string, direction: 'next' | 'pre
         if (updated) {
             modify({
                 ...currentSession,
-                threads: currentSession.threads?.map(t => t.id === thread.id ? { ...t, messages: data } : t),
+                threads: currentSession.threads?.map((t) => (t.id === thread.id ? { ...t, messages: data } : t)),
                 messageForksHash,
             })
             // scrollActions.scrollToMessage(forkMessageId, 'start')

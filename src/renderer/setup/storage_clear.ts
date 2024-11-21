@@ -9,14 +9,14 @@ import platform from '../platform'
 if (platform.type !== 'desktop') {
     setTimeout(() => {
         tickStorageTask()
-    }, 10 * 1000);  // 防止水合状态
+    }, 10 * 1000) // 防止水合状态
 }
 
 export async function tickStorageTask() {
     const allBlobKeys = await storage.getBlobKeys()
     const storageKeys = [
-        ...allBlobKeys.filter(key => key.startsWith('picture:')),
-        ...allBlobKeys.filter(key => key.startsWith('file:')),
+        ...allBlobKeys.filter((key) => key.startsWith('picture:')),
+        ...allBlobKeys.filter((key) => key.startsWith('file:')),
     ]
     if (storageKeys.length === 0) {
         return
@@ -37,7 +37,7 @@ export async function tickStorageTask() {
                     needDeletedSet.delete(pic.storageKey)
                 }
             }
-            for (const file of (msg.files || [])) {
+            for (const file of msg.files || []) {
                 if (file.storageKey) {
                     needDeletedSet.delete(file.storageKey)
                 }

@@ -68,21 +68,16 @@ export default function ChatboxAIModelSelect(props: Props) {
     const [expandedGroups, setExpandedGroups] = useState<string[]>([])
     const onClickGroupName = (groupName: string) => {
         if (expandedGroups.includes(groupName)) {
-            setExpandedGroups(prev => prev.filter(name => name !== groupName))
+            setExpandedGroups((prev) => prev.filter((name) => name !== groupName))
         } else {
-            setExpandedGroups(prev => [...prev, groupName])
+            setExpandedGroups((prev) => [...prev, groupName])
         }
     }
 
     const horizontal = optionGroups.length > 2 // 选项分组在 3 个以上时，分组内部的选项使用水平布局
 
     return (
-        <FormControl
-            fullWidth={true}
-            variant="outlined"
-            margin="dense"
-            className={props.className}
-        >
+        <FormControl fullWidth={true} variant="outlined" margin="dense" className={props.className}>
             <InputLabel>{t('model')}</InputLabel>
             <Select
                 label={t('model')}
@@ -90,89 +85,90 @@ export default function ChatboxAIModelSelect(props: Props) {
                 MenuProps={
                     horizontal
                         ? {
-                            PaperProps: {
-                                style: { maxWidth: '200px' },
-                            },
-                        }
+                              PaperProps: {
+                                  style: { maxWidth: '200px' },
+                              },
+                          }
                         : {}
                 }
             >
-                {optionGroups.map((group, index) => {
-                    const items: React.ReactNode[] = [];
-                    if (index > 0 && group.group_name) {
-                        items.push(
-                            <ListSubheader
-                                color='primary'
-                                key={`group-${index}-group-name`}
-                                sx={{
-                                    backgroundColor: 'inherit',
-                                    '&:hover': {
-                                        backgroundColor: 'action.hover',
-                                    },
-                                }}
-                            >
-                                <span
-                                    className={cn(
-                                        'flex flex-row justify-between items-center',
-                                        'cursor-pointer',
-                                        'py-1.5',
-                                        'text-sm',
-                                        'font-medium',
-                                        group.collapsable && !expandedGroups.includes(group.group_name ?? '')
-                                            ? 'opacity-100'
-                                            : 'opacity-50',
-                                    )}
-                                    onClick={(e) => {
-                                        e.preventDefault()
-                                        e.stopPropagation()
-                                        onClickGroupName(group.group_name ?? '')
+                {optionGroups
+                    .map((group, index) => {
+                        const items: React.ReactNode[] = []
+                        if (index > 0 && group.group_name) {
+                            items.push(
+                                <ListSubheader
+                                    color="primary"
+                                    key={`group-${index}-group-name`}
+                                    sx={{
+                                        backgroundColor: 'inherit',
+                                        '&:hover': {
+                                            backgroundColor: 'action.hover',
+                                        },
                                     }}
                                 >
-                                    <span>
-                                        {group.group_name}
+                                    <span
+                                        className={cn(
+                                            'flex flex-row justify-between items-center',
+                                            'cursor-pointer',
+                                            'py-1.5',
+                                            'text-sm',
+                                            'font-medium',
+                                            group.collapsable && !expandedGroups.includes(group.group_name ?? '')
+                                                ? 'opacity-100'
+                                                : 'opacity-50'
+                                        )}
+                                        onClick={(e) => {
+                                            e.preventDefault()
+                                            e.stopPropagation()
+                                            onClickGroupName(group.group_name ?? '')
+                                        }}
+                                    >
+                                        <span>{group.group_name}</span>
+                                        {group.collapsable &&
+                                            (expandedGroups.includes(group.group_name ?? '') ? (
+                                                <ExpandLessIcon fontSize="small" />
+                                            ) : (
+                                                <ExpandMoreIcon fontSize="small" />
+                                            ))}
                                     </span>
-                                    {group.collapsable && (
-                                        expandedGroups.includes(group.group_name ?? '')
-                                            ? <ExpandLessIcon fontSize='small' />
-                                            : <ExpandMoreIcon fontSize='small' />
-                                    )}
-                                </span>
-                            </ListSubheader>
-                        );
-                    }
-                    group.options.forEach(option => {
-                        items.push(
-                            <MenuItem
-                                value={option.value}
-                                key={`group-${index}-option-${option.value}`}
-                                selected={option.value === props.value}
-                                onClick={() => props.onChange(option.value as ChatboxAIModel)}
-                                dense
-                                sx={{
-                                    display: group.collapsable && !expandedGroups.includes(group.group_name ?? '')
-                                        ? 'none'
-                                        : horizontal
-                                            ? 'inline-flex'
-                                            : '',
-                                    lineHeight: '1',
-                                }}
-                            >
-                                {
-                                    chatboxAIModelLabelHash[option.value as ChatboxAIModel]
-                                    || option.label
-                                }
-                            </MenuItem>
-                        );
-                    });
-                    if (index < optionGroups.length - 1) {
-                        items.push(
-                            <Divider key={`group-${index}-divider`}
-                                style={{ marginTop: '2px', marginBottom: '2px' }} />
-                        );
-                    }
-                    return items;
-                }).flat()}
+                                </ListSubheader>
+                            )
+                        }
+                        group.options.forEach((option) => {
+                            items.push(
+                                <MenuItem
+                                    value={option.value}
+                                    key={`group-${index}-option-${option.value}`}
+                                    selected={option.value === props.value}
+                                    onClick={() => props.onChange(option.value as ChatboxAIModel)}
+                                    dense
+                                    sx={{
+                                        display:
+                                            group.collapsable && !expandedGroups.includes(group.group_name ?? '')
+                                                ? 'none'
+                                                : horizontal
+                                                ? 'inline-flex'
+                                                : '',
+                                        lineHeight: '1',
+                                    }}
+                                >
+                                    {chatboxAIModelLabelHash[option.value as ChatboxAIModel] || option.label}
+                                </MenuItem>
+                            )
+                        })
+                        if (index < optionGroups.length - 1) {
+                            items.push(
+                                <Divider
+                                    key={`group-${index}-divider`}
+                                    style={{ marginTop: '2px', marginBottom: '2px' }}
+                                />
+                            )
+                        }
+                        return items
+                    })
+                    .flat()}
             </Select>
-        </FormControl >
+        </FormControl>
     )
 }

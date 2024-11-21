@@ -36,7 +36,7 @@ export default function ClaudeSetting(props: ModelConfigProps) {
                 variant="outlined"
                 value={settingsEdit.claudeApiHost}
                 placeholder="https://api.anthropic.com"
-                defaultValue='https://api.anthropic.com'
+                defaultValue="https://api.anthropic.com"
                 onValueChange={(value) => {
                     value = value.trim()
                     if (value.length > 4 && !value.startsWith('http')) {
@@ -45,23 +45,27 @@ export default function ClaudeSetting(props: ModelConfigProps) {
                     setSettingsEdit({ ...settingsEdit, claudeApiHost: value })
                 }}
             />
-           {
-                settingsEdit.claudeApiHost !== 'https://api.anthropic.com' && remoteConfig.setting_chatboxai_first && (
-                    <Alert icon={false} severity='info' className='my-4'>
-                        <Trans i18nKey="Please note that as a client tool, Chatbox cannot guarantee the quality of service and data privacy of the model providers. If you are looking for a stable, reliable, and privacy-protecting model service, consider <a>Chatbox AI</a>."
-                            components={{
-                                a: <a className='cursor-pointer font-bold' onClick={() => {
-                                    setSettingsEdit({
-                                        ...settingsEdit,
-                                        aiProvider: ModelProvider.ChatboxAI,
-                                        selectedCustomProviderId: '',
-                                    })
-                                }}></a>,
-                            }}
-                        />
-                    </Alert>
-                )
-            }
+            {settingsEdit.claudeApiHost !== 'https://api.anthropic.com' && remoteConfig.setting_chatboxai_first && (
+                <Alert icon={false} severity="info" className="my-4">
+                    <Trans
+                        i18nKey="Please note that as a client tool, Chatbox cannot guarantee the quality of service and data privacy of the model providers. If you are looking for a stable, reliable, and privacy-protecting model service, consider <a>Chatbox AI</a>."
+                        components={{
+                            a: (
+                                <a
+                                    className="cursor-pointer font-bold"
+                                    onClick={() => {
+                                        setSettingsEdit({
+                                            ...settingsEdit,
+                                            aiProvider: ModelProvider.ChatboxAI,
+                                            selectedCustomProviderId: '',
+                                        })
+                                    }}
+                                ></a>
+                            ),
+                        }}
+                    />
+                </Alert>
+            )}
             <ClaudeModelSelect
                 value={settingsEdit.claudeModel}
                 onChange={(value) => setSettingsEdit({ ...settingsEdit, claudeModel: value })}

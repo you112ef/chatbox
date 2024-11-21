@@ -1,10 +1,4 @@
-import {
-    Box,
-    Button,
-    Paper,
-    Dialog,
-    DialogContent,
-} from '@mui/material'
+import { Box, Button, Paper, Dialog, DialogContent } from '@mui/material'
 import icon from '../static/icon.png'
 import { useTranslation } from 'react-i18next'
 import { AllowReportingAndTrackingCheckbox } from './SettingDialog/AdvancedSettingTab'
@@ -25,7 +19,7 @@ export default function WelcomeDialog(props: {}) {
     }
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth='xs'>
+        <Dialog open={open} onClose={onClose} maxWidth="xs">
             <DialogContent>
                 <Box sx={{ textAlign: 'center', padding: '0 20px' }}>
                     <img src={icon} style={{ width: '80px', margin: 0, display: 'inline-block' }} />
@@ -33,7 +27,7 @@ export default function WelcomeDialog(props: {}) {
                     <p className="p-0 m-0">{t('An easy-to-use AI client app')}</p>
                     {/* <p className="p-0 m-0">{t('about-slogan')}</p> */}
                     <div className="p-0 m-0 opacity-60 text-xs text-left">
-                        <ul className='mb-8 px-6 opacity-90'>
+                        <ul className="mb-8 px-6 opacity-90">
                             <li>{t('Supports a variety of advanced AI models')}</li>
                             <li>{t('All data is stored locally, ensuring privacy and rapid access')}</li>
                             <li>{t('Ideal for both work and educational scenarios')}</li>
@@ -47,12 +41,12 @@ export default function WelcomeDialog(props: {}) {
                         backgroundColor: 'paper',
                     }}
                 >
-                    <div className=''>
-                        <b className=''>{t('Select and configure an AI model provider')}</b>
+                    <div className="">
+                        <b className="">{t('Select and configure an AI model provider')}</b>
                     </div>
-                    <div className='my-2'>
+                    <div className="my-2">
                         <Button
-                            variant='contained'
+                            variant="contained"
                             sx={{ fontSize: '18px', fontWeight: 'bold' }}
                             onClick={() => {
                                 onClose()
@@ -63,14 +57,14 @@ export default function WelcomeDialog(props: {}) {
                         </Button>
                     </div>
                     <div>
-                        <AllowReportingAndTrackingCheckbox className='opacity-75 text-xs' />
+                        <AllowReportingAndTrackingCheckbox className="opacity-75 text-xs" />
                     </div>
                 </Paper>
-                <div className='text-center mt-4 text-xs'>
-                    <LinkTargetBlank href="https://chatboxai.app/privacy" className='mx-2'>
+                <div className="text-center mt-4 text-xs">
+                    <LinkTargetBlank href="https://chatboxai.app/privacy" className="mx-2">
                         Privacy Policy
                     </LinkTargetBlank>
-                    <LinkTargetBlank href="https://chatboxai.app/terms" className='mx-2'>
+                    <LinkTargetBlank href="https://chatboxai.app/terms" className="mx-2">
                         User Terms
                     </LinkTargetBlank>
                 </div>

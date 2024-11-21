@@ -59,101 +59,107 @@ export default function AdvancedSettingTab(props: Props) {
                         variant="outlined"
                         disabled={platform.type === 'web'}
                         inputProps={{
-                            className: platform.type === 'web' ? 'cursor-not-allowed' : ''
+                            className: platform.type === 'web' ? 'cursor-not-allowed' : '',
                         }}
                         helperText={
-                            platform.type === 'web' ? <span className="text-red-600">{t('not available in browser')}</span> : null
+                            platform.type === 'web' ? (
+                                <span className="text-red-600">{t('not available in browser')}</span>
+                            ) : null
                         }
                     />
                 </AccordionDetails>
             </Accordion>
-            {
-                !isSmallScreen && (
-                    <Accordion>
-                        <AccordionSummary aria-controls="panel1a-content">
-                            <Typography>{t('Keyboard Shortcuts')}</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <TableContainer component={Paper}>
-                                <Table size="small">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>{t('Description')}</TableCell>
-                                            <TableCell align="center">{t('Key Combination')}</TableCell>
-                                            <TableCell align="center">{t('Toggle')}</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        <TableRow>
+            {!isSmallScreen && (
+                <Accordion>
+                    <AccordionSummary aria-controls="panel1a-content">
+                        <Typography>{t('Keyboard Shortcuts')}</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <TableContainer component={Paper}>
+                            <Table size="small">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>{t('Description')}</TableCell>
+                                        <TableCell align="center">{t('Key Combination')}</TableCell>
+                                        <TableCell align="center">{t('Toggle')}</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell component="th" scope="row">
+                                            {t('Show/Hide the Application Window')}
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            <Shortcut keys={['alt', '`']} />
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            <Switch
+                                                size="small"
+                                                checked={!props.settingsEdit.disableQuickToggleShortcut}
+                                                onChange={(e) =>
+                                                    props.setSettingsEdit({
+                                                        ...props.settingsEdit,
+                                                        disableQuickToggleShortcut: !e.target.checked,
+                                                    })
+                                                }
+                                            />
+                                        </TableCell>
+                                    </TableRow>
+                                    {[
+                                        { description: t('Navigate to the Next Conversation'), keys: ['Ctrl', 'Tab'] },
+                                        {
+                                            description: t('Navigate to the Previous Conversation'),
+                                            keys: ['Ctrl', 'Shift', 'Tab'],
+                                        },
+                                        {
+                                            description: t('Navigate to the Specific Conversation'),
+                                            keys: ['Ctrl', t('any number key')],
+                                        },
+                                        { description: t('Create a New Conversation'), keys: ['Ctrl', 'N'] },
+                                        {
+                                            description: t('Create a New Image-Creator Conversation'),
+                                            keys: ['Ctrl', 'Shift', 'N'],
+                                        },
+                                        { description: t('Focus on the Input Box'), keys: ['Ctrl', 'I'] },
+                                        { description: t('Send'), keys: ['enter'] },
+                                        {
+                                            description: t('Insert a New Line into the Input Box'),
+                                            keys: ['Shift', 'enter'],
+                                        },
+                                        { description: t('Send Without Generating Response'), keys: ['Ctrl', 'enter'] },
+                                        { description: t('Refresh Context, Start a New Thread'), keys: ['alt', 'R'] },
+                                        { description: t('Show/Hide the Search Dialog'), keys: ['Ctrl', 'K'] },
+                                        {
+                                            description: t('Navigate to the Previous Option (in search dialog)'),
+                                            keys: ['↑'],
+                                        },
+                                        {
+                                            description: t('Navigate to the Next Option (in search dialog)'),
+                                            keys: ['↓'],
+                                        },
+                                        {
+                                            description: t('Select the Current Option (in search dialog)'),
+                                            keys: ['enter'],
+                                        },
+                                    ].map((item, ix) => (
+                                        <TableRow key={ix}>
                                             <TableCell component="th" scope="row">
-                                                {t('Show/Hide the Application Window')}
+                                                {item.description}
                                             </TableCell>
                                             <TableCell align="center">
-                                                <Shortcut keys={['alt', '`']} />
+                                                <Shortcut keys={item.keys} />
                                             </TableCell>
                                             <TableCell align="center">
-                                                <Switch
-                                                    size="small"
-                                                    checked={!props.settingsEdit.disableQuickToggleShortcut}
-                                                    onChange={(e) =>
-                                                        props.setSettingsEdit({
-                                                            ...props.settingsEdit,
-                                                            disableQuickToggleShortcut: !e.target.checked,
-                                                        })
-                                                    }
-                                                />
+                                                <Switch size="small" checked disabled />
                                             </TableCell>
                                         </TableRow>
-                                        {[
-                                            { description: t('Navigate to the Next Conversation'), keys: ['Ctrl', 'Tab'] },
-                                            {
-                                                description: t('Navigate to the Previous Conversation'),
-                                                keys: ['Ctrl', 'Shift', 'Tab'],
-                                            },
-                                            {
-                                                description: t('Navigate to the Specific Conversation'),
-                                                keys: ['Ctrl', t('any number key')],
-                                            },
-                                            { description: t('Create a New Conversation'), keys: ['Ctrl', 'N'] },
-                                            {
-                                                description: t('Create a New Image-Creator Conversation'),
-                                                keys: ['Ctrl', 'Shift', 'N'],
-                                            },
-                                            { description: t('Focus on the Input Box'), keys: ['Ctrl', 'I'] },
-                                            { description: t('Send'), keys: ['enter'] },
-                                            { description: t('Insert a New Line into the Input Box'), keys: ['Shift', 'enter'] },
-                                            { description: t('Send Without Generating Response'), keys: ['Ctrl', 'enter'] },
-                                            { description: t('Refresh Context, Start a New Thread'), keys: ['alt', 'R'] },
-                                            { description: t('Show/Hide the Search Dialog'), keys: ['Ctrl', 'K'] },
-                                            {
-                                                description: t('Navigate to the Previous Option (in search dialog)'),
-                                                keys: ['↑'],
-                                            },
-                                            { description: t('Navigate to the Next Option (in search dialog)'), keys: ['↓'] },
-                                            {
-                                                description: t('Select the Current Option (in search dialog)'),
-                                                keys: ['enter'],
-                                            },
-                                        ].map((item, ix) => (
-                                            <TableRow key={ix}>
-                                                <TableCell component="th" scope="row">
-                                                    {item.description}
-                                                </TableCell>
-                                                <TableCell align="center">
-                                                    <Shortcut keys={item.keys} />
-                                                </TableCell>
-                                                <TableCell align="center">
-                                                    <Switch size="small" checked disabled />
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </AccordionDetails>
-                    </Accordion>
-                )
-            }
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </AccordionDetails>
+                </Accordion>
+            )}
             <Accordion>
                 <AccordionSummary aria-controls="panel1a-content">
                     <Typography>{t('Data Backup and Restore')}</Typography>
@@ -171,25 +177,23 @@ export default function AdvancedSettingTab(props: Props) {
                 </AccordionDetails>
             </Accordion>
 
-            {
-                platform.type === 'desktop' && (
-                    <Box className='mt-2'>
-                        <FormGroup>
-                            <FormControlLabel
-                                control={<Switch />}
-                                label={t('Launch at system startup')}
-                                checked={settingsEdit.autoLaunch}
-                                onChange={(e, checked) =>
-                                    setSettingsEdit({
-                                        ...settingsEdit,
-                                        autoLaunch: checked,
-                                    })
-                                }
-                            />
-                        </FormGroup>
-                    </Box>
-                )
-            }
+            {platform.type === 'desktop' && (
+                <Box className="mt-2">
+                    <FormGroup>
+                        <FormControlLabel
+                            control={<Switch />}
+                            label={t('Launch at system startup')}
+                            checked={settingsEdit.autoLaunch}
+                            onChange={(e, checked) =>
+                                setSettingsEdit({
+                                    ...settingsEdit,
+                                    autoLaunch: checked,
+                                })
+                            }
+                        />
+                    </FormGroup>
+                </Box>
+            )}
         </Box>
     )
 }
@@ -215,13 +219,13 @@ function ExportAndImport(props: { onCancel: () => void }) {
     const onExport = async () => {
         const data = await storage.getAll()
         delete data[StorageKey.Configs] // 不导出 uuid
-            ; (data[StorageKey.Settings] as Settings).licenseDetail = undefined // 不导出license认证数据
-            ; (data[StorageKey.Settings] as Settings).licenseInstances = undefined // 不导出license设备数据，导入数据的新设备也应该计入设备数
+        ;(data[StorageKey.Settings] as Settings).licenseDetail = undefined // 不导出license认证数据
+        ;(data[StorageKey.Settings] as Settings).licenseInstances = undefined // 不导出license设备数据，导入数据的新设备也应该计入设备数
         if (!exportItems.includes(ExportDataItem.Key)) {
             delete (data[StorageKey.Settings] as Settings).licenseKey
-                ; (data[StorageKey.Settings] as Settings).openaiKey = ''
-                ; (data[StorageKey.Settings] as Settings).azureApikey = ''
-                ; (data[StorageKey.Settings] as Settings).claudeApiKey = ''
+            ;(data[StorageKey.Settings] as Settings).openaiKey = ''
+            ;(data[StorageKey.Settings] as Settings).azureApikey = ''
+            ;(data[StorageKey.Settings] as Settings).claudeApiKey = ''
         }
         if (!exportItems.includes(ExportDataItem.Setting)) {
             delete data[StorageKey.Settings]
@@ -246,7 +250,7 @@ function ExportAndImport(props: { onCancel: () => void }) {
         }
         const reader = new FileReader()
         reader.onload = (event) => {
-            ; (async () => {
+            ;(async () => {
                 setImportTips('')
                 try {
                     let result = event.target?.result
@@ -344,26 +348,26 @@ export function AnalyticsSetting() {
     return (
         <Box>
             <div>
-                <p className='opacity-70'>
-                    {t('Chatbox respects your privacy and only uploads anonymous error data and events when necessary. You can change your preferences at any time in the settings.')}
+                <p className="opacity-70">
+                    {t(
+                        'Chatbox respects your privacy and only uploads anonymous error data and events when necessary. You can change your preferences at any time in the settings.'
+                    )}
                 </p>
             </div>
-            <div className='my-2'>
+            <div className="my-2">
                 <AllowReportingAndTrackingCheckbox />
             </div>
         </Box>
     )
 }
 
-export function AllowReportingAndTrackingCheckbox(props: {
-    className?: string
-}) {
+export function AllowReportingAndTrackingCheckbox(props: { className?: string }) {
     const { t } = useTranslation()
     const [allowReportingAndTracking, setAllowReportingAndTracking] = useAtom(atoms.allowReportingAndTrackingAtom)
     return (
         <span className={props.className}>
             <input
-                type='checkbox'
+                type="checkbox"
                 checked={allowReportingAndTracking}
                 onChange={(e) => setAllowReportingAndTracking(e.target.checked)}
             />

@@ -43,21 +43,18 @@ async function testApiOrigins() {
         try {
             const origin: string = pool[i]
             const controller = new AbortController()
-            setTimeout(() => controller.abort(), 2000)  // 2秒超时
-            const res = await ofetch<{ data: { api_origins: string[] } }>(
-                `${origin}/api/api_origins`,
-                {
-                    signal: controller.signal,
-                    retry: 1,
-                },
-            )
+            setTimeout(() => controller.abort(), 2000) // 2秒超时
+            const res = await ofetch<{ data: { api_origins: string[] } }>(`${origin}/api/api_origins`, {
+                signal: controller.signal,
+                retry: 1,
+            })
             // 如果服务器返回了新的 API 域名，则更新缓存
             if (res.data.api_origins.length > 0) {
                 pool = uniq([...pool, ...res.data.api_origins])
             }
             // 如果当前 API 可用，则切换所有流量到该域名
             API_ORIGIN = origin
-            pool = uniq([origin, ...pool])  // 将当前 API 域名添加到列表顶部
+            pool = uniq([origin, ...pool]) // 将当前 API 域名添加到列表顶部
             await cache.store.setItem('api_origins', pool)
             return
         } catch (e) {
@@ -75,7 +72,7 @@ if (USE_LOCAL_API) {
     API_ORIGIN = 'http://localhost:8002'
 } else {
     testApiOrigins()
-    setInterval(testApiOrigins, 60 * 60 * 1000);
+    setInterval(testApiOrigins, 60 * 60 * 1000)
 }
 
 // ========== 各个接口方法 ==========
@@ -207,39 +204,47 @@ export async function getLicenseDetailRealtime(params: { licenseKey: string }) {
     return res['data'] || null
 }
 
-export async function generateUploadUrl(params: { licenseKey: string, filename: string }) {
+export async function generateUploadUrl(params: { licenseKey: string; filename: string }) {
     type Response = {
         data: {
             url: string
             filename: string
         }
     }
-    const res = await afetch(`${API_ORIGIN}/api/files/generate-upload-url`, {
-        method: 'POST',
-        headers: {
-            Authorization: params.licenseKey,
-            'Content-Type': 'application/json',
+    const res = await afetch(
+        `${API_ORIGIN}/api/files/generate-upload-url`,
+        {
+            method: 'POST',
+            headers: {
+                Authorization: params.licenseKey,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(params),
         },
-        body: JSON.stringify(params),
-    }, { parseChatboxRemoteError: true })
+        { parseChatboxRemoteError: true }
+    )
     const json: Response = await res.json()
     return json['data']
 }
 
-export async function createUserFile(params: { licenseKey: string, filename: string, filetype: string }) {
+export async function createUserFile(params: { licenseKey: string; filename: string; filetype: string }) {
     type Response = {
         data: {
             uuid: string
         }
     }
-    const res = await afetch(`${API_ORIGIN}/api/files/create`, {
-        method: 'POST',
-        headers: {
-            Authorization: params.licenseKey,
-            'Content-Type': 'application/json',
+    const res = await afetch(
+        `${API_ORIGIN}/api/files/create`,
+        {
+            method: 'POST',
+            headers: {
+                Authorization: params.licenseKey,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(params),
         },
-        body: JSON.stringify(params),
-    }, { parseChatboxRemoteError: true })
+        { parseChatboxRemoteError: true }
+    )
     const json: Response = await res.json()
     return json['data']
 }
@@ -248,7 +253,7 @@ export async function uploadAndCreateUserFile(licenseKey: string, file: File) {
     const { url, filename } = await generateUploadUrl({
         licenseKey,
         filename: file.name,
-    });
+    })
     await uploadFile(file, url)
     const result = await createUserFile({
         licenseKey,
@@ -258,7 +263,7 @@ export async function uploadAndCreateUserFile(licenseKey: string, file: File) {
     return result.uuid
 }
 
-export async function parseUserLinkPro(params: { licenseKey: string, url: string }) {
+export async function parseUserLinkPro(params: { licenseKey: string; url: string }) {
     type Response = {
         data: {
             uuid: string
@@ -286,29 +291,23 @@ export async function parseUserLinkPro(params: { licenseKey: string, url: string
 
 export async function parseUserLinkFree(params: { url: string }) {
     type Response = {
-            title: string
-            text: string
+        title: string
+        text: string
     }
-    const res = await afetch(
-        `https://proxy.ai-chatbox.com/api/fetch-webpage`,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'CHATBOX-PLATFORM': platform.type,
-                'CHATBOX-VERSION': (await platform.getVersion()) || 'unknown',
-            },
-            body: JSON.stringify(params),
+    const res = await afetch(`https://proxy.ai-chatbox.com/api/fetch-webpage`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'CHATBOX-PLATFORM': platform.type,
+            'CHATBOX-VERSION': (await platform.getVersion()) || 'unknown',
         },
-    )
+        body: JSON.stringify(params),
+    })
     const json: Response = await res.json()
     return json
 }
 
-export async function activateLicense(params: {
-    licenseKey: string,
-    instanceName: string
-}) {
+export async function activateLicense(params: { licenseKey: string; instanceName: string }) {
     type Response = {
         data: {
             valid: boolean
@@ -334,10 +333,7 @@ export async function activateLicense(params: {
     return json['data']
 }
 
-export async function deactivateLicense(params: {
-    licenseKey: string,
-    instanceId: string
-}) {
+export async function deactivateLicense(params: { licenseKey: string; instanceId: string }) {
     await afetch(
         `${API_ORIGIN}/api/license/deactivate`,
         {
@@ -349,15 +345,12 @@ export async function deactivateLicense(params: {
         },
         {
             parseChatboxRemoteError: true,
-            retry: 5
-        },
+            retry: 5,
+        }
     )
 }
 
-export async function validateLicense(params: {
-    licenseKey: string,
-    instanceId: string
-}) {
+export async function validateLicense(params: { licenseKey: string; instanceId: string }) {
     type Response = {
         data: {
             valid: boolean
@@ -381,11 +374,7 @@ export async function validateLicense(params: {
     return json['data']
 }
 
-export async function getModelConfigs(params: {
-    aiProvider: ModelProvider,
-    licenseKey?: string
-    language?: string
-}) {
+export async function getModelConfigs(params: { aiProvider: ModelProvider; licenseKey?: string; language?: string }) {
     type Response = {
         data: {
             option_groups: ModelOptionGroup[]
@@ -414,7 +403,7 @@ export async function getModelConfigs(params: {
 }
 
 export async function getModelConfigsWithCache(params: {
-    aiProvider: ModelProvider,
+    aiProvider: ModelProvider
     licenseKey?: string
     language?: string
 }) {
@@ -427,24 +416,17 @@ export async function getModelConfigsWithCache(params: {
         {
             ttl: 1000 * 60 * 60,
             refreshFallbackToCache: true,
-        },
+        }
     )
     return remoteOptionGroups
 }
 
-export async function reportContent(params: {
-    id: string,
-    type: string,
-    details: string,
-}) {
-    await afetch(
-        `${API_ORIGIN}/api/report_content`,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(params),
+export async function reportContent(params: { id: string; type: string; details: string }) {
+    await afetch(`${API_ORIGIN}/api/report_content`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
         },
-    )
+        body: JSON.stringify(params),
+    })
 }

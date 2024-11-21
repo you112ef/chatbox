@@ -41,7 +41,7 @@ export default function OpenAISetting(props: ModelConfigProps) {
                     variant="outlined"
                     value={settingsEdit.apiHost}
                     placeholder="https://api.openai.com"
-                    defaultValue='https://api.openai.com'
+                    defaultValue="https://api.openai.com"
                     onValueChange={(value) => {
                         value = value.trim()
                         if (value.length > 4 && !value.startsWith('http')) {
@@ -51,23 +51,27 @@ export default function OpenAISetting(props: ModelConfigProps) {
                     }}
                 />
             </>
-            {
-                settingsEdit.apiHost !== 'https://api.openai.com' && remoteConfig.setting_chatboxai_first && (
-                    <Alert icon={false} severity='info' className='my-4'>
-                        <Trans i18nKey="Please note that as a client tool, Chatbox cannot guarantee the quality of service and data privacy of the model providers. If you are looking for a stable, reliable, and privacy-protecting model service, consider <a>Chatbox AI</a>."
-                            components={{
-                                a: <a className='cursor-pointer font-bold' onClick={() => {
-                                    setSettingsEdit({
-                                        ...settingsEdit,
-                                        aiProvider: ModelProvider.ChatboxAI,
-                                        selectedCustomProviderId: '',
-                                    })
-                                }}></a>,
-                            }}
-                        />
-                    </Alert>
-                )
-            }
+            {settingsEdit.apiHost !== 'https://api.openai.com' && remoteConfig.setting_chatboxai_first && (
+                <Alert icon={false} severity="info" className="my-4">
+                    <Trans
+                        i18nKey="Please note that as a client tool, Chatbox cannot guarantee the quality of service and data privacy of the model providers. If you are looking for a stable, reliable, and privacy-protecting model service, consider <a>Chatbox AI</a>."
+                        components={{
+                            a: (
+                                <a
+                                    className="cursor-pointer font-bold"
+                                    onClick={() => {
+                                        setSettingsEdit({
+                                            ...settingsEdit,
+                                            aiProvider: ModelProvider.ChatboxAI,
+                                            selectedCustomProviderId: '',
+                                        })
+                                    }}
+                                ></a>
+                            ),
+                        }}
+                    />
+                </Alert>
+            )}
             {/* <FormGroup>
                 <FormControlLabel
                     className='px-2 mb-2'
@@ -105,8 +109,12 @@ export default function OpenAISetting(props: ModelConfigProps) {
                         openaiCustomModel={settingsEdit.openaiCustomModel}
                         openaiCustomModelOptions={settingsEdit.openaiCustomModelOptions}
                         onUpdateModel={(updated) => setSettingsEdit({ ...settingsEdit, model: updated })}
-                        onUpdateOpenaiCustomModel={(updated) => setSettingsEdit({ ...settingsEdit, openaiCustomModel: updated })}
-                        onUpdateOpenaiCustomModelOptions={(updated) => setSettingsEdit({ ...settingsEdit, openaiCustomModelOptions: updated })}
+                        onUpdateOpenaiCustomModel={(updated) =>
+                            setSettingsEdit({ ...settingsEdit, openaiCustomModel: updated })
+                        }
+                        onUpdateOpenaiCustomModelOptions={(updated) =>
+                            setSettingsEdit({ ...settingsEdit, openaiCustomModelOptions: updated })
+                        }
                     />
 
                     <TemperatureSlider

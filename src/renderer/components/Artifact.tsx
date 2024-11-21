@@ -1,16 +1,16 @@
-import { ButtonGroup, IconButton } from "@mui/material"
-import { debounce } from "lodash"
-import { useEffect, useMemo, useRef, useState } from "react"
-import ReplayOutlinedIcon from '@mui/icons-material/ReplayOutlined';
-import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
-import { useIsSmallScreen } from "@/hooks/useScreenChange";
-import { cn } from "@/lib/utils";
-import { useTranslation } from "react-i18next";
+import { ButtonGroup, IconButton } from '@mui/material'
+import { debounce } from 'lodash'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import ReplayOutlinedIcon from '@mui/icons-material/ReplayOutlined'
+import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import { cn } from '@/lib/utils'
+import { useTranslation } from 'react-i18next'
 import * as sessionActions from '@/stores/sessionActions'
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from 'jotai'
 import * as atoms from '@/stores/atoms'
-import FullscreenIcon from "./icons/FullscreenIcon";
-import ArrowRightIcon from "./icons/ArrowRightIcon";
+import FullscreenIcon from './icons/FullscreenIcon'
+import ArrowRightIcon from './icons/ArrowRightIcon'
 
 const RENDERABLE_CODE_LANGUAGES = ['html'] as const
 export type RenderableCodeLanguage = (typeof RENDERABLE_CODE_LANGUAGES)[number]
@@ -19,8 +19,10 @@ const CODE_BLOCK_LANGUAGES = [...RENDERABLE_CODE_LANGUAGES, 'js', 'javascript', 
 export type CodeBlockLanguage = (typeof CODE_BLOCK_LANGUAGES)[number]
 
 export function isContainRenderableCode(markdown: string): boolean {
-    return RENDERABLE_CODE_LANGUAGES.some(l => markdown.includes('```' + l + '\n'))
-        || RENDERABLE_CODE_LANGUAGES.some(l => markdown.includes('```' + l.toUpperCase() + '\n'))
+    return (
+        RENDERABLE_CODE_LANGUAGES.some((l) => markdown.includes('```' + l + '\n')) ||
+        RENDERABLE_CODE_LANGUAGES.some((l) => markdown.includes('```' + l.toUpperCase() + '\n'))
+    )
 }
 
 export function MessageArtifact(props: {
@@ -33,18 +35,13 @@ export function MessageArtifact(props: {
     const { sessionId, messageId, messageContent, preview, setPreview } = props
     const contextMessages = useMemo(() => {
         const messageList = sessionActions.getMessageThreadContext(sessionId, messageId)
-        const index = messageList.findIndex(m => m.id === messageId)
+        const index = messageList.findIndex((m) => m.id === messageId)
         return messageList.slice(0, index)
     }, [sessionId, messageId])
     const htmlCode = useMemo(() => {
-        return generateHtml([
-            ...contextMessages.map(m => m.content),
-            messageContent,
-        ])
+        return generateHtml([...contextMessages.map((m) => m.content), messageContent])
     }, [contextMessages, messageContent])
-    return (
-        <ArtifactWithButtons htmlCode={htmlCode} preview={preview} setPreview={setPreview} />
-    )
+    return <ArtifactWithButtons htmlCode={htmlCode} preview={preview} setPreview={setPreview} />
 }
 
 export function ArtifactWithButtons(props: {
@@ -73,14 +70,24 @@ export function ArtifactWithButtons(props: {
     }
     if (!preview) {
         return (
-            <div className="w-full my-1 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 cursor-pointer overflow-hidden group"
+            <div
+                className="w-full my-1 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 cursor-pointer overflow-hidden group"
                 onClick={onPreview}
             >
                 <div className="flex items-center justify-between p-4">
                     <div className="flex items-center space-x-3">
                         <div className="w-7 h-7 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5 text-white"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                            >
+                                <path
+                                    fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                                    clip-rule="evenodd"
+                                />
                             </svg>
                         </div>
                         <span className="text-lg font-semibold text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
@@ -88,7 +95,8 @@ export function ArtifactWithButtons(props: {
                         </span>
                     </div>
                     <div className="flex items-center justify-center">
-                        <FullscreenIcon className="mr-1 hover:bg-white hover:rounded  hover:text-gray-500
+                        <FullscreenIcon
+                            className="mr-1 hover:bg-white hover:rounded  hover:text-gray-500
                             p-1 w-8 h-8 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400"
                             onClick={(e) => {
                                 e.preventDefault()
@@ -96,7 +104,8 @@ export function ArtifactWithButtons(props: {
                                 onOpenFullscreen()
                             }}
                         />
-                        <ArrowRightIcon className="hover:bg-white hover:rounded  hover:text-gray-500
+                        <ArrowRightIcon
+                            className="hover:bg-white hover:rounded  hover:text-gray-500
                             p-1 w-8 h-8 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400"
                             onClick={() => setPreview(true)}
                         />
@@ -106,16 +115,19 @@ export function ArtifactWithButtons(props: {
         )
     }
     return (
-        <div className={cn(
-            "w-full",
-            'border border-solid rounded border-gray-500/40',
-            'flex',
-            isSmallScreen ? 'flex-col-reverse' : 'flex-row',
-        )}>
+        <div
+            className={cn(
+                'w-full',
+                'border border-solid rounded border-gray-500/40',
+                'flex',
+                isSmallScreen ? 'flex-col-reverse' : 'flex-row'
+            )}
+        >
             <Artifact htmlCode={htmlCode} reloadSign={reloadSign} />
-            <ButtonGroup orientation={isSmallScreen ? "horizontal" : "vertical"}
+            <ButtonGroup
+                orientation={isSmallScreen ? 'horizontal' : 'vertical'}
                 className={cn(
-                    "border-solid border-gray-500/20",
+                    'border-solid border-gray-500/20',
                     isSmallScreen
                         ? 'border-r-0 border-b-1 border-l-0 border-t-0'
                         : 'border-r-0 border-b-0 border-l-1 border-t-0'
@@ -135,26 +147,22 @@ export function ArtifactWithButtons(props: {
     )
 }
 
-export function Artifact(props: {
-    htmlCode: string
-    reloadSign?: number
-    className?: string
-}) {
+export function Artifact(props: { htmlCode: string; reloadSign?: number; className?: string }) {
     const { htmlCode, reloadSign, className } = props
     const ref = useRef<HTMLIFrameElement>(null)
-    const iframeOrigin = "https://chatbox-artifacts.pages.dev/preview"
+    const iframeOrigin = 'https://chatbox-artifacts.pages.dev/preview'
 
     const sendIframeMsg = (type: 'html', code: string) => {
         if (!ref.current) {
             return
         }
-        ref.current.contentWindow?.postMessage({ type, code }, "*")
+        ref.current.contentWindow?.postMessage({ type, code }, '*')
     }
     // 当 reloadSign 改变时，重新加载 iframe 内容
     useEffect(() => {
-        ; (async () => {
+        ;(async () => {
             sendIframeMsg('html', '')
-            await new Promise(resolve => setTimeout(resolve, 1500))
+            await new Promise((resolve) => setTimeout(resolve, 1500))
             sendIframeMsg('html', htmlCode)
         })()
     }, [reloadSign])
@@ -171,7 +179,7 @@ export function Artifact(props: {
     return (
         <iframe
             className={cn('w-full', 'border-none', 'h-[400px]', className)}
-            sandbox='allow-scripts allow-forms'
+            sandbox="allow-scripts allow-forms"
             src={iframeOrigin}
             ref={ref}
         />
@@ -191,7 +199,7 @@ function generateHtml(markdowns: string[]): string {
     for (const markdown of markdowns) {
         for (let line of markdown.split('\n')) {
             line = line.trimStart()
-            const lang = languages.find(l => '```' + l === line)
+            const lang = languages.find((l) => '```' + l === line)
             if (lang) {
                 currentType = lang
                 continue

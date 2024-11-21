@@ -1,14 +1,22 @@
 import { useState } from 'react'
-import { Button, Dialog, DialogContent, DialogActions, DialogTitle, InputLabel, Select, MenuItem, FormControl,
+import {
+    Button,
+    Dialog,
+    DialogContent,
+    DialogActions,
+    DialogTitle,
+    InputLabel,
+    Select,
+    MenuItem,
+    FormControl,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import * as sessionActions from '../stores/sessionActions'
 import * as atoms from '../stores/atoms'
 import { useAtom } from 'jotai'
-import { ExportChatFormat, ExportChatScope } from "../../shared/types";
+import { ExportChatFormat, ExportChatScope } from '../../shared/types'
 
-interface Props {
-}
+interface Props {}
 
 export default function ExportChatDialog(props: Props) {
     const { t } = useTranslation()
@@ -40,8 +48,7 @@ export default function ExportChatDialog(props: Props) {
                     >
                         {['all_threads', 'current_thread'].map((scope) => (
                             <MenuItem key={scope} value={scope}>
-                                {t((scope.charAt(0).toUpperCase() + scope.slice(1).toLowerCase())
-                                    .split('_').join(' '))}
+                                {t((scope.charAt(0).toUpperCase() + scope.slice(1).toLowerCase()).split('_').join(' '))}
                             </MenuItem>
                         ))}
                     </Select>
@@ -56,7 +63,7 @@ export default function ExportChatDialog(props: Props) {
                             setFormat(event.target.value as any)
                         }}
                     >
-                        {['HTML', 'TXT',  'Markdown' ].map((format) => (
+                        {['HTML', 'TXT', 'Markdown'].map((format) => (
                             <MenuItem key={format} value={format}>
                                 {format}
                             </MenuItem>

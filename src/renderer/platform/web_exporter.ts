@@ -1,9 +1,8 @@
-import { Exporter } from "./interfaces"
+import { Exporter } from './interfaces'
 import * as base64 from '@/packages/base64'
 
 export default class WebExporter implements Exporter {
-    constructor() {
-    }
+    constructor() {}
 
     async exportBlob(filename: string, blob: Blob, encoding?: 'utf8' | 'ascii' | 'utf16') {
         var eleLink = document.createElement('a')

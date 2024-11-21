@@ -1,8 +1,8 @@
-import { ModelSettings, Session, SessionType, Settings } from "src/shared/types";
-import { ModelSettingUtil } from "./interface";
-import OpenAI, { OpenAIModel, openaiModelConfigs } from "../models/openai";
-import { uniq } from "lodash";
-import BaseConfig from "./base-config";
+import { ModelSettings, Session, SessionType, Settings } from 'src/shared/types'
+import { ModelSettingUtil } from './interface'
+import OpenAI, { OpenAIModel, openaiModelConfigs } from '../models/openai'
+import { uniq } from 'lodash'
+import BaseConfig from './base-config'
 
 export default class OpenAISettingUtil extends BaseConfig implements ModelSettingUtil {
     async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
@@ -37,15 +37,15 @@ export default class OpenAISettingUtil extends BaseConfig implements ModelSettin
         models = uniq(models)
         return [
             {
-                options: models.map(value => ({
+                options: models.map((value) => ({
                     label: value,
                     value: value,
-                }))
-            }
+                })),
+            },
         ]
     }
 
-    selectSessionModel(settings: Session["settings"], selected: string): Session["settings"] {
+    selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {
         const nativeModels = Array.from(Object.keys(openaiModelConfigs))
         if (!nativeModels.includes(selected)) {
             return {
@@ -64,5 +64,4 @@ export default class OpenAISettingUtil extends BaseConfig implements ModelSettin
     isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
         return OpenAI.isSupportVision(settings.model)
     }
-
 }

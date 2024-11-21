@@ -2,16 +2,16 @@ import { Chip, MenuItem, useTheme, Typography, Box } from '@mui/material'
 import { CustomProvider, ModelProvider, ModelSettings } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import { AIModelProviderMenuOptionList } from '../packages/models'
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import StyledMenu from './StyledMenu';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
-import StarIcon from '@mui/icons-material/Star';
-import { useAtom } from 'jotai';
-import { settingsAtom } from '@/stores/atoms';
+import * as React from 'react'
+import Button from '@mui/material/Button'
+import Divider from '@mui/material/Divider'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import StyledMenu from './StyledMenu'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize'
+import StarIcon from '@mui/icons-material/Star'
+import { useAtom } from 'jotai'
+import { settingsAtom } from '@/stores/atoms'
 
 interface ModelConfigProps {
     aiProvider: ModelProvider
@@ -23,19 +23,25 @@ interface ModelConfigProps {
 }
 
 export default function AIProviderSelect(props: ModelConfigProps) {
-    const { aiProvider, onSwitchAIProvider, selectedCustomProviderId, onSwitchCustomProvider, hideCustomProviderManage } = props
+    const {
+        aiProvider,
+        onSwitchAIProvider,
+        selectedCustomProviderId,
+        onSwitchCustomProvider,
+        hideCustomProviderManage,
+    } = props
     const { t } = useTranslation()
 
     const [globalSettings, setGlobalSettings] = useAtom(settingsAtom)
 
-    const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(null);
-    const menuState = Boolean(menuAnchorEl);
+    const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(null)
+    const menuState = Boolean(menuAnchorEl)
     const openMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setMenuAnchorEl(event.currentTarget);
-    };
+        setMenuAnchorEl(event.currentTarget)
+    }
     const closeMenu = () => {
-        setMenuAnchorEl(null);
-    };
+        setMenuAnchorEl(null)
+    }
 
     // 创建自定义模型（作用于全局）
     const createCustomProvider = () => {
@@ -52,10 +58,7 @@ export default function AIProviderSelect(props: ModelConfigProps) {
             ...globalSettings,
             aiProvider: ModelProvider.Custom,
             selectedCustomProviderId: newCustomProvider.id,
-            customProviders: [
-                newCustomProvider,
-                ...globalSettings.customProviders,
-            ],
+            customProviders: [newCustomProvider, ...globalSettings.customProviders],
         })
         closeMenu()
     }
@@ -93,18 +96,13 @@ export default function AIProviderSelect(props: ModelConfigProps) {
         }
         setGlobalSettings({
             ...globalSettings,
-            customProviders: [
-                newCustomProvider,
-                ...globalSettings.customProviders,
-            ],
+            customProviders: [newCustomProvider, ...globalSettings.customProviders],
             selectedCustomProviderId: newCustomProvider.id,
         })
     }
 
     const AddProviderMenuItem = (
-        <MenuItem disableRipple
-            onClick={createCustomProvider}
-        >
+        <MenuItem disableRipple onClick={createCustomProvider}>
             <AddCircleOutlineIcon />
             {t('Add Custom Provider')}
         </MenuItem>
@@ -112,47 +110,41 @@ export default function AIProviderSelect(props: ModelConfigProps) {
 
     return (
         <>
-            <Typography variant='caption' className='opacity-50'>
+            <Typography variant="caption" className="opacity-50">
                 {t('Model Provider')}:
             </Typography>
-            <div className='flex items-end justify-between'>
-                <Button
-                    variant="contained"
-                    disableElevation
-                    onClick={openMenu}
-                    endIcon={<KeyboardArrowDownIcon />}
-                >
-                    <Typography className='text-left' maxWidth={200} noWrap>
-                        {
-                            aiProvider === ModelProvider.Custom
-                                ? globalSettings.customProviders.find((provider) => provider.id === selectedCustomProviderId)?.name || t('Untitled')
-                                : AIModelProviderMenuOptionList.find((provider) => provider.value === aiProvider)?.label || 'Unknown'
-                        }
+            <div className="flex items-end justify-between">
+                <Button variant="contained" disableElevation onClick={openMenu} endIcon={<KeyboardArrowDownIcon />}>
+                    <Typography className="text-left" maxWidth={200} noWrap>
+                        {aiProvider === ModelProvider.Custom
+                            ? globalSettings.customProviders.find(
+                                  (provider) => provider.id === selectedCustomProviderId
+                              )?.name || t('Untitled')
+                            : AIModelProviderMenuOptionList.find((provider) => provider.value === aiProvider)?.label ||
+                              'Unknown'}
                     </Typography>
                 </Button>
-                {
-                    aiProvider === ModelProvider.Custom && !hideCustomProviderManage && (
-                        <Box className='inline-flex opacity-50 hover:opacity-100'>
-                            <Button
-                                size='small'
-                                variant="outlined"
-                                sx={{ marginRight: '6px' }}
-                                onClick={() => copyCustomProvider(selectedCustomProviderId || '')}
-                            >
-                                {t('copy')}
-                            </Button>
-                            <Button
-                                size='small'
-                                variant="outlined"
-                                sx={{ marginRight: '6px' }}
-                                onClick={() => deleteCustomProvider(selectedCustomProviderId || '')}
-                                color='error'
-                            >
-                                {t('delete')}
-                            </Button>
-                        </Box>
-                    )
-                }
+                {aiProvider === ModelProvider.Custom && !hideCustomProviderManage && (
+                    <Box className="inline-flex opacity-50 hover:opacity-100">
+                        <Button
+                            size="small"
+                            variant="outlined"
+                            sx={{ marginRight: '6px' }}
+                            onClick={() => copyCustomProvider(selectedCustomProviderId || '')}
+                        >
+                            {t('copy')}
+                        </Button>
+                        <Button
+                            size="small"
+                            variant="outlined"
+                            sx={{ marginRight: '6px' }}
+                            onClick={() => deleteCustomProvider(selectedCustomProviderId || '')}
+                            color="error"
+                        >
+                            {t('delete')}
+                        </Button>
+                    </Box>
+                )}
                 <StyledMenu
                     anchorEl={menuAnchorEl}
                     open={menuState}
@@ -166,60 +158,53 @@ export default function AIProviderSelect(props: ModelConfigProps) {
                         horizontal: 'left',
                     }}
                 >
-                    {
-                        globalSettings.customProviders.length > 0 && (
-                            <>
-                                {
-                                    globalSettings.customProviders.map((provider) => (
-                                        <MenuItem disableRipple
-                                            onClick={() => {
-                                                onSwitchCustomProvider(provider.id)
-                                                closeMenu()
-                                            }}
-                                        >
-                                            <DashboardCustomizeIcon />
-                                            {provider.name || t('Untitled')}
-                                        </MenuItem>
-                                    ))
-                                }
-                                {AddProviderMenuItem}
-                                <Divider sx={{ my: 0.5 }} />
-                            </>
-                        )
-                    }
-                    {
-                        AIModelProviderMenuOptionList.map((provider) => (
-                            <MenuItem disableRipple
-                                onClick={() => {
-                                    onSwitchAIProvider(provider.value as ModelProvider)
-                                    closeMenu()
-                                }}
-                            >
-                                <StarIcon />
-                                {provider.label}
-                                {provider.featured && (
-                                    <Chip
-                                        label={t('Easy Access')}
-                                        size="small"
-                                        color="success"
-                                        variant="outlined"
-                                        sx={{ marginLeft: '10px' }}
-                                    />
-                                )}
-                            </MenuItem>
-                        ))
-                    }
-                    {
-                        globalSettings.customProviders.length === 0 && (
-                            <>
-                                <Divider sx={{ my: 0.5 }} />
-                                {AddProviderMenuItem}
-                            </>
-                        )
-                    }
+                    {globalSettings.customProviders.length > 0 && (
+                        <>
+                            {globalSettings.customProviders.map((provider) => (
+                                <MenuItem
+                                    disableRipple
+                                    onClick={() => {
+                                        onSwitchCustomProvider(provider.id)
+                                        closeMenu()
+                                    }}
+                                >
+                                    <DashboardCustomizeIcon />
+                                    {provider.name || t('Untitled')}
+                                </MenuItem>
+                            ))}
+                            {AddProviderMenuItem}
+                            <Divider sx={{ my: 0.5 }} />
+                        </>
+                    )}
+                    {AIModelProviderMenuOptionList.map((provider) => (
+                        <MenuItem
+                            disableRipple
+                            onClick={() => {
+                                onSwitchAIProvider(provider.value as ModelProvider)
+                                closeMenu()
+                            }}
+                        >
+                            <StarIcon />
+                            {provider.label}
+                            {provider.featured && (
+                                <Chip
+                                    label={t('Easy Access')}
+                                    size="small"
+                                    color="success"
+                                    variant="outlined"
+                                    sx={{ marginLeft: '10px' }}
+                                />
+                            )}
+                        </MenuItem>
+                    ))}
+                    {globalSettings.customProviders.length === 0 && (
+                        <>
+                            <Divider sx={{ my: 0.5 }} />
+                            {AddProviderMenuItem}
+                        </>
+                    )}
                 </StyledMenu>
             </div>
         </>
     )
 }
-

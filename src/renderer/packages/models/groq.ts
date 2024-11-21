@@ -70,11 +70,16 @@ export default class Groq extends Base {
         this.options = options
     }
 
-    async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+    async callChatCompletion(
+        rawMessages: Message[],
+        signal?: AbortSignal,
+        onResultChange?: onResultChange
+    ): Promise<string> {
         const messages = await populateOpenAIMessageText(rawMessages)
-        const temperature =  this.options.temperature === 0
-            ? 0.1   // Groq 不支持 temperature 为 0, https://console.groq.com/docs/openai
-            : this.options.temperature
+        const temperature =
+            this.options.temperature === 0
+                ? 0.1 // Groq 不支持 temperature 为 0, https://console.groq.com/docs/openai
+                : this.options.temperature
         const response = await this.post(
             `https://api.groq.com/openai/v1/chat/completions`,
             this.getHeaders(),
@@ -84,7 +89,7 @@ export default class Groq extends Base {
                 temperature,
                 stream: true,
             },
-            { signal },
+            { signal }
         )
         let result = ''
         await this.handleSSE(response, (message) => {
@@ -118,17 +123,17 @@ export default class Groq extends Base {
         // https://console.groq.com/docs/api-reference#models-list
         type Response = {
             data: {
-                id: string;
-                object: string;
-                created: number;
-                owned_by: string;
-                active: boolean;
-                context_window: number;
+                id: string
+                object: string
+                created: number
+                owned_by: string
+                active: boolean
+                context_window: number
             }[]
         }
         const res = await this.get(`https://api.groq.com/openai/v1/models`, this.getHeaders())
         const json: Response = await res.json()
-        if (! json['data']) {
+        if (!json['data']) {
             throw new ApiError(JSON.stringify(json))
         }
         return json['data']

@@ -1,10 +1,10 @@
-import * as React from 'react';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import { cn } from '@/lib/utils';
-import AddIcon from '@mui/icons-material/Add';
+import * as React from 'react'
+import TextField from '@mui/material/TextField'
+import Autocomplete from '@mui/material/Autocomplete'
+import IconButton from '@mui/material/IconButton'
+import CloseIcon from '@mui/icons-material/Close'
+import { cn } from '@/lib/utils'
+import AddIcon from '@mui/icons-material/Add'
 
 export default function CreatableSelect(props: {
     label: string | React.ReactNode
@@ -33,12 +33,12 @@ export default function CreatableSelect(props: {
             filterOptions={(options, params) => {
                 const filtereds = options
                 // const filtereds = filter(options, params);
-                const { inputValue } = params;
-                const isExisting = options.some((option) => inputValue === option);
+                const { inputValue } = params
+                const isExisting = options.some((option) => inputValue === option)
                 if (inputValue !== '' && !isExisting) {
-                    filtereds.unshift(inputValue);
+                    filtereds.unshift(inputValue)
                 }
-                return filtereds;
+                return filtereds
             }}
             selectOnFocus
             // clearOnBlur
@@ -57,11 +57,7 @@ export default function CreatableSelect(props: {
                                 onUpdateOptions([option, ...options])
                             }}
                         >
-                            <AddIcon
-                                color='primary'
-                                fontSize='small'
-                                className='mr-0.5'
-                            />
+                            <AddIcon color="primary" fontSize="small" className="mr-0.5" />
                             {option}
                         </li>
                     )
@@ -72,22 +68,22 @@ export default function CreatableSelect(props: {
                         {...props}
                         className={cn(
                             'flex items-center justify-between px-4 py-1',
-                            'hover:bg-gray-400/50 cursor-pointer',
+                            'hover:bg-gray-400/50 cursor-pointer'
                         )}
                     >
                         <span>{option}</span>
-                        <IconButton size='small'
+                        <IconButton
+                            size="small"
                             onClick={(event) => {
                                 event.preventDefault()
                                 event.stopPropagation()
-                                onUpdateOptions(options.filter(o => o !== option))
-                            }}>
-                            <CloseIcon fontSize='small'
-                                className='opacity-50 hover:opacity-100 hover:text-red-500'
-                            />
+                                onUpdateOptions(options.filter((o) => o !== option))
+                            }}
+                        >
+                            <CloseIcon fontSize="small" className="opacity-50 hover:opacity-100 hover:text-red-500" />
                         </IconButton>
                     </li>
-                );
+                )
             }}
             freeSolo
             renderInput={(params) => (
@@ -107,6 +103,5 @@ export default function CreatableSelect(props: {
             )}
             className={className}
         />
-    );
+    )
 }
-

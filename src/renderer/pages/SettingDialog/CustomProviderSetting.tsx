@@ -1,4 +1,16 @@
-import { FormControlLabel, Tooltip, Switch, FormGroup, Box, MenuItem, Alert, FormControl, InputLabel, Select, Typography } from '@mui/material'
+import {
+    FormControlLabel,
+    Tooltip,
+    Switch,
+    FormGroup,
+    Box,
+    MenuItem,
+    Alert,
+    FormControl,
+    InputLabel,
+    Select,
+    Typography,
+} from '@mui/material'
 import { CustomProvider, ModelProvider, ModelSettings } from '../../../shared/types'
 import { Trans, useTranslation } from 'react-i18next'
 import PasswordTextField from '@/components/PasswordTextField'
@@ -17,12 +29,14 @@ interface ModelConfigProps {
 export default function CustomProviderSetting(props: ModelConfigProps) {
     const { settingsEdit, setSettingsEdit } = props
     const { t } = useTranslation()
-    const customProvider = settingsEdit.customProviders.find((provider) => provider.id === settingsEdit.selectedCustomProviderId)
+    const customProvider = settingsEdit.customProviders.find(
+        (provider) => provider.id === settingsEdit.selectedCustomProviderId
+    )
     const setCustomProvider = (update: CustomProvider) => {
         setSettingsEdit({
             ...settingsEdit,
             customProviders: settingsEdit.customProviders.map((provider) =>
-                provider.id === update.id ? { ...provider, ...update } : provider,
+                provider.id === update.id ? { ...provider, ...update } : provider
             ),
         })
     }
@@ -38,12 +52,15 @@ export default function CustomProviderSetting(props: ModelConfigProps) {
     }
     return (
         <Box>
-            <Alert icon={false} severity='info' className='my-4'>
-                {t("Here you can add and manage various custom model providers. As long as the provider's API is compatible with the selected API mode, you can seamlessly connect and use it within Chatbox.")}
+            <Alert icon={false} severity="info" className="my-4">
+                {t(
+                    "Here you can add and manage various custom model providers. As long as the provider's API is compatible with the selected API mode, you can seamlessly connect and use it within Chatbox."
+                )}
                 <br />
-                <Trans i18nKey="Please note that as a client tool, Chatbox cannot guarantee the quality of service and data privacy of the model providers. If you are looking for a stable, reliable, and privacy-protecting model service, consider <a>Chatbox AI</a>."
+                <Trans
+                    i18nKey="Please note that as a client tool, Chatbox cannot guarantee the quality of service and data privacy of the model providers. If you are looking for a stable, reliable, and privacy-protecting model service, consider <a>Chatbox AI</a>."
                     components={{
-                        a: <a className='cursor-pointer font-bold' onClick={switchChatboxAI}></a>,
+                        a: <a className="cursor-pointer font-bold" onClick={switchChatboxAI}></a>,
                     }}
                 />
             </Alert>
@@ -52,14 +69,12 @@ export default function CustomProviderSetting(props: ModelConfigProps) {
                 <InputLabel>{t('API Mode')}</InputLabel>
                 <Select
                     value={customProvider.api}
-                    label={t("API Mode")}
+                    label={t('API Mode')}
                     onChange={(e) => setCustomProvider({ ...customProvider, api: e.target.value as 'openai' })}
-                    size='small'
-                    className='mb-1'
+                    size="small"
+                    className="mb-1"
                 >
-                    <MenuItem value='openai'>
-                        {t('OpenAI API Compatible')}
-                    </MenuItem>
+                    <MenuItem value="openai">{t('OpenAI API Compatible')}</MenuItem>
                 </Select>
             </FormControl>
             <TextFieldReset
@@ -83,7 +98,7 @@ export default function CustomProviderSetting(props: ModelConfigProps) {
                 variant="outlined"
                 value={customProvider.host}
                 placeholder="https://api.openai.com/v1"
-                defaultValue='https://api.openai.com/v1'
+                defaultValue="https://api.openai.com/v1"
                 onValueChange={(value) => {
                     value = value.trim()
                     if (value.length > 4 && !value.startsWith('http')) {
@@ -107,24 +122,22 @@ export default function CustomProviderSetting(props: ModelConfigProps) {
             />
             <FormGroup>
                 <FormControlLabel
-                    className='px-2 mb-2'
-                    control={<Switch size='small' />}
+                    className="px-2 mb-2"
+                    control={<Switch size="small" />}
                     label={
-                        <Typography variant='body2' className='flex items-center justify-center opacity-50'>
+                        <Typography variant="body2" className="flex items-center justify-center opacity-50">
                             {t('Improve Network Compatibility')}
                             <Tooltip
                                 title={t('Use proxy to resolve CORS and other network issues')}
                                 className="cursor-pointer"
-                                placement='top'
+                                placement="top"
                             >
-                                <HelpOutlineIcon className='opacity-60 ml-0.5' fontSize='small' />
+                                <HelpOutlineIcon className="opacity-60 ml-0.5" fontSize="small" />
                             </Tooltip>
                         </Typography>
                     }
                     checked={customProvider.useProxy}
-                    onChange={(e, checked) =>
-                        setCustomProvider({ ...customProvider, useProxy: checked })
-                    }
+                    onChange={(e, checked) => setCustomProvider({ ...customProvider, useProxy: checked })}
                 />
             </FormGroup>
             <PasswordTextField
@@ -149,10 +162,7 @@ export default function CustomProviderSetting(props: ModelConfigProps) {
                 value={settingsEdit.temperature}
                 onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
             />
-            <TopPSlider
-                topP={settingsEdit.topP}
-                setTopP={(v) => setSettingsEdit({ ...settingsEdit, topP: v })}
-            />
+            <TopPSlider topP={settingsEdit.topP} setTopP={(v) => setSettingsEdit({ ...settingsEdit, topP: v })} />
         </Box>
     )
 }

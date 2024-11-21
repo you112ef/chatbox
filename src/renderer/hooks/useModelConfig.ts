@@ -5,9 +5,7 @@ import { getModelSettingUtil } from '../packages/model-setting-utils'
 export default function useModelConfig(settings: Settings, aiProvider?: ModelProvider) {
     const modelConfig = getModelSettingUtil(aiProvider || settings.aiProvider)
 
-    const [optionGroups, setOptionGroups] = useState<ModelOptionGroup[]>(
-        modelConfig.getLocalOptionGroups(settings)
-    )
+    const [optionGroups, setOptionGroups] = useState<ModelOptionGroup[]>(modelConfig.getLocalOptionGroups(settings))
 
     const latestRequestId = useRef(0)
     const refreshWithRemoteOptionGroups = async () => {
@@ -26,7 +24,7 @@ export default function useModelConfig(settings: Settings, aiProvider?: ModelPro
     const currentModelOptionValue = modelConfig.getCurrentModelOptionValue(settings)
     const currentModelOptionLabel = useMemo(() => {
         for (const optionGroup of optionGroups) {
-            const option = optionGroup.options.find(option => option.value === currentModelOptionValue)
+            const option = optionGroup.options.find((option) => option.value === currentModelOptionValue)
             if (option) {
                 return option.label
             }

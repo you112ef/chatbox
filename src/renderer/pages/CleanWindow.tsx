@@ -5,8 +5,7 @@ import { useAtom } from 'jotai'
 import * as sessionActions from '../stores/sessionActions'
 import { trackingEvent } from '@/packages/event'
 
-interface Props {
-}
+interface Props {}
 
 // 清空会话窗口
 export default function CleanWindow(props: Props) {

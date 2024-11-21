@@ -46,7 +46,7 @@ export function useSidebarWidth() {
     }
 }
 
-export function useInputBoxHeight(): { min: number, max: number } {
+export function useInputBoxHeight(): { min: number; max: number } {
     const theme = useTheme()
     const sm = useMediaQuery(theme.breakpoints.up('sm'))
     const md = useMediaQuery(theme.breakpoints.up('md'))

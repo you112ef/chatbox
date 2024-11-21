@@ -1,14 +1,14 @@
-import { ModelProvider, ModelSettings, SessionType, Settings } from "src/shared/types";
-import { ModelSettingUtil } from "./interface";
-import AzureSettingUtil from "./azure-setting-util";
-import ChatGLMSettingUtil from "./chatglm-setting-util";
-import ChatboxAISettingUtil from "./chatboxai-setting-util";
-import ClaudeSettingUtil from "./claude-setting-util";
-import GeminiSettingUtil from "./gemini-setting-util";
-import GroqSettingUtil from "./groq-setting-util";
-import OllamaSettingUtil from "./ollama-setting-util";
-import OpenAISettingUtil from "./openai-setting-util";
-import CustomModelSettingUtil from "./custom-setting-util";
+import { ModelProvider, ModelSettings, SessionType, Settings } from 'src/shared/types'
+import { ModelSettingUtil } from './interface'
+import AzureSettingUtil from './azure-setting-util'
+import ChatGLMSettingUtil from './chatglm-setting-util'
+import ChatboxAISettingUtil from './chatboxai-setting-util'
+import ClaudeSettingUtil from './claude-setting-util'
+import GeminiSettingUtil from './gemini-setting-util'
+import GroqSettingUtil from './groq-setting-util'
+import OllamaSettingUtil from './ollama-setting-util'
+import OpenAISettingUtil from './openai-setting-util'
+import CustomModelSettingUtil from './custom-setting-util'
 
 export function getModelSettingUtil(aiProvider: ModelProvider): ModelSettingUtil {
     const hash: Record<ModelProvider, new () => ModelSettingUtil> = {

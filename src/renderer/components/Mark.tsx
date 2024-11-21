@@ -1,10 +1,7 @@
 import { ReactElement, useEffect, useRef } from 'react'
 import markjs from 'mark.js'
 
-export default function Mark(props: {
-    children: string | ReactElement
-    marks: string[]
-}) {
+export default function Mark(props: { children: string | ReactElement; marks: string[] }) {
     const { children, marks } = props
     const ref = useRef<HTMLDivElement>(null)
     useEffect(() => {
@@ -14,7 +11,5 @@ export default function Mark(props: {
         const markInstance = new markjs(ref.current)
         markInstance.mark(marks)
     }, [children, ref.current, marks])
-    return (
-        <div ref={ref}>{children}</div>
-    )
+    return <div ref={ref}>{children}</div>
 }

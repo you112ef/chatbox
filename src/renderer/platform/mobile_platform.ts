@@ -1,19 +1,18 @@
-import { Config, Settings } from "src/shared/types"
+import { Config, Settings } from 'src/shared/types'
 import * as defaults from 'src/shared/defaults'
-import { Platform, PlatformType } from "./interfaces"
+import { Platform, PlatformType } from './interfaces'
 import store from 'store'
 import { getOS, getBrowser } from '../packages/navigator'
 import { parseLocale } from '@/i18n/parser'
 import localforage from 'localforage'
-import MobileExporter from "./mobile_exporter"
+import MobileExporter from './mobile_exporter'
 
 export default class MobilePlatform implements Platform {
     public type: PlatformType = 'mobile'
 
     public exporter = new MobileExporter()
 
-    constructor() {
-    }
+    constructor() {}
 
     public async getVersion(): Promise<string> {
         return ''
@@ -145,7 +144,7 @@ export default class MobilePlatform implements Platform {
     public async parseFile(filePath: string): Promise<string> {
         throw new Error('Not implemented')
     }
-    public async parseUrl(url: string): Promise<{ key: string, title: string }> {
+    public async parseUrl(url: string): Promise<{ key: string; title: string }> {
         throw new Error('Not implemented')
     }
 

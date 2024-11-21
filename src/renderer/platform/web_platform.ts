@@ -1,10 +1,10 @@
-import { Config, Settings } from "src/shared/types"
+import { Config, Settings } from 'src/shared/types'
 import * as defaults from 'src/shared/defaults'
-import { Platform, PlatformType } from "./interfaces"
+import { Platform, PlatformType } from './interfaces'
 import { getOS, getBrowser } from '../packages/navigator'
 import { parseLocale } from '@/i18n/parser'
 import localforage from 'localforage'
-import WebExporter from "./web_exporter"
+import WebExporter from './web_exporter'
 
 const store = localforage.createInstance({ name: 'chatboxstore' })
 
@@ -13,8 +13,7 @@ export default class WebPlatform implements Platform {
 
     public exporter = new WebExporter()
 
-    constructor() {
-    }
+    constructor() {}
 
     public async getVersion(): Promise<string> {
         return 'web'
@@ -150,7 +149,7 @@ export default class WebPlatform implements Platform {
     public async parseFile(filePath: string): Promise<string> {
         throw new Error('Not implemented')
     }
-    public async parseUrl(url: string): Promise<{ key: string, title: string }> {
+    public async parseUrl(url: string): Promise<{ key: string; title: string }> {
         throw new Error('Not implemented')
     }
 

@@ -9,9 +9,7 @@ import * as sessionActions from '../stores/sessionActions'
 import * as dom from '../hooks/dom'
 import { Shortcut } from './Shortcut'
 import { useInputBoxHeight, useIsSmallScreen } from '@/hooks/useScreenChange'
-import {
-    Image, FolderClosed, Link, Undo2, SendHorizontal, Eraser, Settings2
-} from 'lucide-react'
+import { Image, FolderClosed, Link, Undo2, SendHorizontal, Eraser, Settings2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { scrollToMessage } from '@/stores/scrollActions'
 import icon from '../static/icon.png'
@@ -66,17 +64,12 @@ export default function InputBox(props: {}) {
 
     const handleSubmit = (needGenerating = true) => {
         setPreviousMessageQuickInputMark('')
-        if (
-            messageInput.trim() === ''
-            && links.length === 0
-            && attachments.length === 0
-            && pictureKeys.length === 0
-        ) {
+        if (messageInput.trim() === '' && links.length === 0 && attachments.length === 0 && pictureKeys.length === 0) {
             return
         }
         const newMessage = createMessage('user', messageInput)
         if (pictureKeys.length > 0) {
-            newMessage.pictures = pictureKeys.map(k => ({ storageKey: k }))
+            newMessage.pictures = pictureKeys.map((k) => ({ storageKey: k }))
         }
         sessionActions.submitNewUserMessage({
             currentSessionId: currentSessionId,
@@ -103,19 +96,19 @@ export default function InputBox(props: {}) {
     // 自动调整输入框高度
     useEffect(() => {
         if (inputRef.current) {
-            autosize(inputRef.current);
+            autosize(inputRef.current)
         }
         return () => {
             if (inputRef.current) {
-                autosize.destroy(inputRef.current);
+                autosize.destroy(inputRef.current)
             }
-        };
+        }
     }, [])
     useEffect(() => {
         if (inputRef.current) {
-            autosize.update(inputRef.current);
+            autosize.update(inputRef.current)
         }
-    }, [messageInput]);
+    }, [messageInput])
 
     const onMessageInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         const input = event.target.value
@@ -123,8 +116,8 @@ export default function InputBox(props: {}) {
         setPreviousMessageQuickInputMark('')
         // 自动调整输入框高度
         if (inputRef.current) {
-            inputRef.current.style.height = 'inherit'; // Reset the height - important to shrink on delete
-            inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, maxTextareaHeight)}px`;
+            inputRef.current.style.height = 'inherit' // Reset the height - important to shrink on delete
+            inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, maxTextareaHeight)}px`
         }
     }
 
@@ -136,7 +129,7 @@ export default function InputBox(props: {}) {
             !event.ctrlKey &&
             !event.altKey &&
             !event.metaKey &&
-            platform.type !== 'mobile'  // 移动端点击回车不会发送消息
+            platform.type !== 'mobile' // 移动端点击回车不会发送消息
         ) {
             event.preventDefault()
             handleSubmit()
@@ -150,15 +143,15 @@ export default function InputBox(props: {}) {
         }
         // 向上向下键翻阅历史消息
         if (
-            (event.key === 'ArrowUp' || event.key === 'ArrowDown')
-            && inputRef.current
-            && inputRef.current === document.activeElement  // 聚焦在输入框
-            && (messageInput.length === 0 || window.getSelection()?.toString() === messageInput)    // 要么为空，要么输入框全选
+            (event.key === 'ArrowUp' || event.key === 'ArrowDown') &&
+            inputRef.current &&
+            inputRef.current === document.activeElement && // 聚焦在输入框
+            (messageInput.length === 0 || window.getSelection()?.toString() === messageInput) // 要么为空，要么输入框全选
         ) {
             event.preventDefault()
             let historyMessages = sessionActions.getCurrentMessages()
             historyMessages = historyMessages.slice(historyMessages.length - 100)
-            historyMessages = historyMessages.filter((m => m.role !== 'assistant'))
+            historyMessages = historyMessages.filter((m) => m.role !== 'assistant')
             if (historyMessages.length === 0) {
                 return
             }
@@ -166,11 +159,7 @@ export default function InputBox(props: {}) {
                 if (event.key === 'ArrowUp') {
                     const msg = historyMessages[historyMessages.length - 1]
                     setMessageInput(msg.content)
-                    setPictureKeys(
-                        msg.pictures
-                            ? _.compact(msg.pictures.map(p => p.storageKey))
-                            : []
-                    )
+                    setPictureKeys(msg.pictures ? _.compact(msg.pictures.map((p) => p.storageKey)) : [])
                     setPreviousMessageQuickInputMark(msg.id)
                     setTimeout(() => inputRef.current?.select(), 10)
                     return
@@ -178,18 +167,14 @@ export default function InputBox(props: {}) {
                     return
                 }
             } else {
-                const ix = historyMessages.findIndex(m => m.id === previousMessageQuickInputMark)
+                const ix = historyMessages.findIndex((m) => m.id === previousMessageQuickInputMark)
                 if (ix === -1) {
                     return
                 }
                 const msg = event.key === 'ArrowUp' ? historyMessages[ix - 1] : historyMessages[ix + 1]
                 if (msg) {
                     setMessageInput(msg.content)
-                    setPictureKeys(
-                        msg.pictures
-                            ? _.compact(msg.pictures.map(p => p.storageKey))
-                            : []
-                    )
+                    setPictureKeys(msg.pictures ? _.compact(msg.pictures.map((p) => p.storageKey)) : [])
                     setPreviousMessageQuickInputMark(msg.id)
                     setTimeout(() => inputRef.current?.select(), 10)
                 }
@@ -223,8 +208,8 @@ export default function InputBox(props: {}) {
     }
 
     const insertLinks = (urls: string[]) => {
-        setLinks(links => {
-            let newLinks = [...links, ...urls.map(u => ({ url: u }))]
+        setLinks((links) => {
+            let newLinks = [...links, ...urls.map((u) => ({ url: u }))]
             newLinks = _.uniqBy(newLinks, 'url')
             newLinks = newLinks.slice(-6) // 最多插入 6 个链接
             return newLinks
@@ -246,7 +231,7 @@ export default function InputBox(props: {}) {
                 }
                 reader.readAsDataURL(file)
             } else {
-                setAttachments(attachments => [...attachments, file].slice(-4)) // 最多插入 4 个附件
+                setAttachments((attachments) => [...attachments, file].slice(-4)) // 最多插入 4 个附件
             }
         }
     }
@@ -266,7 +251,7 @@ export default function InputBox(props: {}) {
     }
 
     const onImageDeleteClick = async (picKey: string) => {
-        setPictureKeys(keys => keys.filter(k => k !== picKey))
+        setPictureKeys((keys) => keys.filter((k) => k !== picKey))
         // 不删除图片数据，因为可能在其他地方引用，比如通过上下键盘的历史消息快捷输入、发送的消息中引用
         // await storage.delBlob(picKey)
     }
@@ -284,7 +269,7 @@ export default function InputBox(props: {}) {
             for (let item of event.clipboardData.items) {
                 if (item.kind === 'file') {
                     // 插入文件和图片
-                    const file = item.getAsFile();
+                    const file = item.getAsFile()
                     if (file) {
                         insertFiles([file])
                     }
@@ -296,9 +281,10 @@ export default function InputBox(props: {}) {
                     item.getAsString((text) => {
                         const raw = text.trim()
                         if (raw.startsWith('http://') || raw.startsWith('https://')) {
-                            const urls = raw.split(/\s+/)
-                                .map(url => url.trim())
-                                .filter(url => url.startsWith('http://') || url.startsWith('https://'))
+                            const urls = raw
+                                .split(/\s+/)
+                                .map((url) => url.trim())
+                                .filter((url) => url.startsWith('http://') || url.startsWith('https://'))
                             insertLinks(urls)
                         }
                     })
@@ -322,10 +308,12 @@ export default function InputBox(props: {}) {
         },
         noClick: true,
         noKeyboard: true,
-    });
+    })
 
     return (
-        <div className='pl-1 pr-2 sm:pl-2 sm:pr-4' id={dom.InputBoxID}
+        <div
+            className="pl-1 pr-2 sm:pl-2 sm:pr-4"
+            id={dom.InputBoxID}
             style={{
                 borderTopWidth: '1px',
                 borderTopStyle: 'solid',
@@ -333,9 +321,11 @@ export default function InputBox(props: {}) {
             }}
         >
             <div className={'w-full mx-auto flex flex-col'}>
-                <div className='flex flex-row flex-nowrap justify-between py-1'>
-                    <div className='flex flex-row items-center'>
-                        <MiniButton className='mr-1 sm:mr-2 hover:bg-transparent' style={{ color: theme.palette.text.primary }}
+                <div className="flex flex-row flex-nowrap justify-between py-1">
+                    <div className="flex flex-row items-center">
+                        <MiniButton
+                            className="mr-1 sm:mr-2 hover:bg-transparent"
+                            style={{ color: theme.palette.text.primary }}
                             onClick={() => {
                                 setEasterEgg(true)
                                 setTimeout(() => setEasterEgg(false), 1000)
@@ -343,39 +333,44 @@ export default function InputBox(props: {}) {
                         >
                             <img className={cn('w-5 h-5', easterEgg ? 'animate-spin' : '')} src={icon} />
                         </MiniButton>
-                        {
-                            showRollbackThreadButton ? (
-                                <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
-                                    tooltipTitle={
-                                        <div className='text-center inline-block'>
-                                            <span>{t('Back to Previous')}</span>
-                                        </div>
-                                    }
-                                    tooltipPlacement='top'
-                                    onClick={rollbackThread}
-                                >
-                                    <Undo2 size='22' strokeWidth={1} />
-                                </MiniButton>
-                            ) : (
-                                <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
-                                    tooltipTitle={
-                                        <div className='text-center inline-block'>
-                                            <span>{t('Refresh Context, Start a New Thread')}</span>
-                                            <br />
-                                            <Shortcut keys={['Option', 'R']} size='small' opacity={0.7} />
-                                        </div>
-                                    }
-                                    tooltipPlacement='top'
-                                    onClick={startNewThread}
-                                >
-                                    <Eraser size='22' strokeWidth={1} />
-                                </MiniButton>
-                            )
-                        }
+                        {showRollbackThreadButton ? (
+                            <MiniButton
+                                className="mr-1 sm:mr-2"
+                                style={{ color: theme.palette.text.primary }}
+                                tooltipTitle={
+                                    <div className="text-center inline-block">
+                                        <span>{t('Back to Previous')}</span>
+                                    </div>
+                                }
+                                tooltipPlacement="top"
+                                onClick={rollbackThread}
+                            >
+                                <Undo2 size="22" strokeWidth={1} />
+                            </MiniButton>
+                        ) : (
+                            <MiniButton
+                                className="mr-1 sm:mr-2"
+                                style={{ color: theme.palette.text.primary }}
+                                tooltipTitle={
+                                    <div className="text-center inline-block">
+                                        <span>{t('Refresh Context, Start a New Thread')}</span>
+                                        <br />
+                                        <Shortcut keys={['Option', 'R']} size="small" opacity={0.7} />
+                                    </div>
+                                }
+                                tooltipPlacement="top"
+                                onClick={startNewThread}
+                            >
+                                <Eraser size="22" strokeWidth={1} />
+                            </MiniButton>
+                        )}
 
-
-                        <input type='file' ref={pictureInputRef} className='hidden' onChange={onFileInputChange}
-                            // accept="image/png, image/jpeg, image/gif" 
+                        <input
+                            type="file"
+                            ref={pictureInputRef}
+                            className="hidden"
+                            onChange={onFileInputChange}
+                            // accept="image/png, image/jpeg, image/gif"
                             accept="image/png, image/jpeg"
                         />
                         <MiniButton
@@ -383,61 +378,59 @@ export default function InputBox(props: {}) {
                             style={{ color: theme.palette.text.primary }}
                             onClick={onImageUploadClick}
                             tooltipTitle={
-                                <div className='text-center inline-block'>
+                                <div className="text-center inline-block">
                                     <span>{t('Attach Image')}</span>
                                 </div>
                             }
-                            tooltipPlacement='top'
+                            tooltipPlacement="top"
                         >
-                            <Image size='22' strokeWidth={1} />
+                            <Image size="22" strokeWidth={1} />
                         </MiniButton>
-                        <input type='file' ref={fileInputRef} className='hidden' onChange={onFileInputChange} />
+                        <input type="file" ref={fileInputRef} className="hidden" onChange={onFileInputChange} />
                         <MiniButton
                             className={cn('mr-1 sm:mr-2', currentSessionType !== 'picture' ? '' : 'hidden')}
                             style={{ color: theme.palette.text.primary }}
                             onClick={onFileUploadClick}
                             tooltipTitle={
-                                <div className='text-center inline-block'>
+                                <div className="text-center inline-block">
                                     <span>{t('Select File')}</span>
                                     <br />
                                     <span>{t('PDF, DOC, PPT, XLS, TXT, Code...')}</span>
                                 </div>
                             }
-                            tooltipPlacement='top'
+                            tooltipPlacement="top"
                         >
-                            <FolderClosed size='22' strokeWidth={1} />
+                            <FolderClosed size="22" strokeWidth={1} />
                         </MiniButton>
                         <MiniButton
                             className={cn('mr-1 sm:mr-2', currentSessionType !== 'picture' ? '' : 'hidden')}
                             style={{ color: theme.palette.text.primary }}
                             onClick={() => setOpenAttachLinkDialog(true)}
                             tooltipTitle={
-                                <div className='text-center inline-block'>
+                                <div className="text-center inline-block">
                                     <span>{t('Attach Link')}</span>
                                 </div>
                             }
-                            tooltipPlacement='top'
+                            tooltipPlacement="top"
                         >
-                            <Link size='22' strokeWidth={1} />
+                            <Link size="22" strokeWidth={1} />
                         </MiniButton>
-                        <MiniButton className='mr-1 sm:mr-2' style={{ color: theme.palette.text.primary }}
+                        <MiniButton
+                            className="mr-1 sm:mr-2"
+                            style={{ color: theme.palette.text.primary }}
                             onClick={() => setChatConfigDialogSessionId(sessionActions.getCurrentSession().id)}
                             tooltipTitle={
-                                <div className='text-center inline-block'>
+                                <div className="text-center inline-block">
                                     <span>{t('Customize settings for the current conversation')}</span>
                                 </div>
                             }
-                            tooltipPlacement='top'
+                            tooltipPlacement="top"
                         >
-                            <Settings2 size='22' strokeWidth={1} />
+                            <Settings2 size="22" strokeWidth={1} />
                         </MiniButton>
                     </div>
-                    <div className='flex flex-row items-center'>
-                        {
-                            currentSessionType === 'chat' && (
-                                <ChatModelSelector />
-                            )
-                        }
+                    <div className="flex flex-row items-center">
+                        {currentSessionType === 'chat' && <ChatModelSelector />}
                         {/* <MiniButton className='mr-2 w-auto flex items-center opacity-70'>
                         <span className='text-sm' style={{ color: theme.palette.text.primary }}>
                             严谨(0.7)
@@ -447,39 +440,43 @@ export default function InputBox(props: {}) {
                             className='opacity-50'
                         />
                     </MiniButton> */}
-                        <MiniButton className='w-8 ml-2'
+                        <MiniButton
+                            className="w-8 ml-2"
                             style={{
                                 color: theme.palette.getContrastText(theme.palette.primary.main),
-                                backgroundColor: currentSessionType === 'picture'
-                                    ? theme.palette.secondary.main
-                                    : theme.palette.primary.main,
+                                backgroundColor:
+                                    currentSessionType === 'picture'
+                                        ? theme.palette.secondary.main
+                                        : theme.palette.primary.main,
                             }}
                             tooltipTitle={
-                                isSmallScreen
-                                    ? undefined
-                                    : (
-                                        <Typography variant="caption">
-                                            {t('[Enter] send, [Shift+Enter] line break, [Ctrl+Enter] send without generating')}
-                                        </Typography>
-                                    )
+                                isSmallScreen ? undefined : (
+                                    <Typography variant="caption">
+                                        {t(
+                                            '[Enter] send, [Shift+Enter] line break, [Ctrl+Enter] send without generating'
+                                        )}
+                                    </Typography>
+                                )
                             }
-                            tooltipPlacement='top'
+                            tooltipPlacement="top"
                             onClick={() => handleSubmit()}
                         >
-                            <SendHorizontal size='22' strokeWidth={1} />
+                            <SendHorizontal size="22" strokeWidth={1} />
                         </MiniButton>
                     </div>
                 </div>
-                <div className='w-full pl-1 pb-2' {...getRootProps()}>
+                <div className="w-full pl-1 pb-2" {...getRootProps()}>
                     <input {...getInputProps()} />
-                    <textarea id={dom.messageInputID}
+                    <textarea
+                        id={dom.messageInputID}
                         className={cn(
                             `w-full`,
                             'overflow-y resize-none border-none outline-none',
                             'bg-slate-300/25 rounded-lg p-2',
                             'sm:bg-transparent sm:p-1'
                         )}
-                        value={messageInput} onChange={onMessageInput}
+                        value={messageInput}
+                        onChange={onMessageInput}
                         onKeyDown={onKeyDown}
                         ref={inputRef}
                         autoFocus={!isSmallScreen}
@@ -492,37 +489,27 @@ export default function InputBox(props: {}) {
                         }}
                         placeholder={t('Type your question here...') || ''}
                         onPaste={onPaste}
-                    // {...{ enterKeyHint: 'send' } as any}
+                        // {...{ enterKeyHint: 'send' } as any}
                     />
-                    <div className='flex flex-row items-center' onClick={() => dom.focusMessageInput()} >
-                        {
-                            pictureKeys.map((picKey, ix) => (
-                                <ImageMiniCard
-                                    key={ix}
-                                    storageKey={picKey}
-                                    onDelete={() => onImageDeleteClick(picKey)}
-                                />
-                            ))
-                        }
-                        {
-                            attachments.map((file, ix) => (
-                                <FileMiniCard
-                                    key={ix}
-                                    name={file.name}
-                                    fileType={file.type}
-                                    onDelete={() => setAttachments(files => files.filter(f => f.name != file.name))}
-                                />
-                            ))
-                        }
-                        {
-                            links.map((link, ix) => (
-                                <LinkMiniCard
-                                    key={ix}
-                                    url={link.url}
-                                    onDelete={() => setLinks(links => links.filter(l => l.url != link.url))}
-                                />
-                            ))
-                        }
+                    <div className="flex flex-row items-center" onClick={() => dom.focusMessageInput()}>
+                        {pictureKeys.map((picKey, ix) => (
+                            <ImageMiniCard key={ix} storageKey={picKey} onDelete={() => onImageDeleteClick(picKey)} />
+                        ))}
+                        {attachments.map((file, ix) => (
+                            <FileMiniCard
+                                key={ix}
+                                name={file.name}
+                                fileType={file.type}
+                                onDelete={() => setAttachments((files) => files.filter((f) => f.name != file.name))}
+                            />
+                        ))}
+                        {links.map((link, ix) => (
+                            <LinkMiniCard
+                                key={ix}
+                                url={link.url}
+                                onDelete={() => setLinks((links) => links.filter((l) => l.url != link.url))}
+                            />
+                        ))}
                     </div>
                 </div>
             </div>

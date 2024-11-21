@@ -1,13 +1,12 @@
-import { CHATBOX_BUILD_PLATFORM } from "@/variables";
-import { Exporter } from "./interfaces"
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
-import { Share } from '@capacitor/share';
-import { Toast } from '@capacitor/toast';
+import { CHATBOX_BUILD_PLATFORM } from '@/variables'
+import { Exporter } from './interfaces'
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem'
+import { Share } from '@capacitor/share'
+import { Toast } from '@capacitor/toast'
 import * as base64 from '@/packages/base64'
 
 export default class MobileExporter implements Exporter {
-    constructor() {
-    }
+    constructor() {}
 
     async exportBlob(filename: string, blob: Blob, encoding?: 'utf8' | 'ascii' | 'utf16') {
         const data = await blob.text()
@@ -18,13 +17,13 @@ export default class MobileExporter implements Exporter {
                 data: data,
                 directory: Directory.Cache, // 只有 Cache 才能分享
                 encoding: encoding as Encoding,
-            });
+            })
             await Share.share({
                 title: 'Share File',
                 text: 'Share File',
                 url: result.uri,
                 dialogTitle: 'Share File',
-            });
+            })
         } else {
             await this.checkOrRequestPermission()
             const file = await Filesystem.writeFile({
@@ -33,8 +32,8 @@ export default class MobileExporter implements Exporter {
                 directory: Directory.Documents,
                 recursive: true,
                 encoding: encoding as Encoding,
-            });
-            await Toast.show({ text: `Saved to ${file.uri}` });
+            })
+            await Toast.show({ text: `Saved to ${file.uri}` })
         }
     }
 
@@ -45,13 +44,13 @@ export default class MobileExporter implements Exporter {
                 data: content,
                 directory: Directory.Cache, // 只有 Cache 才能分享
                 encoding: Encoding.UTF8,
-            });
+            })
             await Share.share({
                 title: 'Share File',
                 text: 'Share File',
                 url: result.uri,
                 dialogTitle: 'Share File',
-            });
+            })
         } else {
             await this.checkOrRequestPermission()
             const file = await Filesystem.writeFile({
@@ -60,8 +59,8 @@ export default class MobileExporter implements Exporter {
                 directory: Directory.Documents,
                 encoding: Encoding.UTF8,
                 recursive: true,
-            });
-            await Toast.show({ text: `Saved to ${file.uri}` });
+            })
+            await Toast.show({ text: `Saved to ${file.uri}` })
         }
     }
 
@@ -80,13 +79,13 @@ export default class MobileExporter implements Exporter {
                 path: filename,
                 data: data, // 不声明 encoding 时，默认就是 base64 格式
                 directory: Directory.Cache, // 只有 Cache 才能分享
-            });
+            })
             await Share.share({
                 title: 'Share File',
                 text: 'Share File',
                 url: result.uri,
                 dialogTitle: 'Share File',
-            });
+            })
         } else {
             await this.checkOrRequestPermission()
             const file = await Filesystem.writeFile({
@@ -94,8 +93,8 @@ export default class MobileExporter implements Exporter {
                 data: data,
                 directory: Directory.Documents,
                 recursive: true,
-            });
-            await Toast.show({ text: `Saved to ${file.uri}` });
+            })
+            await Toast.show({ text: `Saved to ${file.uri}` })
         }
     }
 
@@ -105,7 +104,7 @@ export default class MobileExporter implements Exporter {
                 url: url,
                 path: filename,
                 directory: Directory.Cache,
-            });
+            })
             await Share.share({
                 title: 'Share File',
                 text: 'Share File',
@@ -118,15 +117,15 @@ export default class MobileExporter implements Exporter {
                 path: 'chatbox_ai_exports',
                 directory: Directory.Documents,
                 recursive: true,
-            });
+            })
             // 测试下来，Filesystem.downloadFile 似乎不会自动创建文件夹
             const file = await Filesystem.downloadFile({
                 url: url,
                 path: 'chatbox_ai_exports/' + filename,
                 directory: Directory.Documents,
                 recursive: true,
-            });
-            await Toast.show({ text: `Saved to ${file.path}` });
+            })
+            await Toast.show({ text: `Saved to ${file.path}` })
         }
     }
 
@@ -136,10 +135,9 @@ export default class MobileExporter implements Exporter {
         if (result.publicStorage === 'granted') {
             return
         }
-        result = await Filesystem.requestPermissions();
+        result = await Filesystem.requestPermissions()
         if (result.publicStorage === 'denied') {
-            await Toast.show({ text: 'No permission to write file' });
+            await Toast.show({ text: 'No permission to write file' })
         }
     }
-
 }

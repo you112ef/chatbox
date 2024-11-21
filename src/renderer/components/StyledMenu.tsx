@@ -20,7 +20,7 @@ const StyledMenu = styled((props: MenuProps) => {
             }}
             PopoverClasses={{
                 root: '',
-                paper: ''
+                paper: '',
             }}
             {...props}
         />

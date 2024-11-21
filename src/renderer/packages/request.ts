@@ -1,11 +1,15 @@
-import { parseJsonOrEmpty } from "@/lib/utils"
-import { ApiError, BaseError, ChatboxAIAPIError, NetworkError } from "./models/errors"
+import { parseJsonOrEmpty } from '@/lib/utils'
+import { ApiError, BaseError, ChatboxAIAPIError, NetworkError } from './models/errors'
 
 // TODO: 尽可能在其他地方（llm）中复用这个函数
-export async function afetch(url: string, init: RequestInit, options: {
-    retry?: number
-    parseChatboxRemoteError?: boolean
-} = {}) {
+export async function afetch(
+    url: string,
+    init: RequestInit,
+    options: {
+        retry?: number
+        parseChatboxRemoteError?: boolean
+    } = {}
+) {
     let requestError: ApiError | NetworkError | null = null
     const retry = options.retry || 0
     for (let i = 0; i < retry + 1; i++) {
@@ -46,23 +50,22 @@ export async function uploadFile(file: File, url: string) {
     // COS 需要使用原始的 XMLHttpRequest（根据官网示例）
     // 如果使用 fetch，会导致上传的 excel、docx 格式不正确
     return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open('PUT', url, true);
-        xhr.upload.onprogress = function (e) {
-        };
+        const xhr = new XMLHttpRequest()
+        xhr.open('PUT', url, true)
+        xhr.upload.onprogress = function (e) {}
         xhr.onload = function () {
             if (/^2\d\d$/.test('' + xhr.status)) {
-                const ETag = xhr.getResponseHeader('etag');
+                const ETag = xhr.getResponseHeader('etag')
                 resolve({ url: url, ETag: ETag })
             } else {
                 const error = new NetworkError(`XMLHttpRequest failed, status code ${xhr.status}`, '')
                 reject(error)
             }
-        };
+        }
         xhr.onerror = function () {
             const error = new NetworkError(`XMLHttpRequest failed, status code ${xhr.status}`, '')
             reject(error)
-        };
-        xhr.send(file);
+        }
+        xhr.send(file)
     })
 }

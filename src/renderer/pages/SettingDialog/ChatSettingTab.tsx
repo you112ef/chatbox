@@ -8,7 +8,7 @@ import {
     Grid,
     Stack,
     useTheme,
-    Tooltip
+    Tooltip,
 } from '@mui/material'
 import { Settings } from '../../../shared/types'
 import { useTranslation } from 'react-i18next'
@@ -18,8 +18,8 @@ import { v4 as uuidv4 } from 'uuid'
 import PersonIcon from '@mui/icons-material/Person'
 import EditableAvatar from '@/components/EditableAvatar'
 import SmartToyIcon from '@mui/icons-material/SmartToy'
-import { ImageInStorage, handleImageInputAndSave } from "@/components/Image";
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { ImageInStorage, handleImageInputAndSave } from '@/components/Image'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 
 export default function ChatSettingTab(props: {
     settingsEdit: Settings
@@ -43,27 +43,23 @@ export default function ChatSettingTab(props: {
                 >
                     <Grid item xs={5.9}>
                         <Stack>
-                            <Tooltip
-                                title={t('Edit user avatar')}
-                                placement={'top'}
-                            >
+                            <Tooltip title={t('Edit user avatar')} placement={'top'}>
                                 <Box>
                                     <EditableAvatar
                                         onChange={(event) => {
                                             const key = `picture:user-avatar:${uuidv4()}`
-                                            handleImageInputAndSave(
-                                                event,
-                                                key,
-                                                () => setSettingsEdit({ ...settingsEdit, userAvatarKey: key })
+                                            handleImageInputAndSave(event, key, () =>
+                                                setSettingsEdit({ ...settingsEdit, userAvatarKey: key })
                                             )
                                         }}
                                         onRemove={() => {
-                                           setSettingsEdit({ ...settingsEdit, userAvatarKey: undefined })
+                                            setSettingsEdit({ ...settingsEdit, userAvatarKey: undefined })
                                         }}
                                         removable={!!settingsEdit.userAvatarKey}
                                     >
                                         {settingsEdit.userAvatarKey ? (
-                                            <ImageInStorage storageKey={settingsEdit.userAvatarKey}
+                                            <ImageInStorage
+                                                storageKey={settingsEdit.userAvatarKey}
                                                 className="object-cover object-center w-full h-full"
                                             />
                                         ) : (
@@ -82,18 +78,13 @@ export default function ChatSettingTab(props: {
                     />
                     <Grid item xs={5.9}>
                         <Stack>
-                            <Tooltip
-                                title={t('Edit default assistant avatar')}
-                                placement={'top'}
-                            >
+                            <Tooltip title={t('Edit default assistant avatar')} placement={'top'}>
                                 <Box>
                                     <EditableAvatar
                                         onChange={(event) => {
                                             const key = `picture:default-assistant-avatar:${uuidv4()}`
-                                            handleImageInputAndSave(
-                                                event,
-                                                key,
-                                                () => setSettingsEdit({ ...settingsEdit, defaultAssistantAvatarKey: key })
+                                            handleImageInputAndSave(event, key, () =>
+                                                setSettingsEdit({ ...settingsEdit, defaultAssistantAvatarKey: key })
                                             )
                                         }}
                                         onRemove={() => {
@@ -217,14 +208,14 @@ export default function ChatSettingTab(props: {
                 <FormControlLabel
                     control={<Switch />}
                     label={
-                        <span className='flex items-start justify-center'>
+                        <span className="flex items-start justify-center">
                             {t('Inject default metadata')}
                             <Tooltip
                                 title={t('e.g., Model Name, Current Date')}
                                 className="cursor-pointer"
-                                placement='top'
+                                placement="top"
                             >
-                                <HelpOutlineIcon className='opacity-60 ml-0.5' fontSize='small' />
+                                <HelpOutlineIcon className="opacity-60 ml-0.5" fontSize="small" />
                             </Tooltip>
                         </span>
                     }
@@ -239,14 +230,16 @@ export default function ChatSettingTab(props: {
                 <FormControlLabel
                     control={<Switch />}
                     label={
-                        <span className='flex items-start justify-center'>
+                        <span className="flex items-start justify-center">
                             {t('Auto-preview artifacts')}
                             <Tooltip
-                                title={t('Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)')}
+                                title={t(
+                                    'Automatically render generated artifacts (e.g., HTML with CSS, JS, Tailwind)'
+                                )}
                                 className="cursor-pointer"
-                                placement='top'
+                                placement="top"
                             >
-                                <HelpOutlineIcon className='opacity-60 ml-0.5' fontSize='small' />
+                                <HelpOutlineIcon className="opacity-60 ml-0.5" fontSize="small" />
                             </Tooltip>
                         </span>
                     }

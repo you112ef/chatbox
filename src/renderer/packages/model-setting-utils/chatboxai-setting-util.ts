@@ -1,7 +1,7 @@
-import { ChatboxAIModel, ModelSettings, Session, SessionType, Settings } from "src/shared/types";
-import { ModelSettingUtil } from "./interface";
-import { chatboxAIModels } from "../models/chatboxai";
-import BaseConfig from "./base-config";
+import { ChatboxAIModel, ModelSettings, Session, SessionType, Settings } from 'src/shared/types'
+import { ModelSettingUtil } from './interface'
+import { chatboxAIModels } from '../models/chatboxai'
+import BaseConfig from './base-config'
 
 export default class ChatboxAISettingUtil extends BaseConfig implements ModelSettingUtil {
     async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
@@ -25,11 +25,11 @@ export default class ChatboxAISettingUtil extends BaseConfig implements ModelSet
     getLocalOptionGroups(settings: Settings) {
         return [
             {
-                options: chatboxAIModels.map(value => ({
+                options: chatboxAIModels.map((value) => ({
                     label: this.formatModelLabel(value),
                     value: value,
-                }))
-            }
+                })),
+            },
         ]
     }
 
@@ -37,7 +37,7 @@ export default class ChatboxAISettingUtil extends BaseConfig implements ModelSet
         return value.replace('chatboxai-', 'Chatbox AI ')
     }
 
-    selectSessionModel(settings: Session["settings"], selected: string): Session["settings"] {
+    selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {
         return {
             ...settings,
             chatboxAIModel: selected as ChatboxAIModel,

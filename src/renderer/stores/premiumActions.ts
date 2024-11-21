@@ -15,7 +15,7 @@ import { ModelProvider, Settings } from 'src/shared/types'
 export function useAutoValidate() {
     const [settings, setSettings] = useAtom(settingsAtom)
     const clearValidatedData = () => {
-        setSettings(settings => ({
+        setSettings((settings) => ({
             ...settings,
             licenseKey: '',
             licenseInstances: omit(settings.licenseInstances, settings.licenseKey || ''),
@@ -23,7 +23,7 @@ export function useAutoValidate() {
         }))
     }
     useEffect(() => {
-        ; (async () => {
+        ;(async () => {
             if (!settings.licenseKey || !settings.licenseInstances) {
                 // 这里不清除数据，因为可能是本地数据尚未加载
                 return
@@ -37,16 +37,15 @@ export function useAutoValidate() {
                 })
                 if (result.valid === false) {
                     clearValidatedData()
-                    platform.appLog('info', `clear license validated data due to invalid result: ${JSON.stringify(result)}`)
+                    platform.appLog(
+                        'info',
+                        `clear license validated data due to invalid result: ${JSON.stringify(result)}`
+                    )
                     return
                 }
             } catch (err) {
                 // 如果错误码为 401 或 403，则清除数据
-                if (
-                    err instanceof FetchError
-                    && err.status
-                    && [401, 403, 404].includes(err.status)
-                ) {
+                if (err instanceof FetchError && err.status && [401, 403, 404].includes(err.status)) {
                     clearValidatedData()
                     platform.appLog('info', `clear license validated data due to respones status: ${err.status}`)
                 } else {
@@ -89,8 +88,8 @@ export async function deactivate() {
 
 /**
  * 激活新的 license key
- * @param licenseKey 
- * @returns 
+ * @param licenseKey
+ * @returns
  */
 export async function activate(licenseKey: string) {
     const store = getDefaultStore()

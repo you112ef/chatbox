@@ -1,7 +1,7 @@
-import { ModelSettings, Session, SessionType, Settings } from "src/shared/types";
-import { ModelSettingUtil } from "./interface";
-import AzureOpenAI from "../models/azure";
-import BaseConfig from "./base-config";
+import { ModelSettings, Session, SessionType, Settings } from 'src/shared/types'
+import { ModelSettingUtil } from './interface'
+import AzureOpenAI from '../models/azure'
+import BaseConfig from './base-config'
 
 export default class AzureSettingUtil extends BaseConfig implements ModelSettingUtil {
     async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
@@ -17,11 +17,11 @@ export default class AzureSettingUtil extends BaseConfig implements ModelSetting
     }
 
     getLocalOptionGroups(settings: Settings) {
-        const options = settings.azureDeploymentNameOptions.map(option => ({
+        const options = settings.azureDeploymentNameOptions.map((option) => ({
             label: option,
             value: option,
         }))
-        if (!options.some(option => option.value === settings.azureDeploymentName)) {
+        if (!options.some((option) => option.value === settings.azureDeploymentName)) {
             options.push({
                 label: settings.azureDeploymentName,
                 value: settings.azureDeploymentName,
@@ -30,11 +30,11 @@ export default class AzureSettingUtil extends BaseConfig implements ModelSetting
         return [
             {
                 options,
-            }
+            },
         ]
     }
 
-    selectSessionModel(settings: Session["settings"], selected: string): Session["settings"] {
+    selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {
         return {
             ...settings,
             azureDeploymentName: selected,

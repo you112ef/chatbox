@@ -19,7 +19,7 @@ if (screen && screen.orientation) {
     screen.orientation.addEventListener('change', setViewportHeight)
 } else {
     // 兼容 iOS 16 及更低版本
-    const mql = window.matchMedia('(orientation: portrait)');
+    const mql = window.matchMedia('(orientation: portrait)')
     if (mql) {
         mql.addListener(function (m) {
             setViewportHeight()
@@ -28,7 +28,7 @@ if (screen && screen.orientation) {
             // } else {
             //     // 当前为横屏模式
             // }
-        });
+        })
         // // 用来检查当前的媒体查询状态
         // if (mql.matches) {
         //     // 当前为竖屏模式

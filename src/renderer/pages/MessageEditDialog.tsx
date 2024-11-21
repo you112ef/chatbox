@@ -1,4 +1,16 @@
-import { Typography, TextField, SelectChangeEvent, Avatar, MenuItem, Select, Button, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material'
+import {
+    Typography,
+    TextField,
+    SelectChangeEvent,
+    Avatar,
+    MenuItem,
+    Select,
+    Button,
+    Dialog,
+    DialogContent,
+    DialogActions,
+    DialogTitle,
+} from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import * as atoms from '../stores/atoms'
 import { useAtom } from 'jotai'
@@ -9,8 +21,7 @@ import SmartToyIcon from '@mui/icons-material/SmartToy'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
-interface Props {
-}
+interface Props {}
 
 export default function MessageEditDialog(props: Props) {
     const { t } = useTranslation()
@@ -45,7 +56,7 @@ export default function MessageEditDialog(props: Props) {
             msg: {
                 ...data.msg,
                 role: e.target.value as MessageRole,
-            }
+            },
         })
     }
     const onContentInput = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -57,7 +68,7 @@ export default function MessageEditDialog(props: Props) {
             msg: {
                 ...data.msg,
                 content: e.target.value,
-            }
+            },
         })
     }
     const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -85,8 +96,11 @@ export default function MessageEditDialog(props: Props) {
         return null
     }
     return (
-        <Dialog open={!!data} onClose={onClose} fullWidth
-        // classes={{ paper: 'h-4/5' }}
+        <Dialog
+            open={!!data}
+            onClose={onClose}
+            fullWidth
+            // classes={{ paper: 'h-4/5' }}
         >
             <DialogTitle></DialogTitle>
             <DialogContent>
@@ -95,7 +109,7 @@ export default function MessageEditDialog(props: Props) {
                     onChange={onRoleSelect}
                     size="small"
                     id={data.msg.id + 'select'}
-                    className='mb-2'
+                    className="mb-2"
                 >
                     <MenuItem value={MessageRoleEnum.System}>
                         <Avatar>
@@ -114,7 +128,7 @@ export default function MessageEditDialog(props: Props) {
                     </MenuItem>
                 </Select>
                 <TextField
-                    className='w-full'
+                    className="w-full"
                     autoFocus={!isSmallScreen}
                     multiline // multiline 需要和 maxRows 一起使用，否则长文本可能会导致退出编辑？
                     minRows={5}

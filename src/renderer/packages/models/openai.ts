@@ -42,12 +42,19 @@ export default class OpenAI extends Base {
         }
     }
 
-    async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+    async callChatCompletion(
+        rawMessages: Message[],
+        signal?: AbortSignal,
+        onResultChange?: onResultChange
+    ): Promise<string> {
         try {
             return await this._callChatCompletion(rawMessages, signal, onResultChange)
         } catch (e) {
             // 如果当前模型不支持图片输入，抛出对应的错误
-            if (e instanceof ApiError && e.message.includes('Invalid content type. image_url is only supported by certain models.')) {
+            if (
+                e instanceof ApiError &&
+                e.message.includes('Invalid content type. image_url is only supported by certain models.')
+            ) {
                 // 根据当前 IP，判断是否在错误中推荐 Chatbox AI 4
                 const remoteConfig = settingActions.getRemoteConfig()
                 if (remoteConfig.setting_chatboxai_first) {
@@ -60,10 +67,12 @@ export default class OpenAI extends Base {
         }
     }
 
-    async _callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
-        const model = this.options.model === 'custom-model'
-            ? this.options.openaiCustomModel || ''
-            : this.options.model
+    async _callChatCompletion(
+        rawMessages: Message[],
+        signal?: AbortSignal,
+        onResultChange?: onResultChange
+    ): Promise<string> {
+        const model = this.options.model === 'custom-model' ? this.options.openaiCustomModel || '' : this.options.model
         if (this.options.injectDefaultMetadata) {
             rawMessages = injectModelSystemPrompt(model, rawMessages)
         }
@@ -72,30 +81,34 @@ export default class OpenAI extends Base {
             return this.requestChatCompletionsNotStream({ model, messages }, signal, onResultChange)
         }
         const messages = await populateGPTMessage(rawMessages, this.options.model)
-        return this.requestChatCompletionsStream({
-            messages,
-            model,
-            // vision 模型的默认 max_tokens 极低，基本很难回答完整，因此手动设置为模型最大值
-            max_tokens: this.options.model === 'gpt-4-vision-preview'
-                ? openaiModelConfigs['gpt-4-vision-preview'].maxTokens
-                : undefined,
-            temperature: this.options.temperature,
-            top_p: this.options.topP,
-            stream: true,
-        }, signal, onResultChange)
+        return this.requestChatCompletionsStream(
+            {
+                messages,
+                model,
+                // vision 模型的默认 max_tokens 极低，基本很难回答完整，因此手动设置为模型最大值
+                max_tokens:
+                    this.options.model === 'gpt-4-vision-preview'
+                        ? openaiModelConfigs['gpt-4-vision-preview'].maxTokens
+                        : undefined,
+                temperature: this.options.temperature,
+                top_p: this.options.topP,
+                stream: true,
+            },
+            signal,
+            onResultChange
+        )
     }
 
-    async requestChatCompletionsStream(requestBody: Record<string, any>, signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+    async requestChatCompletionsStream(
+        requestBody: Record<string, any>,
+        signal?: AbortSignal,
+        onResultChange?: onResultChange
+    ): Promise<string> {
         const apiPath = this.options.apiPath || '/v1/chat/completions'
-        const response = await this.post(
-            `${this.options.apiHost}${apiPath}`,
-            this.getHeaders(),
-            requestBody,
-            {
-                signal,
-                useProxy: this.options.openaiUseProxy,
-            },
-        )
+        const response = await this.post(`${this.options.apiHost}${apiPath}`, this.getHeaders(), requestBody, {
+            signal,
+            useProxy: this.options.openaiUseProxy,
+        })
         let result = ''
         await this.handleSSE(response, (message) => {
             if (message === '[DONE]') {
@@ -116,17 +129,16 @@ export default class OpenAI extends Base {
         return result
     }
 
-    async requestChatCompletionsNotStream(requestBody: Record<string, any>, signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+    async requestChatCompletionsNotStream(
+        requestBody: Record<string, any>,
+        signal?: AbortSignal,
+        onResultChange?: onResultChange
+    ): Promise<string> {
         const apiPath = this.options.apiPath || '/v1/chat/completions'
-        const response = await this.post(
-            `${this.options.apiHost}${apiPath}`,
-            this.getHeaders(),
-            requestBody,
-            {
-                signal,
-                useProxy: this.options.openaiUseProxy,
-            },
-        )
+        const response = await this.post(`${this.options.apiHost}${apiPath}`, this.getHeaders(), requestBody, {
+            signal,
+            useProxy: this.options.openaiUseProxy,
+        })
         const json = await response.json()
         if (json.error) {
             throw new ApiError(`Error from OpenAI: ${JSON.stringify(json)}`)
@@ -150,7 +162,7 @@ export default class OpenAI extends Base {
                 model: 'dall-e-3',
                 style: this.options.dalleStyle,
             },
-            { signal },
+            { signal }
         )
         const json = await res.json()
         return json['data'][0]['b64_json']
@@ -335,12 +347,15 @@ export const models = Array.from(Object.keys(openaiModelConfigs)).sort() as Open
 export function isSupportVision(model: OpenAIModel | 'custom-model' | string): boolean {
     // 因为历史原因，有些用户会在 openai 提供商的设置中使用其他厂商的模型
     return (
-        model === 'custom-model'
-        || (openaiModelConfigs[model as OpenAIModel] && openaiModelConfigs[model as OpenAIModel].vision)
+        model === 'custom-model' ||
+        (openaiModelConfigs[model as OpenAIModel] && openaiModelConfigs[model as OpenAIModel].vision)
     )
 }
 
-export async function populateGPTMessage(rawMessages: Message[], model: OpenAIModel | 'custom-model'): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
+export async function populateGPTMessage(
+    rawMessages: Message[],
+    model: OpenAIModel | 'custom-model'
+): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
     if (isSupportVision(model) && rawMessages.some((m) => m.pictures && m.pictures.length > 0)) {
         return populateOpenAIMessageVision(rawMessages)
     } else {
@@ -367,10 +382,8 @@ export async function populateOpenAIMessageText(rawMessages: Message[]): Promise
 export async function populateOpenAIMessageVision(rawMessages: Message[]): Promise<OpenAIMessageVision[]> {
     const messages: OpenAIMessageVision[] = []
     for (const m of rawMessages) {
-        const content: OpenAIMessageVision['content'] = [
-            { type: 'text', text: m.content }
-        ]
-        for (const pic of (m.pictures || [])) {
+        const content: OpenAIMessageVision['content'] = [{ type: 'text', text: m.content }]
+        for (const pic of m.pictures || []) {
             if (!pic.storageKey) {
                 continue
             }
@@ -380,7 +393,7 @@ export async function populateOpenAIMessageVision(rawMessages: Message[]): Promi
             }
             content.push({
                 type: 'image_url',
-                image_url: { url: picBase64 }
+                image_url: { url: picBase64 },
             })
         }
         messages.push({ role: m.role, content } as OpenAIMessageVision)
@@ -390,9 +403,9 @@ export async function populateOpenAIMessageVision(rawMessages: Message[]): Promi
 
 /**
  * 在 system prompt 中注入模型信息
- * @param model 
- * @param messages 
- * @returns 
+ * @param model
+ * @param messages
+ * @returns
  */
 export function injectModelSystemPrompt(model: string, messages: Message[]) {
     const metadataPrompt = `
@@ -403,7 +416,7 @@ Current date: ${new Date().toISOString()}
     let hasInjected = false
     return messages.map((m) => {
         if (m.role === 'system' && !hasInjected) {
-            m = { ...m }    // 复制，防止原始数据在其他地方被直接渲染使用
+            m = { ...m } // 复制，防止原始数据在其他地方被直接渲染使用
             m.content = metadataPrompt + m.content
             hasInjected = true
         }
@@ -423,17 +436,17 @@ export interface OpenAIMessageVision {
     role: 'system' | 'user' | 'assistant'
     content: (
         | {
-            type: 'text'
-            text: string
-        }
+              type: 'text'
+              text: string
+          }
         | {
-            type: 'image_url'
-            image_url: {
-                // 可以是 url，也可以是 base64
-                // data:image/jpeg;base64,{base64_image}
-                url: string
-                detail?: 'auto' | 'low' | 'high' // default: auto
-            }
-        }
+              type: 'image_url'
+              image_url: {
+                  // 可以是 url，也可以是 base64
+                  // data:image/jpeg;base64,{base64_image}
+                  url: string
+                  detail?: 'auto' | 'low' | 'high' // default: auto
+              }
+          }
     )[]
 }

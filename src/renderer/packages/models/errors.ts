@@ -44,70 +44,77 @@ export class AIProviderNoImplementedChatError extends BaseError {
 export class ChatboxAIAPIError extends BaseError {
     static codeNameMap: { [codename: string]: ChatboxAIAPIErrorDetail } = {
         // 超出配额
-        'token_quota_exhausted': {
+        token_quota_exhausted: {
             name: 'token_quota_exhausted',
-            code: 10004,    // 小于 20000 是为了兼容旧版本
-            i18nKey: 'You have reached your monthly quota for the {{model}} model. Please <OpenSettingButton>go to Settings</OpenSettingButton> to switch to a different model, view your quota usage, or upgrade your plan.',
+            code: 10004, // 小于 20000 是为了兼容旧版本
+            i18nKey:
+                'You have reached your monthly quota for the {{model}} model. Please <OpenSettingButton>go to Settings</OpenSettingButton> to switch to a different model, view your quota usage, or upgrade your plan.',
         },
         // 当前套餐不支持该模型
-        'license_upgrade_required': {
+        license_upgrade_required: {
             name: 'license_upgrade_required',
             code: 20001,
-            i18nKey: 'Your current License (Chatbox AI Lite) does not support the {{model}} model. To use this model, please <OpenMorePlanButton>upgrade</OpenMorePlanButton> to Chatbox AI Pro or a higher-tier package. Alternatively, you can switch to a different model by <OpenSettingButton>accessing the settings</OpenSettingButton>.',
+            i18nKey:
+                'Your current License (Chatbox AI Lite) does not support the {{model}} model. To use this model, please <OpenMorePlanButton>upgrade</OpenMorePlanButton> to Chatbox AI Pro or a higher-tier package. Alternatively, you can switch to a different model by <OpenSettingButton>accessing the settings</OpenSettingButton>.',
         },
         // license 过期
-        'expired_license': {
+        expired_license: {
             name: 'expired_license',
             code: 20002,
             i18nKey: 'Your license has expired. Please check your subscription or purchase a new one.',
         },
         // 未输入 license
-        'license_key_required': {
+        license_key_required: {
             name: 'license_key_required',
             code: 20003,
-            i18nKey: 'You have selected Chatbox AI as the model provider, but a license key has not been entered yet. Please <OpenSettingButton>click here to open Settings</OpenSettingButton> and enter your license key, or choose a different model provider.'
+            i18nKey:
+                'You have selected Chatbox AI as the model provider, but a license key has not been entered yet. Please <OpenSettingButton>click here to open Settings</OpenSettingButton> and enter your license key, or choose a different model provider.',
         },
         // 输入的 license 未找到
-        'license_not_found': {
+        license_not_found: {
             name: 'license_not_found',
             code: 20004,
-            i18nKey: 'The license key you entered is invalid. Please check your license key and try again.'
+            i18nKey: 'The license key you entered is invalid. Please check your license key and try again.',
         },
         // 超出配额
-        'rate_limit_exceeded': {
+        rate_limit_exceeded: {
             name: 'rate_limit_exceeded',
             code: 20005,
-            i18nKey: 'You have exceeded the rate limit for the Chatbox AI service. Please try again later.'
+            i18nKey: 'You have exceeded the rate limit for the Chatbox AI service. Please try again later.',
         },
         // 参数错误
-        'bad_params': {
+        bad_params: {
             name: 'bad_params',
             code: 20006,
-            i18nKey: 'Invalid request parameters detected. Please try again later. Persistent failures may indicate an outdated software version. Consider upgrading to access the latest performance improvements and features.'
+            i18nKey:
+                'Invalid request parameters detected. Please try again later. Persistent failures may indicate an outdated software version. Consider upgrading to access the latest performance improvements and features.',
         },
         // 文件类型不支持。支持的类型有 txt、md、html、doc、docx、pdf、excel、pptx、csv 以及所有文本类型的文件，包括代码文件
-        'file_type_not_supported': {
+        file_type_not_supported: {
             name: 'file_type_not_supported',
             code: 20007,
-            i18nKey: 'File type not supported. Supported types include txt, md, html, doc, docx, pdf, excel, pptx, csv, and all text-based files, including code files.'
+            i18nKey:
+                'File type not supported. Supported types include txt, md, html, doc, docx, pdf, excel, pptx, csv, and all text-based files, including code files.',
         },
         // 发送的文件已经超过七天，为了保护您的隐私，所有文件相关的缓存数据已经清理。您需要重新创建对话或刷新上下文，然后再次发送文件。
-        'file_expired': {
+        file_expired: {
             name: 'file_expired',
             code: 20008,
-            i18nKey: 'The file you sent has expired. To protect your privacy, all file-related cache data has been cleared. You need to create a new conversation or refresh the context, and then send the file again.'
+            i18nKey:
+                'The file you sent has expired. To protect your privacy, all file-related cache data has been cleared. You need to create a new conversation or refresh the context, and then send the file again.',
         },
         // 未找到文件的缓存数据。请重新创建对话或刷新上下文，然后再次发送文件。
-        'file_not_found': {
+        file_not_found: {
             name: 'file_not_found',
             code: 20009,
-            i18nKey: 'The cache data for the file was not found. Please create a new conversation or refresh the context, and then send the file again.'
+            i18nKey:
+                'The cache data for the file was not found. Please create a new conversation or refresh the context, and then send the file again.',
         },
         // 文件大小超过 50MB
-        'file_too_large': {
+        file_too_large: {
             name: 'file_too_large',
             code: 20010,
-            i18nKey: 'The file size exceeds the limit of 50MB. Please reduce the file size and try again.'
+            i18nKey: 'The file size exceeds the limit of 50MB. Please reduce the file size and try again.',
         },
         // 当前模型不支持发送文件。目前支持的模型有 Chatbox AI 4
         // 'model_not_support_file': {
@@ -121,15 +128,15 @@ export class ChatboxAIAPIError extends BaseError {
         //     i18nKey: "The {{model}} API does not support files. Please download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing."
         // },
         // 当前模型不支持发送图片，推荐模型：Chatbox AI 4
-        'model_not_support_image': {
+        model_not_support_image: {
             name: 'model_not_support_image',
             code: 20013,
-            i18nKey: 'The current model {{model}} does not support sending images. Recommended model: Chatbox AI 4.'
+            i18nKey: 'The current model {{model}} does not support sending images. Recommended model: Chatbox AI 4.',
         },
-        'model_not_support_image_2': {
+        model_not_support_image_2: {
             name: 'model_not_support_image_2',
             code: 20014,
-            i18nKey: 'The current model {{model}} does not support sending images.'
+            i18nKey: 'The current model {{model}} does not support sending images.',
         },
         // 当前模型不支持发送链接
         // 'model_not_support_link': {
@@ -142,26 +149,30 @@ export class ChatboxAIAPIError extends BaseError {
         //     code: 20016,
         //     i18nKey: 'The {{model}} API does not support links. Please download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing.'
         // },
-        "model_not_support_non_text_file": {
+        model_not_support_non_text_file: {
             name: 'model_not_support_non_text_file',
             code: 20017,
-            i18nKey: "The {{model}} API itself does not support sending files. Due to the complexity of file parsing locally, Chatbox only processes text-based files (including code). For additional file formats and enhanced document understanding capabilities, <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> is recommended.",
+            i18nKey:
+                'The {{model}} API itself does not support sending files. Due to the complexity of file parsing locally, Chatbox only processes text-based files (including code). For additional file formats and enhanced document understanding capabilities, <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> is recommended.',
         },
-        "model_not_support_non_text_file_2": {
+        model_not_support_non_text_file_2: {
             name: 'model_not_support_non_text_file_2',
             code: 20018,
-            i18nKey: "The {{model}} API itself does not support sending files. Due to the complexity of file parsing locally, Chatbox only processes text-based files (including code)."
+            i18nKey:
+                'The {{model}} API itself does not support sending files. Due to the complexity of file parsing locally, Chatbox only processes text-based files (including code).',
         },
-        "system_error": {
+        system_error: {
             name: 'system_error',
             code: 20019,
-            i18nKey: "An error occurred while processing your request. Please try again later. If this error continues, please send an email to hi@benn.app for support."
+            i18nKey:
+                'An error occurred while processing your request. Please try again later. If this error continues, please send an email to hi@benn.app for support.',
         },
-        "unknown": {
+        unknown: {
             name: 'unknown',
             code: 20020,
-            i18nKey: "An unknown error occurred. Please try again later. If this error continues, please send an email to hi@benn.app for support."
-        }
+            i18nKey:
+                'An unknown error occurred. Please try again later. If this error continues, please send an email to hi@benn.app for support.',
+        },
     }
     static fromCodeName(response: string, codeName: string) {
         if (!codeName) {

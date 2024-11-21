@@ -18,16 +18,10 @@ export default function ArtifactDialog(props: {}) {
     }
 
     return (
-        <Dialog open={!!htmlCode} onClose={onClose} fullWidth
-            maxWidth='md' classes={{ paper: 'h-4/5' }}
-        >
+        <Dialog open={!!htmlCode} onClose={onClose} fullWidth maxWidth="md" classes={{ paper: 'h-4/5' }}>
             <DialogTitle>{t('Preview')}</DialogTitle>
             <DialogContent style={{ padding: '0', margin: '0' }}>
-                <Artifact
-                    htmlCode={htmlCode}
-                    reloadSign={reloadSign}
-                    className='h-[96%]'
-                />
+                <Artifact htmlCode={htmlCode} reloadSign={reloadSign} className="h-[96%]" />
             </DialogContent>
             <DialogActions>
                 <Button onClick={onReload}>{t('Refresh')}</Button>

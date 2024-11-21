@@ -3,27 +3,30 @@ import * as remote from './remote'
 
 type ActivateResponse =
     | {
-        activated: true
-        instance: { id: string }
-        meta: {
-            product_id: number
-        }
-    }
+          activated: true
+          instance: { id: string }
+          meta: {
+              product_id: number
+          }
+      }
     | {
-        activated: false
-        error: string
-        license_key?: {
-            "id": number
-            "status": string
-            "key": string
-            "activation_limit": number
-            "activation_usage": number
-            "created_at": string
-            "expires_at": any
-        }
-    }
+          activated: false
+          error: string
+          license_key?: {
+              id: number
+              status: string
+              key: string
+              activation_limit: number
+              activation_usage: number
+              created_at: string
+              expires_at: any
+          }
+      }
 
-export async function activateLicense(key: string, instanceName: string): Promise<{
+export async function activateLicense(
+    key: string,
+    instanceName: string
+): Promise<{
     valid: boolean
     instanceId: string
     error?: 'reached_activation_limit' | 'expired' | 'not_found'

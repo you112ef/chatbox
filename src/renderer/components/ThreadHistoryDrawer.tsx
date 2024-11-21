@@ -1,23 +1,34 @@
 import React, { useEffect, useRef } from 'react'
 import {
-    currentThreadHistoryHashAtom, currentSessionIdAtom, showThreadHistoryDrawerAtom, currentSessionAtom
-} from "@/stores/atoms"
+    currentThreadHistoryHashAtom,
+    currentSessionIdAtom,
+    showThreadHistoryDrawerAtom,
+    currentSessionAtom,
+} from '@/stores/atoms'
 import {
-    Tooltip, Box, Drawer, MenuList, MenuItem, ListItemText, Typography, ListItemIcon, IconButton
-} from "@mui/material"
-import { useAtom, useAtomValue } from "jotai"
-import { scrollToMessage } from "@/stores/scrollActions";
+    Tooltip,
+    Box,
+    Drawer,
+    MenuList,
+    MenuItem,
+    ListItemText,
+    Typography,
+    ListItemIcon,
+    IconButton,
+} from '@mui/material'
+import { useAtom, useAtomValue } from 'jotai'
+import { scrollToMessage } from '@/stores/scrollActions'
 import { Virtuoso, VirtuosoHandle } from 'react-virtuoso'
-import { SessionThreadBrief } from 'src/shared/types';
+import { SessionThreadBrief } from 'src/shared/types'
 import * as sessionActions from '../stores/sessionActions'
-import { useTranslation } from 'react-i18next';
-import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
-import SwapCallsIcon from '@mui/icons-material/SwapCalls';
-import DeleteIcon from "@mui/icons-material/Delete";
-import StyledMenu from "@/components/StyledMenu";
-import { cn } from '@/lib/utils';
-import { useIsSmallScreen } from '@/hooks/useScreenChange';
-import * as atoms from '@/stores/atoms';
+import { useTranslation } from 'react-i18next'
+import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined'
+import SwapCallsIcon from '@mui/icons-material/SwapCalls'
+import DeleteIcon from '@mui/icons-material/Delete'
+import StyledMenu from '@/components/StyledMenu'
+import { cn } from '@/lib/utils'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import * as atoms from '@/stores/atoms'
 
 export default function ThreadHistoryDrawer(props: {}) {
     const { t } = useTranslation()
@@ -39,17 +50,17 @@ export default function ThreadHistoryDrawer(props: {}) {
                         align: 'start',
                     })
                 } else {
-                    const index = threadList.findIndex(t => t.id === showDrawer)
+                    const index = threadList.findIndex((t) => t.id === showDrawer)
                     if (index >= 0) {
                         ref.current.scrollToIndex({ index, align: 'start' })
                     }
                 }
             }
-        }, 100);
+        }, 100)
     }, [showDrawer, ref.current])
 
     const gotoThreadMessage = (threadId: string) => {
-        const thread = threadList.find(t => t.id === threadId)
+        const thread = threadList.find((t) => t.id === threadId)
         if (!thread) {
             return
         }
@@ -76,19 +87,19 @@ export default function ThreadHistoryDrawer(props: {}) {
                 },
             }}
             {
-            // 解决 SwipeableDrawer 在全局 theme 为 rtl 时，drawer 展开起始位置错误的问题
-            ...(language === 'ar'
-                ? {
-                    SlideProps: { direction: 'right' },
-                    PaperProps: {
-                        sx: { direction: 'rtl' },
-                    },
-                }
-                : {})
+                // 解决 SwipeableDrawer 在全局 theme 为 rtl 时，drawer 展开起始位置错误的问题
+                ...(language === 'ar'
+                    ? {
+                          SlideProps: { direction: 'right' },
+                          PaperProps: {
+                              sx: { direction: 'rtl' },
+                          },
+                      }
+                    : {})
             }
         >
-            <Box className='ThreadHistoryDrawer flex flex-col h-full w-full'>
-                <Box sx={{ padding: '1rem 0.5rem 0.2rem 0.5rem', margin: '0.1rem 0.1rem 0.1rem 0.2rem' }} >
+            <Box className="ThreadHistoryDrawer flex flex-col h-full w-full">
+                <Box sx={{ padding: '1rem 0.5rem 0.2rem 0.5rem', margin: '0.1rem 0.1rem 0.1rem 0.2rem' }}>
                     <span className="text-xs opacity-80">{t('Thread History')}</span>
                 </Box>
                 <MenuList
@@ -166,42 +177,32 @@ function ThreadItem(props: {
                         goto(thread.id)
                     }}
                     sx={{ padding: '0.1rem', margin: '0.1rem' }}
-                    className='group/thread-item'
+                    className="group/thread-item"
                 >
                     <ListItemIcon>
-                        <span className='opacity-50 text-xs'>{thread.messageCount}</span>
+                        <span className="opacity-50 text-xs">{thread.messageCount}</span>
                     </ListItemIcon>
                     <ListItemText>
                         <Typography variant="inherit" noWrap>
                             {threadName}
-                            {
-                                thread.createdAtLabel && (
-                                    <span className="pl-1 opacity-70">
-                                        {thread.createdAtLabel}
-                                    </span>
-                                )
-                            }
+                            {thread.createdAtLabel && <span className="pl-1 opacity-70">{thread.createdAtLabel}</span>}
                         </Typography>
                     </ListItemText>
-                    <ListItemIcon className={cn(selected || anchorEl || isSmallScreen ? 'opacity-100' : 'opacity-0 group-hover/thread-item:opacity-100')}>
+                    <ListItemIcon
+                        className={cn(
+                            selected || anchorEl || isSmallScreen
+                                ? 'opacity-100'
+                                : 'opacity-0 group-hover/thread-item:opacity-100'
+                        )}
+                    >
                         <IconButton onClick={handleMenuClick} sx={{ color: 'primary.main' }}>
                             <MoreHorizOutlinedIcon fontSize="small" />
                         </IconButton>
                     </ListItemIcon>
                 </MenuItem>
             </Tooltip>
-            <StyledMenu
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleMenuClose}
-                key={thread.id + 'menu'}
-            >
-                <MenuItem
-                    key={thread.id + 'switch'}
-                    onClick={() => switchThread(thread.id)}
-                    disableRipple
-                    divider
-                >
+            <StyledMenu anchorEl={anchorEl} open={open} onClose={handleMenuClose} key={thread.id + 'menu'}>
+                <MenuItem key={thread.id + 'switch'} onClick={() => switchThread(thread.id)} disableRipple divider>
                     <SwapCallsIcon fontSize="small" />
                     {t('Switch')}
                 </MenuItem>

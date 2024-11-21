@@ -43,7 +43,7 @@ export default function SettingWindow(props: {}) {
     const setSettingsEdit = (updated: Settings) => {
         // 切换模型提供方或模型版本时，需重设 token 配置为默认值
         // if (settingsEdit?.aiProvider !== updated.aiProvider || settingsEdit?.model !== updated.model) {
-            // updated = { ...updated, ...resetTokenConfig(updated) }
+        // updated = { ...updated, ...resetTokenConfig(updated) }
         // }
         _setSettingsEdit(updated)
     }
@@ -71,7 +71,7 @@ export default function SettingWindow(props: {}) {
     }
 
     return (
-        <Dialog open={!!targetTab} onClose={onCancel} fullWidth >
+        <Dialog open={!!targetTab} onClose={onCancel} fullWidth>
             <DialogTitle>{t('settings')}</DialogTitle>
             <DialogContent>
                 <Box

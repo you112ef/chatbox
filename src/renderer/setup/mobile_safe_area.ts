@@ -4,7 +4,7 @@
 // 为了达到最好的效果，在 html 的 meta 标签中设置 viewport-fit=cover
 
 import { SafeArea } from 'capacitor-plugin-safe-area'
-import { Keyboard } from '@capacitor/keyboard';
+import { Keyboard } from '@capacitor/keyboard'
 
 SafeArea.getSafeAreaInsets().then(({ insets }) => {
     for (const [key, value] of Object.entries(insets)) {
@@ -26,9 +26,9 @@ SafeArea.getStatusBarHeight().then(({ statusBarHeight }) => {
     // eventListener.remove();
 })()
 
-Keyboard.addListener('keyboardWillShow', async info => {
+Keyboard.addListener('keyboardWillShow', async (info) => {
     document.documentElement.style.setProperty(`--mobile-safe-area-inset-bottom`, `0px`)
-});
+})
 
 Keyboard.addListener('keyboardWillHide', () => {
     SafeArea.getSafeAreaInsets().then(({ insets }) => {
@@ -36,4 +36,4 @@ Keyboard.addListener('keyboardWillHide', () => {
             document.documentElement.style.setProperty(`--mobile-safe-area-inset-${key}`, `${value}px`)
         }
     })
-});
+})

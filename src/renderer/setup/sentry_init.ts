@@ -1,10 +1,9 @@
 import * as Sentry from '@sentry/react'
 import platform from '../platform'
 import { CHATBOX_BUILD_TARGET, CHATBOX_BUILD_PLATFORM } from '@/variables'
-
 ;(async () => {
     const settings = await platform.getSettings()
-    if (! settings.allowReportingAndTracking) {
+    if (!settings.allowReportingAndTracking) {
         return
     }
 

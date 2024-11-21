@@ -1,11 +1,13 @@
-import { ModelSettings, Session, SessionType, Settings } from "src/shared/types";
-import { ModelSettingUtil } from "./interface";
-import * as settingActions from "../../stores/settingActions"
-import BaseConfig from "./base-config";
+import { ModelSettings, Session, SessionType, Settings } from 'src/shared/types'
+import { ModelSettingUtil } from './interface'
+import * as settingActions from '../../stores/settingActions'
+import BaseConfig from './base-config'
 
 export default class CustomModelSettingUtil extends BaseConfig implements ModelSettingUtil {
     async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
-        const customProvider = settings.customProviders?.find((provider) => provider.id === settings.selectedCustomProviderId)
+        const customProvider = settings.customProviders?.find(
+            (provider) => provider.id === settings.selectedCustomProviderId
+        )
         if (!customProvider) {
             return 'unknown'
         }
@@ -13,7 +15,9 @@ export default class CustomModelSettingUtil extends BaseConfig implements ModelS
     }
 
     getCurrentModelOptionValue(settings: Settings) {
-        const customProvider = settings.customProviders?.find((provider) => provider.id === settings.selectedCustomProviderId)
+        const customProvider = settings.customProviders?.find(
+            (provider) => provider.id === settings.selectedCustomProviderId
+        )
         if (!customProvider) {
             return 'unknown'
         }
@@ -21,7 +25,9 @@ export default class CustomModelSettingUtil extends BaseConfig implements ModelS
     }
 
     getLocalOptionGroups(settings: Settings) {
-        const customProvider = settings.customProviders?.find((provider) => provider.id === settings.selectedCustomProviderId)
+        const customProvider = settings.customProviders?.find(
+            (provider) => provider.id === settings.selectedCustomProviderId
+        )
         if (!customProvider) {
             return []
         }
@@ -35,7 +41,7 @@ export default class CustomModelSettingUtil extends BaseConfig implements ModelS
                     label: model,
                     value: model,
                 })),
-            }
+            },
         ]
     }
 
@@ -43,7 +49,7 @@ export default class CustomModelSettingUtil extends BaseConfig implements ModelS
         return []
     }
 
-    selectSessionModel(settings: Session["settings"], selected: string): Session["settings"] {
+    selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {
         const globalSettings = settingActions.getSettings()
         const selectedCustomProviderId = settings?.selectedCustomProviderId || globalSettings.selectedCustomProviderId
         const customProviders = globalSettings.customProviders.map((provider) => {

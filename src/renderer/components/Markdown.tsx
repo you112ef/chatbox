@@ -15,9 +15,9 @@ import * as latex from '../packages/latex'
 import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for you
 import { copyToClipboard } from '@/packages/navigator'
 import { MessageMermaid, SVGPreview } from './Mermaid'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
+import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 
 export default function Markdown(props: {
     children: string
@@ -37,45 +37,41 @@ export default function Markdown(props: {
         className,
         generating,
     } = props
-    return useMemo(() => (
-        <ReactMarkdown
-            remarkPlugins={
-                enableLaTeXRendering
-                    ? [remarkGfm, remarkMath, remarkBreaks]
-                    : [remarkGfm, remarkBreaks]
-            }
-            rehypePlugins={[rehypeKatex]}
-            className={`break-words ${className || ''}`}
-            // react-markdown 默认的 defaultUrlTransform 会错误地编码 URL 中的 Query，比如 & 会被编码成 &amp;
-            // 这里改用 sanitizeUrl 库，同时也可以避免 XSS 攻击
-            urlTransform={(url) => sanitizeUrl(url)}
-            components={{
-                code: (props: any) => CodeRenderer({
-                    ...props,
-                    hiddenCodeCopyButton,
-                    enableMermaidRendering,
-                    generating,
-                    preferCollapsedCodeBlock,
-                }),
-                a: ({ node, ...props }) => (
-                    <a
-                        {...props}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={(e) => {
-                            e.stopPropagation()
-                        }}
-                    />
-                ),
-            }}
-        >
-            {
-                enableLaTeXRendering
-                    ? latex.processLaTeX(children)
-                    : children
-            }
-        </ReactMarkdown>
-    ), [children, enableLaTeXRendering, enableMermaidRendering])
+    return useMemo(
+        () => (
+            <ReactMarkdown
+                remarkPlugins={enableLaTeXRendering ? [remarkGfm, remarkMath, remarkBreaks] : [remarkGfm, remarkBreaks]}
+                rehypePlugins={[rehypeKatex]}
+                className={`break-words ${className || ''}`}
+                // react-markdown 默认的 defaultUrlTransform 会错误地编码 URL 中的 Query，比如 & 会被编码成 &amp;
+                // 这里改用 sanitizeUrl 库，同时也可以避免 XSS 攻击
+                urlTransform={(url) => sanitizeUrl(url)}
+                components={{
+                    code: (props: any) =>
+                        CodeRenderer({
+                            ...props,
+                            hiddenCodeCopyButton,
+                            enableMermaidRendering,
+                            generating,
+                            preferCollapsedCodeBlock,
+                        }),
+                    a: ({ node, ...props }) => (
+                        <a
+                            {...props}
+                            target="_blank"
+                            rel="noreferrer"
+                            onClick={(e) => {
+                                e.stopPropagation()
+                            }}
+                        />
+                    ),
+                }}
+            >
+                {enableLaTeXRendering ? latex.processLaTeX(children) : children}
+            </ReactMarkdown>
+        ),
+        [children, enableLaTeXRendering, enableMermaidRendering]
+    )
 }
 
 export function CodeRenderer(props: {
@@ -88,28 +84,27 @@ export function CodeRenderer(props: {
 }) {
     const theme = useTheme()
     return useMemo(() => {
-        const { children, className, hiddenCodeCopyButton, generating, enableMermaidRendering, preferCollapsedCodeBlock } = props
+        const {
+            children,
+            className,
+            hiddenCodeCopyButton,
+            generating,
+            enableMermaidRendering,
+            preferCollapsedCodeBlock,
+        } = props
         const match = /language-(\w+)/.exec(className || '')
         const language = match?.[1] || 'text'
         if (!String(children).includes('\n')) {
-            return (
-                <InlineCode children={children} className={className} />
-            )
+            return <InlineCode children={children} className={className} />
         }
         if (language === 'mermaid' && enableMermaidRendering) {
-            return (
-                <MessageMermaid
-                    source={String(children)}
-                    theme={theme.palette.mode}
-                    generating={generating}
-                />
-            )
+            return <MessageMermaid source={String(children)} theme={theme.palette.mode} generating={generating} />
         }
         if (
-            language === 'svg'
-            || (language === 'text' && String(children).startsWith('<svg'))
-            || (language === 'xml' && String(children).startsWith('<svg'))
-            || (language === 'html' && String(children).startsWith('<svg'))
+            language === 'svg' ||
+            (language === 'text' && String(children).startsWith('<svg')) ||
+            (language === 'xml' && String(children).startsWith('<svg')) ||
+            (language === 'html' && String(children).startsWith('<svg'))
         ) {
             return (
                 <div>
@@ -119,11 +114,7 @@ export function CodeRenderer(props: {
                         language={language}
                         preferCollapsed={true}
                     />
-                    <SVGPreview
-                        xmlCode={String(children)}
-                        className='max-w-sm'
-                        generating={generating}
-                    />
+                    <SVGPreview xmlCode={String(children)} className="max-w-sm" generating={generating} />
                 </div>
             )
         }
@@ -138,10 +129,7 @@ export function CodeRenderer(props: {
     }, [props.children, theme.palette.mode, props.enableMermaidRendering])
 }
 
-function InlineCode(props: {
-    children: string
-    className?: string
-}) {
+function InlineCode(props: { children: string; className?: string }) {
     const { children, className } = props
     const theme = useTheme()
     return (
@@ -178,7 +166,7 @@ function BlockCode(props: {
     return (
         <div>
             <div
-                className='py-0.5 px-1'
+                className="py-0.5 px-1"
                 style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -192,8 +180,9 @@ function BlockCode(props: {
                     borderBottomRightRadius: '0',
                 }}
             >
-                <div className='flex items-center'>
-                    <span className='text-gray-400/30 mx-1'
+                <div className="flex items-center">
+                    <span
+                        className="text-gray-400/30 mx-1"
                         style={{
                             fontSize: theme.typography.body1.fontSize,
                         }}
@@ -201,36 +190,33 @@ function BlockCode(props: {
                         {language.toUpperCase()}
                     </span>
                 </div>
-                <div className='flex items-center'>
-                    {shouldCollapse && (
-                        isCollapsed
-                            ? (
-                                <ArrowForwardIosIcon
-                                    className='cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1'
-                                    fontSize='small'
-                                    onClick={(event) => {
-                                        event.stopPropagation() // 优化搜索窗口中的展开逻辑
-                                        event.preventDefault()
-                                        setIsCollapsed(!isCollapsed)
-                                    }}
-                                />
-                            )
-                            : (
-                                <ArrowForwardIosIcon
-                                    className='cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1 rotate-90'
-                                    fontSize='small'
-                                    onClick={(event) => {
-                                        event.stopPropagation() // 优化搜索窗口中的展开逻辑
-                                        event.preventDefault()
-                                        setIsCollapsed(!isCollapsed)
-                                    }}
-                                />
-                            )
-                    )}
+                <div className="flex items-center">
+                    {shouldCollapse &&
+                        (isCollapsed ? (
+                            <ArrowForwardIosIcon
+                                className="cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1"
+                                fontSize="small"
+                                onClick={(event) => {
+                                    event.stopPropagation() // 优化搜索窗口中的展开逻辑
+                                    event.preventDefault()
+                                    setIsCollapsed(!isCollapsed)
+                                }}
+                            />
+                        ) : (
+                            <ArrowForwardIosIcon
+                                className="cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1 rotate-90"
+                                fontSize="small"
+                                onClick={(event) => {
+                                    event.stopPropagation() // 优化搜索窗口中的展开逻辑
+                                    event.preventDefault()
+                                    setIsCollapsed(!isCollapsed)
+                                }}
+                            />
+                        ))}
                     {!hiddenCodeCopyButton && (
                         <ContentCopyIcon
-                            className='cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1'
-                            fontSize='small'
+                            className="cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1"
+                            fontSize="small"
                             onClick={(event) => {
                                 event.stopPropagation() // 优化搜索窗口中的展开逻辑
                                 event.preventDefault()
@@ -241,15 +227,11 @@ function BlockCode(props: {
                     )}
                 </div>
             </div>
-            <div style={{ position: 'relative' }} className='group'>
+            <div style={{ position: 'relative' }} className="group">
                 <div className={isCollapsed ? 'max-h-28 overflow-hidden' : ''}>
                     <SyntaxHighlighter
                         children={children.replace(/\n$/, '')}
-                        style={
-                            theme.palette.mode === 'dark'
-                                ? atomDark
-                                : a11yDark
-                        }
+                        style={theme.palette.mode === 'dark' ? atomDark : a11yDark}
                         language={language}
                         PreTag="div"
                         customStyle={{
@@ -284,24 +266,22 @@ function BlockCode(props: {
                             setIsCollapsed(false)
                         }}
                     >
-                        <span className='text-white mb-2 font-bold'>
-                            {t('Show all ({{x}})', { x: lines.length })}
-                        </span>
+                        <span className="text-white mb-2 font-bold">{t('Show all ({{x}})', { x: lines.length })}</span>
                     </div>
                 )}
                 {!isCollapsed && shouldCollapse && (
                     <span
-                        className='
+                        className="
                                 absolute bottom-0 left-0 right-0 w-12 mx-auto
                                 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-300
-                                text-white font-bold bg-slate-600/80 py-0 px-4 rounded-t-md'
+                                text-white font-bold bg-slate-600/80 py-0 px-4 rounded-t-md"
                         onClick={(event) => {
                             event.stopPropagation()
                             event.preventDefault()
                             setIsCollapsed(true)
                         }}
                     >
-                        <ExpandLessIcon className='text-white' fontSize='small' />
+                        <ExpandLessIcon className="text-white" fontSize="small" />
                     </span>
                 )}
             </div>

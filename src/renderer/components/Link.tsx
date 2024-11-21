@@ -22,7 +22,7 @@ export default function LinkTargetBlank(props: {
                 platform.openLink(href)
             }}
             href={href}
-            target='_blank'
+            target="_blank"
         >
             {children}
         </a>

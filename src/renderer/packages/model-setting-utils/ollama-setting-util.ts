@@ -1,7 +1,7 @@
-import { ModelSettings, Session, SessionType, Settings } from "src/shared/types";
-import { ModelSettingUtil } from "./interface";
-import Ollama from "../models/ollama";
-import BaseConfig from "./base-config";
+import { ModelSettings, Session, SessionType, Settings } from 'src/shared/types'
+import { ModelSettingUtil } from './interface'
+import Ollama from '../models/ollama'
+import BaseConfig from './base-config'
 
 export default class OllamaSettingUtil extends BaseConfig implements ModelSettingUtil {
     async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
@@ -17,17 +17,17 @@ export default class OllamaSettingUtil extends BaseConfig implements ModelSettin
         const models = await ollama.listModels()
         return [
             {
-                options: models.map(model => {
+                options: models.map((model) => {
                     return {
                         label: model,
                         value: model,
                     }
-                })
-            }
+                }),
+            },
         ]
     }
 
-    selectSessionModel(settings: Session["settings"], selected: string): Session["settings"] {
+    selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {
         return {
             ...settings,
             ollamaModel: selected,

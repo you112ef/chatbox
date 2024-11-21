@@ -1,4 +1,4 @@
-import { getOS } from "@/packages/navigator"
+import { getOS } from '@/packages/navigator'
 
 const os = getOS()
 
@@ -39,7 +39,7 @@ function convert(key: string) {
     return key
 }
 
-export function Shortcut(props: { keys: string[], size?: 'small', opacity?: number }) {
+export function Shortcut(props: { keys: string[]; size?: 'small'; opacity?: number }) {
     const style: React.CSSProperties = {
         display: 'inline-block',
         padding: '0 4px',
@@ -52,13 +52,13 @@ export function Shortcut(props: { keys: string[], size?: 'small', opacity?: numb
     if (props.opacity !== undefined) {
         style.opacity = props.opacity
     }
-    return <span style={style}>
-        {
-            props.keys.map((key, index) => (
+    return (
+        <span style={style}>
+            {props.keys.map((key, index) => (
                 <Code key={index}>{convert(key)}</Code>
-            ))
-        }
-    </span>
+            ))}
+        </span>
+    )
 }
 
 function Code(props: { children: React.ReactNode }) {
@@ -71,9 +71,5 @@ function Code(props: { children: React.ReactNode }) {
         direction: 'ltr',
         margin: '0 1px',
     }
-    return (
-        <code style={style}>
-            {props.children}
-        </code>
-    )
+    return <code style={style}>{props.children}</code>
 }

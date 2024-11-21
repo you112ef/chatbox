@@ -27,7 +27,9 @@ export function getModel(setting: Settings, config: Config) {
         case ModelProvider.Groq:
             return new Groq(setting)
         case ModelProvider.Custom:
-            const customProvider = setting.customProviders.find((provider) => provider.id === setting.selectedCustomProviderId)
+            const customProvider = setting.customProviders.find(
+                (provider) => provider.id === setting.selectedCustomProviderId
+            )
             if (!customProvider) {
                 throw new Error('Cannot find the custom provider')
             }

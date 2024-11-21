@@ -13,7 +13,7 @@ import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import Message from '@/components/Message'
 import Mark from '@/components/Mark'
 
-interface Props { }
+interface Props {}
 
 export default function SearchDialog(props: Props) {
     const isSmallScreen = useIsSmallScreen()
@@ -42,9 +42,8 @@ export default function SearchDialog(props: Props) {
     const onSearchClick = (flag: 'current-session' | 'global') => {
         setMode('search-result')
         setLoading(Math.random())
-        const needSearchSessions: Session[] = flag === 'current-session'
-            ? [sessionAction.getCurrentSession()]
-            : sessionAction.getSortedSessions()
+        const needSearchSessions: Session[] =
+            flag === 'current-session' ? [sessionAction.getCurrentSession()] : sessionAction.getSortedSessions()
 
         // TODO: 这里值得优化：多关键词搜索、性能优化
         const safeInput = searchInput.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
@@ -107,7 +106,7 @@ export default function SearchDialog(props: Props) {
                         className={cn(
                             'border-none',
                             'shadow-none',
-                            theme.palette.mode === 'dark' ? 'text-white' : 'text-black',
+                            theme.palette.mode === 'dark' ? 'text-white' : 'text-black'
                         )}
                         placeholder={t('Type a command or search') + '...'}
                     />
@@ -224,7 +223,7 @@ export default function SearchDialog(props: Props) {
                                                     sessionId={result.id}
                                                     sessionType={result.type || 'chat'}
                                                     msg={message}
-                                                    className='w-full'
+                                                    className="w-full"
                                                     hiddenButtonGroup
                                                     small
                                                     preferCollapsedCodeBlock

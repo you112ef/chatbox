@@ -41,13 +41,8 @@ describe('populateGeminiMessages', () => {
         const result = await populateGeminiMessages(messages, 'gemini-1.5-pro-latest')
         expect(result).toEqual([
             {
-                role: 'user', parts: [
-                    { text: 'U1' },
-                    { text: 'S1' },
-                    { text: 'U2.1' },
-                    { text: 'U2.2' },
-                    { text: 'U2.3' },
-                ]
+                role: 'user',
+                parts: [{ text: 'U1' }, { text: 'S1' }, { text: 'U2.1' }, { text: 'U2.2' }, { text: 'U2.3' }],
             },
             { role: 'model', parts: [{ text: 'A2' }] },
             { role: 'user', parts: [{ text: 'U3' }] },

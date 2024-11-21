@@ -20,7 +20,7 @@ export default class StoreStorage extends BaseStorage {
         let value: T = await super.getItem(key, initialValue)
 
         if (key === StorageKey.ChatSessions && value === initialValue) {
-            const lang = await platform.getLocale().catch(e => 'en')
+            const lang = await platform.getLocale().catch((e) => 'en')
             if (lang.startsWith('zh')) {
                 value = defaultSessionsForCN as T
             } else {
@@ -37,9 +37,13 @@ export default class StoreStorage extends BaseStorage {
 
     // 对 setItem 进行防抖，应对消息生成时频繁写入时导致的性能问题
     // 实际用户反馈中发现，频繁写入时，会导致内存占用过高甚至卡顿，尤其是一些安全软件会自动扫描新创建的 JSON 文件
-    private setItemWithDebounce = debounce((key: string, value: any) => {
-        return super.setItemNow(key, value)
-    }, 1000, { maxWait: 60 * 1000 })
+    private setItemWithDebounce = debounce(
+        (key: string, value: any) => {
+            return super.setItemNow(key, value)
+        },
+        1000,
+        { maxWait: 60 * 1000 }
+    )
 
     /**
      * 异步写入（防抖）
@@ -48,5 +52,4 @@ export default class StoreStorage extends BaseStorage {
     public async setItem<T>(key: string, value: T): Promise<void> {
         return this.setItemWithDebounce(key, value)
     }
-
 }

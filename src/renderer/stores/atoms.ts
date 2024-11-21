@@ -1,6 +1,15 @@
 import { RefObject } from 'react'
 import { atom, SetStateAction } from 'jotai'
-import { Session, Toast, Settings, CopilotDetail, MessagePicture, Message, SessionThreadBrief, SettingWindowTab } from '../../shared/types'
+import {
+    Session,
+    Toast,
+    Settings,
+    CopilotDetail,
+    MessagePicture,
+    Message,
+    SessionThreadBrief,
+    SettingWindowTab,
+} from '../../shared/types'
 import { selectAtom, atomWithStorage } from 'jotai/utils'
 import { focusAtom } from 'jotai-optics'
 import * as defaults from '../../shared/defaults'
@@ -165,7 +174,7 @@ export const currentThreadHistoryHashAtom = selectAtom(currentSessionAtom, (s) =
                 id: thread.id,
                 name: thread.name,
                 createdAt: thread.createdAt,
-                createdAtLabel: (new Date(thread.createdAt)).toLocaleString(),
+                createdAtLabel: new Date(thread.createdAt).toLocaleString(),
                 firstMessageId: thread.messages[0].id,
                 messageCount: thread.messages.length,
             }
@@ -211,7 +220,11 @@ export const realThemeAtom = atom<'light' | 'dark'>('light')
 // export const configVersionAtom = atomWithStorage<number>(StorageKey.ConfigVersion, 0, storage)
 
 // 远程配置
-export const remoteConfigAtom = atomWithStorage<{ setting_chatboxai_first?: boolean}>(StorageKey.RemoteConfig, {}, storage)
+export const remoteConfigAtom = atomWithStorage<{ setting_chatboxai_first?: boolean }>(
+    StorageKey.RemoteConfig,
+    {},
+    storage
+)
 
 // message scrolling
 
@@ -229,31 +242,31 @@ export const showThreadHistoryDrawerAtom = atom<boolean | string>(false)
 // 弹窗显示
 export const openSearchDialogAtom = atom(false)
 export const openSettingDialogAtom = atom<SettingWindowTab | null>(null)
-export const sessionCleanDialogAtom = atom<Session | null>(null)  // 清空会话的弹窗
-export const chatConfigDialogIdAtom = atom<string | null>(null)   // 会话配置窗口
-export const openExportChatDialogAtom = atom(false)   // 导出聊天记录的弹窗
+export const sessionCleanDialogAtom = atom<Session | null>(null) // 清空会话的弹窗
+export const chatConfigDialogIdAtom = atom<string | null>(null) // 会话配置窗口
+export const openExportChatDialogAtom = atom(false) // 导出聊天记录的弹窗
 export const openWelcomeDialogAtom = atom(false)
-export const openAboutDialogAtom = atom(false)  // 是否展示相关信息的窗口
+export const openAboutDialogAtom = atom(false) // 是否展示相关信息的窗口
 export const openCopilotDialogAtom = atom(false) // 是否展示copilot窗口
 export const openClearConversationListDialogAtom = atom(false) // 是否展示会话列表清理窗口
 export const openAttachLinkDialogAtom = atom(false) // 是否展示链接插入窗口
-export const reportContentDialogAtom = atom<{id: string} | null>(null) // 是否展示举报内容窗口
+export const reportContentDialogAtom = atom<{ id: string } | null>(null) // 是否展示举报内容窗口
 
-export const inputBoxLinksAtom = atom<{url: string}[]>([])
+export const inputBoxLinksAtom = atom<{ url: string }[]>([])
 
-export const artifactDialogHtmlCodeAtom = atom('')  // artifact 预览弹窗（当 html 不为空时则弹窗）
+export const artifactDialogHtmlCodeAtom = atom('') // artifact 预览弹窗（当 html 不为空时则弹窗）
 
 // 图片展示窗口的图片
 export const pictureShowAtom = atom<{
-    picture: MessagePicture,
+    picture: MessagePicture
     extraButtons?: {
-        onClick: () => void,
-        icon: React.ReactNode,
-    }[],
+        onClick: () => void
+        icon: React.ReactNode
+    }[]
     onSave?: () => void
 } | null>(null)
 
 // 会话编辑窗口
-export const messageEditDialogShowAtom = atom<{ msg: Message, sessionId: string } | null>(null)
+export const messageEditDialogShowAtom = atom<{ msg: Message; sessionId: string } | null>(null)
 
 export const widthFullAtom = atomWithStorage<boolean>('widthFull', false)

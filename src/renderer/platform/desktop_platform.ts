@@ -1,9 +1,9 @@
-import { ElectronIPC } from "src/shared/electron-types"
-import { Platform, PlatformType } from "./interfaces"
-import { Config, Settings } from "src/shared/types"
+import { ElectronIPC } from 'src/shared/electron-types'
+import { Platform, PlatformType } from './interfaces'
+import { Config, Settings } from 'src/shared/types'
 import { getOS, getBrowser } from '../packages/navigator'
 import { parseLocale } from '@/i18n/parser'
-import WebExporter from "./web_exporter"
+import WebExporter from './web_exporter'
 
 export default class DesktopPlatform implements Platform {
     public type: PlatformType = 'desktop'
@@ -97,7 +97,7 @@ export default class DesktopPlatform implements Platform {
     public initTracking(): void {
         setTimeout(() => {
             this.trackingEvent('user_engagement', {})
-        }, 4000)    // 怀疑应用初始化后需要一段时间才能正常工作
+        }, 4000) // 怀疑应用初始化后需要一段时间才能正常工作
     }
     public trackingEvent(name: string, params: { [key: string]: string }) {
         const dataJson = JSON.stringify({ name, params })
@@ -119,7 +119,7 @@ export default class DesktopPlatform implements Platform {
     public async parseFile(filePath: string): Promise<string> {
         return this.ipc.invoke('parseFile', filePath)
     }
-    public async parseUrl(url: string): Promise<{ key: string, title: string }> {
+    public async parseUrl(url: string): Promise<{ key: string; title: string }> {
         const json = await this.ipc.invoke('parseUrl', url)
         return JSON.parse(json)
     }

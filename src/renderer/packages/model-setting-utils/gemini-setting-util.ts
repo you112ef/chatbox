@@ -1,7 +1,7 @@
-import { ModelSettings, Session, SessionType, Settings } from "src/shared/types";
-import { ModelSettingUtil } from "./interface";
-import Gemini, { GeminiModel, geminiModels } from "../models/gemini";
-import BaseConfig from "./base-config";
+import { ModelSettings, Session, SessionType, Settings } from 'src/shared/types'
+import { ModelSettingUtil } from './interface'
+import Gemini, { GeminiModel, geminiModels } from '../models/gemini'
+import BaseConfig from './base-config'
 
 export default class GeminiSettingUtil extends BaseConfig implements ModelSettingUtil {
     async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
@@ -15,13 +15,13 @@ export default class GeminiSettingUtil extends BaseConfig implements ModelSettin
     getLocalOptionGroups(settings: Settings) {
         return [
             {
-                options: geminiModels.map(value => {
+                options: geminiModels.map((value) => {
                     return {
                         label: value,
                         value: value,
                     }
-                })
-            }
+                }),
+            },
         ]
     }
 
@@ -32,17 +32,17 @@ export default class GeminiSettingUtil extends BaseConfig implements ModelSettin
         return [
             ...remoteModels,
             {
-                options: geminiAPIModels.map(model => {
+                options: geminiAPIModels.map((model) => {
                     return {
                         label: model,
                         value: model,
                     }
-                })
-            }
+                }),
+            },
         ]
     }
 
-    selectSessionModel(settings: Session["settings"], selected: string): Session["settings"] {
+    selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {
         return {
             ...settings,
             geminiModel: selected as GeminiModel,
@@ -52,5 +52,4 @@ export default class GeminiSettingUtil extends BaseConfig implements ModelSettin
     isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
         return true
     }
-
 }

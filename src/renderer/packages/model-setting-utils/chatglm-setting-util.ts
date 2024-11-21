@@ -1,5 +1,5 @@
-import { ModelSettings, Session, SessionType, Settings } from "src/shared/types";
-import { ModelSettingUtil } from "./interface";
+import { ModelSettings, Session, SessionType, Settings } from 'src/shared/types'
+import { ModelSettingUtil } from './interface'
 import BaseConfig from './base-config'
 
 export default class ChatGLMSettingUtil extends BaseConfig implements ModelSettingUtil {
@@ -18,13 +18,13 @@ export default class ChatGLMSettingUtil extends BaseConfig implements ModelSetti
                     {
                         label: 'ChatGLM',
                         value: 'ChatGLM',
-                    }
-                ]
-            }
+                    },
+                ],
+            },
         ]
     }
 
-    selectSessionModel(settings: Session["settings"], selected: string): Session["settings"] {
+    selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {
         return settings
     }
 

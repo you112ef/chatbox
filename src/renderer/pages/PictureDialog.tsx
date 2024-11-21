@@ -7,7 +7,7 @@ import storage from '@/storage'
 import SaveIcon from '@mui/icons-material/Save'
 import CloseIcon from '@mui/icons-material/Close'
 import platform from '@/platform'
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch"
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch'
 import { MessagePicture } from 'src/shared/types'
 import { useEffect, useState, useCallback } from 'react'
 
@@ -32,8 +32,8 @@ function _PictureDialog(props: {
     picture: MessagePicture
     onSave?: () => void
     extraButtons?: {
-        onClick: () => void,
-        icon: React.ReactNode,
+        onClick: () => void
+        icon: React.ReactNode
     }[]
 }) {
     const { picture, onSave, extraButtons } = props
@@ -42,7 +42,7 @@ function _PictureDialog(props: {
     const [url, setUrl] = useState(picture.url)
 
     useEffect(() => {
-        ; (async () => {
+        ;(async () => {
             if (picture.url) {
                 return
             }
@@ -79,11 +79,14 @@ function _PictureDialog(props: {
     }
 
     // 点击 Esc 关闭
-    const onKeyDown = useCallback((e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-            onClose()
-        }
-    }, [onClose])
+    const onKeyDown = useCallback(
+        (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                onClose()
+            }
+        },
+        [onClose]
+    )
     useEffect(() => {
         window.addEventListener('keydown', onKeyDown)
         return () => {
@@ -103,7 +106,7 @@ function _PictureDialog(props: {
                 zIndex: 2000,
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center'
+                alignItems: 'center',
             }}
             onClick={onClose}
             tabIndex={0}
@@ -115,24 +118,25 @@ function _PictureDialog(props: {
                     right: 20,
                     zIndex: 1001,
                     display: 'flex',
-                    gap: '12px'
+                    gap: '12px',
                 }}
             >
-                {
-                    extraButtons?.map((button, index) => (
-                        <Fab key={index}
-                            onClick={(e) => {
-                                e.preventDefault()
-                                e.stopPropagation()
-                                button.onClick()
-                                onClose()
-                            }}
-                        >
-                            {button.icon}
-                        </Fab>
-                    ))
-                }
-                <Fab color="primary" aria-label="save"
+                {extraButtons?.map((button, index) => (
+                    <Fab
+                        key={index}
+                        onClick={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            button.onClick()
+                            onClose()
+                        }}
+                    >
+                        {button.icon}
+                    </Fab>
+                ))}
+                <Fab
+                    color="primary"
+                    aria-label="save"
                     onClick={(e) => {
                         e.preventDefault()
                         e.stopPropagation()
@@ -141,7 +145,8 @@ function _PictureDialog(props: {
                 >
                     <SaveIcon />
                 </Fab>
-                <Fab aria-label="close"
+                <Fab
+                    aria-label="close"
                     onClick={(e) => {
                         e.preventDefault()
                         e.stopPropagation()
@@ -151,64 +156,64 @@ function _PictureDialog(props: {
                     <CloseIcon />
                 </Fab>
             </div>
-            {
-                url && (
-                    <div
-                        className='animate-in fade-in duration-300 ease-in-out'
-                        style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            overflow: 'hidden',
-                        }}
+            {url && (
+                <div
+                    className="animate-in fade-in duration-300 ease-in-out"
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        overflow: 'hidden',
+                    }}
+                >
+                    <TransformWrapper
+                        initialScale={1}
+                        centerOnInit={true}
+                        minScale={0.1}
+                        maxScale={8}
+                        limitToBounds={false}
                     >
-                        <TransformWrapper
-                            initialScale={1}
-                            centerOnInit={true}
-                            minScale={0.1}
-                            maxScale={8}
-                            limitToBounds={false}
+                        <TransformComponent
+                            wrapperStyle={{
+                                width: '100%',
+                                height: '100%',
+                            }}
+                            wrapperProps={{
+                                onClick: (e) => {
+                                    onClose()
+                                },
+                            }}
+                            contentStyle={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: theme.palette.background.default, // 透明的流程图、线框图需要背景色
+                            }}
+                            contentProps={{
+                                onClick: (e) => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                },
+                            }}
                         >
-                            <TransformComponent
-                                wrapperStyle={{
-                                    width: '100%',
-                                    height: '100%',
+                            {/* 这里不能使用异步的 ImageInStorage，否则会导致图片位置不对 */}
+                            <Img
+                                src={url}
+                                className="max-w-[90vw] max-h-[90vh] w-auto h-auto object-contain"
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
                                 }}
-                                wrapperProps={{
-                                    onClick: (e) => {
-                                        onClose()
-                                    }
-                                }}
-                                contentStyle={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    backgroundColor: theme.palette.background.default,  // 透明的流程图、线框图需要背景色
-                                }}
-                                contentProps={{
-                                    onClick: (e) => {
-                                        e.preventDefault()
-                                        e.stopPropagation()
-                                    }
-                                }}
-                            >
-                                {/* 这里不能使用异步的 ImageInStorage，否则会导致图片位置不对 */}
-                                <Img src={url} className='max-w-[90vw] max-h-[90vh] w-auto h-auto object-contain'
-                                    onClick={(e) => {
-                                        e.preventDefault()
-                                        e.stopPropagation()
-                                    }}
-                                />
-                            </TransformComponent>
-                        </TransformWrapper>
-                    </div>
-                )
-            }
+                            />
+                        </TransformComponent>
+                    </TransformWrapper>
+                </div>
+            )}
         </div>
     )
 }

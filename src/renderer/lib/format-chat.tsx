@@ -1,9 +1,8 @@
-import Markdown from "@/components/Markdown";
-import { SessionThread } from "../../shared/types";
-import ReactDOMServer from 'react-dom/server';
-import storage from "@/storage";
+import Markdown from '@/components/Markdown'
+import { SessionThread } from '../../shared/types'
+import ReactDOMServer from 'react-dom/server'
+import storage from '@/storage'
 import * as base64 from '@/packages/base64'
-
 
 export function formatChatAsMarkdown(sessionName: string, threads: SessionThread[]) {
     let content = `# ${sessionName}\n\n`

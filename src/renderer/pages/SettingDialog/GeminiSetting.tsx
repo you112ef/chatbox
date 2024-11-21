@@ -4,7 +4,7 @@ import { useTranslation, Trans } from 'react-i18next'
 import PasswordTextField from '@/components/PasswordTextField'
 import TemperatureSlider from '@/components/TemperatureSlider'
 import platform from '@/platform'
-import TextFieldReset from "@/components/TextFieldReset";
+import TextFieldReset from '@/components/TextFieldReset'
 import GeminiModelSelect from '@/components/GeminiModelSelect'
 import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
 import { remoteConfigAtom } from '@/stores/atoms'
@@ -44,7 +44,7 @@ export default function GeminiSetting(props: ModelConfigProps) {
                 variant="outlined"
                 value={settingsEdit.geminiAPIHost}
                 placeholder="https://generativelanguage.googleapis.com"
-                defaultValue='https://generativelanguage.googleapis.com'
+                defaultValue="https://generativelanguage.googleapis.com"
                 onValueChange={(value) => {
                     value = value.trim()
                     if (value.length > 4 && !value.startsWith('http')) {
@@ -53,23 +53,28 @@ export default function GeminiSetting(props: ModelConfigProps) {
                     setSettingsEdit({ ...settingsEdit, geminiAPIHost: value })
                 }}
             />
-            {
-                settingsEdit.geminiAPIHost !== 'https://generativelanguage.googleapis.com' && remoteConfig.setting_chatboxai_first && (
-                    <Alert icon={false} severity='info' className='my-4'>
-                        <Trans i18nKey="Please note that as a client tool, Chatbox cannot guarantee the quality of service and data privacy of the model providers. If you are looking for a stable, reliable, and privacy-protecting model service, consider <a>Chatbox AI</a>."
+            {settingsEdit.geminiAPIHost !== 'https://generativelanguage.googleapis.com' &&
+                remoteConfig.setting_chatboxai_first && (
+                    <Alert icon={false} severity="info" className="my-4">
+                        <Trans
+                            i18nKey="Please note that as a client tool, Chatbox cannot guarantee the quality of service and data privacy of the model providers. If you are looking for a stable, reliable, and privacy-protecting model service, consider <a>Chatbox AI</a>."
                             components={{
-                                a: <a className='cursor-pointer font-bold' onClick={() => {
-                                    setSettingsEdit({
-                                        ...settingsEdit,
-                                        aiProvider: ModelProvider.ChatboxAI,
-                                        selectedCustomProviderId: '',
-                                    })
-                                }}></a>,
+                                a: (
+                                    <a
+                                        className="cursor-pointer font-bold"
+                                        onClick={() => {
+                                            setSettingsEdit({
+                                                ...settingsEdit,
+                                                aiProvider: ModelProvider.ChatboxAI,
+                                                selectedCustomProviderId: '',
+                                            })
+                                        }}
+                                    ></a>
+                                ),
                             }}
                         />
                     </Alert>
-                )
-            }
+                )}
             <GeminiModelSelect
                 value={settingsEdit.geminiModel}
                 onChange={(value) => setSettingsEdit({ ...settingsEdit, geminiModel: value })}

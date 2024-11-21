@@ -11,7 +11,7 @@ export async function cache<T>(
     key: string,
     getter: () => Promise<T>,
     options: {
-        ttl: number,    // 缓存过期时间，单位为毫秒
+        ttl: number // 缓存过期时间，单位为毫秒
         refreshFallbackToCache?: boolean // 如果刷新时获取新值失败，是否从缓存中继续使用过期的旧值
     }
 ): Promise<T> {
@@ -34,7 +34,7 @@ export async function cache<T>(
         const newValue = await getter()
         cache = {
             value: newValue,
-            expireAt: Date.now() + options.ttl
+            expireAt: Date.now() + options.ttl,
         }
         await store.setItem(key, JSON.stringify(cache))
         return newValue

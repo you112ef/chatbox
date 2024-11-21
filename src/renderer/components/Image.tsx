@@ -23,13 +23,11 @@ export function ImageInStorage(props: {
         return (
             <div className={`bg-slate-300/50 w-full h-full ${props.className || ''}`}>
                 <div className="w-full h-full flex items-center justify-center">
-                    {
-                        base64 === false ? (
-                            <BrokenImageOutlinedIcon className='block max-w-full max-h-full opacity-50' />
-                        ) : (
-                            <CircularProgressIcon className='block max-w-full max-h-full opacity-50' color='secondary' />
-                        )
-                    }
+                    {base64 === false ? (
+                        <BrokenImageOutlinedIcon className="block max-w-full max-h-full opacity-50" />
+                    ) : (
+                        <CircularProgressIcon className="block max-w-full max-h-full opacity-50" color="secondary" />
+                    )}
                 </div>
             </div>
         )
@@ -46,7 +44,11 @@ export function Img(props: {
     return <img src={props.src} className={`max-w-full max-h-full ${props.className || ''}`} onClick={props.onClick} />
 }
 
-export function handleImageInputAndSave(event: React.ChangeEvent<HTMLInputElement>, key: string, updateKey?: (key: string) => void) {
+export function handleImageInputAndSave(
+    event: React.ChangeEvent<HTMLInputElement>,
+    key: string,
+    updateKey?: (key: string) => void
+) {
     if (!event.target.files) {
         return
     }

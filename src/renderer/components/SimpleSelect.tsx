@@ -4,7 +4,7 @@ import * as React from 'react'
 export interface Props<T extends string | number> {
     label: string | React.ReactNode
     value: T
-    options: { value: T; label: React.ReactNode, style?: React.CSSProperties }[]
+    options: { value: T; label: React.ReactNode; style?: React.CSSProperties }[]
     onChange: (value: T) => void
     className?: string
     fullWidth?: boolean

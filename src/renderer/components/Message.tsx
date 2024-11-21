@@ -2,15 +2,7 @@ import React, { useEffect, useState, useRef, useMemo } from 'react'
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import MenuItem from '@mui/material/MenuItem'
-import {
-    CircularProgress,
-    IconButton,
-    Typography,
-    Grid,
-    Tooltip,
-    ButtonGroup,
-    useTheme,
-} from '@mui/material'
+import { CircularProgress, IconButton, Typography, Grid, Tooltip, ButtonGroup, useTheme } from '@mui/material'
 import PersonIcon from '@mui/icons-material/Person'
 import SmartToyIcon from '@mui/icons-material/SmartToy'
 import SettingsIcon from '@mui/icons-material/Settings'
@@ -59,15 +51,15 @@ import MessageErrTips from './MessageErrTips'
 import MessageStatuses from './MessageLoading'
 import { MessageAttachment } from './Attachments'
 import StyledMenu from './StyledMenu'
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import * as dom from '@/hooks/dom'
-import * as dateFns from "date-fns"
+import * as dateFns from 'date-fns'
 import { cn } from '@/lib/utils'
 import { copyToClipboard } from '@/packages/navigator'
 import { estimateTokensFromMessages } from '@/packages/token'
 import { countWord } from '@/packages/word-count'
 import { isContainRenderableCode, MessageArtifact } from './Artifact'
-import ReportIcon from '@mui/icons-material/Report';
+import ReportIcon from '@mui/icons-material/Report'
 import platform from '@/platform'
 
 export interface Props {
@@ -76,7 +68,7 @@ export interface Props {
     sessionType: SessionType
     msg: Message
     className?: string
-    collapseThreshold?: number  // 文本长度阀值, 超过这个长度则会被折叠
+    collapseThreshold?: number // 文本长度阀值, 超过这个长度则会被折叠
     hiddenButtonGroup?: boolean
     small?: boolean
     preferCollapsedCodeBlock?: boolean
@@ -103,7 +95,7 @@ function _Message(props: Props) {
     const setPictureShow = useSetAtom(pictureShowAtom)
     const setMessageEditDialogShow = useSetAtom(messageEditDialogShowAtom)
     const setOpenSettingWindow = useSetAtom(openSettingDialogAtom)
-    const setChatConfigDialog = useSetAtom(chatConfigDialogIdAtom);
+    const setChatConfigDialog = useSetAtom(chatConfigDialogIdAtom)
     const widthFull = useAtomValue(widthFullAtom)
     const autoPreviewArtifacts = useAtomValue(autoPreviewArtifactsAtom)
     const autoCollapseCodeBlock = useAtomValue(autoCollapseCodeBlockAtom)
@@ -111,10 +103,11 @@ function _Message(props: Props) {
 
     const [previewArtifact, setPreviewArtifact] = useState(autoPreviewArtifacts)
 
-    const needCollapse = collapseThreshold
-        && props.sessionType !== 'picture'  // 绘图会话不折叠
-        && (JSON.stringify(msg.content)).length > collapseThreshold
-        && (JSON.stringify(msg.content)).length - collapseThreshold > 50    // 只有折叠有明显效果才折叠，为了更好的用户体验
+    const needCollapse =
+        collapseThreshold &&
+        props.sessionType !== 'picture' && // 绘图会话不折叠
+        JSON.stringify(msg.content).length > collapseThreshold &&
+        JSON.stringify(msg.content).length - collapseThreshold > 50 // 只有折叠有明显效果才折叠，为了更好的用户体验
     const [isCollapsed, setIsCollapsed] = useState(needCollapse)
 
     const ref = useRef<HTMLDivElement>(null)
@@ -270,7 +263,7 @@ function _Message(props: Props) {
             setAutoScrollId(autoId)
         } else {
             if (autoScrollId) {
-                scrollActions.tickAutoScroll(autoScrollId)  // 清理之前，最后再滚动一次，确保非流式生成的消息也能滚动到底部
+                scrollActions.tickAutoScroll(autoScrollId) // 清理之前，最后再滚动一次，确保非流式生成的消息也能滚动到底部
                 scrollActions.clearAutoScroll(autoScrollId)
             }
             setAutoScrollId(null)
@@ -295,7 +288,7 @@ function _Message(props: Props) {
         }
     }, [msg.content, needArtifact])
 
-    let content = msg.content   // 消息正文
+    let content = msg.content // 消息正文
     if (typeof msg.content !== 'string') {
         content = JSON.stringify(msg.content)
     }
@@ -308,7 +301,7 @@ function _Message(props: Props) {
 
     const CollapseButton = (
         <span
-            className='cursor-pointer inline-block font-bold text-blue-500 hover:text-white hover:bg-blue-500'
+            className="cursor-pointer inline-block font-bold text-blue-500 hover:text-white hover:bg-blue-500"
             onClick={() => setIsCollapsed(!isCollapsed)}
         >
             [{isCollapsed ? t('Expand') : t('Collapse')}]
@@ -335,7 +328,7 @@ function _Message(props: Props) {
                     assistant: 'assistant-msg',
                 }[msg?.role || 'user'],
                 className,
-                widthFull ? 'w-full' : 'max-w-4xl mx-auto',
+                widthFull ? 'w-full' : 'max-w-4xl mx-auto'
             )}
             sx={{
                 paddingBottom: '0.1rem',
@@ -347,7 +340,7 @@ function _Message(props: Props) {
         >
             <Grid container wrap="nowrap" spacing={1.5}>
                 <Grid item>
-                    <Box className={cn(msg.role !== 'assistant' ? 'mt-1' : 'mt-2')} >
+                    <Box className={cn(msg.role !== 'assistant' ? 'mt-1' : 'mt-2')}>
                         {
                             {
                                 assistant: currentSessionAssistantAvatarKey ? (
@@ -357,12 +350,13 @@ function _Message(props: Props) {
                                             width: '28px',
                                             height: '28px',
                                         }}
-                                        className='cursor-pointer'
+                                        className="cursor-pointer"
                                         onClick={onClickAssistantAvatar}
                                     >
-                                        <ImageInStorage storageKey={currentSessionAssistantAvatarKey}
-                                            className='object-cover object-center w-full h-full' />
-
+                                        <ImageInStorage
+                                            storageKey={currentSessionAssistantAvatarKey}
+                                            className="object-cover object-center w-full h-full"
+                                        />
                                     </Avatar>
                                 ) : currentSessionPicUrl ? (
                                     <Avatar
@@ -371,7 +365,7 @@ function _Message(props: Props) {
                                             width: '28px',
                                             height: '28px',
                                         }}
-                                        className='cursor-pointer'
+                                        className="cursor-pointer"
                                         onClick={onClickAssistantAvatar}
                                     />
                                 ) : props.sessionType === 'picture' ? (
@@ -381,10 +375,10 @@ function _Message(props: Props) {
                                             width: '28px',
                                             height: '28px',
                                         }}
-                                        className='cursor-pointer'
+                                        className="cursor-pointer"
                                         onClick={onClickAssistantAvatar}
                                     >
-                                        <ImageIcon fontSize='small' />
+                                        <ImageIcon fontSize="small" />
                                     </Avatar>
                                 ) : defaultAssistantAvatarKey ? (
                                     <Avatar
@@ -393,11 +387,13 @@ function _Message(props: Props) {
                                             width: '28px',
                                             height: '28px',
                                         }}
-                                        className='cursor-pointer'
+                                        className="cursor-pointer"
                                         onClick={onClickAssistantAvatar}
                                     >
-                                        <ImageInStorage storageKey={defaultAssistantAvatarKey}
-                                            className='object-cover object-center w-full h-full' />
+                                        <ImageInStorage
+                                            storageKey={defaultAssistantAvatarKey}
+                                            className="object-cover object-center w-full h-full"
+                                        />
                                     </Avatar>
                                 ) : (
                                     <Avatar
@@ -406,10 +402,10 @@ function _Message(props: Props) {
                                             width: '28px',
                                             height: '28px',
                                         }}
-                                        className='cursor-pointer'
+                                        className="cursor-pointer"
                                         onClick={onClickAssistantAvatar}
                                     >
-                                        <SmartToyIcon fontSize='small' />
+                                        <SmartToyIcon fontSize="small" />
                                     </Avatar>
                                 ),
                                 user: (
@@ -418,17 +414,17 @@ function _Message(props: Props) {
                                             width: '28px',
                                             height: '28px',
                                         }}
-                                        className='cursor-pointer'
+                                        className="cursor-pointer"
                                         onClick={() => setOpenSettingWindow('chat')}
                                     >
-                                        {
-                                            userAvatarKey ? (
-                                                <ImageInStorage storageKey={userAvatarKey}
-                                                    className='object-cover object-center w-full h-full' />
-                                            ) : (
-                                                <PersonIcon fontSize='small' />
-                                            )
-                                        }
+                                        {userAvatarKey ? (
+                                            <ImageInStorage
+                                                storageKey={userAvatarKey}
+                                                className="object-cover object-center w-full h-full"
+                                            />
+                                        ) : (
+                                            <PersonIcon fontSize="small" />
+                                        )}
                                     </Avatar>
                                 ),
                                 system:
@@ -440,7 +436,7 @@ function _Message(props: Props) {
                                                 height: '28px',
                                             }}
                                         >
-                                            <ImageIcon fontSize='small' />
+                                            <ImageIcon fontSize="small" />
                                         </Avatar>
                                     ) : (
                                         <Avatar
@@ -450,7 +446,7 @@ function _Message(props: Props) {
                                                 height: '28px',
                                             }}
                                         >
-                                            <SettingsIcon fontSize='small' />
+                                            <SettingsIcon fontSize="small" />
                                         </Avatar>
                                     ),
                             }[msg.role]
@@ -460,289 +456,269 @@ function _Message(props: Props) {
                 <Grid item xs sm container sx={{ width: '0px', paddingRight: '15px' }}>
                     <Grid item xs>
                         <MessageStatuses statuses={msg.status} />
-                        <div className={cn(
-                            'max-w-full inline-block',
-                            msg.role !== 'assistant'
-                                ? 'bg-stone-400/10 dark:bg-blue-400/10 px-2 rounded '
-                                : '',
-                        )}>
-                            <Box className={cn('msg-content', { 'msg-content-small': small })}
-                                sx={
-                                    small ? { fontSize: theme.typography.body2.fontSize } : {}
-                                }
+                        <div
+                            className={cn(
+                                'max-w-full inline-block',
+                                msg.role !== 'assistant' ? 'bg-stone-400/10 dark:bg-blue-400/10 px-2 rounded ' : ''
+                            )}
+                        >
+                            <Box
+                                className={cn('msg-content', { 'msg-content-small': small })}
+                                sx={small ? { fontSize: theme.typography.body2.fontSize } : {}}
                             >
                                 {
                                     // 这里的空行仅仅是为了在只发送文件时消息气泡的美观
                                     // 正常情况下，应该考虑优化 msg-content 的样式。现在这里是一个临时的偷懒方式。
-                                    msg.content.trim() === '' && (
-                                        <p></p>
-                                    )
+                                    msg.content.trim() === '' && <p></p>
                                 }
-                                {
-                                    enableMarkdownRendering && !isCollapsed ? (
-                                        <Markdown
-                                            enableLaTeXRendering={enableLaTeXRendering}
-                                            enableMermaidRendering={enableMermaidRendering}
-                                            generating={msg.generating}
-                                            preferCollapsedCodeBlock={
-                                                autoCollapseCodeBlock
-                                                && (
-                                                    preferCollapsedCodeBlock
-                                                    || msg.role !== 'assistant'
-                                                    || previewArtifact
-                                                )
-                                            }
-                                        >
+                                {enableMarkdownRendering && !isCollapsed ? (
+                                    <Markdown
+                                        enableLaTeXRendering={enableLaTeXRendering}
+                                        enableMermaidRendering={enableMermaidRendering}
+                                        generating={msg.generating}
+                                        preferCollapsedCodeBlock={
+                                            autoCollapseCodeBlock &&
+                                            (preferCollapsedCodeBlock || msg.role !== 'assistant' || previewArtifact)
+                                        }
+                                    >
+                                        {content}
+                                    </Markdown>
+                                ) : (
+                                    <div>
+                                        <p>
                                             {content}
-                                        </Markdown>
-                                    ) : (
-                                        <div>
-                                            <p>
-                                                {content}
-                                                {
-                                                    needCollapse && isCollapsed && (
-                                                        CollapseButton
-                                                    )
-                                                }
-                                            </p>
-                                        </div>
-                                    )
-                                }
+                                            {needCollapse && isCollapsed && CollapseButton}
+                                        </p>
+                                    </div>
+                                )}
                             </Box>
                             {msg.pictures && (
-                                <div className='flex flex-row items-start justify-start overflow-x-auto overflow-y-hidden'>
-                                    {
-                                        msg.pictures.map((pic, index) => (
-                                            <div
-                                                key={index}
-                                                className="w-[100px] min-w-[100px] h-[100px] min-h-[100px]
+                                <div className="flex flex-row items-start justify-start overflow-x-auto overflow-y-hidden">
+                                    {msg.pictures.map((pic, index) => (
+                                        <div
+                                            key={index}
+                                            className="w-[100px] min-w-[100px] h-[100px] min-h-[100px]
                                                     md:w-[200px] md:min-w-[200px] md:h-[200px] md:min-h-[200px]
                                                     p-1.5 mr-2 mb-2 inline-flex items-center justify-center
                                                     bg-white dark:bg-slate-800
                                                     border-solid border-slate-400/20 rounded-md
                                                     hover:cursor-pointer hover:border-slate-800/20 transition-all duration-200"
-                                                onClick={() => {
-                                                    setPictureShow({
-                                                        picture: pic,
-                                                        extraButtons: msg.role === 'assistant' && platform.type === 'mobile' ? [
-                                                            {
-                                                                onClick: onReport,
-                                                                icon: <ReportIcon />,
-                                                            },
-                                                        ] : undefined,
-                                                    })
-                                                }}
-                                            >
-                                                {
-                                                    pic.loading && !pic.storageKey && !pic.url && (
-                                                        <CircularProgress className='block max-w-full max-h-full' color='secondary' />
-                                                    )
-                                                }
-                                                {
-                                                    pic.storageKey && (
-                                                        <ImageInStorage className='w-full' storageKey={pic.storageKey} />
-                                                    )
-                                                }
-                                                {
-                                                    pic.url && (
-                                                        <Img src={pic.url} className='w-full' />
-                                                    )
-                                                }
-                                            </div>
-                                        ))
-                                    }
+                                            onClick={() => {
+                                                setPictureShow({
+                                                    picture: pic,
+                                                    extraButtons:
+                                                        msg.role === 'assistant' && platform.type === 'mobile'
+                                                            ? [
+                                                                  {
+                                                                      onClick: onReport,
+                                                                      icon: <ReportIcon />,
+                                                                  },
+                                                              ]
+                                                            : undefined,
+                                                })
+                                            }}
+                                        >
+                                            {pic.loading && !pic.storageKey && !pic.url && (
+                                                <CircularProgress
+                                                    className="block max-w-full max-h-full"
+                                                    color="secondary"
+                                                />
+                                            )}
+                                            {pic.storageKey && (
+                                                <ImageInStorage className="w-full" storageKey={pic.storageKey} />
+                                            )}
+                                            {pic.url && <Img src={pic.url} className="w-full" />}
+                                        </div>
+                                    ))}
                                 </div>
                             )}
-                            {
-                                (msg.files || msg.links) && (
-                                    <div className='flex flex-row items-start justify-start overflow-x-auto overflow-y-hidden pb-1'>
-                                        {
-                                            msg.files?.map((file, index) => (
-                                                <MessageAttachment key={index} label={file.name} filename={file.name} />
-                                            ))
-                                        }
-                                        {
-                                            msg.links?.map((link, index) => (
-                                                <MessageAttachment key={index} label={link.title} url={link.url} />
-                                            ))
-                                        }
-                                    </div>
-                                )
-                            }
+                            {(msg.files || msg.links) && (
+                                <div className="flex flex-row items-start justify-start overflow-x-auto overflow-y-hidden pb-1">
+                                    {msg.files?.map((file, index) => (
+                                        <MessageAttachment key={index} label={file.name} filename={file.name} />
+                                    ))}
+                                    {msg.links?.map((link, index) => (
+                                        <MessageAttachment key={index} label={link.title} url={link.url} />
+                                    ))}
+                                </div>
+                            )}
                             <MessageErrTips msg={msg} />
-                            {
-                                needCollapse && !isCollapsed && CollapseButton
-                            }
-                            {
-                                needArtifact && (
-                                    <MessageArtifact
-                                        sessionId={props.sessionId}
-                                        messageId={msg.id}
-                                        messageContent={msg.content}
-                                        preview={previewArtifact}
-                                        setPreview={setPreviewArtifact}
-                                    />
-                                )
-                            }
-                            {
-                                tips.length > 0 && (
-                                    <Typography variant="body2" sx={{ opacity: 0.5 }} className='pb-1'>
-                                        {tips.join(', ')}
-                                    </Typography>
-                                )
-                            }
+                            {needCollapse && !isCollapsed && CollapseButton}
+                            {needArtifact && (
+                                <MessageArtifact
+                                    sessionId={props.sessionId}
+                                    messageId={msg.id}
+                                    messageContent={msg.content}
+                                    preview={previewArtifact}
+                                    setPreview={setPreviewArtifact}
+                                />
+                            )}
+                            {tips.length > 0 && (
+                                <Typography variant="body2" sx={{ opacity: 0.5 }} className="pb-1">
+                                    {tips.join(', ')}
+                                </Typography>
+                            )}
                         </div>
-                        {
-                            !hiddenButtonGroup && (
-                                <Box sx={{ height: '35px' }}>
-                                    {/* <Box sx={{ height: '35px' }} className='opacity-0 group-hover/message:opacity-100 delay-100 transition-all duration-100'> */}
-                                    <span className={cn(!anchorEl && !msg.generating ? 'hidden group-hover/message:inline-flex' : 'inline-flex')} >
-                                        <ButtonGroup
-                                            sx={{
-                                                height: '35px',
-                                                opacity: 1,
-                                                ...(fixedButtonGroup
-                                                    ? {
-                                                        position: 'fixed',
-                                                        bottom: dom.getInputBoxHeight() + 4 + 'px',
-                                                        zIndex: 100,
-                                                    }
-                                                    : {}),
-                                                backgroundColor:
-                                                    theme.palette.mode === 'dark'
-                                                        ? theme.palette.grey[800]
-                                                        : theme.palette.background.paper,
-                                            }}
-                                            variant="contained"
-                                            color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
-                                            aria-label="message button group"
-                                        >
-                                            {msg.generating && (
-                                                <Tooltip title={t('stop generating')} placement="top">
-                                                    <IconButton aria-label="edit" color="warning" onClick={handleStop}>
-                                                        <StopIcon fontSize="small" />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            )}
-                                            {
-                                                // 生成中的消息不显示刷新按钮，必须是助手消息
-                                                !msg.generating && msg.role === 'assistant' &&
-                                                (
-                                                    <Tooltip title={t('Reply Again')} placement="top">
-                                                        <IconButton
-                                                            aria-label="Reply Again"
-                                                            onClick={handleRefresh}
-                                                            color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
-                                                        >
-                                                            <ReplayIcon fontSize="small" />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                )
-                                            }
-                                            {msg.role !== 'assistant' && (
-                                                <Tooltip title={t('Reply Again Below')} placement="top">
+                        {!hiddenButtonGroup && (
+                            <Box sx={{ height: '35px' }}>
+                                {/* <Box sx={{ height: '35px' }} className='opacity-0 group-hover/message:opacity-100 delay-100 transition-all duration-100'> */}
+                                <span
+                                    className={cn(
+                                        !anchorEl && !msg.generating
+                                            ? 'hidden group-hover/message:inline-flex'
+                                            : 'inline-flex'
+                                    )}
+                                >
+                                    <ButtonGroup
+                                        sx={{
+                                            height: '35px',
+                                            opacity: 1,
+                                            ...(fixedButtonGroup
+                                                ? {
+                                                      position: 'fixed',
+                                                      bottom: dom.getInputBoxHeight() + 4 + 'px',
+                                                      zIndex: 100,
+                                                  }
+                                                : {}),
+                                            backgroundColor:
+                                                theme.palette.mode === 'dark'
+                                                    ? theme.palette.grey[800]
+                                                    : theme.palette.background.paper,
+                                        }}
+                                        variant="contained"
+                                        color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
+                                        aria-label="message button group"
+                                    >
+                                        {msg.generating && (
+                                            <Tooltip title={t('stop generating')} placement="top">
+                                                <IconButton aria-label="edit" color="warning" onClick={handleStop}>
+                                                    <StopIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )}
+                                        {
+                                            // 生成中的消息不显示刷新按钮，必须是助手消息
+                                            !msg.generating && msg.role === 'assistant' && (
+                                                <Tooltip title={t('Reply Again')} placement="top">
                                                     <IconButton
-                                                        aria-label="Reply Again Below"
-                                                        onClick={onGenerateMore}
-                                                        color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
+                                                        aria-label="Reply Again"
+                                                        onClick={handleRefresh}
+                                                        color={
+                                                            props.sessionType === 'picture' ? 'secondary' : 'primary'
+                                                        }
                                                     >
-                                                        <SouthIcon fontSize="small" />
+                                                        <ReplayIcon fontSize="small" />
                                                     </IconButton>
                                                 </Tooltip>
-                                            )}
-                                            {
-                                                // Chatbox-AI 模型不支持编辑消息
-                                                !msg.model?.startsWith('Chatbox-AI') &&
+                                            )
+                                        }
+                                        {msg.role !== 'assistant' && (
+                                            <Tooltip title={t('Reply Again Below')} placement="top">
+                                                <IconButton
+                                                    aria-label="Reply Again Below"
+                                                    onClick={onGenerateMore}
+                                                    color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
+                                                >
+                                                    <SouthIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )}
+                                        {
+                                            // Chatbox-AI 模型不支持编辑消息
+                                            !msg.model?.startsWith('Chatbox-AI') &&
                                                 // 图片会话中，助手消息无需编辑
-                                                !(msg.role === 'assistant' && props.sessionType === 'picture') &&
-                                                (
+                                                !(msg.role === 'assistant' && props.sessionType === 'picture') && (
                                                     <Tooltip title={t('edit')} placement="top">
                                                         <IconButton
                                                             aria-label="edit"
-                                                            color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
+                                                            color={
+                                                                props.sessionType === 'picture'
+                                                                    ? 'secondary'
+                                                                    : 'primary'
+                                                            }
                                                             onClick={onEditClick}
                                                         >
                                                             <EditIcon fontSize="small" />
                                                         </IconButton>
                                                     </Tooltip>
                                                 )
-                                            }
-                                            {!(props.sessionType === 'picture' && msg.role === 'assistant') && (
-                                                <Tooltip title={t('copy')} placement="top">
+                                        }
+                                        {!(props.sessionType === 'picture' && msg.role === 'assistant') && (
+                                            <Tooltip title={t('copy')} placement="top">
+                                                <IconButton
+                                                    aria-label="copy"
+                                                    onClick={onCopyMsg}
+                                                    color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
+                                                >
+                                                    <CopyAllIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )}
+                                        {!msg.generating &&
+                                            props.sessionType === 'picture' &&
+                                            msg.role === 'assistant' && (
+                                                <Tooltip title={t('Generate More Images Below')} placement="top">
                                                     <IconButton
                                                         aria-label="copy"
-                                                        onClick={onCopyMsg}
-                                                        color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
+                                                        onClick={onGenerateMore}
+                                                        color="secondary"
                                                     >
-                                                        <CopyAllIcon fontSize="small" />
+                                                        <AddPhotoAlternateIcon className="mr-1" fontSize="small" />
+                                                        <Typography fontSize="small">{t('More Images')}</Typography>
                                                     </IconButton>
                                                 </Tooltip>
                                             )}
-                                            {
-                                                !msg.generating && props.sessionType === 'picture' && msg.role === 'assistant' && (
-                                                    <Tooltip title={t('Generate More Images Below')} placement="top">
-                                                        <IconButton
-                                                            aria-label="copy"
-                                                            onClick={onGenerateMore}
-                                                            color='secondary'
-                                                        >
-                                                            <AddPhotoAlternateIcon className='mr-1' fontSize="small" />
-                                                            <Typography fontSize="small">{t('More Images')}</Typography>
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                )
-                                            }
-                                            <IconButton
-                                                onClick={handleClick}
-                                                color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
-                                            >
-                                                <MoreVertIcon fontSize="small" />
-                                            </IconButton>
-                                            <StyledMenu
-                                                MenuListProps={{
-                                                    'aria-labelledby': 'demo-customized-button',
+                                        <IconButton
+                                            onClick={handleClick}
+                                            color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
+                                        >
+                                            <MoreVertIcon fontSize="small" />
+                                        </IconButton>
+                                        <StyledMenu
+                                            MenuListProps={{
+                                                'aria-labelledby': 'demo-customized-button',
+                                            }}
+                                            anchorEl={anchorEl}
+                                            open={open}
+                                            onClose={handleClose}
+                                            key={msg.id + 'menu'}
+                                        >
+                                            <MenuItem
+                                                key={msg.id + 'quote'}
+                                                onClick={() => {
+                                                    setAnchorEl(null)
+                                                    quoteMsg()
                                                 }}
-                                                anchorEl={anchorEl}
-                                                open={open}
-                                                onClose={handleClose}
-                                                key={msg.id + 'menu'}
+                                                disableRipple
+                                                divider
                                             >
-                                                <MenuItem
-                                                    key={msg.id + 'quote'}
-                                                    onClick={() => {
-                                                        setAnchorEl(null)
-                                                        quoteMsg()
-                                                    }}
-                                                    disableRipple
-                                                    divider
-                                                >
-                                                    <FormatQuoteIcon fontSize="small" />
-                                                    {t('quote')}
+                                                <FormatQuoteIcon fontSize="small" />
+                                                {t('quote')}
+                                            </MenuItem>
+                                            {msg.role === 'assistant' && platform.type === 'mobile' && (
+                                                <MenuItem key={msg.id + 'report'} onClick={onReport} disableRipple>
+                                                    <ReportIcon fontSize="small" />
+                                                    {t('report')}
                                                 </MenuItem>
-                                                {
-                                                    msg.role === 'assistant' && platform.type === 'mobile' && (
-                                                        <MenuItem key={msg.id + 'report'} onClick={onReport} disableRipple>
-                                                            <ReportIcon fontSize="small" />
-                                                            {t('report')}
-                                                        </MenuItem>
-                                                    )
-                                                }
-                                                <MenuItem key={msg.id + 'del'} onClick={onDelMsg} disableRipple
-                                                    sx={{
-                                                        '&:hover': {
-                                                            backgroundColor: 'rgba(255, 0, 0, 0.1)',
-                                                        },
-                                                    }}
-                                                >
-                                                    <DeleteForeverIcon fontSize="small" />
-                                                    {t('delete')}
-                                                </MenuItem>
-                                            </StyledMenu>
-                                        </ButtonGroup>
-                                    </span>
-                                </Box>
-                            )
-                        }
+                                            )}
+                                            <MenuItem
+                                                key={msg.id + 'del'}
+                                                onClick={onDelMsg}
+                                                disableRipple
+                                                sx={{
+                                                    '&:hover': {
+                                                        backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                                                    },
+                                                }}
+                                            >
+                                                <DeleteForeverIcon fontSize="small" />
+                                                {t('delete')}
+                                            </MenuItem>
+                                        </StyledMenu>
+                                    </ButtonGroup>
+                                </span>
+                            </Box>
+                        )}
                     </Grid>
                 </Grid>
             </Grid>

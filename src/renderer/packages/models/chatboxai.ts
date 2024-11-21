@@ -51,7 +51,11 @@ export default class ChatboxAI extends Base {
         return json['data'][0]['b64_json']
     }
 
-    async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+    async callChatCompletion(
+        rawMessages: Message[],
+        signal?: AbortSignal,
+        onResultChange?: onResultChange
+    ): Promise<string> {
         const messages = await populateChatboxAIMessage(rawMessages)
         const response = await this.post(
             `${API_ORIGIN}/api/ai/chat`,
@@ -106,7 +110,7 @@ export default class ChatboxAI extends Base {
             signal?: AbortSignal
             retry?: number
             useProxy?: boolean
-        },
+        }
     ) {
         const { signal, retry = 3, useProxy = false } = options || {}
         let requestError: ApiError | NetworkError | null = null
@@ -147,12 +151,7 @@ export default class ChatboxAI extends Base {
         }
     }
 
-    async get(
-        url: string,
-        headers: Record<string, string>,
-        signal?: AbortSignal,
-        retry = 3
-    ) {
+    async get(url: string, headers: Record<string, string>, signal?: AbortSignal, retry = 3) {
         let requestError: ApiError | NetworkError | null = null
         for (let i = 0; i < retry + 1; i++) {
             try {
@@ -188,7 +187,6 @@ export default class ChatboxAI extends Base {
             throw new Error('Unknown error')
         }
     }
-
 }
 
 // Chatbox AI 服务接收的消息格式
@@ -215,7 +213,7 @@ export async function populateChatboxAIMessage(rawMessages: Message[]): Promise<
             role: raw.role,
             content: raw.content,
         }
-        for (const p of (raw.pictures || [])) {
+        for (const p of raw.pictures || []) {
             if (!p.storageKey) {
                 continue
             }
@@ -228,7 +226,7 @@ export async function populateChatboxAIMessage(rawMessages: Message[]): Promise<
             }
             newMessage.pictures.push({ base64 })
         }
-        for (const file of (raw.files || [])) {
+        for (const file of raw.files || []) {
             if (!file.chatboxAIFileUUID) {
                 continue
             }
@@ -237,7 +235,7 @@ export async function populateChatboxAIMessage(rawMessages: Message[]): Promise<
             }
             newMessage.files.push({ uuid: file.chatboxAIFileUUID })
         }
-        for (const link of (raw.links || [])) {
+        for (const link of raw.links || []) {
             if (!link.chatboxAILinkUUID || !link.url) {
                 continue
             }

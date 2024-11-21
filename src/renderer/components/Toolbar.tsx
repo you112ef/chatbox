@@ -7,14 +7,14 @@ import Save from '@mui/icons-material/Save'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import * as atoms from '../stores/atoms'
 import { useTranslation } from 'react-i18next'
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import StyledMenu from './StyledMenu'
 import { useState } from 'react'
 import { MenuItem, Divider, useTheme } from '@mui/material'
-import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
-import DeleteIcon from '@mui/icons-material/Delete';
-import WidthNormalIcon from '@mui/icons-material/WidthNormal';
-import WidthWideIcon from '@mui/icons-material/WidthWide';
+import CleaningServicesIcon from '@mui/icons-material/CleaningServices'
+import DeleteIcon from '@mui/icons-material/Delete'
+import WidthNormalIcon from '@mui/icons-material/WidthNormal'
+import WidthWideIcon from '@mui/icons-material/WidthWide'
 import { useIsLargeScreen, useIsSmallScreen } from '@/hooks/useScreenChange'
 import * as sessionActions from '@/stores/sessionActions'
 
@@ -81,10 +81,7 @@ export default function Toolbar() {
                     size="small"
                     className="transform-none opacity-30"
                 >
-                    <span
-                        className="justify-between transform-none text-sm"
-                        style={{ textTransform: 'none' }}
-                    >
+                    <span className="justify-between transform-none text-sm" style={{ textTransform: 'none' }}>
                         <span className="mr-1">{t('Search')}...</span>
                         {/* <span className='text-xs bg-slate-600 opacity-60 text-white border border-solid px-0.5 border-slate-600'>
                                     Ctrl K
@@ -92,21 +89,17 @@ export default function Toolbar() {
                     </span>
                 </Button>
             )}
-            {
-                isLargeScreen && (
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="width-full-button"
-                        sx={{ mr: 2 }}
-                        onClick={() => setWidthFull(!widthFull)}
-                    >
-                        {
-                            widthFull ? <WidthWideIcon /> : <WidthNormalIcon />
-                        }
-                    </IconButton>
-                )
-            }
+            {isLargeScreen && (
+                <IconButton
+                    edge="start"
+                    color="inherit"
+                    aria-label="width-full-button"
+                    sx={{ mr: 2 }}
+                    onClick={() => setWidthFull(!widthFull)}
+                >
+                    {widthFull ? <WidthWideIcon /> : <WidthNormalIcon />}
+                </IconButton>
+            )}
             <IconButton
                 edge="start"
                 color="inherit"
@@ -116,28 +109,17 @@ export default function Toolbar() {
             >
                 <HistoryIcon />
             </IconButton>
-            <IconButton
-                edge="start"
-                color="inherit"
-                aria-label="more-menu-button"
-                sx={{}}
-                onClick={handleMoreMenuOpen}
-            >
+            <IconButton edge="start" color="inherit" aria-label="more-menu-button" sx={{}} onClick={handleMoreMenuOpen}>
                 <MoreHorizIcon />
             </IconButton>
-            <StyledMenu
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleMoreMenuClose}
-            >
-                <MenuItem onClick={handleExportAndSave}
-                    disableRipple
-                    divider
-                >
-                    <Save fontSize='small' />
+            <StyledMenu anchorEl={anchorEl} open={open} onClose={handleMoreMenuClose}>
+                <MenuItem onClick={handleExportAndSave} disableRipple divider>
+                    <Save fontSize="small" />
                     {t('Export Chat')}
                 </MenuItem>
-                <MenuItem onClick={handleSessionClean} disableRipple
+                <MenuItem
+                    onClick={handleSessionClean}
+                    disableRipple
                     sx={{
                         '&:hover': {
                             backgroundColor: 'rgba(255, 165, 0, 0.1)',
@@ -147,7 +129,9 @@ export default function Toolbar() {
                     <CleaningServicesIcon fontSize="small" />
                     {t('Clear All Messages')}
                 </MenuItem>
-                <MenuItem onClick={handleSessionDelete} disableRipple
+                <MenuItem
+                    onClick={handleSessionDelete}
+                    disableRipple
                     sx={{
                         '&:hover': {
                             backgroundColor: 'rgba(255, 0, 0, 0.1)',

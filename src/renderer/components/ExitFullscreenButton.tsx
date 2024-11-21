@@ -4,7 +4,7 @@ import { debounce } from 'lodash'
 
 /**
  * 为 Windows 桌面用户准备的全屏退出按钮。一些用户会按 F11 强制进入全屏，但是却不知道怎么退出去。
- * @returns 
+ * @returns
  */
 export default function ExitFullscreenButton() {
     const [isFullscreen, setIsFullscreen] = useState(false)
@@ -31,9 +31,9 @@ export default function ExitFullscreenButton() {
         return null
     }
     return (
-        <div className='fixed top-0 left-1/2 -translate-x-1/2 w-full h-3 cursor-move hover:bg-gray-400/20'
+        <div
+            className="fixed top-0 left-1/2 -translate-x-1/2 w-full h-3 cursor-move hover:bg-gray-400/20"
             onClick={onClick}
-        >
-        </div>
+        ></div>
     )
 }

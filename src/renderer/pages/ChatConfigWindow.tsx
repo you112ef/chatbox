@@ -8,7 +8,8 @@ import {
     DialogTitle,
     DialogContentText,
     TextField,
-    Typography, useTheme,
+    Typography,
+    useTheme,
 } from '@mui/material'
 import {
     Session,
@@ -37,11 +38,11 @@ import { trackingEvent } from '@/packages/event'
 import GeminiModelSelect from '@/components/GeminiModelSelect'
 import GropModelSelect from '@/components/GroqModelSelect'
 import { OllamaHostInput, OllamaModelSelect } from './SettingDialog/OllamaSetting'
-import SmartToyIcon from "@mui/icons-material/SmartToy";
-import EditableAvatar from "@/components/EditableAvatar";
+import SmartToyIcon from '@mui/icons-material/SmartToy'
+import EditableAvatar from '@/components/EditableAvatar'
 import { v4 as uuidv4 } from 'uuid'
-import { ImageInStorage, handleImageInputAndSave } from "@/components/Image";
-import ImageIcon from "@mui/icons-material/Image";
+import { ImageInStorage, handleImageInputAndSave } from '@/components/Image'
+import ImageIcon from '@mui/icons-material/Image'
 import CreatableSelect from '@/components/CreatableSelect'
 
 export default function ChatConfigWindow(props: {}) {
@@ -59,9 +60,7 @@ export default function ChatConfigWindow(props: {}) {
         } else {
             setEditingData({
                 ...chatConfigDialogSession,
-                settings: chatConfigDialogSession.settings
-                    ? { ...chatConfigDialogSession.settings }
-                    : undefined,
+                settings: chatConfigDialogSession.settings ? { ...chatConfigDialogSession.settings } : undefined,
             })
         }
     }, [chatConfigDialogSessionId])
@@ -130,10 +129,8 @@ export default function ChatConfigWindow(props: {}) {
                 <EditableAvatar
                     onChange={(event) => {
                         const key = `picture:assistant-avatar-${chatConfigDialogSession?.id}:${uuidv4()}`
-                        handleImageInputAndSave(
-                            event,
-                            key,
-                            () => setEditingData({ ...editingData, assistantAvatarKey: key })
+                        handleImageInputAndSave(event, key, () =>
+                            setEditingData({ ...editingData, assistantAvatarKey: key })
                         )
                     }}
                     onRemove={() => {
@@ -141,39 +138,37 @@ export default function ChatConfigWindow(props: {}) {
                     }}
                     removable={!!editingData.assistantAvatarKey}
                     sx={{
-                        backgroundColor: editingData.type === 'picture' ?
-                            theme.palette.secondary.main :
-                            editingData.picUrl ? theme.palette.background.default : theme.palette.primary.main
+                        backgroundColor:
+                            editingData.type === 'picture'
+                                ? theme.palette.secondary.main
+                                : editingData.picUrl
+                                ? theme.palette.background.default
+                                : theme.palette.primary.main,
                     }}
                 >
-                    {
-                        editingData.assistantAvatarKey ? (
-                            <ImageInStorage
-                                storageKey={editingData.assistantAvatarKey}
-                                className="object-cover object-center w-full h-full"
-                            />
-                        ) : editingData.picUrl ? (
-                            <img
-                                src={editingData.picUrl}
-                                className="object-cover object-center w-full h-full"
-                            />
-                        ) : editingData.type === 'picture' ? (
-                            <ImageIcon
-                                fontSize='large'
-                                sx={{
-                                    width: '60px',
-                                    height: '60px',
-                                }}
-                            />
-                        ) : globalSettings.defaultAssistantAvatarKey ? (
-                            <ImageInStorage
-                                storageKey={globalSettings.defaultAssistantAvatarKey}
-                                className="object-cover object-center w-full h-full"
-                            />
-                        ) : (
-                            <SmartToyIcon fontSize="large" />
-                        )
-                    }
+                    {editingData.assistantAvatarKey ? (
+                        <ImageInStorage
+                            storageKey={editingData.assistantAvatarKey}
+                            className="object-cover object-center w-full h-full"
+                        />
+                    ) : editingData.picUrl ? (
+                        <img src={editingData.picUrl} className="object-cover object-center w-full h-full" />
+                    ) : editingData.type === 'picture' ? (
+                        <ImageIcon
+                            fontSize="large"
+                            sx={{
+                                width: '60px',
+                                height: '60px',
+                            }}
+                        />
+                    ) : globalSettings.defaultAssistantAvatarKey ? (
+                        <ImageInStorage
+                            storageKey={globalSettings.defaultAssistantAvatarKey}
+                            className="object-cover object-center w-full h-full"
+                        />
+                    ) : (
+                        <SmartToyIcon fontSize="large" />
+                    )}
                 </EditableAvatar>
                 <TextField
                     autoFocus={!isSmallScreen}
@@ -185,7 +180,7 @@ export default function ChatConfigWindow(props: {}) {
                     value={editingData.name}
                     onChange={(e) => setEditingData({ ...editingData, name: e.target.value })}
                 />
-                <div className='mt-1'>
+                <div className="mt-1">
                     <TextField
                         margin="dense"
                         label={t('Instruction (System Prompt)')}
@@ -199,24 +194,24 @@ export default function ChatConfigWindow(props: {}) {
                         onChange={(event) => setSystemPrompt(event.target.value)}
                     />
                 </div>
-                <Accordion defaultExpanded={!!editingData.settings} className='mt-2'>
+                <Accordion defaultExpanded={!!editingData.settings} className="mt-2">
                     <AccordionSummary aria-controls="panel1a-content">
-                        <div className='flex flex-row w-full justify-between items-center'>
-                            <Typography>
-                                {t('Specific model settings')}
-                            </Typography>
-                            {
-                                editingData.settings && (
-                                    <Button size='small' variant='text' color='warning' onClick={onReset}>
-                                        {t('Reset to Global Settings')}
-                                    </Button>
-                                )
-                            }
+                        <div className="flex flex-row w-full justify-between items-center">
+                            <Typography>{t('Specific model settings')}</Typography>
+                            {editingData.settings && (
+                                <Button size="small" variant="text" color="warning" onClick={onReset}>
+                                    {t('Reset to Global Settings')}
+                                </Button>
+                            )}
                         </div>
                     </AccordionSummary>
                     <AccordionDetails>
-                        {isChatSession(chatConfigDialogSession) && <ChatConfig dataEdit={editingData} setDataEdit={setEditingData} />}
-                        {isPictureSession(chatConfigDialogSession) && <PictureConfig dataEdit={editingData} setDataEdit={setEditingData} />}
+                        {isChatSession(chatConfigDialogSession) && (
+                            <ChatConfig dataEdit={editingData} setDataEdit={setEditingData} />
+                        )}
+                        {isPictureSession(chatConfigDialogSession) && (
+                            <PictureConfig dataEdit={editingData} setDataEdit={setEditingData} />
+                        )}
                     </AccordionDetails>
                 </Accordion>
             </DialogContent>
@@ -235,7 +230,11 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
     // 全局设置
     const [globalSettings, setGlobalSettings] = useAtom(atoms.settingsAtom)
     // 会话生效设置 = 全局设置 + 会话设置
-    const mergedSettings = sessionActions.mergeSettings(globalSettings, dataEdit.settings || {}, dataEdit.type || 'chat')
+    const mergedSettings = sessionActions.mergeSettings(
+        globalSettings,
+        dataEdit.settings || {},
+        dataEdit.type || 'chat'
+    )
     // 修改当前会话设置
     const updateSettingsEdit = (updated: Partial<ModelSettings>) => {
         setDataEdit({
@@ -249,11 +248,13 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
     const specificSettings = dataEdit.settings || {}
 
     // 当前选择的自定义提供方的全局设置
-    const globalCustomProvider = globalSettings.customProviders.find((provider) => provider.id === mergedSettings.selectedCustomProviderId)
+    const globalCustomProvider = globalSettings.customProviders.find(
+        (provider) => provider.id === mergedSettings.selectedCustomProviderId
+    )
     // 当前选择的自定义提供方的选中模型
     const sessionCustomProviderModel = (
-        mergedSettings.customProviders.find((provider) => provider.id === mergedSettings.selectedCustomProviderId)
-        || globalCustomProvider
+        mergedSettings.customProviders.find((provider) => provider.id === mergedSettings.selectedCustomProviderId) ||
+        globalCustomProvider
     )?.model
 
     return (
@@ -262,10 +263,12 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                 aiProvider={mergedSettings.aiProvider}
                 onSwitchAIProvider={(v) => updateSettingsEdit({ aiProvider: v })}
                 selectedCustomProviderId={mergedSettings.selectedCustomProviderId}
-                onSwitchCustomProvider={(v) => updateSettingsEdit({
-                    aiProvider: ModelProvider.Custom,
-                    selectedCustomProviderId: v,
-                })}
+                onSwitchCustomProvider={(v) =>
+                    updateSettingsEdit({
+                        aiProvider: ModelProvider.Custom,
+                        selectedCustomProviderId: v,
+                    })
+                }
                 className={specificSettings.aiProvider === undefined ? 'opacity-50' : ''}
                 hideCustomProviderManage
             />
@@ -301,7 +304,7 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                         // 选项直接读取和修改全局设置，这样用户体验会更好
                         openaiCustomModelOptions={globalSettings.openaiCustomModelOptions}
                         onUpdateOpenaiCustomModelOptions={(updated) => {
-                            setGlobalSettings(globalSettings => ({
+                            setGlobalSettings((globalSettings) => ({
                                 ...globalSettings,
                                 openaiCustomModelOptions: updated,
                             }))
@@ -334,7 +337,7 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                         // 选项直接读取和修改全局设置，这样用户体验会更好
                         options={globalSettings.azureDeploymentNameOptions}
                         onUpdateOptions={(v) => {
-                            setGlobalSettings(globalSettings => ({
+                            setGlobalSettings((globalSettings) => ({
                                 ...globalSettings,
                                 azureDeploymentNameOptions: v,
                             }))
@@ -391,77 +394,72 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                     />
                 </>
             )}
-            {
-                mergedSettings.aiProvider === ModelProvider.Ollama && (
-                    <>
-                        <OllamaHostInput
-                            ollamaHost={mergedSettings.ollamaHost}
-                            setOllamaHost={(v) => updateSettingsEdit({ ollamaHost: v })}
-                            className={specificSettings.ollamaHost === undefined ? 'opacity-50' : ''}
-                        />
-                        <OllamaModelSelect
-                            ollamaHost={mergedSettings.ollamaHost}
-                            ollamaModel={mergedSettings.ollamaModel}
-                            setOlamaModel={(v) => updateSettingsEdit({ ollamaModel: v })}
-                            className={specificSettings.ollamaModel === undefined ? 'opacity-50' : ''}
-                        />
-                        <MaxContextMessageCountSlider
-                            value={mergedSettings.openaiMaxContextMessageCount}
-                            onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
-                            className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
-                        />
-                        <TemperatureSlider
-                            value={mergedSettings.temperature}
-                            onChange={(v) => updateSettingsEdit({ temperature: v })}
-                            className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
-                        />
-                    </>
-                )
-            }
-            {
-                mergedSettings.aiProvider === ModelProvider.Gemini && (
-                    <>
-                        <GeminiModelSelect
-                            value={mergedSettings.geminiModel}
-                            onChange={(v) => updateSettingsEdit({ geminiModel: v })}
-                            className={specificSettings.geminiModel === undefined ? 'opacity-50' : ''}
-                        />
-                        <MaxContextMessageCountSlider
-                            value={mergedSettings.openaiMaxContextMessageCount}
-                            onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
-                            className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
-                        />
-                        <TemperatureSlider
-                            value={mergedSettings.temperature}
-                            onChange={(v) => updateSettingsEdit({ temperature: v })}
-                            className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
-                        />
-                    </>
-                )
-            }
-            {
-                mergedSettings.aiProvider === ModelProvider.Groq && (
-                    <>
-                        <GropModelSelect
-                            value={mergedSettings.groqModel}
-                            onChange={(v) => updateSettingsEdit({ groqModel: v })}
-                            className={specificSettings.groqModel === undefined ? 'opacity-50' : ''}
-                        />
-                        <MaxContextMessageCountSlider
-                            value={mergedSettings.openaiMaxContextMessageCount}
-                            onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
-                            className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
-                        />
-                        <TemperatureSlider
-                            value={mergedSettings.temperature}
-                            onChange={(v) => updateSettingsEdit({ temperature: v })}
-                            className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
-                        />
-                    </>
-                )
-            }
-            {
-                mergedSettings.aiProvider === ModelProvider.Custom && sessionCustomProviderModel && globalCustomProvider && (
+            {mergedSettings.aiProvider === ModelProvider.Ollama && (
+                <>
+                    <OllamaHostInput
+                        ollamaHost={mergedSettings.ollamaHost}
+                        setOllamaHost={(v) => updateSettingsEdit({ ollamaHost: v })}
+                        className={specificSettings.ollamaHost === undefined ? 'opacity-50' : ''}
+                    />
+                    <OllamaModelSelect
+                        ollamaHost={mergedSettings.ollamaHost}
+                        ollamaModel={mergedSettings.ollamaModel}
+                        setOlamaModel={(v) => updateSettingsEdit({ ollamaModel: v })}
+                        className={specificSettings.ollamaModel === undefined ? 'opacity-50' : ''}
+                    />
+                    <MaxContextMessageCountSlider
+                        value={mergedSettings.openaiMaxContextMessageCount}
+                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
+                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
+                    />
+                    <TemperatureSlider
+                        value={mergedSettings.temperature}
+                        onChange={(v) => updateSettingsEdit({ temperature: v })}
+                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
+                    />
+                </>
+            )}
+            {mergedSettings.aiProvider === ModelProvider.Gemini && (
+                <>
+                    <GeminiModelSelect
+                        value={mergedSettings.geminiModel}
+                        onChange={(v) => updateSettingsEdit({ geminiModel: v })}
+                        className={specificSettings.geminiModel === undefined ? 'opacity-50' : ''}
+                    />
+                    <MaxContextMessageCountSlider
+                        value={mergedSettings.openaiMaxContextMessageCount}
+                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
+                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
+                    />
+                    <TemperatureSlider
+                        value={mergedSettings.temperature}
+                        onChange={(v) => updateSettingsEdit({ temperature: v })}
+                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
+                    />
+                </>
+            )}
+            {mergedSettings.aiProvider === ModelProvider.Groq && (
+                <>
+                    <GropModelSelect
+                        value={mergedSettings.groqModel}
+                        onChange={(v) => updateSettingsEdit({ groqModel: v })}
+                        className={specificSettings.groqModel === undefined ? 'opacity-50' : ''}
+                    />
+                    <MaxContextMessageCountSlider
+                        value={mergedSettings.openaiMaxContextMessageCount}
+                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
+                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
+                    />
+                    <TemperatureSlider
+                        value={mergedSettings.temperature}
+                        onChange={(v) => updateSettingsEdit({ temperature: v })}
+                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
+                    />
+                </>
+            )}
+            {mergedSettings.aiProvider === ModelProvider.Custom &&
+                sessionCustomProviderModel &&
+                globalCustomProvider && (
                     <>
                         <CreatableSelect
                             label={t('model')}
@@ -469,7 +467,7 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                             options={globalCustomProvider.modelOptions || []}
                             onChangeValue={(v) => {
                                 updateSettingsEdit({
-                                    customProviders: mergedSettings.customProviders.map(provider => {
+                                    customProviders: mergedSettings.customProviders.map((provider) => {
                                         if (provider.id === mergedSettings.selectedCustomProviderId) {
                                             return { ...provider, model: v }
                                         }
@@ -478,9 +476,9 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                                 })
                             }}
                             onUpdateOptions={(v) => {
-                                setGlobalSettings(globalSettings => ({
+                                setGlobalSettings((globalSettings) => ({
                                     ...globalSettings,
-                                    customProviders: globalSettings.customProviders.map(provider => {
+                                    customProviders: globalSettings.customProviders.map((provider) => {
                                         if (provider.id === mergedSettings.selectedCustomProviderId) {
                                             return { ...provider, modelOptions: v }
                                         }
@@ -501,8 +499,7 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                             className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
                         />
                     </>
-                )
-            }
+                )}
         </>
     )
 }
@@ -510,7 +507,11 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
 function PictureConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => void }) {
     const { dataEdit, setDataEdit } = props
     const globalSettings = useAtomValue(atoms.settingsAtom)
-    const sessionSettings = sessionActions.mergeSettings(globalSettings, dataEdit.settings || {}, dataEdit.type || 'chat')
+    const sessionSettings = sessionActions.mergeSettings(
+        globalSettings,
+        dataEdit.settings || {},
+        dataEdit.type || 'chat'
+    )
     const updateSettingsEdit = (updated: Partial<ModelSettings>) => {
         setDataEdit({
             ...dataEdit,

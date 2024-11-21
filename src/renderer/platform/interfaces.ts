@@ -1,4 +1,4 @@
-import { Config, Language, Settings } from "src/shared/types"
+import { Config, Language, Settings } from 'src/shared/types'
 
 export type PlatformType = 'web' | 'desktop' | 'mobile'
 
@@ -57,7 +57,6 @@ export interface Platform {
     isFullscreen(): Promise<boolean>
     setFullscreen(enabled: boolean): Promise<void>
 }
-
 
 export interface Exporter {
     exportBlob: (filename: string, blob: Blob, encoding?: 'utf8' | 'ascii' | 'utf16') => Promise<void>

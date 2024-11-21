@@ -33,7 +33,11 @@ export default class AzureOpenAI extends Base {
         return apiVersion
     }
 
-    async callChatCompletion(rawMessages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+    async callChatCompletion(
+        rawMessages: Message[],
+        signal?: AbortSignal,
+        onResultChange?: onResultChange
+    ): Promise<string> {
         if (this.options.injectDefaultMetadata) {
             rawMessages = injectModelSystemPrompt(this.options.azureDeploymentName, rawMessages)
         }
@@ -50,9 +54,10 @@ export default class AzureOpenAI extends Base {
                 messages,
                 model: this.options.azureDeploymentName,
                 // vision 模型的默认 max_tokens 极低，基本很难回答完整，因此手动设置为模型最大值
-                max_tokens: this.options.azureDalleDeploymentName.toLowerCase() === 'gpt-4-vision-preview'
-                    ? openaiModelConfigs['gpt-4-vision-preview'].maxTokens
-                    : undefined,
+                max_tokens:
+                    this.options.azureDalleDeploymentName.toLowerCase() === 'gpt-4-vision-preview'
+                        ? openaiModelConfigs['gpt-4-vision-preview'].maxTokens
+                        : undefined,
                 temperature: this.options.temperature,
                 top_p: this.options.topP,
                 stream: true,

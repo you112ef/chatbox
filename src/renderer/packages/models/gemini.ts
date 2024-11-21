@@ -56,14 +56,18 @@ export default class Gemeni extends Base {
         this.options = options
     }
 
-    async callChatCompletion(messages: Message[], signal?: AbortSignal, onResultChange?: onResultChange): Promise<string> {
+    async callChatCompletion(
+        messages: Message[],
+        signal?: AbortSignal,
+        onResultChange?: onResultChange
+    ): Promise<string> {
         const res = await this.post(
             `${this.options.geminiAPIHost}/v1beta/models/${this.options.geminiModel}:streamGenerateContent?alt=sse&key=${this.options.geminiAPIKey}`,
             {
                 'Content-Type': 'application/json',
             },
             {
-                "contents": await populateGeminiMessages(messages, this.options.geminiModel),
+                contents: await populateGeminiMessages(messages, this.options.geminiModel),
                 // "generationConfig": {
                 //     "temperature": this.options.temperature,
                 //     "topK": 1,
@@ -90,7 +94,7 @@ export default class Gemeni extends Base {
                 //     }
                 // ]
             },
-            { signal },
+            { signal }
         )
         let result = ''
         await this.handleSSE(res, (message) => {
@@ -117,16 +121,16 @@ export default class Gemeni extends Base {
         // https://ai.google.dev/api/models#method:-models.list
         type Response = {
             models: {
-                name: string;
-                version: string;
-                displayName: string;
-                description: string;
-                inputTokenLimit: number;
-                outputTokenLimit: number;
-                supportedGenerationMethods: string[];
-                temperature: number;
-                topP: number;
-                topK: number;
+                name: string
+                version: string
+                displayName: string
+                description: string
+                inputTokenLimit: number
+                outputTokenLimit: number
+                supportedGenerationMethods: string[]
+                temperature: number
+                topP: number
+                topK: number
             }[]
         }
         const res = await this.get(`${this.options.geminiAPIHost}/v1beta/models?key=${this.options.geminiAPIKey}`, {})
@@ -140,11 +144,10 @@ export default class Gemeni extends Base {
             .map((m) => m['name'].replace('models/', ''))
             .sort()
     }
-
 }
 
 interface Content {
-    role: "user" | "model"
+    role: 'user' | 'model'
     parts: (TextPart | InlineDataPart)[]
 }
 
@@ -153,7 +156,7 @@ interface TextPart {
 }
 
 interface InlineDataPart {
-    inlineData: { mimeType: string, data: string }
+    inlineData: { mimeType: string; data: string }
 }
 
 export async function populateGeminiMessages(messages: Message[], model: GeminiModel): Promise<Content[]> {
@@ -173,7 +176,7 @@ export async function populateGeminiMessages(messages: Message[], model: GeminiM
                     // 若上条消息是用户消息，那么将本条 system 消息合并到上条用户消息中
                     previousContent.parts.push({ text: msg.content })
                 }
-                break;
+                break
             case 'user':
                 if (previousContent === null) {
                     // 初始化第一条消息
@@ -202,7 +205,7 @@ export async function populateGeminiMessages(messages: Message[], model: GeminiM
                         previousContent.parts.push({ inlineData: { mimeType: picData.type, data: picData.data } })
                     }
                 }
-                break;
+                break
             case 'assistant':
                 if (previousContent === null) {
                     // 第一条消息如果是机器人消息，那么忽略
@@ -217,7 +220,7 @@ export async function populateGeminiMessages(messages: Message[], model: GeminiM
                     previousContent = { role: 'model', parts: [{ text: msg.content }] }
                 }
             default:
-                break;
+                break
         }
     }
     if (previousContent !== null && previousContent.role === 'user') {

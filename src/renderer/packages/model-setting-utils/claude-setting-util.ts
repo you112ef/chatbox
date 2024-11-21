@@ -1,7 +1,7 @@
-import { ModelSettings, Session, SessionType, Settings } from "src/shared/types";
-import { ModelSettingUtil } from "./interface";
-import { ClaudeModel, claudeModels } from "../models/claude";
-import BaseConfig from "./base-config";
+import { ModelSettings, Session, SessionType, Settings } from 'src/shared/types'
+import { ModelSettingUtil } from './interface'
+import { ClaudeModel, claudeModels } from '../models/claude'
+import BaseConfig from './base-config'
 
 export default class ClaudeSettingUtil extends BaseConfig implements ModelSettingUtil {
     async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType) {
@@ -15,15 +15,15 @@ export default class ClaudeSettingUtil extends BaseConfig implements ModelSettin
     getLocalOptionGroups(settings: Settings) {
         return [
             {
-                options: claudeModels.map(value => ({
+                options: claudeModels.map((value) => ({
                     label: value,
                     value: value,
-                }))
-            }
+                })),
+            },
         ]
     }
 
-    selectSessionModel(settings: Session["settings"], selected: string): Session["settings"] {
+    selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {
         return {
             ...settings,
             claudeModel: selected as ClaudeModel,

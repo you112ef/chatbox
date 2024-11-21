@@ -1,7 +1,14 @@
 import { getDefaultStore } from 'jotai'
 import { settingsAtom, sessionsAtom } from './atoms'
 import * as defaults from '../../shared/defaults'
-import { mermaidSessionCN, mermaidSessionEN, artifactSessionCN, artifactSessionEN, imageCreatorSessionForCN, imageCreatorSessionForEN } from '@/packages/initial_data'
+import {
+    mermaidSessionCN,
+    mermaidSessionEN,
+    artifactSessionCN,
+    artifactSessionEN,
+    imageCreatorSessionForCN,
+    imageCreatorSessionForEN,
+} from '@/packages/initial_data'
 import platform from '@/platform'
 import WebPlatform from '@/platform/web_platform'
 import storage, { StorageKey } from '@/storage'
@@ -65,18 +72,12 @@ async function migrate_1_to_2() {
         if (sessions.find((session) => session.id === imageCreatorSessionForCN.id)) {
             return
         }
-        getDefaultStore().set(sessionsAtom, [
-            ...sessions,
-            imageCreatorSessionForCN,
-        ])
+        getDefaultStore().set(sessionsAtom, [...sessions, imageCreatorSessionForCN])
     } else {
         if (sessions.find((session) => session.id === imageCreatorSessionForEN.id)) {
             return
         }
-        getDefaultStore().set(sessionsAtom, [
-            ...sessions,
-            imageCreatorSessionForEN,
-        ])
+        getDefaultStore().set(sessionsAtom, [...sessions, imageCreatorSessionForEN])
     }
 }
 
@@ -104,10 +105,7 @@ async function migrate_3_to_4() {
     if (sessions.find((session) => session.id === targetSession.id)) {
         return
     }
-    getDefaultStore().set(sessionsAtom, [
-        ...sessions,
-        targetSession,
-    ])
+    getDefaultStore().set(sessionsAtom, [...sessions, targetSession])
 }
 
 async function migrate_4_to_5(): Promise<boolean> {
@@ -136,8 +134,5 @@ async function migrate_5_to_6() {
     if (sessions.find((session) => session.id === targetSession.id)) {
         return
     }
-    getDefaultStore().set(sessionsAtom, [
-        ...sessions,
-        targetSession,
-    ])
+    getDefaultStore().set(sessionsAtom, [...sessions, targetSession])
 }

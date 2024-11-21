@@ -1,4 +1,4 @@
-import platform from "@/platform"
+import platform from '@/platform'
 
 export default class BaseStorage {
     constructor() {}
