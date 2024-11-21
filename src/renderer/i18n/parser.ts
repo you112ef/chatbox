@@ -51,5 +51,8 @@ export function parseLocale(locale: string): Language {
     if (locale.startsWith('it')) {
         return 'it-IT'
     }
+    if (locale.startsWith('sv')) {
+        return 'sv'
+    }
     return 'en'
 }

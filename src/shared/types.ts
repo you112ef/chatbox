@@ -304,7 +304,20 @@ export interface Settings extends ModelSettings {
     autoLaunch: boolean
 }
 
-export type Language = 'en' | 'zh-Hans' | 'zh-Hant' | 'ja' | 'ko' | 'ru' | 'de' | 'fr' | 'pt-PT' | 'es' | 'ar' | 'it-IT'
+export type Language =
+    | 'en'
+    | 'zh-Hans'
+    | 'zh-Hant'
+    | 'ja'
+    | 'ko'
+    | 'ru'
+    | 'de'
+    | 'fr'
+    | 'pt-PT'
+    | 'es'
+    | 'ar'
+    | 'it-IT'
+    | 'sv'
 
 export interface Config {
     uuid: string

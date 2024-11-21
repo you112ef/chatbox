@@ -13,6 +13,7 @@ import ptPT from './locales/pt-PT/translation.json'
 import itIT from './locales/it-IT/translation.json'
 import es from './locales/es/translation.json'
 import ar from './locales/ar/translation.json'
+import sv from './locales/sv/translation.json'
 
 import changelogZhHans from './changelogs/changelog_zh_Hans'
 import changelogZhHant from './changelogs/changelog_zh_Hant'
@@ -55,6 +56,9 @@ i18n.use(initReactI18next).init({
         },
         'it-IT': {
             translation: itIT,
+        },
+        sv: {
+            translation: sv,
         },
     },
     fallbackLng: 'en',
