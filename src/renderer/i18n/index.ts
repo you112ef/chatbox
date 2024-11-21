@@ -14,6 +14,7 @@ import itIT from './locales/it-IT/translation.json'
 import es from './locales/es/translation.json'
 import ar from './locales/ar/translation.json'
 import sv from './locales/sv/translation.json'
+import nbNO from './locales/nb-NO/translation.json'
 
 import changelogZhHans from './changelogs/changelog_zh_Hans'
 import changelogZhHant from './changelogs/changelog_zh_Hant'
@@ -59,6 +60,9 @@ i18n.use(initReactI18next).init({
         },
         sv: {
             translation: sv,
+        },
+        'nb-NO': {
+            translation: nbNO,
         },
     },
     fallbackLng: 'en',

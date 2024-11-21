@@ -318,6 +318,7 @@ export type Language =
     | 'ar'
     | 'it-IT'
     | 'sv'
+    | 'nb-NO'
 
 export interface Config {
     uuid: string
