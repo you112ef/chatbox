@@ -5,7 +5,7 @@ import remarkMath from 'remark-math'
 import remarkBreaks from 'remark-breaks'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from '@mui/material'
-import { useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { a11yDark, atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import * as toastActions from '../stores/toastActions'
@@ -84,16 +84,11 @@ export function CodeRenderer(props: {
 }) {
     const theme = useTheme()
     return useMemo(() => {
-        const {
-            children,
-            className,
-            hiddenCodeCopyButton,
-            generating,
-            enableMermaidRendering,
-            preferCollapsedCodeBlock,
-        } = props
-        const match = /language-(\w+)/.exec(className || '')
-        const language = match?.[1] || 'text'
+        const { children, className, hiddenCodeCopyButton, generating, enableMermaidRendering, preferCollapsedCodeBlock } = props
+        const language = useMemo(() => {
+            const match = /language-(\w+)/.exec(className || '')
+            return match?.[1] || 'text'
+        }, [className])
         if (!String(children).includes('\n')) {
             return <InlineCode children={children} className={className} />
         }
@@ -113,6 +108,7 @@ export function CodeRenderer(props: {
                         hiddenCodeCopyButton={hiddenCodeCopyButton}
                         language={language}
                         preferCollapsed={true}
+                        generating={generating}
                     />
                     <SVGPreview xmlCode={String(children)} className="max-w-sm" generating={generating} />
                 </div>
@@ -124,6 +120,7 @@ export function CodeRenderer(props: {
                 hiddenCodeCopyButton={hiddenCodeCopyButton}
                 language={language}
                 preferCollapsed={preferCollapsedCodeBlock}
+                generating={generating}
             />
         )
     }, [props.children, theme.palette.mode, props.enableMermaidRendering])
@@ -154,14 +151,42 @@ function BlockCode(props: {
     children: string
     hiddenCodeCopyButton?: boolean
     preferCollapsed?: boolean
+    generating?: boolean
 }) {
-    const { children, hiddenCodeCopyButton, preferCollapsed, language } = props
+    const { children, hiddenCodeCopyButton, preferCollapsed, language, generating } = props
     const theme = useTheme()
     const { t } = useTranslation()
 
-    const lines = String(children).split('\n')
+    const lines = useMemo(() => {
+        if (generating) {
+            return []
+        }
+        return String(children).split('\n')
+    }, [generating, children])
     const shouldCollapse = lines.length > 6
-    const [isCollapsed, setIsCollapsed] = useState(shouldCollapse && preferCollapsed)
+
+    const [isCollapsed, setIsCollapsed] = useState(false)
+    useEffect(() => {
+        if (! generating) {
+            setIsCollapsed(shouldCollapse && !!preferCollapsed)
+        }
+    }, [generating])
+
+    const languageName = useMemo(() => {
+        return language.toUpperCase()
+    }, [language])
+
+    const onClickCollapse = useCallback((event: React.MouseEvent) => {
+        event.stopPropagation() // 优化搜索窗口中的展开逻辑
+        event.preventDefault()
+        setIsCollapsed(!isCollapsed)
+    }, [isCollapsed, setIsCollapsed])
+    const onClickCopy = useCallback((event: React.MouseEvent) => {
+        event.stopPropagation() // 优化搜索窗口中的展开逻辑
+        event.preventDefault()
+        copyToClipboard(String(children))
+        toastActions.add(t('copied to clipboard'))
+    }, [children])
 
     return (
         <div>
@@ -187,42 +212,32 @@ function BlockCode(props: {
                             fontSize: theme.typography.body1.fontSize,
                         }}
                     >
-                        {language.toUpperCase()}
+                        {languageName}
                     </span>
                 </div>
-                <div className="flex items-center">
-                    {shouldCollapse &&
-                        (isCollapsed ? (
-                            <ArrowForwardIosIcon
-                                className="cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1"
-                                fontSize="small"
-                                onClick={(event) => {
-                                    event.stopPropagation() // 优化搜索窗口中的展开逻辑
-                                    event.preventDefault()
-                                    setIsCollapsed(!isCollapsed)
-                                }}
-                            />
-                        ) : (
-                            <ArrowForwardIosIcon
-                                className="cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1 rotate-90"
-                                fontSize="small"
-                                onClick={(event) => {
-                                    event.stopPropagation() // 优化搜索窗口中的展开逻辑
-                                    event.preventDefault()
-                                    setIsCollapsed(!isCollapsed)
-                                }}
-                            />
-                        ))}
+                <div className='flex items-center'>
+                    {shouldCollapse && (
+                        isCollapsed
+                            ? (
+                                <ArrowForwardIosIcon
+                                    className='cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1'
+                                    fontSize='small'
+                                    onClick={onClickCollapse}
+                                />
+                            )
+                            : (
+                                <ArrowForwardIosIcon
+                                    className='cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1 rotate-90'
+                                    fontSize='small'
+                                    onClick={onClickCollapse}
+                                />
+                            )
+                    )}
                     {!hiddenCodeCopyButton && (
                         <ContentCopyIcon
-                            className="cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1"
-                            fontSize="small"
-                            onClick={(event) => {
-                                event.stopPropagation() // 优化搜索窗口中的展开逻辑
-                                event.preventDefault()
-                                copyToClipboard(String(children))
-                                toastActions.add(t('copied to clipboard'))
-                            }}
+                            className='cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1'
+                            fontSize='small'
+                            onClick={onClickCopy}
                         />
                     )}
                 </div>
@@ -230,8 +245,12 @@ function BlockCode(props: {
             <div style={{ position: 'relative' }} className="group">
                 <div className={isCollapsed ? 'max-h-28 overflow-hidden' : ''}>
                     <SyntaxHighlighter
-                        children={children.replace(/\n$/, '')}
-                        style={theme.palette.mode === 'dark' ? atomDark : a11yDark}
+                        children={children}
+                        style={
+                            theme.palette.mode === 'dark'
+                                ? atomDark
+                                : a11yDark
+                        }
                         language={language}
                         PreTag="div"
                         customStyle={{
@@ -259,12 +278,7 @@ function BlockCode(props: {
                             alignItems: 'flex-end',
                             cursor: 'pointer',
                         }}
-                        onClick={(event) => {
-                            // 如果未来会保留每个会话的滚动位置，这里可以加一个简单的内存缓存来保持 code block 展开
-                            event.stopPropagation() // 优化搜索窗口中的展开逻辑
-                            event.preventDefault()
-                            setIsCollapsed(false)
-                        }}
+                        onClick={onClickCollapse}
                     >
                         <span className="text-white mb-2 font-bold">{t('Show all ({{x}})', { x: lines.length })}</span>
                     </div>
@@ -275,11 +289,7 @@ function BlockCode(props: {
                                 absolute bottom-0 left-0 right-0 w-12 mx-auto
                                 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-300
                                 text-white font-bold bg-slate-600/80 py-0 px-4 rounded-t-md"
-                        onClick={(event) => {
-                            event.stopPropagation()
-                            event.preventDefault()
-                            setIsCollapsed(true)
-                        }}
+                        onClick={onClickCollapse}
                     >
                         <ExpandLessIcon className="text-white" fontSize="small" />
                     </span>
