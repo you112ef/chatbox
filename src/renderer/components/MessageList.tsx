@@ -70,7 +70,7 @@ export default function MessageList(props: Props) {
                         setAtBottom(atBottom)
                     }}
                     ref={virtuoso}
-                    increaseViewportBy={{ top: 500, bottom: 500 }}
+                    increaseViewportBy={{ top: 2000, bottom: 2000 }}
                     itemContent={(index, msg) => {
                         return (
                             // <div key={msg.id}>
