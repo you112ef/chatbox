@@ -87,15 +87,15 @@ export default function ThreadHistoryDrawer(props: {}) {
                 },
             }}
             {
-                // 解决 SwipeableDrawer 在全局 theme 为 rtl 时，drawer 展开起始位置错误的问题
-                ...(language === 'ar'
-                    ? {
-                          SlideProps: { direction: 'right' },
-                          PaperProps: {
-                              sx: { direction: 'rtl' },
-                          },
-                      }
-                    : {})
+            // 解决 SwipeableDrawer 在全局 theme 为 rtl 时，drawer 展开起始位置错误的问题
+            ...(language === 'ar'
+                ? {
+                    SlideProps: { direction: 'right' },
+                    PaperProps: {
+                        sx: { direction: 'rtl' },
+                    },
+                }
+                : {})
             }
         >
             <Box className="ThreadHistoryDrawer flex flex-col h-full w-full">
@@ -162,45 +162,36 @@ function ThreadItem(props: {
 
     return (
         <>
-            <Tooltip
-                title={
-                    <Typography sx={{ fontSize: '0.9rem' }}>
-                        {`${threadName} ${(thread.createdAtLabel || '').toLocaleString()}`}
-                    </Typography>
-                }
-                placement="left"
+            <MenuItem
+                key={thread.id}
+                selected={selected}
+                onClick={() => {
+                    goto(thread.id)
+                }}
+                sx={{ padding: '0.1rem', margin: '0.1rem' }}
+                className="group/thread-item"
             >
-                <MenuItem
-                    key={thread.id}
-                    selected={selected}
-                    onClick={() => {
-                        goto(thread.id)
-                    }}
-                    sx={{ padding: '0.1rem', margin: '0.1rem' }}
-                    className="group/thread-item"
+                <ListItemIcon>
+                    <span className="opacity-50 text-xs">{thread.messageCount}</span>
+                </ListItemIcon>
+                <ListItemText>
+                    <Typography variant="inherit" noWrap>
+                        {threadName}
+                        {thread.createdAtLabel && <span className="pl-1 opacity-70">{thread.createdAtLabel}</span>}
+                    </Typography>
+                </ListItemText>
+                <ListItemIcon
+                    className={cn(
+                        selected || anchorEl || isSmallScreen
+                            ? 'opacity-100'
+                            : 'opacity-0 group-hover/thread-item:opacity-100'
+                    )}
                 >
-                    <ListItemIcon>
-                        <span className="opacity-50 text-xs">{thread.messageCount}</span>
-                    </ListItemIcon>
-                    <ListItemText>
-                        <Typography variant="inherit" noWrap>
-                            {threadName}
-                            {thread.createdAtLabel && <span className="pl-1 opacity-70">{thread.createdAtLabel}</span>}
-                        </Typography>
-                    </ListItemText>
-                    <ListItemIcon
-                        className={cn(
-                            selected || anchorEl || isSmallScreen
-                                ? 'opacity-100'
-                                : 'opacity-0 group-hover/thread-item:opacity-100'
-                        )}
-                    >
-                        <IconButton onClick={handleMenuClick} sx={{ color: 'primary.main' }}>
-                            <MoreHorizOutlinedIcon fontSize="small" />
-                        </IconButton>
-                    </ListItemIcon>
-                </MenuItem>
-            </Tooltip>
+                    <IconButton onClick={handleMenuClick} sx={{ color: 'primary.main' }}>
+                        <MoreHorizOutlinedIcon fontSize="small" />
+                    </IconButton>
+                </ListItemIcon>
+            </MenuItem>
             <StyledMenu anchorEl={anchorEl} open={open} onClose={handleMenuClose} key={thread.id + 'menu'}>
                 <MenuItem key={thread.id + 'switch'} onClick={() => switchThread(thread.id)} disableRipple divider>
                     <SwapCallsIcon fontSize="small" />
