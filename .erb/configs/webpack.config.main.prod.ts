@@ -72,6 +72,8 @@ const configuration: webpack.Configuration = {
         new JavaScriptObfuscator({
             target: 'node',
             optionsPreset: 'default',
+            // 默认的变量名混淆，可能被误报为恶意代码
+            identifierNamesGenerator: 'mangled-shuffled',
         }),
     ],
 
