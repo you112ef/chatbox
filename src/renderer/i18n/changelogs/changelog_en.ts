@@ -1,4 +1,15 @@
 const changelog = `
+### v1.7.0 - 2024.12.01
+
+1. Added message branching feature. When regenerating a message, a new branch will be created, allowing you to switch between branches. If you prefer the original behavior, you can choose to expand all branched messages from the branch menu.
+2. Automatically remembers code block collapse state
+3. Improved Markdown and code block rendering performance
+4. Added ability to save a thread as a new conversation
+5. Multiple file selection now supported when inserting files or images
+6. On Windows, an exit fullscreen button appears when hovering over the title bar in fullscreen mode
+7. Added Norwegian and Swedish language support
+8. Fixed various other issues
+
 ### v1.6.1 - 2024.11.12
 
 1. Added context length and temperature controls in custom provider conversation settings.
