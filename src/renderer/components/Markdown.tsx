@@ -11,6 +11,7 @@ import { a11yDark, atomDark } from 'react-syntax-highlighter/dist/esm/styles/pri
 import * as toastActions from '../stores/toastActions'
 import { sanitizeUrl } from '@braintree/sanitize-url'
 import * as latex from '../packages/latex'
+import * as codeblockStateRecorder from '../packages/codeblock_state_recorder'
 
 import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for you
 import { copyToClipboard } from '@/packages/navigator'
@@ -85,10 +86,7 @@ export function CodeRenderer(props: {
     const theme = useTheme()
     return useMemo(() => {
         const { children, className, hiddenCodeCopyButton, generating, enableMermaidRendering, preferCollapsedCodeBlock } = props
-        const language = useMemo(() => {
-            const match = /language-(\w+)/.exec(className || '')
-            return match?.[1] || 'text'
-        }, [className])
+        const language = /language-(\w+)/.exec(className || '')?.[1] || 'text'
         if (!String(children).includes('\n')) {
             return <InlineCode children={children} className={className} />
         }
@@ -157,18 +155,22 @@ function BlockCode(props: {
     const theme = useTheme()
     const { t } = useTranslation()
 
-    const lines = useMemo(() => {
-        if (generating) {
-            return []
-        }
-        return String(children).split('\n')
-    }, [generating, children])
-    const shouldCollapse = lines.length > 6
-
-    const [isCollapsed, setIsCollapsed] = useState(false)
+    const initialState = useMemo(() => codeblockStateRecorder.needCollapse({
+        content: String(children),
+        language,
+        generating,
+        preferCollapsed,
+    }), [])
+    const [collapsedState, setCollapsedState] = useState<codeblockStateRecorder.CodeblockState>(initialState)
     useEffect(() => {
-        if (! generating) {
-            setIsCollapsed(shouldCollapse && !!preferCollapsed)
+        if (generating) {
+            codeblockStateRecorder.saveState({
+                content: String(children),
+                language,
+                generating,
+                preferCollapsed,
+                collapsed: false    // 如果重新生成消息，那么这个代码快应该保持展开的状态
+            })
         }
     }, [generating])
 
@@ -176,11 +178,18 @@ function BlockCode(props: {
         return language.toUpperCase()
     }, [language])
 
-    const onClickCollapse = useCallback((event: React.MouseEvent) => {
+    const onClickCollapse = (event: React.MouseEvent) => {
         event.stopPropagation() // 优化搜索窗口中的展开逻辑
         event.preventDefault()
-        setIsCollapsed(!isCollapsed)
-    }, [isCollapsed, setIsCollapsed])
+        const newState = codeblockStateRecorder.saveState({
+            collapsed: !collapsedState.collapsed,
+            content: String(children),
+            language,
+            generating,
+            preferCollapsed,
+        })
+        setCollapsedState(newState)
+    }
     const onClickCopy = useCallback((event: React.MouseEvent) => {
         event.stopPropagation() // 优化搜索窗口中的展开逻辑
         event.preventDefault()
@@ -216,8 +225,8 @@ function BlockCode(props: {
                     </span>
                 </div>
                 <div className='flex items-center'>
-                    {shouldCollapse && (
-                        isCollapsed
+                    {collapsedState.shouldCollapse && (
+                        collapsedState.collapsed
                             ? (
                                 <ArrowForwardIosIcon
                                     className='cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1'
@@ -243,7 +252,7 @@ function BlockCode(props: {
                 </div>
             </div>
             <div style={{ position: 'relative' }} className="group">
-                <div className={isCollapsed ? 'max-h-28 overflow-hidden' : ''}>
+                <div className={collapsedState.collapsed ? 'max-h-28 overflow-hidden' : ''}>
                     <SyntaxHighlighter
                         children={children}
                         style={
@@ -264,7 +273,7 @@ function BlockCode(props: {
                         }}
                     />
                 </div>
-                {isCollapsed && (
+                {collapsedState.collapsed && (
                     <div
                         style={{
                             position: 'absolute',
@@ -280,10 +289,10 @@ function BlockCode(props: {
                         }}
                         onClick={onClickCollapse}
                     >
-                        <span className="text-white mb-2 font-bold">{t('Show all ({{x}})', { x: lines.length })}</span>
+                        <span className="text-white mb-2 font-bold">{t('Show all ({{x}})', { x: collapsedState.lines })}</span>
                     </div>
                 )}
-                {!isCollapsed && shouldCollapse && (
+                {!collapsedState.collapsed && collapsedState.shouldCollapse && (
                     <span
                         className="
                                 absolute bottom-0 left-0 right-0 w-12 mx-auto
