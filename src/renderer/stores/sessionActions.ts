@@ -237,10 +237,15 @@ export function clear(sessionId: string) {
  * @param source
  */
 export async function copy(source: Session) {
-    const store = getDefaultStore()
     const newSession = copySession(source)
+    insertSessionAfter(newSession, source.id)
+    switchCurrentSession(newSession.id)
+}
+
+export function insertSessionAfter(newSession: Session, afterSessionId: string) {
+    const store = getDefaultStore()
     store.set(atoms.sessionsAtom, (sessions) => {
-        let originIndex = sessions.findIndex((s) => s.id === source.id)
+        let originIndex = sessions.findIndex((s) => s.id === afterSessionId)
         if (originIndex < 0) {
             originIndex = 0
         }
@@ -372,6 +377,46 @@ export function removeCurrentThread(sessionId: string) {
             return newSession
         })
     })
+}
+
+export function moveThreadToConversations(sessionId: string, threadId: string) {
+    if (sessionId === threadId) {
+        moveCurrentThreadToConversations(sessionId)
+        return
+    }
+    const session = getSession(sessionId)
+    if (!session) {
+        return
+    }
+    const targetThread = session.threads?.find((t) => t.id === threadId)
+    if (!targetThread) {
+        return
+    }
+    const newSession = copySession({
+        ...session,
+        messages: targetThread.messages,
+        threads: undefined,
+        threadName: undefined,
+    })
+    insertSessionAfter(newSession, sessionId)
+    removeThread(sessionId, threadId)
+    switchCurrentSession(newSession.id)
+}
+
+export function moveCurrentThreadToConversations(sessionId: string) {
+    const session = getSession(sessionId)
+    if (!session) {
+        return
+    }
+    const newSession = copySession({
+        ...session,
+        messages: session.messages,
+        threads: undefined,
+        threadName: undefined,
+    })
+    insertSessionAfter(newSession, sessionId)
+    removeCurrentThread(sessionId)
+    switchCurrentSession(newSession.id)
 }
 
 /**

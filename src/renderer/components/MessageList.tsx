@@ -16,6 +16,7 @@ import CheckIcon from '@mui/icons-material/Check'
 import SegmentIcon from '@mui/icons-material/Segment'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import AddIcon from '@mui/icons-material/AddCircleOutline'
 import { Session } from 'src/shared/types'
 
 interface Props { }
@@ -168,7 +169,6 @@ export default function MessageList(props: Props) {
                     </MenuItem>
                     <MenuItem
                         disableRipple
-                        divider
                         onClick={() => {
                             if (threadMenuClickedTopicId) {
                                 sessionActions.switchThread(currentSession.id, threadMenuClickedTopicId)
@@ -178,6 +178,19 @@ export default function MessageList(props: Props) {
                     >
                         <SwapCallsIcon fontSize="small" />
                         {t('Continue this thread')}
+                    </MenuItem>
+                    <MenuItem
+                        disableRipple
+                        divider
+                        onClick={() => {
+                            if (threadMenuClickedTopicId) {
+                                sessionActions.moveThreadToConversations(currentSession.id, threadMenuClickedTopicId)
+                            }
+                            closeThreadMenu()
+                        }}
+                    >
+                        <AddIcon fontSize="small" />
+                        {t('Move to Conversations')}
                     </MenuItem>
                     {threadMenuDelete ? (
                         <MenuItem

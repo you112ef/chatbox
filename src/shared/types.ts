@@ -398,6 +398,7 @@ export function copySession(source: Session): Session {
         messages: source.messages.map(copyMessage),
         threads: copyThreads(source.threads),
         id: uuidv4(),
+        messageForksHash: undefined, // 不复制分叉数据
     }
     return newSession
 }
