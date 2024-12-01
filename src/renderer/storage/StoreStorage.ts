@@ -41,7 +41,7 @@ export default class StoreStorage extends BaseStorage {
         (key: string, value: any) => {
             return super.setItemNow(key, value)
         },
-        1000,
+        500, // 这里设置太大会可能导致用户关闭应用时没有及时保存数据，根据消息生成的最大速度 100ms 设计
         { maxWait: 60 * 1000 }
     )
 
