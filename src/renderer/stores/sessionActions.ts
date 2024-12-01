@@ -499,6 +499,11 @@ export function removeMessage(sessionId: string, messageId: string) {
                 }))
                 s.threads = s.threads.filter((h) => h.messages.length > 0)
             }
+            // 删除消息的同时，也触发对消息分支的清理
+            if (s.messageForksHash) {
+                // 删除当前消息的分支
+                delete s.messageForksHash[messageId]
+            }
             return { ...s }
         })
         // 如果某个对话的消息为空，尽量使用上一个话题的消息
@@ -1310,6 +1315,114 @@ export async function switchFork(forkMessageId: string, direction: 'next' | 'pre
                 messageForksHash,
             })
             // scrollActions.scrollToMessage(forkMessageId, 'start')
+            return
+        }
+    }
+}
+
+/**
+ * 删除某个消息的当前分叉
+ * @param forkMessageId 消息ID
+ */
+export async function deleteFork(forkMessageId: string) {
+    const store = getDefaultStore()
+    const currentSession = store.get(atoms.currentSessionAtom)
+    if (!currentSession.messageForksHash) {
+        return
+    }
+    const messageForksHash = currentSession.messageForksHash
+
+    const updateFn = (data: Message[]): { data: Message[]; updated: boolean } => {
+        const forkMessageIndex = data.findIndex((m) => m.id === forkMessageId)
+        if (forkMessageIndex < 0) {
+            return { data, updated: false } // 只有找不到消息才返回 false
+        }
+        const forks = messageForksHash[forkMessageId]
+        if (!forks) {
+            return { data, updated: true }
+        }
+        // 删除消息列表中当前分叉的消息
+        data = data.slice(0, forkMessageIndex + 1)
+        // 清理当前分叉
+        forks.lists = [...forks.lists.slice(0, forks.position), ...forks.lists.slice(forks.position + 1)]
+        forks.position = Math.min(forks.position, forks.lists.length - 1)
+        // 如果当前消息已经没有分支，则删除整个消息分叉信息
+        if (forks.lists.length === 0) {
+            delete messageForksHash[forkMessageId]
+            return { data, updated: true }
+        }
+        // 将当前游标位置的消息添加到主消息列表中
+        data = data.concat(forks.lists[forks.position].messages)
+        forks.lists[forks.position].messages = []
+        messageForksHash[forkMessageId] = forks
+        return { data, updated: true }
+    }
+
+    // 更新当前消息列表，如果没有找到消息则自动更新线程消息列表
+    let { data, updated } = updateFn(currentSession.messages)
+    if (updated) {
+        modify({ ...currentSession, messages: data, messageForksHash })
+        return
+    }
+    for (let i = (currentSession.threads || []).length - 1; i >= 0; i--) {
+        const thread = (currentSession.threads || [])[i]
+        const { data, updated } = updateFn(thread.messages)
+        if (updated) {
+            modify({
+                ...currentSession,
+                threads: currentSession.threads?.map((t) => (t.id === thread.id ? { ...t, messages: data } : t)),
+                messageForksHash,
+            })
+            return
+        }
+    }
+}
+
+/**
+ * 将某条消息所有的分叉消息全部展开到当前消息列表中
+ * @param forkMessageId 消息ID
+ */
+export async function expandFork(forkMessageId: string) {
+    const store = getDefaultStore()
+    const currentSession = store.get(atoms.currentSessionAtom)
+    if (!currentSession.messageForksHash) {
+        return
+    }
+    const messageForksHash = currentSession.messageForksHash
+
+    const updateFn = (data: Message[]): { data: Message[]; updated: boolean } => {
+        const forkMessageIndex = data.findIndex((m) => m.id === forkMessageId)
+        if (forkMessageIndex < 0) {
+            return { data, updated: false } // 只有找不到消息才返回 false
+        }
+        const forks = messageForksHash[forkMessageId]
+        if (!forks) {
+            return { data, updated: true }
+        }
+        // 将当前消息的所有分叉消息添加到主消息列表中
+        for (const list of forks.lists) {
+            data = data.concat(list.messages)
+        }
+        // 删除当前消息的所有分叉
+        delete messageForksHash[forkMessageId]
+        return { data, updated: true }
+    }
+
+    // 更新当前消息列表，如果没有找到消息则自动更新线程消息列表
+    let { data, updated } = updateFn(currentSession.messages)
+    if (updated) {
+        modify({ ...currentSession, messages: data, messageForksHash })
+        return
+    }
+    for (let i = (currentSession.threads || []).length - 1; i >= 0; i--) {
+        const thread = (currentSession.threads || [])[i]
+        const { data, updated } = updateFn(thread.messages)
+        if (updated) {
+            modify({
+                ...currentSession,
+                threads: currentSession.threads?.map((t) => (t.id === thread.id ? { ...t, messages: data } : t)),
+                messageForksHash,
+            })
             return
         }
     }

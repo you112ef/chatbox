@@ -18,7 +18,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { Session } from 'src/shared/types'
 
-interface Props {}
+interface Props { }
 
 export default function MessageList(props: Props) {
     const { t } = useTranslation()
@@ -227,6 +227,19 @@ function ForkNav(props: { msgId: string; forks: NonNullable<Session['messageFork
     const widthFull = useAtomValue(atoms.widthFullAtom)
     const [flash, setFlash] = useState(false)
     const prevLength = useRef(forks.lists.length)
+    const { t } = useTranslation()
+    const theme = useTheme()
+
+    const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null)
+    const [menuDelete, setMenuDelete] = useState<boolean>(false)
+    const openMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setMenuAnchorEl(event.currentTarget)
+        setMenuDelete(false)
+    }
+    const closeMenu = () => {
+        setMenuAnchorEl(null)
+        setMenuDelete(false)
+    }
 
     useEffect(() => {
         if (forks.lists.length > prevLength.current) {
@@ -254,7 +267,9 @@ function ForkNav(props: { msgId: string; forks: NonNullable<Session['messageFork
                 >
                     <ChevronLeftIcon className="w-5 h-5" />
                 </IconButton>
-                <div className="flex items-center gap-1 text-xs">
+                <div className="flex items-center gap-1 text-xs cursor-pointer"
+                    onClick={openMenu}
+                >
                     <span>{forks.position + 1}</span>
                     <span>/</span>
                     <span>{forks.lists.length}</span>
@@ -268,6 +283,71 @@ function ForkNav(props: { msgId: string; forks: NonNullable<Session['messageFork
                     <ChevronRightIcon className="w-5 h-5" />
                 </IconButton>
             </div>
+            <StyledMenu
+                anchorEl={menuAnchorEl}
+                open={Boolean(menuAnchorEl)}
+                onClose={closeMenu}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                PaperProps={{
+                    style: {
+                        minWidth: '120px',
+                    },
+                }}
+            >
+                <MenuItem
+                    disableRipple
+                    onClick={() => {
+                        sessionActions.expandFork(msgId)
+                        closeMenu()
+                    }}
+                    className='bg-white'
+                >
+                    <SegmentIcon fontSize="small" />
+                    {t('expand')}
+                </MenuItem>
+                {menuDelete ? (
+                    <MenuItem
+                        disableRipple
+                        onClick={() => {
+                            sessionActions.deleteFork(msgId)
+                            closeMenu()
+                        }}
+                        sx={{
+                            color: theme.palette.error.contrastText,
+                            backgroundColor: theme.palette.error.main,
+                            '&:hover': {
+                                color: theme.palette.error.contrastText,
+                                backgroundColor: theme.palette.error.main,
+                            },
+                        }}
+                    >
+                        <CheckIcon fontSize="small" />
+                        <b>{t('Confirm?')}</b>
+                    </MenuItem>
+                ) : (
+                    <MenuItem
+                        disableRipple
+                        onClick={() => {
+                            setMenuDelete(true)
+                        }}
+                        sx={{
+                            '&:hover': {
+                                backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                            },
+                        }}
+                    >
+                        <DeleteIcon fontSize="small" />
+                        {t('delete')}
+                    </MenuItem>
+                )}
+            </StyledMenu>
         </div>
     )
 }
