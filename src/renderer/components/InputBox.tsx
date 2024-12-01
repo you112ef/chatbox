@@ -226,7 +226,7 @@ export default function InputBox(props: {}) {
                         const base64 = e.target.result as string
                         const key = `picture:input-box:${uuidv4()}`
                         await storage.setBlob(key, base64)
-                        setPictureKeys((keys) => [...keys, key])
+                        setPictureKeys((keys) => [...keys, key].slice(-8)) // 最多插入 8 个图片
                     }
                 }
                 reader.readAsDataURL(file)
@@ -372,6 +372,7 @@ export default function InputBox(props: {}) {
                             onChange={onFileInputChange}
                             // accept="image/png, image/jpeg, image/gif"
                             accept="image/png, image/jpeg"
+                            multiple
                         />
                         <MiniButton
                             className={cn('mr-1 sm:mr-2', currentSessionType !== 'picture' ? '' : 'hidden')}
@@ -386,7 +387,7 @@ export default function InputBox(props: {}) {
                         >
                             <Image size="22" strokeWidth={1} />
                         </MiniButton>
-                        <input type="file" ref={fileInputRef} className="hidden" onChange={onFileInputChange} />
+                        <input type="file" ref={fileInputRef} className="hidden" onChange={onFileInputChange} multiple />
                         <MiniButton
                             className={cn('mr-1 sm:mr-2', currentSessionType !== 'picture' ? '' : 'hidden')}
                             style={{ color: theme.palette.text.primary }}
