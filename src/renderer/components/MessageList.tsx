@@ -11,13 +11,12 @@ import { cn } from '@/lib/utils'
 import StyledMenu from './StyledMenu'
 import { MenuItem, useTheme, IconButton } from '@mui/material'
 import SwapCallsIcon from '@mui/icons-material/SwapCalls'
-import DeleteIcon from '@mui/icons-material/Delete'
-import CheckIcon from '@mui/icons-material/Check'
 import SegmentIcon from '@mui/icons-material/Segment'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import AddIcon from '@mui/icons-material/AddCircleOutline'
 import { Session } from 'src/shared/types'
+import ConfirmDeleteButton from './ConfirmDeleteButton'
 
 interface Props { }
 
@@ -47,16 +46,13 @@ export default function MessageList(props: Props) {
 
     const [threadMenuAnchorEl, setThreadMenuAnchorEl] = useState<null | HTMLElement>(null)
     const [threadMenuClickedTopicId, setThreadMenuClickedTopicId] = useState<null | string>(null)
-    const [threadMenuDelete, setThreadMenuDelete] = useState<boolean>(false)
     const openThreadMenu = (event: React.MouseEvent<HTMLElement>, topicId: string) => {
         setThreadMenuAnchorEl(event.currentTarget)
         setThreadMenuClickedTopicId(topicId)
-        setThreadMenuDelete(false)
     }
     const closeThreadMenu = () => {
         setThreadMenuAnchorEl(null)
         setThreadMenuClickedTopicId(null)
-        setThreadMenuDelete(false)
     }
 
     return (
@@ -192,43 +188,14 @@ export default function MessageList(props: Props) {
                         <AddIcon fontSize="small" />
                         {t('Move to Conversations')}
                     </MenuItem>
-                    {threadMenuDelete ? (
-                        <MenuItem
-                            disableRipple
-                            onClick={() => {
-                                if (threadMenuClickedTopicId) {
-                                    sessionActions.removeThread(currentSession.id, threadMenuClickedTopicId)
-                                }
-                                closeThreadMenu()
-                            }}
-                            sx={{
-                                color: theme.palette.error.contrastText,
-                                backgroundColor: theme.palette.error.main,
-                                '&:hover': {
-                                    color: theme.palette.error.contrastText,
-                                    backgroundColor: theme.palette.error.main,
-                                },
-                            }}
-                        >
-                            <CheckIcon fontSize="small" />
-                            {t('Confirm deletion?')}
-                        </MenuItem>
-                    ) : (
-                        <MenuItem
-                            disableRipple
-                            onClick={() => {
-                                setThreadMenuDelete(true)
-                            }}
-                            sx={{
-                                '&:hover': {
-                                    backgroundColor: 'rgba(255, 0, 0, 0.1)',
-                                },
-                            }}
-                        >
-                            <DeleteIcon fontSize="small" />
-                            {t('delete')}
-                        </MenuItem>
-                    )}
+                    <ConfirmDeleteButton
+                        onDelete={() => {
+                            if (threadMenuClickedTopicId) {
+                                sessionActions.removeThread(currentSession.id, threadMenuClickedTopicId)
+                            }
+                            closeThreadMenu()
+                        }}
+                    />
                 </StyledMenu>
             </div>
         </div>
@@ -325,41 +292,12 @@ function ForkNav(props: { msgId: string; forks: NonNullable<Session['messageFork
                     <SegmentIcon fontSize="small" />
                     {t('expand')}
                 </MenuItem>
-                {menuDelete ? (
-                    <MenuItem
-                        disableRipple
-                        onClick={() => {
-                            sessionActions.deleteFork(msgId)
-                            closeMenu()
-                        }}
-                        sx={{
-                            color: theme.palette.error.contrastText,
-                            backgroundColor: theme.palette.error.main,
-                            '&:hover': {
-                                color: theme.palette.error.contrastText,
-                                backgroundColor: theme.palette.error.main,
-                            },
-                        }}
-                    >
-                        <CheckIcon fontSize="small" />
-                        <b>{t('Confirm?')}</b>
-                    </MenuItem>
-                ) : (
-                    <MenuItem
-                        disableRipple
-                        onClick={() => {
-                            setMenuDelete(true)
-                        }}
-                        sx={{
-                            '&:hover': {
-                                backgroundColor: 'rgba(255, 0, 0, 0.1)',
-                            },
-                        }}
-                    >
-                        <DeleteIcon fontSize="small" />
-                        {t('delete')}
-                    </MenuItem>
-                )}
+                <ConfirmDeleteButton
+                    onDelete={() => {
+                        sessionActions.deleteFork(msgId)
+                        closeMenu()
+                    }}
+                />
             </StyledMenu>
         </div>
     )
