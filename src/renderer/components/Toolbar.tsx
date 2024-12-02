@@ -10,9 +10,8 @@ import { useTranslation } from 'react-i18next'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import StyledMenu from './StyledMenu'
 import { useState } from 'react'
-import { MenuItem, Divider, useTheme } from '@mui/material'
+import { MenuItem } from '@mui/material'
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices'
-import DeleteIcon from '@mui/icons-material/Delete'
 import WidthNormalIcon from '@mui/icons-material/WidthNormal'
 import WidthWideIcon from '@mui/icons-material/WidthWide'
 import { useIsLargeScreen, useIsSmallScreen } from '@/hooks/useScreenChange'
@@ -122,6 +121,7 @@ export default function Toolbar() {
                     onDelete={handleSessionClean}
                     label={t('Clear All Messages')}
                     color="warning"
+                    icon={<CleaningServicesIcon fontSize="small" />}
                 />
                 <ConfirmDeleteButton
                     onDelete={handleSessionDelete}

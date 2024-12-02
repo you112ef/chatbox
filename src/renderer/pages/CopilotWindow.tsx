@@ -26,7 +26,6 @@ import EditIcon from '@mui/icons-material/Edit'
 import StyledMenu from '../components/StyledMenu'
 import StarIcon from '@mui/icons-material/Star'
 import StarOutlineIcon from '@mui/icons-material/StarOutline'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined'
 import { useMyCopilots, useRemoteCopilots } from '../hooks/useCopilots'
 import * as remote from '../packages/remote'
@@ -38,6 +37,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import platform from '../platform'
 import { trackingEvent } from '@/packages/event'
+import ConfirmDeleteButton from '../components/ConfirmDeleteButton'
 
 export default function CopilotWindow(props: {}) {
     const language = useAtomValue(atoms.languageAtom)
@@ -326,23 +326,13 @@ function MiniItem(props: MiniItemProps) {
 
                         <Divider sx={{ my: 0.5 }} />
 
-                        <MenuItem
-                            key={'del'}
-                            onClick={() => {
+                        <ConfirmDeleteButton
+                            onDelete={() => {
                                 setAnchorEl(null)
                                 closeMenu()
                                 props.deleteMe()
                             }}
-                            disableRipple
-                            sx={{
-                                '&:hover': {
-                                    backgroundColor: 'rgba(255, 0, 0, 0.1)',
-                                },
-                            }}
-                        >
-                            <DeleteForeverIcon />
-                            {t('delete')}
-                        </MenuItem>
+                        />
                     </StyledMenu>
                 </>
             )}

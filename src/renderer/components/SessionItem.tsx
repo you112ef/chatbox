@@ -6,7 +6,6 @@ import CopyIcon from '@mui/icons-material/CopyAll'
 import EditIcon from '@mui/icons-material/Edit'
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined'
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined'
-import DeleteIcon from '@mui/icons-material/Delete'
 import StyledMenu from './StyledMenu'
 import { useTranslation } from 'react-i18next'
 import StarIcon from '@mui/icons-material/Star'
@@ -17,6 +16,7 @@ import { cn } from '@/lib/utils'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import VrpanoIcon from '@mui/icons-material/Vrpano'
 import { ImageInStorage } from '@/components/Image'
+import ConfirmDeleteButton from './ConfirmDeleteButton'
 
 export interface Props {
     session: Session
@@ -155,23 +155,13 @@ function _SessionItem(props: Props) {
                     )}
                 </MenuItem>
 
-                <MenuItem
-                    key={session.id + 'del'}
-                    onClick={() => {
+                <ConfirmDeleteButton
+                    onDelete={() => {
                         setAnchorEl(null)
                         handleMenuClose()
                         sessionActions.remove(session)
                     }}
-                    disableRipple
-                    sx={{
-                        '&:hover': {
-                            backgroundColor: 'rgba(255, 0, 0, 0.1)',
-                        },
-                    }}
-                >
-                    <DeleteIcon fontSize="small" />
-                    {t('delete')}
-                </MenuItem>
+                />
             </StyledMenu>
         </>
     )

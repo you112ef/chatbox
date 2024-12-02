@@ -9,12 +9,14 @@ interface Props {
     onDelete: () => void
     label?: string | null | undefined
     color?: 'error' | 'warning'
+    icon?: React.ReactNode
 }
 
 export default function ConfirmDeleteButton({
     onDelete,
     label,
     color = 'error',
+    icon,
 }: Props) {
     const theme = useTheme()
     const { t } = useTranslation()
@@ -71,7 +73,7 @@ export default function ConfirmDeleteButton({
             }}
             sx={hoverStyleHash[color]}
         >
-            <DeleteIcon fontSize="small" />
+            {icon || <DeleteIcon fontSize="small" />}
             {label || t('delete')}
         </MenuItem>
     )
