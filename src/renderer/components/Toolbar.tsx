@@ -17,6 +17,7 @@ import WidthNormalIcon from '@mui/icons-material/WidthNormal'
 import WidthWideIcon from '@mui/icons-material/WidthWide'
 import { useIsLargeScreen, useIsSmallScreen } from '@/hooks/useScreenChange'
 import * as sessionActions from '@/stores/sessionActions'
+import ConfirmDeleteButton from './ConfirmDeleteButton'
 
 /**
  * 顶部标题工具栏（右侧）
@@ -117,30 +118,15 @@ export default function Toolbar() {
                     <Save fontSize="small" />
                     {t('Export Chat')}
                 </MenuItem>
-                <MenuItem
-                    onClick={handleSessionClean}
-                    disableRipple
-                    sx={{
-                        '&:hover': {
-                            backgroundColor: 'rgba(255, 165, 0, 0.1)',
-                        },
-                    }}
-                >
-                    <CleaningServicesIcon fontSize="small" />
-                    {t('Clear All Messages')}
-                </MenuItem>
-                <MenuItem
-                    onClick={handleSessionDelete}
-                    disableRipple
-                    sx={{
-                        '&:hover': {
-                            backgroundColor: 'rgba(255, 0, 0, 0.1)',
-                        },
-                    }}
-                >
-                    <DeleteIcon fontSize="small" />
-                    {t('Delete Current Session')}
-                </MenuItem>
+                <ConfirmDeleteButton
+                    onDelete={handleSessionClean}
+                    label={t('Clear All Messages')}
+                    color="warning"
+                />
+                <ConfirmDeleteButton
+                    onDelete={handleSessionDelete}
+                    label={t('Delete Current Session')}
+                />
             </StyledMenu>
         </Box>
     )
