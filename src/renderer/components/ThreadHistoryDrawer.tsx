@@ -3,7 +3,6 @@ import {
     currentThreadHistoryHashAtom,
     currentSessionIdAtom,
     showThreadHistoryDrawerAtom,
-    currentSessionAtom,
 } from '@/stores/atoms'
 import {
     Tooltip,
@@ -24,11 +23,11 @@ import * as sessionActions from '../stores/sessionActions'
 import { useTranslation } from 'react-i18next'
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined'
 import SwapCallsIcon from '@mui/icons-material/SwapCalls'
-import DeleteIcon from '@mui/icons-material/Delete'
 import StyledMenu from '@/components/StyledMenu'
 import { cn } from '@/lib/utils'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import * as atoms from '@/stores/atoms'
+import ConfirmDeleteButton from './ConfirmDeleteButton'
 
 export default function ThreadHistoryDrawer(props: {}) {
     const { t } = useTranslation()
@@ -197,9 +196,8 @@ function ThreadItem(props: {
                     <SwapCallsIcon fontSize="small" />
                     {t('Switch')}
                 </MenuItem>
-                <MenuItem
-                    key={thread.id + 'del'}
-                    onClick={() => {
+                <ConfirmDeleteButton
+                    onDelete={() => {
                         setAnchorEl(null)
                         handleMenuClose()
                         if (lastOne) {
@@ -208,16 +206,7 @@ function ThreadItem(props: {
                             sessionActions.removeThread(currentSessionId, thread.id)
                         }
                     }}
-                    disableRipple
-                    sx={{
-                        '&:hover': {
-                            backgroundColor: 'rgba(255, 0, 0, 0.1)',
-                        },
-                    }}
-                >
-                    <DeleteIcon fontSize="small" />
-                    {t('delete')}
-                </MenuItem>
+                />
             </StyledMenu>
         </>
     )

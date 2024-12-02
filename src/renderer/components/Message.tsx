@@ -60,6 +60,7 @@ import { estimateTokensFromMessages } from '@/packages/token'
 import { countWord } from '@/packages/word-count'
 import { isContainRenderableCode, MessageArtifact } from './Artifact'
 import ReportIcon from '@mui/icons-material/Report'
+import ConfirmDeleteButton from './ConfirmDeleteButton'
 import platform from '@/platform'
 
 export interface Props {
@@ -701,19 +702,9 @@ function _Message(props: Props) {
                                                     {t('report')}
                                                 </MenuItem>
                                             )}
-                                            <MenuItem
-                                                key={msg.id + 'del'}
-                                                onClick={onDelMsg}
-                                                disableRipple
-                                                sx={{
-                                                    '&:hover': {
-                                                        backgroundColor: 'rgba(255, 0, 0, 0.1)',
-                                                    },
-                                                }}
-                                            >
-                                                <DeleteForeverIcon fontSize="small" />
-                                                {t('delete')}
-                                            </MenuItem>
+                                            <ConfirmDeleteButton
+                                                onDelete={onDelMsg}
+                                            />
                                         </StyledMenu>
                                     </ButtonGroup>
                                 </span>
