@@ -22,6 +22,7 @@ import { ChatModelSelector } from './ModelSelector'
 import autosize from 'autosize'
 import platform from '@/platform'
 import { useDropzone } from 'react-dropzone'
+import * as picUtils from '@/packages/pic_utils'
 
 export default function InputBox(props: {}) {
     const theme = useTheme()
@@ -220,16 +221,10 @@ export default function InputBox(props: {}) {
         for (const file of files) {
             // 文件和图片插入方法复用，会导致 svg、gif 这类不支持的图片也被插入，但暂时没看到有什么问题
             if (file.type.startsWith('image/')) {
-                const reader = new FileReader()
-                reader.onload = async (e) => {
-                    if (e.target && e.target.result) {
-                        const base64 = e.target.result as string
-                        const key = `picture:input-box:${uuidv4()}`
-                        await storage.setBlob(key, base64)
-                        setPictureKeys((keys) => [...keys, key].slice(-8)) // 最多插入 8 个图片
-                    }
-                }
-                reader.readAsDataURL(file)
+                const base64 = await picUtils.getImageBase64AndResize(file)
+                const key = `picture:input-box:${uuidv4()}`
+                await storage.setBlob(key, base64)
+                setPictureKeys((keys) => [...keys, key].slice(-8)) // 最多插入 8 个图片
             } else {
                 setAttachments((attachments) => [...attachments, file].slice(-4)) // 最多插入 4 个附件
             }
