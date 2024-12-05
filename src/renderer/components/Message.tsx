@@ -510,11 +510,11 @@ function _Message(props: Props) {
                                                     extraButtons:
                                                         msg.role === 'assistant' && platform.type === 'mobile'
                                                             ? [
-                                                                  {
-                                                                      onClick: onReport,
-                                                                      icon: <ReportIcon />,
-                                                                  },
-                                                              ]
+                                                                {
+                                                                    onClick: onReport,
+                                                                    icon: <ReportIcon />,
+                                                                },
+                                                            ]
                                                             : undefined,
                                                 })
                                             }}
@@ -576,10 +576,11 @@ function _Message(props: Props) {
                                             opacity: 1,
                                             ...(fixedButtonGroup
                                                 ? {
-                                                      position: 'fixed',
-                                                      bottom: dom.getInputBoxHeight() + 4 + 'px',
-                                                      zIndex: 100,
-                                                  }
+                                                    position: 'fixed',
+                                                    bottom: dom.getInputBoxHeight() + 4 + 'px',
+                                                    zIndex: 100,
+                                                    marginBottom: 'var(--mobile-safe-area-inset-bottom, 0px)',
+                                                }
                                                 : {}),
                                             backgroundColor:
                                                 theme.palette.mode === 'dark'
@@ -627,22 +628,22 @@ function _Message(props: Props) {
                                         {
                                             // Chatbox-AI 模型不支持编辑消息
                                             !msg.model?.startsWith('Chatbox-AI') &&
-                                                // 图片会话中，助手消息无需编辑
-                                                !(msg.role === 'assistant' && props.sessionType === 'picture') && (
-                                                    <Tooltip title={t('edit')} placement="top">
-                                                        <IconButton
-                                                            aria-label="edit"
-                                                            color={
-                                                                props.sessionType === 'picture'
-                                                                    ? 'secondary'
-                                                                    : 'primary'
-                                                            }
-                                                            onClick={onEditClick}
-                                                        >
-                                                            <EditIcon fontSize="small" />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                )
+                                            // 图片会话中，助手消息无需编辑
+                                            !(msg.role === 'assistant' && props.sessionType === 'picture') && (
+                                                <Tooltip title={t('edit')} placement="top">
+                                                    <IconButton
+                                                        aria-label="edit"
+                                                        color={
+                                                            props.sessionType === 'picture'
+                                                                ? 'secondary'
+                                                                : 'primary'
+                                                        }
+                                                        onClick={onEditClick}
+                                                    >
+                                                        <EditIcon fontSize="small" />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            )
                                         }
                                         {!(props.sessionType === 'picture' && msg.role === 'assistant') && (
                                             <Tooltip title={t('copy')} placement="top">
