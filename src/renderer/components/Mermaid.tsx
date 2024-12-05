@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
 import DataObjectIcon from '@mui/icons-material/DataObject'
 import * as toastActions from '../stores/toastActions'
 import { useTranslation } from 'react-i18next'
+import * as picUtils from '@/packages/pic_utils'
 
 export function MessageMermaid(props: { source: string; theme: 'light' | 'dark'; generating?: boolean }) {
     const { source, theme, generating } = props
@@ -74,8 +75,8 @@ export function MermaidSVGPreviewDangerous(props: {
                     return
                 }
                 const serializedSvgCode = new XMLSerializer().serializeToString(svg)
-                const base64 = svgCodeToBase64(serializedSvgCode)
-                const pngBase64 = await svgToPngBase64(base64)
+                const base64 = picUtils.svgCodeToBase64(serializedSvgCode)
+                const pngBase64 = await picUtils.svgToPngBase64(base64)
                 setPictureShow({
                     picture: {
                         url: pngBase64,
@@ -106,7 +107,7 @@ export function SVGPreview(props: { xmlCode: string; className?: string; generat
             return ''
         }
         try {
-            return svgCodeToBase64(xmlCode)
+            return picUtils.svgCodeToBase64(xmlCode)
         } catch (e) {
             console.error(e)
             return ''
@@ -120,7 +121,7 @@ export function SVGPreview(props: { xmlCode: string; className?: string; generat
             className={cn('cursor-pointer my-2', className)}
             onClick={async () => {
                 // 图片预览窗口中直接显示 png 图片。因为在实际测试中发现，桌面端无法正常显示 SVG 图片，但网页端可以。
-                const pngBase64 = await svgToPngBase64(svgBase64)
+                const pngBase64 = await picUtils.svgToPngBase64(svgBase64)
                 setPictureShow({
                     picture: { url: pngBase64 },
                 })
@@ -140,62 +141,4 @@ async function mermaidCodeToSvgCode(source: string, theme: 'light' | 'dark') {
     // 考虑到现代浏览器都不会执行 svg 中的 script 标签，所以这里不进行 sanitize。参考：https://stackoverflow.com/questions/7917008/xss-when-loading-untrusted-svg-using-img-tag
     // return dompurify.sanitize(result.svg, { USE_PROFILES: { svg: true, svgFilters: true } })
     return { id, svg: result.svg }
-}
-
-function svgCodeToBase64(svgCode: string) {
-    return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgCode)))
-}
-
-async function svgToPngBase64(svgBase64: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-        const img = new Image()
-        img.onload = () => {
-            let width = img.width
-            let height = img.height
-            try {
-                const parser = new DOMParser()
-                const svgDoc = parser.parseFromString(atob(svgBase64.split(',')[1]), 'image/svg+xml')
-                const svgElement = svgDoc.documentElement
-                const viewBox = svgElement.getAttribute('viewBox')
-                if (viewBox) {
-                    const items = viewBox.split(/[\s,]+/)
-                    if (items.length === 4) {
-                        const [, , viewBoxWidth, viewBoxHeight] = items.map((item) => parseFloat(item))
-                        if (viewBoxWidth && viewBoxHeight) {
-                            // 检查NaN
-                            width = Math.max(viewBoxWidth, img.width)
-                            height = Math.max(viewBoxHeight, img.height)
-                            // console.log('viewBoxWidth', viewBoxWidth, 'viewBoxHeight', viewBoxHeight)
-                        }
-                    }
-                }
-            } catch (e) {
-                console.error(e)
-            }
-            // console.log('img.width', img.width, 'img.height', img.height)
-            // console.log('width', width, 'height', height)
-
-            const canvas = document.createElement('canvas')
-            const scale = 2
-            canvas.width = width * scale
-            canvas.height = height * scale
-            const ctx = canvas.getContext('2d')
-            if (!ctx) {
-                reject(new Error('cannot get canvas context'))
-                return
-            }
-            ctx.scale(scale, scale)
-            ctx.drawImage(img, 0, 0, width, height)
-            try {
-                const pngBase64 = canvas.toDataURL('image/png', 1.0) // 使用最高质量设置
-                resolve(pngBase64)
-            } catch (error) {
-                reject(error)
-            }
-        }
-        img.onerror = (error) => {
-            reject(error)
-        }
-        img.src = svgBase64
-    })
 }
