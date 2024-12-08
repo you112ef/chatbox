@@ -31,8 +31,11 @@ export default class OpenAI extends Base {
         if (!this.options.apiHost) {
             this.options.apiHost = 'https://api.openai.com'
         }
-        if (this.options.apiHost.startsWith('https://openrouter.ai/api/v1')) {
-            this.options.apiHost = 'https://openrouter.ai/api'
+        if (
+            this.options.apiHost.startsWith('https://openrouter.ai/api/v1')
+            && this.options.apiPath === '/v1/chat/completions'
+        ) {
+            this.options.apiPath = '/chat/completions'
         }
         if (this.options.apiHost.endsWith('/')) {
             this.options.apiHost = this.options.apiHost.slice(0, -1)
