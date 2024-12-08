@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { Box, IconButton, Typography, Chip, Tooltip, useTheme } from '@mui/material'
 import { isChatSession, isPictureSession } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
-import SponsorChip from './SponsorChip'
 import * as atoms from '../stores/atoms'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import * as sessionActions from '../stores/sessionActions'
@@ -127,10 +126,10 @@ export default function Header(props: Props) {
                     }
                     {EditButton}
                 </Typography>
-                {
+                {/* {
                     // 大屏幕的广告UI
                     !isSmallScreen && <SponsorChip />
-                }
+                } */}
                 <Toolbar />
             </div>
         </div>

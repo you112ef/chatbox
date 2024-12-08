@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { Box, IconButton, ButtonGroup } from '@mui/material'
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp'
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown'
-import SponsorChip from './components/SponsorChip'
 import * as atoms from './stores/atoms'
 import { useAtom, useAtomValue } from 'jotai'
 import InputBox from './components/InputBox'
@@ -36,14 +35,14 @@ export default function MainPane(props: {}) {
             }}
         >
             <div className="flex flex-col h-full">
-                {
+                {/* {
                     // 小屏幕的广告UI
                     isSmallScreen && (
                         <Box className="text-center">
                             <SponsorChip />
                         </Box>
                     )
-                }
+                } */}
                 <Header />
                 <MessageList />
                 <ScrollButtons />

@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
+// import { useEffect, useState } from 'react'
 import {
     Button,
     Paper,
     Badge,
     Box,
-    Divider,
+    // Divider,
     Dialog,
     DialogContent,
     DialogActions,
@@ -14,14 +14,14 @@ import {
 import iconPNG from '../static/icon.png'
 import { useTranslation } from 'react-i18next'
 import platform from '../platform'
-import * as remote from '../packages/remote'
-import { SponsorAboutBanner } from '../../shared/types'
+// import * as remote from '../packages/remote'
+// import { SponsorAboutBanner } from '../../shared/types'
 import * as i18n from '../i18n'
 import useVersion from '../hooks/useVersion'
 import * as atoms from '../stores/atoms'
 import { useAtom, useAtomValue } from 'jotai'
 import Markdown from '@/components/Markdown'
-import { trackingEvent } from '@/packages/event'
+// import { trackingEvent } from '@/packages/event'
 
 export default function AboutWindow(props: {}) {
     const { t } = useTranslation()
@@ -29,15 +29,15 @@ export default function AboutWindow(props: {}) {
     const [open, setOpen] = useAtom(atoms.openAboutDialogAtom)
     const language = useAtomValue(atoms.languageAtom)
     const versionHook = useVersion()
-    const [sponsorBanners, setSponsorBanners] = useState<SponsorAboutBanner[]>([])
-    useEffect(() => {
-        if (open) {
-            remote.listSponsorAboutBanner().then(setSponsorBanners)
-            trackingEvent('about_window', { event_category: 'screen_view' })
-        } else {
-            setSponsorBanners([])
-        }
-    }, [open])
+    // const [sponsorBanners, setSponsorBanners] = useState<SponsorAboutBanner[]>([])
+    // useEffect(() => {
+    //     if (open) {
+    //         remote.listSponsorAboutBanner().then(setSponsorBanners)
+    //         trackingEvent('about_window', { event_category: 'screen_view' })
+    //     } else {
+    //         setSponsorBanners([])
+    //     }
+    // }, [open])
     const handleClose = () => {
         setOpen(false)
     }
@@ -152,12 +152,12 @@ export default function AboutWindow(props: {}) {
                     </div>
                 </Paper>
 
-                {sponsorBanners.length > 0 && (
+                {/* {sponsorBanners.length > 0 && (
                     <Divider sx={{ margin: '10px 0 5px 0', opacity: 0.8 }}>
                         {t('Special thanks to the following sponsors:')}
                     </Divider>
-                )}
-                <Box
+                )} */}
+                {/* <Box
                     sx={{
                         display: 'flex',
                         flexWrap: 'wrap',
@@ -212,7 +212,7 @@ export default function AboutWindow(props: {}) {
                             </Paper>
                         )
                     })}
-                </Box>
+                </Box> */}
                 <Box>
                     <h4 className="text-center mb-1 mt-2">{t('Changelog')}</h4>
                     <Box className="px-6">
