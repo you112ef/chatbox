@@ -28,11 +28,11 @@ export function settings(): Settings {
 
         claudeApiKey: '',
         claudeApiHost: 'https://api.anthropic.com',
-        claudeModel: 'claude-2.1',
+        claudeModel: 'claude-3-5-sonnet-20241022',
 
         geminiAPIKey: '',
         geminiAPIHost: 'https://generativelanguage.googleapis.com',
-        geminiModel: 'gemini-pro',
+        geminiModel: 'gemini-1.5-pro-latest',
 
         ollamaHost: 'http://127.0.0.1:11434',
         ollamaModel: '',
