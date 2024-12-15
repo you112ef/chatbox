@@ -197,7 +197,7 @@ export default class Claude extends Base {
             if (word) {
                 result += word
                 if (onResultChange) {
-                    onResultChange(result)
+                    onResultChange({ content: result })
                 }
             }
         })

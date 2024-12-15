@@ -304,5 +304,9 @@
     "Please describe the content you want to report (Optional)": "請描述您想要舉報的內容（可選）",
     "expand": "展開",
     "Confirm?": "確認嗎？",
-    "Move to Conversations": "移動到對話"
+    "Move to Conversations": "移動到對話",
+    "Web Browsing": "網路瀏覽",
+    "Web Browsing...": "網路瀏覽中...",
+    "Browsing and retrieving information from the internet.": "正在從互聯網中瀏覽和檢索信息。",
+    "Enabled": "已啟用"
 }

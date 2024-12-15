@@ -84,7 +84,7 @@ export default class ChatboxAI extends Base {
             if (word !== undefined) {
                 result += word
                 if (onResultChange) {
-                    onResultChange(result)
+                    onResultChange({ content: result })
                 }
             }
         })

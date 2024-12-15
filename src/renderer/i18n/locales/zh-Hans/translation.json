@@ -304,5 +304,9 @@
     "Please describe the content you want to report (Optional)": "请描述您想要举报的内容（可选）",
     "expand": "展开",
     "Confirm?": "确认吗？",
-    "Move to Conversations": "移动到对话"
+    "Move to Conversations": "移动到对话",
+    "Web Browsing": "联网问答",
+    "Web Browsing...": "联网搜索中...",
+    "Browsing and retrieving information from the internet.": "正在从互联网中浏览和检索信息。",
+    "Enabled": "已启用"
 }

@@ -94,7 +94,7 @@ export default class Ollama extends Base {
             }
             result += word
             if (onResultChange) {
-                onResultChange(result)
+                onResultChange({ content: result })
             }
         })
         return result

@@ -3,6 +3,7 @@ import Base, { onResultChange } from './base'
 import { ApiError } from './errors'
 import storage from '@/storage'
 import * as base64 from '@/packages/base64'
+import { compact } from 'lodash'
 
 export type GeminiModel = keyof typeof modelConfig
 
@@ -59,7 +60,10 @@ export default class Gemeni extends Base {
     async callChatCompletion(
         messages: Message[],
         signal?: AbortSignal,
-        onResultChange?: onResultChange
+        onResultChange?: onResultChange,
+        options?: {
+            webBrowsing?: boolean
+        }
     ): Promise<string> {
         const res = await this.post(
             `${this.options.geminiAPIHost}/v1beta/models/${this.options.geminiModel}:streamGenerateContent?alt=sse&key=${this.options.geminiAPIKey}`,
@@ -68,6 +72,17 @@ export default class Gemeni extends Base {
             },
             {
                 contents: await populateGeminiMessages(messages, this.options.geminiModel),
+                ...(
+                    options?.webBrowsing
+                        ? {
+                            tools: [
+                                {
+                                    "googleSearch": {}
+                                }
+                            ]
+                        }
+                        : {}
+                ),
                 // "generationConfig": {
                 //     "temperature": this.options.temperature,
                 //     "topK": 1,
@@ -106,7 +121,104 @@ export default class Gemeni extends Base {
             if (text !== undefined) {
                 result += text
                 if (onResultChange) {
-                    onResultChange(result)
+                    onResultChange({ content: result })
+                }
+            }
+            const groundingMetadata = data.candidates[0]?.groundingMetadata as {
+                searchEntryPoint?: { renderedContent?: string }
+                groundingChunks?: { web?: { uri: string; title: string } }[]
+                webSearchQueries?: string[]
+            } | undefined
+            // "groundingMetadata": {
+            //     "searchEntryPoint": {
+            //         "renderedContent": "\u003e\n"
+            //     },
+            //     "groundingChunks": [
+            //         {
+            //             "web": {
+            //                 "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AYygrcSl--fy9oPJcYiLMwIdIcKyLvMSU9sWtz4G0nNE5_4jsnQ5KVxQ8wXoXnCvnop7ycDT-tcNgdWuXpWBkttViFjkNZe4rrbilA5t9_jssnZeF8BL8Jyis__Xo64TWp0vDV9tUouCkYVueSEuxAqR_jL98lLE4m91D46onD2iADev4ro=",
+            //                 "title": "szns.gov.cn"
+            //             }
+            //         },
+            //         {
+            //             "web": {
+            //                 "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AYygrcSvvROcRBGIlf02Tc7zwMkhwn7dHYxhI6WgrSmywsdeIynBffFpNsD46UwUSoyMM6nKgpjk-0fytHEHdadk37U1YT3MK3yP8WXNIfDW6LKqwKkPjjIeyXRRs5PUHr2xEWhh_NRAte4=",
+            //                 "title": "121.com.cn"
+            //             }
+            //         },
+            //         {
+            //             "web": {
+            //                 "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AYygrcSXZhXaYAyc6bCFF4zLN31Fd6kfac7OZL2YE1KItU2frz7F9FMSDqNsmLYhqAbJoGI_fMTQX8goyB8VYbVtiwItrtzZmegJpmg1R4YEhJEJkzSnZjQZ5RtqCmLxDpM1Zw_HgFkDbP84",
+            //                 "title": "weather.com.cn"
+            //             }
+            //         }
+            //     ],
+            //     "groundingSupports": [
+            //         {
+            //             "segment": {
+            //                 "endIndex": 42,
+            //                 "text": "好的，今天深圳的天气是多云。"
+            //             },
+            //             "groundingChunkIndices": [
+            //                 0,
+            //                 1
+            //             ],
+            //             "confidenceScores": [
+            //                 0.7090249,
+            //                 0.6010466
+            //             ]
+            //         },
+            //         {
+            //             "segment": {
+            //                 "startIndex": 128,
+            //                 "endIndex": 149,
+            //                 "text": "*   早晨：14-19°C"
+            //             },
+            //             "groundingChunkIndices": [
+            //                 1
+            //             ],
+            //             "confidenceScores": [
+            //                 0.6878241
+            //             ]
+            //         },
+            //         {
+            //             "segment": {
+            //                 "startIndex": 509,
+            //                 "endIndex": 548,
+            //                 "text": "*   后天：多云，气温10-12°C。"
+            //             },
+            //             "groundingChunkIndices": [
+            //                 2
+            //             ],
+            //             "confidenceScores": [
+            //                 0.82308143
+            //             ]
+            //         }
+            //     ],
+            //     "webSearchQueries": [
+            //         "What is the weather in Shenzhen?",
+            //         "Shenzhen weather",
+            //         "深圳的天气怎样？"
+            //     ]
+            // }
+            if (groundingMetadata) {
+                if (onResultChange) {
+                    onResultChange({
+                        content: result,
+                        webBrowsing: {
+                            query: groundingMetadata.webSearchQueries || [],
+                            links: compact((groundingMetadata.groundingChunks || [])
+                                .map((chunk) => {
+                                    if (chunk.web) {
+                                        return {
+                                            title: chunk.web?.title,
+                                            url: chunk.web?.uri
+                                        }
+                                    }
+                                    return null
+                                }))
+                        },
+                    })
                 }
             }
         })

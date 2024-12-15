@@ -303,5 +303,9 @@
     "Please describe the content you want to report (Optional)": "Vennligst beskriv innholdet du ønsker å rapportere (valgfritt)",
     "expand": "Utvid",
     "Confirm?": "Bekreft?",
-    "Move to Conversations": "Flytte til samtaler"
+    "Move to Conversations": "Flytte til samtaler",
+    "Web Browsing": "Nettlesing",
+    "Web Browsing...": "Nettlesing...",
+    "Browsing and retrieving information from the internet.": "Nettleser, søker og hentet informasjon fra internett.",
+    "Enabled": "Aktiver"
 }

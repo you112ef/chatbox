@@ -77,7 +77,7 @@ export default class AzureOpenAI extends Base {
             if (text !== undefined) {
                 result += text
                 if (onResultChange) {
-                    onResultChange(result)
+                    onResultChange({ content: result })
                 }
             }
         })

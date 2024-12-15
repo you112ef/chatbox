@@ -50,6 +50,7 @@ import ImageIcon from '@mui/icons-material/Image'
 import MessageErrTips from './MessageErrTips'
 import MessageStatuses from './MessageLoading'
 import { MessageAttachment } from './Attachments'
+import MessageWebBrowsing from './MessageWebBrowsing'
 import StyledMenu from './StyledMenu'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import * as dom from '@/hooks/dom'
@@ -553,6 +554,9 @@ function _Message(props: Props) {
                                     preview={previewArtifact}
                                     setPreview={setPreviewArtifact}
                                 />
+                            )}
+                            {msg.webBrowsing && (
+                                <MessageWebBrowsing webBrowsing={msg.webBrowsing} />
                             )}
                             {tips.length > 0 && (
                                 <Typography variant="body2" sx={{ opacity: 0.5 }} className="pb-1">

@@ -1,8 +1,9 @@
 import { ImageInStorage } from './Image'
 import MiniButton from './MiniButton'
-import { Trash2, Link, Link2 } from 'lucide-react'
+import { Trash2, Link, Link2, Globe } from 'lucide-react'
 import { Typography, Tooltip } from '@mui/material'
 import FileIcon from './FileIcon'
+import { useTranslation } from 'react-i18next'
 
 export function ImageMiniCard(props: { storageKey: string; onDelete: () => void }) {
     const { storageKey, onDelete } = props
@@ -94,6 +95,48 @@ export function LinkMiniCard(props: { url: string; onDelete: () => void }) {
             {onDelete && (
                 <MiniButton
                     className="hidden group-hover/file-mini-card:inline-block 
+                    absolute top-0 right-0 m-1 p-1 rounded-full shadow-lg text-red-500"
+                    onClick={onDelete}
+                >
+                    <Trash2 size="18" strokeWidth={2} />
+                </MiniButton>
+            )}
+        </div>
+    )
+}
+
+export function WebBrowsingActionMiniCard(props: { onDelete: () => void }) {
+    const { onDelete } = props
+    const { t } = useTranslation()
+    return (
+        <div
+            className="w-[100px] h-[100px] p-1 m-1 inline-flex items-center justify-center
+                                bg-blue-50 shadow-sm rounded-md border-solid border-blue-200
+                                hover:shadow-lg hover:cursor-pointer hover:scale-105 transition-all duration-200
+                                group/file-mini-card relative"
+        >
+            <div className="flex flex-col justify-center items-center">
+                <div className="relative">
+                    <Globe className="w-8 h-8 text-blue-500" strokeWidth={1.5} />
+                </div>
+                <Typography 
+                    className="w-20 mt-2 text-blue-700 text-center font-medium" 
+                    noWrap 
+                    sx={{ fontSize: '11px' }}
+                >
+                    {t('Web Browsing')}
+                </Typography>
+                <Typography
+                    className="w-20 text-blue-500 text-center"
+                    noWrap
+                    sx={{ fontSize: '9px' }}
+                >
+                    {t('Enabled')}
+                </Typography>
+            </div>
+            {onDelete && (
+                <MiniButton
+                    className="hidden group-hover/file-mini-card:inline-block bg-white 
                     absolute top-0 right-0 m-1 p-1 rounded-full shadow-lg text-red-500"
                     onClick={onDelete}
                 >

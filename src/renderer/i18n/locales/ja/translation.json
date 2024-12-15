@@ -304,5 +304,9 @@
     "Please describe the content you want to report (Optional)": "報告したい内容を説明してください（オプション）",
     "expand": "展開",
     "Confirm?": "確認しますか？",
-    "Move to Conversations": "対話に移動"
+    "Move to Conversations": "対話に移動",
+    "Web Browsing": "Webブラウジング",
+    "Web Browsing...": "Webブラウジング中...",
+    "Browsing and retrieving information from the internet.": "Webブラウジング中、インターネットから情報を検索しています。",
+    "Enabled": "有効"
 }

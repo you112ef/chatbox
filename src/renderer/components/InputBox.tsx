@@ -9,13 +9,13 @@ import * as sessionActions from '../stores/sessionActions'
 import * as dom from '../hooks/dom'
 import { Shortcut } from './Shortcut'
 import { useInputBoxHeight, useIsSmallScreen } from '@/hooks/useScreenChange'
-import { Image, FolderClosed, Link, Undo2, SendHorizontal, Eraser, Settings2 } from 'lucide-react'
+import { Image, FolderClosed, Link, Undo2, SendHorizontal, Eraser, Settings2, Globe } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { scrollToMessage } from '@/stores/scrollActions'
 import icon from '../static/icon.png'
 import { trackingEvent } from '@/packages/event'
 import storage from '@/storage'
-import { FileMiniCard, ImageMiniCard, LinkMiniCard } from './Attachments'
+import { FileMiniCard, ImageMiniCard, LinkMiniCard, WebBrowsingActionMiniCard } from './Attachments'
 import MiniButton from './MiniButton'
 import _ from 'lodash'
 import { ChatModelSelector } from './ModelSelector'
@@ -35,6 +35,7 @@ export default function InputBox(props: {}) {
     const [messageInput, setMessageInput] = useState('')
     const [pictureKeys, setPictureKeys] = useState<string[]>([])
     const [attachments, setAttachments] = useState<File[]>([])
+    const [webBrowsingMode, setWebBrowsingMode] = useState(false)
     const [links, setLinks] = useAtom(atoms.inputBoxLinksAtom)
     const pictureInputRef = useRef<HTMLInputElement | null>(null)
     const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -78,11 +79,13 @@ export default function InputBox(props: {}) {
             needGenerating,
             attachments,
             links,
+            webBrowsing: webBrowsingMode,
         })
         setMessageInput('')
         setPictureKeys([])
         setAttachments([])
         setLinks([])
+        setWebBrowsingMode(false)
         trackingEvent('send_message', { event_category: 'user' })
         // 重置清理上下文按钮
         if (showRollbackThreadButton) {
@@ -412,6 +415,19 @@ export default function InputBox(props: {}) {
                             <Link size="22" strokeWidth={1} />
                         </MiniButton>
                         <MiniButton
+                            className={cn('mr-1 sm:mr-2', currentSessionType !== 'picture' ? '' : 'hidden')}
+                            style={{ color: theme.palette.text.primary }}
+                            onClick={() => setWebBrowsingMode(true)}
+                            tooltipTitle={
+                                <div className="text-center inline-block">
+                                    <span>{t('Web Browsing')}</span>
+                                </div>
+                            }
+                            tooltipPlacement="top"
+                        >
+                            <Globe size="22" strokeWidth={1} />
+                        </MiniButton>
+                        <MiniButton
                             className="mr-1 sm:mr-2"
                             style={{ color: theme.palette.text.primary }}
                             onClick={() => setChatConfigDialogSessionId(sessionActions.getCurrentSession().id)}
@@ -488,6 +504,11 @@ export default function InputBox(props: {}) {
                         // {...{ enterKeyHint: 'send' } as any}
                     />
                     <div className="flex flex-row items-center" onClick={() => dom.focusMessageInput()}>
+                        {
+                            webBrowsingMode && (
+                                <WebBrowsingActionMiniCard onDelete={() => setWebBrowsingMode(false)} />
+                            )
+                        }
                         {pictureKeys.map((picKey, ix) => (
                             <ImageMiniCard key={ix} storageKey={picKey} onDelete={() => onImageDeleteClick(picKey)} />
                         ))}

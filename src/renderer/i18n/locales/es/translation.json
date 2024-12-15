@@ -303,5 +303,9 @@
     "Please describe the content you want to report (Optional)": "Por favor, describe el contenido que desea reportar (opcional)",
     "expand": "Expandir",
     "Confirm?": "Confirmar?",
-    "Move to Conversations": "Mover a conversaciones"
+    "Move to Conversations": "Mover a conversaciones",
+    "Web Browsing": "Navegación web",
+    "Web Browsing...": "Navegación web...",
+    "Browsing and retrieving information from the internet.": "Navegación web, búsqueda y recuperación de información de internet.",
+    "Enabled": "Habilitado"
 }

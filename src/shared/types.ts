@@ -28,6 +28,14 @@ export interface MessagePicture {
     loading?: boolean
 }
 
+export interface MessageWebBrowsing {
+    query: string[]
+    links: {
+        title: string
+        url: string
+    }[]
+}
+
 export const MessageRoleEnum = {
     System: 'system',
     User: 'user',
@@ -55,6 +63,7 @@ export interface Message {
 
     files?: MessageFile[]
     links?: MessageLink[]
+    webBrowsing?: MessageWebBrowsing
 
     errorCode?: number
     error?: string
@@ -69,6 +78,9 @@ export interface Message {
         | {
               type: 'loading_webpage'
               mode?: 'local' | 'advanced'
+          }
+        | {
+              type: 'web_browsing'
           }
     )[]
 

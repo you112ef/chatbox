@@ -44,6 +44,7 @@ import { getModelDisplayName, isModelSupportImageInput } from '@/packages/model-
 import { languageNameMap } from '@/i18n/locales'
 import { isTextFilePath } from 'src/shared/file-extensions'
 import * as localParser from '@/packages/local-parser'
+import { onResultChangeWithCancel } from '@/packages/models/base'
 
 /**
  * 创建一个新的会话
@@ -578,8 +579,9 @@ export async function submitNewUserMessage(params: {
     needGenerating: boolean
     attachments: File[]
     links: { url: string }[]
+    webBrowsing?: boolean
 }) {
-    const { currentSessionId, newUserMsg, needGenerating, attachments, links } = params
+    const { currentSessionId, newUserMsg, needGenerating, attachments, links, webBrowsing } = params
     // 如果存在附件，现在发送消息中构建空白的文件信息，用于占位，等待上传完成后再修改
     if (attachments && attachments.length > 0) {
         newUserMsg.files = attachments.map((f, ix) => ({
@@ -622,6 +624,12 @@ export async function submitNewUserMessage(params: {
             type: 'loading_webpage',
             mode: isChatboxAI ? 'advanced' : 'local',
         })
+    }
+    if (webBrowsing) {
+        if (!newAssistantMsg.status) {
+            newAssistantMsg.status = []
+        }
+        newAssistantMsg.status.push({ type: 'web_browsing' })
     }
     if (needGenerating) {
         newAssistantMsg.generating = true
@@ -762,7 +770,7 @@ export async function submitNewUserMessage(params: {
     }
     // 根据需要，生成这条回复消息
     if (needGenerating) {
-        return generate(currentSessionId, newAssistantMsg)
+        return generate(currentSessionId, newAssistantMsg, { webBrowsing })
     }
 }
 
@@ -772,7 +780,7 @@ export async function submitNewUserMessage(params: {
  * @param targetMsg
  * @returns
  */
-export async function generate(sessionId: string, targetMsg: Message) {
+export async function generate(sessionId: string, targetMsg: Message, options?: { webBrowsing?: boolean }) {
     // 获得依赖的数据
     const store = getDefaultStore()
     const globalSettings = store.get(atoms.settingsAtom)
@@ -830,11 +838,16 @@ export async function generate(sessionId: string, targetMsg: Message) {
             case 'chat':
             case undefined:
                 const promptMsgs = await genMessageContext(settings, messages.slice(0, targetMsgIx))
-                const throttledModifyMessage = throttle(({ text, cancel }: { text: string; cancel: () => void }) => {
-                    targetMsg = { ...targetMsg, content: text, cancel }
+                const throttledModifyMessage = throttle<onResultChangeWithCancel>((updated) => {
+                    targetMsg = {
+                        ...targetMsg,
+                        content: updated.content,
+                        cancel: updated.cancel,
+                        webBrowsing: updated.webBrowsing,
+                    }
                     modifyMessage(sessionId, targetMsg)
                 }, 100)
-                await model.chat(promptMsgs, throttledModifyMessage)
+                await model.chat(promptMsgs, throttledModifyMessage, options)
                 targetMsg = {
                     ...targetMsg,
                     generating: false,
@@ -919,10 +932,10 @@ export async function generate(sessionId: string, targetMsg: Message) {
  * @param sessionId 会话ID
  * @param msgId 消息ID
  */
-export async function generateMore(sessionId: string, msgId: string) {
+export async function generateMore(sessionId: string, msgId: string, options?: { webBrowsing?: boolean }) {
     const newAssistantMsg = createMessage('assistant', '...')
     insertMessageAfter(sessionId, newAssistantMsg, msgId)
-    await generate(sessionId, newAssistantMsg)
+    await generate(sessionId, newAssistantMsg, options)
 }
 
 export async function generateMoreInNewFork(sessionId: string, msgId: string) {
@@ -941,7 +954,7 @@ export async function regenerateInNewFork(sessionId: string, msg: Message) {
     }
     const forkMessage = messageList[previousMessageIndex]
     await createNewFork(forkMessage.id)
-    return generateMore(sessionId, forkMessage.id)
+    return generateMore(sessionId, forkMessage.id, { webBrowsing: !!msg.webBrowsing })
 }
 
 async function _generateName(sessionId: string, modifyName: (sessionId: string, name: string) => void) {

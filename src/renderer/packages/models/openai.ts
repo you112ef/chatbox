@@ -125,7 +125,7 @@ export default class OpenAI extends Base {
             if (typeof text === 'string') {
                 result += text
                 if (onResultChange) {
-                    onResultChange(result)
+                    onResultChange({ content: result })
                 }
             }
         })

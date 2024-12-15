@@ -1,4 +1,4 @@
-import { Message } from 'src/shared/types'
+import { Message, MessageWebBrowsing } from 'src/shared/types'
 import {
     ApiError,
     NetworkError,
@@ -13,7 +13,7 @@ import platform from '@/platform'
 export default class Base {
     public name = 'Unknown'
 
-    constructor() {}
+    constructor() { }
 
     async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
         throw new AIProviderNoImplementedPaintError(this.name)
@@ -22,22 +22,31 @@ export default class Base {
     async callChatCompletion(
         messages: Message[],
         signal?: AbortSignal,
-        onResultChange?: onResultChange
+        onResultChange?: onResultChange,
+        options?: {
+            webBrowsing?: boolean
+        }
     ): Promise<string> {
         throw new AIProviderNoImplementedChatError(this.name)
     }
 
     async chat(
         messages: Message[],
-        onResultUpdated?: (data: { text: string; cancel(): void }) => void
+        onResultChangeWithCancel?: onResultChangeWithCancel,
+        options?: {
+            webBrowsing?: boolean
+        }
     ): Promise<string> {
         messages = await this.preprocessMessage(messages)
-        return await this._chat(messages, onResultUpdated)
+        return await this._chat(messages, onResultChangeWithCancel, options)
     }
 
     protected async _chat(
         messages: Message[],
-        onResultUpdated?: (data: { text: string; cancel(): void }) => void
+        onResultChangeWithCancel?: onResultChangeWithCancel,
+        options?: {
+            webBrowsing?: boolean
+        }
     ): Promise<string> {
         // 初始化 fetch 的取消机制
         let canceled = false
@@ -50,15 +59,14 @@ export default class Base {
         try {
             // 支持 onResultUpdated 回调
             let onResultChange: onResultChange | undefined = undefined
-            if (onResultUpdated) {
-                onResultUpdated({ text: result, cancel }) // 这里先传递 cancel 方法
-                onResultChange = (newResult: string) => {
-                    result = newResult
-                    onResultUpdated({ text: result, cancel })
+            if (onResultChangeWithCancel) {
+                onResultChangeWithCancel({ content: result, cancel }) // 这里先传递 cancel 方法
+                onResultChange = (data) => {
+                    onResultChangeWithCancel({ ...data, cancel })
                 }
             }
             // 调用各个模型提供商的底层接口方法
-            result = await this.callChatCompletion(messages, controller.signal, onResultChange)
+            result = await this.callChatCompletion(messages, controller.signal, onResultChange, options)
         } catch (error) {
             /// 处理 fetch 被取消的情况
             // if a cancellation is performed
@@ -355,7 +363,13 @@ export default class Base {
     }
 }
 
-export type onResultChange = (result: string) => void
+export interface ResultChange {
+    content: string
+    webBrowsing?: MessageWebBrowsing
+}
+
+export type onResultChangeWithCancel = (data: ResultChange & { cancel?: () => void }) => void
+export type onResultChange = (data: ResultChange) => void
 
 function isLocalHost(url: string): boolean {
     const prefixes = [

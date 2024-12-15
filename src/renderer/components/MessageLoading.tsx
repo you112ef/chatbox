@@ -81,6 +81,20 @@ function MessageStatus(props: { status: NonNullable<Message['status']>[number] }
             </div>
         )
     }
+    if (status.type === 'web_browsing') {
+        return (
+            <div>
+                <LoadingBubble>
+                    <span className="flex flex-col">
+                        <span>{t('Web Browsing...')}</span>
+                        <span className="text-[10px] opacity-70 font-normal">
+                            {t('Browsing and retrieving information from the internet.')}
+                        </span>
+                    </span>
+                </LoadingBubble>
+            </div>
+        )
+    }
     return null
 }
 

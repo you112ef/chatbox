@@ -304,5 +304,9 @@
     "Please describe the content you want to report (Optional)": "Bitte beschreiben Sie den Inhalt, den Sie melden möchten (optional)",
     "expand": "Erweitern",
     "Confirm?": "Bestätigen?",
-    "Move to Conversations": "In Konversationen verschieben"
+    "Move to Conversations": "In Konversationen verschieben",
+    "Web Browsing": "Web-Browsing",
+    "Web Browsing...": "Web-Browsing...",
+    "Browsing and retrieving information from the internet.": "Durchsuche und hole Informationen aus dem Internet.",
+    "Enabled": "Aktiviert"
 }

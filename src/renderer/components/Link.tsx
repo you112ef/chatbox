@@ -2,7 +2,7 @@ import platform from '@/platform'
 import { useTheme } from '@mui/material'
 
 export default function LinkTargetBlank(props: {
-    children?: string
+    children?: React.ReactNode | string
     href: string
     className?: string
     style?: React.CSSProperties

@@ -304,5 +304,9 @@
     "Please describe the content you want to report (Optional)": "신고하려는 내용을 설명해 주세요 (선택 사항)",
     "expand": "확장",
     "Confirm?": "확인?",
-    "Move to Conversations": "대화로 이동"
+    "Move to Conversations": "대화로 이동",
+    "Web Browsing": "웹 브라우징",
+    "Web Browsing...": "웹 브라우징...",
+    "Browsing and retrieving information from the internet.": "웹 브라우징, 인터넷에서 정보 검색",
+    "Enabled": "활성화"
 }
