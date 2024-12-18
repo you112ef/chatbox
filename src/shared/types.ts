@@ -29,6 +29,7 @@ export interface MessagePicture {
 }
 
 export interface MessageWebBrowsing {
+    chatboxAIWebBrowsingUUID?: string
     query: string[]
     links: {
         title: string

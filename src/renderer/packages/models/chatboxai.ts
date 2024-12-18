@@ -1,6 +1,6 @@
 import { ChatboxAILicenseDetail, ChatboxAIModel, Message, MessageRole } from 'src/shared/types'
 import Base, { onResultChange } from './base'
-import { API_ORIGIN } from '../remote'
+import * as remote from '../remote'
 import { BaseError, ApiError, NetworkError, ChatboxAIAPIError } from './errors'
 import storage from '@/storage'
 import { parseJsonOrEmpty } from '@/lib/utils'
@@ -36,7 +36,7 @@ export default class ChatboxAI extends Base {
 
     async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
         const res = await this.post(
-            `${API_ORIGIN}/api/ai/paint`,
+            `${remote.API_ORIGIN}/api/ai/paint`,
             this.getHeaders(),
             {
                 prompt,
@@ -54,11 +54,32 @@ export default class ChatboxAI extends Base {
     async callChatCompletion(
         rawMessages: Message[],
         signal?: AbortSignal,
-        onResultChange?: onResultChange
+        onResultChange?: onResultChange,
+        options?: {
+            webBrowsing?: boolean
+        }
     ): Promise<string> {
         const messages = await populateChatboxAIMessage(rawMessages)
+
+        let webBrowsingResult: Awaited<ReturnType<typeof remote.webBrowsing>> | undefined = undefined
+        if (options?.webBrowsing) {
+            webBrowsingResult = await remote.webBrowsing({
+                licenseKey: this.options.licenseKey || '',
+                messages,
+            })
+            if (webBrowsingResult.uuid) {
+                messages.push({
+                    role: 'user',
+                    content: '',
+                    web_browsing: {
+                        uuid: webBrowsingResult.uuid,
+                    },
+                })  // 临时地将搜索结果添加到上下文中，方便根据搜索结果生成回答
+            }
+        }
+
         const response = await this.post(
-            `${API_ORIGIN}/api/ai/chat`,
+            `${remote.API_ORIGIN}/api/ai/chat`,
             this.getHeaders(),
             {
                 uuid: this.config.uuid,
@@ -88,6 +109,22 @@ export default class ChatboxAI extends Base {
                 }
             }
         })
+
+        // 如果开启了 webBrowsing，则将 webBrowsing 的结果添加到生成的助手消息中
+        // 后续聊天中，服务端会根据 uuid 填充搜索结果
+        if (webBrowsingResult) {
+            if (onResultChange) {
+                onResultChange({
+                    content: result,
+                    webBrowsing: {
+                        chatboxAIWebBrowsingUUID: webBrowsingResult.uuid,
+                        query: webBrowsingResult.query,
+                        links: webBrowsingResult.links,
+                    },
+                })
+            }
+        }
+
         return result
     }
 
@@ -203,6 +240,9 @@ export interface ChatboxAIMessage {
         uuid: string
         url: string
     }[]
+    web_browsing?: {
+        uuid: string
+    }
 }
 
 export async function populateChatboxAIMessage(rawMessages: Message[]): Promise<ChatboxAIMessage[]> {
@@ -243,6 +283,11 @@ export async function populateChatboxAIMessage(rawMessages: Message[]): Promise<
                 newMessage.links = []
             }
             newMessage.links.push({ uuid: link.chatboxAILinkUUID, url: link.url })
+        }
+        if (raw.webBrowsing && raw.webBrowsing.chatboxAIWebBrowsingUUID) {
+            newMessage.web_browsing = {
+                uuid: raw.webBrowsing.chatboxAIWebBrowsingUUID,
+            }
         }
         messages.push(newMessage)
     }

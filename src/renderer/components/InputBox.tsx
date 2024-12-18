@@ -417,7 +417,10 @@ export default function InputBox(props: {}) {
                         <MiniButton
                             className={cn('mr-1 sm:mr-2', currentSessionType !== 'picture' ? '' : 'hidden')}
                             style={{ color: theme.palette.text.primary }}
-                            onClick={() => setWebBrowsingMode(true)}
+                            onClick={() => {
+                                setWebBrowsingMode(true)
+                                dom.focusMessageInput()
+                            }}
                             tooltipTitle={
                                 <div className="text-center inline-block">
                                     <span>{t('Web Browsing')}</span>

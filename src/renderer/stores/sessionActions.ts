@@ -625,12 +625,6 @@ export async function submitNewUserMessage(params: {
             mode: isChatboxAI ? 'advanced' : 'local',
         })
     }
-    if (webBrowsing) {
-        if (!newAssistantMsg.status) {
-            newAssistantMsg.status = []
-        }
-        newAssistantMsg.status.push({ type: 'web_browsing' })
-    }
     if (needGenerating) {
         newAssistantMsg.generating = true
         insertMessage(currentSessionId, newAssistantMsg)
@@ -807,6 +801,10 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
         errorExtra: undefined,
         status: [],
     }
+    if (options?.webBrowsing) {
+        targetMsg.status?.push({ type: 'web_browsing' })
+    }
+
     modifyMessage(sessionId, targetMsg)
     setTimeout(() => {
         scrollActions.scrollToMessage(targetMsg.id, 'end')
@@ -844,6 +842,7 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
                         content: updated.content,
                         cancel: updated.cancel,
                         webBrowsing: updated.webBrowsing,
+                        status: updated.content ? [] : targetMsg.status,
                     }
                     modifyMessage(sessionId, targetMsg)
                 }, 100)
@@ -853,6 +852,7 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
                     generating: false,
                     cancel: undefined,
                     tokensUsed: estimateTokensFromMessages([...promptMsgs, targetMsg]),
+                    status: [],
                 }
                 modifyMessage(sessionId, targetMsg, true)
                 break
@@ -879,6 +879,7 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
                     targetMsg = {
                         ...targetMsg,
                         pictures: newPictures,
+                        status: [],
                     }
                     modifyMessage(sessionId, targetMsg, true)
                 })
@@ -887,6 +888,7 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
                     content: '',
                     generating: false,
                     cancel: undefined,
+                    status: [],
                 }
                 modifyMessage(sessionId, targetMsg, true)
                 break

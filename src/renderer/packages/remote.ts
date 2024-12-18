@@ -15,6 +15,7 @@ import { afetch, uploadFile } from './request'
 import * as cache from './cache'
 import { uniq } from 'lodash'
 import platform from '@/platform'
+import { ChatboxAIMessage } from './models/chatboxai'
 
 // ========== API ORIGIN 根据可用性维护 ==========
 
@@ -305,6 +306,36 @@ export async function parseUserLinkFree(params: { url: string }) {
     })
     const json: Response = await res.json()
     return json
+}
+
+export async function webBrowsing(params: { licenseKey: string; messages: ChatboxAIMessage[] }) {
+    type Response = {
+        data: {
+            uuid?: string
+            query: string[]
+            links: {
+                title: string
+                url: string
+            }[]
+        }
+    }
+    const res = await afetch(
+        `${API_ORIGIN}/api/web-browsing/search`,
+        {
+            method: 'POST',
+            headers: {
+                Authorization: params.licenseKey,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(params),
+        },
+        {
+            parseChatboxRemoteError: true,
+            retry: 2,
+        }
+    )
+    const json: Response = await res.json()
+    return json['data']
 }
 
 export async function activateLicense(params: { licenseKey: string; instanceName: string }) {
