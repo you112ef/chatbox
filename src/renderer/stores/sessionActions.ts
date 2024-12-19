@@ -1112,18 +1112,21 @@ async function genMessageContext(settings: Settings, msgs: Message[]) {
 export function initEmptyChatSession(): Session {
     const store = getDefaultStore()
     const settings = store.get(atoms.settingsAtom)
-    return {
+    const newSession: Session = {
         id: uuidv4(),
         name: 'Untitled',
         type: 'chat',
-        messages: [
-            {
-                id: uuidv4(),
-                role: 'system',
-                content: settings.defaultPrompt || defaults.getDefaultPrompt(),
-            },
-        ],
+        messages: [],
     }
+    if (settings.defaultPrompt) {
+        newSession.messages.push({
+            id: uuidv4(),
+            role: 'system',
+            content: settings.defaultPrompt || defaults.getDefaultPrompt(),
+            timestamp: Date.now(),
+        })
+    }
+    return newSession
 }
 
 export function initEmptyPictureSession(): Session {

@@ -76,7 +76,7 @@ export function newConfigs(): Config {
 }
 
 export function getDefaultPrompt() {
-    return 'You are a helpful assistant. You can help me by answering my questions. You can also ask me questions.'
+    return 'You are a helpful assistant.'
 }
 
 export function sessions(): Session[] {
