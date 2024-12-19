@@ -307,5 +307,7 @@
     "Web Browsing": "Webbläsning",
     "Web Browsing...": "Webbläsning...",
     "Browsing and retrieving information from the internet.": "Browsar och hämtar information från internet.",
-    "Enabled": "Aktiverad"
+    "Enabled": "Aktiverad",
+    "The {{model}} API itself does not support web browsing. Supported models: <OpenMorePlanButton>Chatbox AI models</OpenMorePlanButton>, {{supported_web_browsing_models}}": "Den aktuella modellen {{model}} API:et stöder inte webbläsning. Stödda modeller: <OpenMorePlanButton>Chatbox AI modeller</OpenMorePlanButton>, {{supported_web_browsing_models}}",
+    "The {{model}} API itself does not support web browsing. Supported models: {{supported_web_browsing_models}}": "Den aktuella modellen {{model}} API:et stöder inte webbläsning. Stödda modeller: {{supported_web_browsing_models}}"
 }

@@ -307,5 +307,7 @@
     "Web Browsing": "Web Browsing",
     "Web Browsing...": "Web Browsing...",
     "Browsing and retrieving information from the internet.": "Browsing and retrieving information from the internet.",
-    "Enabled": "Enabled"
+    "Enabled": "Enabled",
+    "The {{model}} API itself does not support web browsing. Supported models: <OpenMorePlanButton>Chatbox AI models</OpenMorePlanButton>, {{supported_web_browsing_models}}": "The current model {{model}} API does not support web browsing. Supported models: <OpenMorePlanButton>Chatbox AI models</OpenMorePlanButton>, {{supported_web_browsing_models}}",
+    "The {{model}} API itself does not support web browsing. Supported models: {{supported_web_browsing_models}}": "The current model {{model}} API does not support web browsing. Supported models: {{supported_web_browsing_models}}"
 }

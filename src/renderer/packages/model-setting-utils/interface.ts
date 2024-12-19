@@ -12,4 +12,5 @@ export interface ModelSettingUtil {
 
     selectSessionModel(settings: Session['settings'], selected: string): Session['settings']
     isCurrentModelSupportImageInput(settings: ModelSettings): boolean
+    isCurrentModelSupportWebBrowsing(settings: ModelSettings): boolean
 }

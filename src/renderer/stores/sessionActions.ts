@@ -40,7 +40,7 @@ import * as settingActions from './settingActions'
 import { formatChatAsHtml, formatChatAsMarkdown, formatChatAsTxt } from '@/lib/format-chat'
 import { countWord } from '@/packages/word-count'
 import { estimateTokensFromMessages } from '@/packages/token'
-import { getModelDisplayName, isModelSupportImageInput } from '@/packages/model-setting-utils'
+import { getModelDisplayName, isModelSupportImageInput, isModelSupportWebBrowsing } from '@/packages/model-setting-utils'
 import { languageNameMap } from '@/i18n/locales'
 import { isTextFilePath } from 'src/shared/file-extensions'
 import * as localParser from '@/packages/local-parser'
@@ -642,6 +642,25 @@ export async function submitNewUserMessage(params: {
                 }
             }
         }
+
+        // 如果本次消息开启了联网问答，需要检查当前模型是否支持
+        if (
+            webBrowsing
+            && !isModelSupportWebBrowsing(settings)
+        ) {
+            if (remoteConfig.setting_chatboxai_first) {
+                throw ChatboxAIAPIError.fromCodeName(
+                    'model_not_support_web_browsing',
+                    'model_not_support_web_browsing'
+                )
+            } else {
+                throw ChatboxAIAPIError.fromCodeName(
+                    'model_not_support_web_browsing_2',
+                    'model_not_support_web_browsing_2'
+                )
+            }
+        }
+
         // 如果本次发送消息携带了附件，应该在这次发送中上传文件并构造文件信息(file uuid)
         if (attachments && attachments.length > 0) {
             if (settings.aiProvider === ModelProvider.ChatboxAI) {

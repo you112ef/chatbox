@@ -173,6 +173,18 @@ export class ChatboxAIAPIError extends BaseError {
             i18nKey:
                 'An unknown error occurred. Please try again later. If this error continues, please send an email to hi@benn.app for support.',
         },
+        model_not_support_web_browsing: {
+            name: 'model_not_support_web_browsing',
+            code: 20021,
+            i18nKey:
+                'The {{model}} API itself does not support web browsing. Supported models: <OpenMorePlanButton>Chatbox AI models</OpenMorePlanButton>, {{supported_web_browsing_models}}',
+        },
+        model_not_support_web_browsing_2: {
+            name: 'model_not_support_web_browsing_2',
+            code: 20022,
+            i18nKey:
+                'The {{model}} API itself does not support web browsing. Supported models: {{supported_web_browsing_models}}',
+        },
     }
     static fromCodeName(response: string, codeName: string) {
         if (!codeName) {

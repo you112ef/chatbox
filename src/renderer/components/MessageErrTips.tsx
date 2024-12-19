@@ -69,6 +69,7 @@ export default function MessageErrTips(props: { msg: Message }) {
                     i18nKey={chatboxAIErrorDetail.i18nKey}
                     values={{
                         model: msg.model,
+                        supported_web_browsing_models: 'gemini-2.0-flash(API)'
                     }}
                     components={{
                         OpenSettingButton: (

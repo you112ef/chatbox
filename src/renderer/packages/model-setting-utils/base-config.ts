@@ -56,4 +56,8 @@ export default class BaseConfig {
         }
         return currentValue
     }
+
+    isCurrentModelSupportWebBrowsing(settings: Settings): boolean {
+        return false
+    }
 }
