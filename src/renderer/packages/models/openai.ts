@@ -146,10 +146,11 @@ export default class OpenAI extends Base {
         if (json.error) {
             throw new ApiError(`Error from OpenAI: ${JSON.stringify(json)}`)
         }
+        const content: string = json.choices[0].message.content || ''
         if (onResultChange) {
-            onResultChange(json.choices[0].message.content)
+            onResultChange({ content })
         }
-        return json.choices[0].message.content
+        return content
     }
 
     async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
