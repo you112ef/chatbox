@@ -106,6 +106,17 @@ export default function DisplaySettingTab(props: {
                 />
                 <FormControlLabel
                     control={<Switch />}
+                    label={t('show first token latency')}
+                    checked={settingsEdit.showFirstTokenLatency}
+                    onChange={(e, checked) =>
+                        setSettingsEdit({
+                            ...settingsEdit,
+                            showFirstTokenLatency: checked,
+                        })
+                    }
+                />
+                <FormControlLabel
+                    control={<Switch />}
                     label={t('Auto-collapse code blocks')}
                     checked={settingsEdit.autoCollapseCodeBlock}
                     onChange={(e, checked) =>

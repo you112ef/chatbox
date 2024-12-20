@@ -37,6 +37,7 @@ import {
     autoPreviewArtifactsAtom,
     autoCollapseCodeBlockAtom,
     reportContentDialogAtom,
+    showFirstTokenLatencyAtom,
 } from '../stores/atoms'
 import { currsentSessionPicUrlAtom, showTokenUsedAtom } from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
@@ -89,6 +90,7 @@ function _Message(props: Props) {
     const showTokenCount = useAtomValue(showTokenCountAtom)
     const showWordCount = useAtomValue(showWordCountAtom)
     const showTokenUsed = useAtomValue(showTokenUsedAtom)
+    const showFirstTokenLatency = useAtomValue(showFirstTokenLatencyAtom)
     const enableMarkdownRendering = useAtomValue(enableMarkdownRenderingAtom)
     const enableLaTeXRendering = useAtomValue(enableLaTeXRenderingAtom)
     const enableMermaidRendering = useAtomValue(enableMermaidRenderingAtom)
@@ -191,6 +193,10 @@ function _Message(props: Props) {
         }
         if (showTokenUsed && msg.role === 'assistant' && !msg.generating) {
             tips.push(`tokens used: ${msg.tokensUsed || 'unknown'}`)
+        }
+        if (showFirstTokenLatency && msg.role === 'assistant' && !msg.generating) {
+            let latency = msg.firstTokenLatency ? `${msg.firstTokenLatency}ms` : 'unknown'
+            tips.push(`first token latency: ${latency}`)
         }
         if (showModelName && props.msg.role === 'assistant') {
             tips.push(`model: ${props.msg.model || 'unknown'}`)

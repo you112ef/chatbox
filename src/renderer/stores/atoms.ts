@@ -57,6 +57,7 @@ export const showTokenCountAtom = focusAtom(settingsAtom, (optic) => optic.prop(
 export const showTokenUsedAtom = focusAtom(settingsAtom, (optic) => optic.prop('showTokenUsed'))
 export const showModelNameAtom = focusAtom(settingsAtom, (optic) => optic.prop('showModelName'))
 export const showMessageTimestampAtom = focusAtom(settingsAtom, (optic) => optic.prop('showMessageTimestamp'))
+export const showFirstTokenLatencyAtom = focusAtom(settingsAtom, (optic) => optic.prop('showFirstTokenLatency'))
 export const userAvatarKeyAtom = focusAtom(settingsAtom, (optic) => optic.prop('userAvatarKey'))
 export const defaultAssistantAvatarKeyAtom = focusAtom(settingsAtom, (optic) => optic.prop('defaultAssistantAvatarKey'))
 export const themeAtom = focusAtom(settingsAtom, (optic) => optic.prop('theme'))

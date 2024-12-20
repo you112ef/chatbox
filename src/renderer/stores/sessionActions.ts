@@ -819,6 +819,7 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
         error: undefined,
         errorExtra: undefined,
         status: [],
+        firstTokenLatency: undefined,
     }
     if (options?.webBrowsing) {
         targetMsg.status?.push({ type: 'web_browsing' })
@@ -854,14 +855,20 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
             // 对话消息生成
             case 'chat':
             case undefined:
+                const startTime = Date.now()
+                let firstTokenLatency: number | undefined = undefined
                 const promptMsgs = await genMessageContext(settings, messages.slice(0, targetMsgIx))
                 const throttledModifyMessage = throttle<onResultChangeWithCancel>((updated) => {
+                    if (!firstTokenLatency && updated.content && updated.content.length > 0) {
+                        firstTokenLatency = Date.now() - startTime
+                    }
                     targetMsg = {
                         ...targetMsg,
                         content: updated.content,
                         cancel: updated.cancel,
                         webBrowsing: updated.webBrowsing,
                         status: updated.content ? [] : targetMsg.status,
+                        firstTokenLatency,
                     }
                     modifyMessage(sessionId, targetMsg)
                 }, 100)

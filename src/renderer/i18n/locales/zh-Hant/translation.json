@@ -310,5 +310,6 @@
     "Browsing and retrieving information from the internet.": "正在從互聯網中瀏覽和檢索信息。",
     "Enabled": "已啟用",
     "The {{model}} API itself does not support web browsing. Supported models: <OpenMorePlanButton>Chatbox AI models</OpenMorePlanButton>, {{supported_web_browsing_models}}": "當前模型 {{model}} API 原本不支持網路瀏覽。支持的模型：<OpenMorePlanButton>Chatbox AI models</OpenMorePlanButton>, {{supported_web_browsing_models}}",
-    "The {{model}} API itself does not support web browsing. Supported models: {{supported_web_browsing_models}}": "當前模型 {{model}} API 原本不支持網路瀏覽。支持的模型：{{supported_web_browsing_models}}"
+    "The {{model}} API itself does not support web browsing. Supported models: {{supported_web_browsing_models}}": "當前模型 {{model}} API 原本不支持網路瀏覽。支持的模型：{{supported_web_browsing_models}}",
+    "show first token latency": "顯示首字耗時"
 }

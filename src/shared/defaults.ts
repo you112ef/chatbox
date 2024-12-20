@@ -47,6 +47,7 @@ export function settings(): Settings {
         showTokenUsed: true,
         showModelName: true,
         showMessageTimestamp: false,
+        showFirstTokenLatency: false,
         userAvatarKey: '',
         defaultAssistantAvatarKey: '',
         theme: Theme.System,

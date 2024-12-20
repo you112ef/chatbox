@@ -89,6 +89,7 @@ export interface Message {
     tokenCount?: number // 当前消息的 token 数量
     tokensUsed?: number // 生成当前消息的 token 使用量
     timestamp?: number // 当前消息的时间戳
+    firstTokenLatency?: number // AI 回答首字耗时(毫秒) - 从发送请求到接收到第一个字的时间间隔
 }
 
 export type SettingWindowTab = 'ai' | 'display' | 'chat' | 'advanced'
@@ -287,6 +288,7 @@ export interface Settings extends ModelSettings {
     showTokenUsed?: boolean
     showModelName?: boolean
     showMessageTimestamp?: boolean
+    showFirstTokenLatency?: boolean
 
     theme: Theme
     language: Language
