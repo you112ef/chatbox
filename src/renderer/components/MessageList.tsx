@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Message from './Message'
 import * as atoms from '../stores/atoms'
 import { useAtomValue, useSetAtom } from 'jotai'
@@ -54,6 +54,11 @@ export default function MessageList(props: Props) {
         setThreadMenuAnchorEl(null)
         setThreadMenuClickedTopicId(null)
     }
+
+    const openHistoryDrawer =  useCallback(() => {
+        setShowHistoryDrawer(threadMenuClickedTopicId || true)
+        closeThreadMenu()
+    }, [threadMenuClickedTopicId])
 
     return (
         <div className={cn('w-full h-full mx-auto')}>
@@ -144,6 +149,7 @@ export default function MessageList(props: Props) {
                     anchorEl={threadMenuAnchorEl}
                     open={Boolean(threadMenuAnchorEl)}
                     onClose={closeThreadMenu}
+                    onDoubleClick={openHistoryDrawer}
                     anchorOrigin={{
                         vertical: 'bottom',
                         horizontal: 'center',
@@ -155,10 +161,7 @@ export default function MessageList(props: Props) {
                 >
                     <MenuItem
                         disableRipple
-                        onClick={() => {
-                            setShowHistoryDrawer(threadMenuClickedTopicId || true)
-                            closeThreadMenu()
-                        }}
+                        onClick={openHistoryDrawer}
                     >
                         <SegmentIcon fontSize="small" />
                         {t('Show in Thread List')}
