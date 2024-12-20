@@ -71,9 +71,9 @@ export default class ChatGLM extends Base {
         if (json.status !== 200) {
             throw new ApiError(JSON.stringify(json))
         }
-        const str = typeof json.response === 'string' ? json.response : JSON.stringify(json.response)
+        const str: string = typeof json.response === 'string' ? json.response : JSON.stringify(json.response)
         if (onResultChange) {
-            onResultChange(str)
+            onResultChange({ content: str })
         }
         return str
     }
