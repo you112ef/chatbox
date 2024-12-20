@@ -159,9 +159,10 @@ export default function AIProviderSelect(props: ModelConfigProps) {
                     }}
                 >
                     {globalSettings.customProviders.length > 0 && (
-                        <>
-                            {globalSettings.customProviders.map((provider) => (
+                        <div>
+                            {globalSettings.customProviders.map((provider, index) => (
                                 <MenuItem
+                                    key={index}
                                     disableRipple
                                     onClick={() => {
                                         onSwitchCustomProvider(provider.id)
@@ -174,10 +175,11 @@ export default function AIProviderSelect(props: ModelConfigProps) {
                             ))}
                             {AddProviderMenuItem}
                             <Divider sx={{ my: 0.5 }} />
-                        </>
+                        </div>
                     )}
-                    {AIModelProviderMenuOptionList.map((provider) => (
+                    {AIModelProviderMenuOptionList.map((provider, index) => (
                         <MenuItem
+                            key={index}
                             disableRipple
                             onClick={() => {
                                 onSwitchAIProvider(provider.value as ModelProvider)
@@ -198,10 +200,10 @@ export default function AIProviderSelect(props: ModelConfigProps) {
                         </MenuItem>
                     ))}
                     {globalSettings.customProviders.length === 0 && (
-                        <>
+                        <div>
                             <Divider sx={{ my: 0.5 }} />
                             {AddProviderMenuItem}
-                        </>
+                        </div>
                     )}
                 </StyledMenu>
             </div>
