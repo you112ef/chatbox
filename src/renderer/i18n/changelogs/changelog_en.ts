@@ -1,4 +1,16 @@
 const changelog = `
+### v1.8.0 - 2024.12.22
+
+1. Introduced Web Browsing capability. Chatbox AI Models and Gemini 2.0 flash(API) can now be enabled to access real-time internet information, providing responses with cited sources
+2. Added first-token latency display for message generation, toggleable in settings
+3. Enhanced image preprocessing capabilities. You can now send images in more formats (e.g., svg, gif) - Chatbox automatically converts them to model-compatible formats and adjusts dimensions to meet model requirements
+4. Double-click conversation title to quickly access the conversation list
+5. Improved compatibility for custom model provider configurations - Chatbox now automatically corrects and handles common configuration errors
+6. Increased maximum temperature range to 2.0
+7. Added confirmation for all delete actions 
+8. Updated model list, removing deprecated models
+9. Various minor bug fixes and improvements
+
 ### v1.7.0 - 2024.12.01
 
 1. Added message branching feature. When regenerating a message, a new branch will be created, allowing you to switch between branches. If you prefer the original behavior, you can choose to expand all branched messages from the branch menu.
