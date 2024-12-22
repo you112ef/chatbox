@@ -120,7 +120,11 @@ export default function Header(props: Props) {
                     }}
                 >
                     {
-                        <Typography variant="h6" noWrap className={cn('max-w-56', showSidebar ? 'ml-3' : 'ml-1')}>
+                        <Typography variant="h6" noWrap className={cn(showSidebar ? 'ml-3' : 'ml-1')}
+                            sx={{
+                                maxWidth: isSmallScreen ? '12rem' : '18rem',
+                            }}
+                        >
                             {currentSession.name}
                         </Typography>
                     }
