@@ -176,7 +176,7 @@ L3
     cases.forEach(({ name, input, expected }) => {
         test(name, () => {
             const base = new Base()
-            const got = base.sequenceMessages(input as any)
+            const got = base.sequenceMessages(input)
 
             expect(got.length).toBe(expected.length)
 

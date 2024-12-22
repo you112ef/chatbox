@@ -428,7 +428,7 @@ function CopilotForm(props: CopilotFormProps) {
                 label={t('Copilot Name')}
                 fullWidth
                 variant="outlined"
-                placeholder={t('My Assistant') as any}
+                placeholder={t('My Assistant') || ''}
                 value={copilotEdit.name}
                 onChange={inputHandler('name')}
                 helperText={helperTexts['name']}
@@ -436,7 +436,7 @@ function CopilotForm(props: CopilotFormProps) {
             <TextField
                 margin="dense"
                 label={t('Copilot Prompt')}
-                placeholder={t('Copilot Prompt Demo') as any}
+                placeholder={t('Copilot Prompt Demo') || ''}
                 fullWidth
                 variant="outlined"
                 multiline

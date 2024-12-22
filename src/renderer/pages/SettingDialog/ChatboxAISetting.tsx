@@ -73,12 +73,12 @@ export default function ChatboxAISetting(props: ModelConfigProps) {
                         break
                 }
             }
-        } catch (e) {
+        } catch (e: any) {
             setTip(
                 <Box className="text-red-500">
                     {t('Failed to activate license, please check your license key and network connection')}
                     <br />
-                    {`${(e as any).message}`.slice(0, 100)}
+                    {`${e?.message}`.slice(0, 100)}
                 </Box>
             )
         }
