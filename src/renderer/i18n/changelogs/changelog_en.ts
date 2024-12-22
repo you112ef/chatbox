@@ -4,7 +4,7 @@ const changelog = `
 1. Introduced Web Browsing capability. Chatbox AI Models and Gemini 2.0 flash(API) can now be enabled to access real-time internet information, providing responses with cited sources
 2. Added first-token latency display for message generation, toggleable in settings
 3. Enhanced image preprocessing capabilities. You can now send images in more formats (e.g., svg, gif) - Chatbox automatically converts them to model-compatible formats and adjusts dimensions to meet model requirements
-4. Double-click conversation title to quickly access the conversation list
+4. Double-click thread title to quickly access the thread list
 5. Improved compatibility for custom model provider configurations - Chatbox now automatically corrects and handles common configuration errors
 6. Increased maximum temperature range to 2.0
 7. Added confirmation for all delete actions 
