@@ -31,6 +31,12 @@ export const modelConfig = {
         vision: true,
     },
 
+    'claude-3-5-haiku-20241022': {
+        contextWindow: 200_000,
+        maxOutput: 4096,
+        vision: true,
+    },
+
     'claude-3-opus-20240229': {
         contextWindow: 200_000,
         maxOutput: 4096,
@@ -57,33 +63,6 @@ export const modelConfig = {
         vision: false,
     },
     'claude-instant-1.2': {
-        contextWindow: 100_000,
-        maxOutput: 4096,
-        vision: false,
-    },
-
-    // 以下模型的配置待确认，因为文档中没有提到
-    'claude-2': {
-        contextWindow: 100_000,
-        maxOutput: 4096,
-        vision: false,
-    },
-    'claude-instant-1': {
-        contextWindow: 100_000,
-        maxOutput: 4096,
-        vision: false,
-    },
-    'claude-1': {
-        contextWindow: 100_000,
-        maxOutput: 4096,
-        vision: false,
-    },
-    'claude-instant-1-100k': {
-        contextWindow: 100_000,
-        maxOutput: 4096,
-        vision: false,
-    },
-    'claude-1-100k': {
         contextWindow: 100_000,
         maxOutput: 4096,
         vision: false,

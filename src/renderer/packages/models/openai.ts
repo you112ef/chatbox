@@ -322,24 +322,6 @@ export const openaiModelConfigs = {
         maxContextTokens: 128_000,
         vision: false,
     },
-
-    // 以下模型延长到了 2024 年 6 月
-    // https://platform.openai.com/docs/models/continuous-model-upgrades
-    'gpt-3.5-turbo-0301': {
-        maxTokens: 4096,
-        maxContextTokens: 4096,
-        vision: false,
-    },
-    'gpt-4-0314': {
-        maxTokens: 4096,
-        maxContextTokens: 8192,
-        vision: false,
-    },
-    'gpt-4-32k-0314': {
-        maxTokens: 4096,
-        maxContextTokens: 32768,
-        vision: false,
-    },
 }
 export type OpenAIModel = keyof typeof openaiModelConfigs
 export const models = Array.from(Object.keys(openaiModelConfigs)).sort() as OpenAIModel[]

@@ -46,9 +46,6 @@ export const modelConfig = {
     'mixtral-8x7b-32768': {
         vision: false,
     },
-    'gemma-7b-it': {
-        vision: false,
-    },
 }
 
 export type GroqModel = keyof typeof modelConfig
