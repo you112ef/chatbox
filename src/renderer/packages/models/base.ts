@@ -62,6 +62,7 @@ export default class Base {
             if (onResultChangeWithCancel) {
                 onResultChangeWithCancel({ content: result, cancel }) // 这里先传递 cancel 方法
                 onResultChange = (data) => {
+                    result = data.content
                     onResultChangeWithCancel({ ...data, cancel })
                 }
             }
