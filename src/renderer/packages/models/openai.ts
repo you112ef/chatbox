@@ -306,6 +306,16 @@ export const openaiModelConfigs = {
         vision: true,
     },
 
+    'o1': {
+        maxTokens: 32_768,
+        maxContextTokens: 128_000,
+        vision: false,
+    },
+    'o1-2024-12-17': {
+        maxTokens: 32_768,
+        maxContextTokens: 128_000,
+        vision: false,
+    },
     'o1-preview': {
         maxTokens: 32_768,
         maxContextTokens: 128_000,
