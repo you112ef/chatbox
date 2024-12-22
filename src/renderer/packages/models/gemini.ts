@@ -12,6 +12,12 @@ export const modelConfig = {
     'gemini-2.0-flash-exp': {
         vision: true,
     },
+    'gemini-2.0-flash-thinking-exp': {
+        vision: true,
+    },
+    'gemini-2.0-flash-thinking-exp-1219': {
+        vision: true,
+    },
     'gemini-1.5-pro-latest': {
         vision: true,
     },
