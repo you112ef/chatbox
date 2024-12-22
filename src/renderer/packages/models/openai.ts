@@ -3,6 +3,7 @@ import { ApiError, ChatboxAIAPIError } from './errors'
 import Base, { onResultChange } from './base'
 import storage from '@/storage'
 import * as settingActions from '@/stores/settingActions'
+import { normalizeOpenAIApiHostAndPath } from './llm_utils'
 
 interface Options {
     openaiKey: string
@@ -25,24 +26,9 @@ export default class OpenAI extends Base {
     constructor(options: Options) {
         super()
         this.options = options
-        if (this.options.apiHost) {
-            this.options.apiHost = this.options.apiHost.trim()
-        }
-        if (!this.options.apiHost) {
-            this.options.apiHost = 'https://api.openai.com'
-        }
-        if (
-            this.options.apiHost.startsWith('https://openrouter.ai/api/v1')
-            && this.options.apiPath === '/v1/chat/completions'
-        ) {
-            this.options.apiPath = '/chat/completions'
-        }
-        if (this.options.apiHost.endsWith('/')) {
-            this.options.apiHost = this.options.apiHost.slice(0, -1)
-        }
-        if (this.options.apiPath && !this.options.apiPath.startsWith('/')) {
-            this.options.apiPath = '/' + this.options.apiPath
-        }
+        const { apiHost, apiPath } = normalizeOpenAIApiHostAndPath(this.options)
+        this.options.apiHost = apiHost
+        this.options.apiPath = apiPath
     }
 
     async callChatCompletion(
