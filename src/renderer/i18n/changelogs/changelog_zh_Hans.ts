@@ -1,4 +1,8 @@
 const changelog = `
+### v1.8.1 - 2024.12.23
+
+1. 修复 DALL-E 模型网络请求的 bug。
+
 ### v1.8.0 - 2024.12.22
 
 1. 新增联网问答功能。现在 Chatbox AI Models 和 Gemini 2.0 flash(API) 可以参考互联网的实时信息进行回答，并在消息中列出参考信息来源

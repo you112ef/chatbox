@@ -1,4 +1,8 @@
 const changelog = `
+### v1.8.1 - 2024.12.23
+
+1. Fixed an issue with DALL-E API requests.
+
 ### v1.8.0 - 2024.12.22
 
 1. Introduced Web Browsing capability. Chatbox AI Models and Gemini 2.0 flash(API) can now be enabled to access real-time internet information, providing responses with cited sources
