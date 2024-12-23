@@ -13,7 +13,7 @@ export function getModel(setting: Settings, config: Config) {
         case ModelProvider.ChatboxAI:
             return new ChatboxAI(setting, config)
         case ModelProvider.OpenAI:
-            return new OpenAI(setting)
+            return new OpenAI({ ...setting, apiPath: undefined }) // 因为 OpenAI 会修改传入的 option，如果不复制可能导致状态异常
         case ModelProvider.Azure:
             return new AzureOpenAI(setting)
         case ModelProvider.ChatGLM6B:
