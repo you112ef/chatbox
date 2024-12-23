@@ -93,8 +93,7 @@ export default class OpenAI extends Base {
         signal?: AbortSignal,
         onResultChange?: onResultChange
     ): Promise<string> {
-        const apiPath = this.options.apiPath || '/v1/chat/completions'
-        const response = await this.post(`${this.options.apiHost}${apiPath}`, this.getHeaders(), requestBody, {
+        const response = await this.post(`${this.options.apiHost}${this.options.apiPath}`, this.getHeaders(), requestBody, {
             signal,
             useProxy: this.options.openaiUseProxy,
         })
@@ -123,8 +122,7 @@ export default class OpenAI extends Base {
         signal?: AbortSignal,
         onResultChange?: onResultChange
     ): Promise<string> {
-        const apiPath = this.options.apiPath || '/v1/chat/completions'
-        const response = await this.post(`${this.options.apiHost}${apiPath}`, this.getHeaders(), requestBody, {
+        const response = await this.post(`${this.options.apiHost}${this.options.apiPath}`, this.getHeaders(), requestBody, {
             signal,
             useProxy: this.options.openaiUseProxy,
         })
@@ -140,11 +138,8 @@ export default class OpenAI extends Base {
     }
 
     async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
-        if (this.options.apiHost.endsWith('/')) {
-            this.options.apiHost = this.options.apiHost.slice(0, -1)
-        }
         const res = await this.post(
-            `${this.options.apiHost}/v1/images/generations`,
+            `${this.options.apiHost}/images/generations`,
             this.getHeaders(),
             {
                 prompt,
