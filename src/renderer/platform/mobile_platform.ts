@@ -86,7 +86,6 @@ export default class MobilePlatform implements Platform {
         return ret
     }
     public async setAllStoreValues(data: { [key: string]: any }): Promise<void> {
-        store.clearAll()
         for (const [key, value] of Object.entries(data)) {
             store.set(key, value)
         }
