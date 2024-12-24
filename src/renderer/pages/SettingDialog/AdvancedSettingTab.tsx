@@ -257,9 +257,13 @@ function ExportAndImport(props: { onCancel: () => void }) {
                     if (typeof result !== 'string') {
                         throw new Error('FileReader result is not string')
                     }
-                    const json = JSON.parse(result)
+                    const importData = JSON.parse(result)
+                    const previousData = await storage.getAll()
                     // FIXME: 这里缺少了数据校验
-                    await storage.setAll(json)
+                    await storage.setAll({
+                        ...previousData,    // 有时候 importData 在导出时没有包含一些数据，这些数据应该保持原样
+                        ...importData,
+                    })
                     props.onCancel() // 导出成功后立即关闭设置窗口，防止用户点击保存、导致设置数据被覆盖
                     platform.relaunch() // 重启应用以生效
                 } catch (err) {
