@@ -121,6 +121,7 @@ export default function AdvancedSettingTab(props: Props) {
                                             keys: ['Ctrl', 'Shift', 'N'],
                                         },
                                         { description: t('Focus on the Input Box'), keys: ['Ctrl', 'I'] },
+                                        { description: t('Focus on the Input Box and Enter Web Browsing Mode'), keys: ['Ctrl', 'E'] },
                                         { description: t('Send'), keys: ['enter'] },
                                         {
                                             description: t('Insert a New Line into the Input Box'),

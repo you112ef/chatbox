@@ -311,5 +311,6 @@
     "Enabled": "Включен",
     "The {{model}} API itself does not support web browsing. Supported models: <OpenMorePlanButton>Chatbox AI models</OpenMorePlanButton>, {{supported_web_browsing_models}}": "Текущая модель {{model}} API не поддерживает веб-браузер. Поддерживаемые модели: <OpenMorePlanButton>модели Chatbox AI</OpenMorePlanButton>, {{supported_web_browsing_models}}",
     "The {{model}} API itself does not support web browsing. Supported models: {{supported_web_browsing_models}}": "Текущая модель {{model}} API не поддерживает веб-браузер. Поддерживаемые модели: {{supported_web_browsing_models}}",
-    "show first token latency": "Показать задержку первого токена"
+    "show first token latency": "Показать задержку первого токена",
+    "Focus on the Input Box and Enter Web Browsing Mode": "Фокусировать на поле ввода и войти в режим веб-браузера"
 }

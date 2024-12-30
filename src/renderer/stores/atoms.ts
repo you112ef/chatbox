@@ -254,6 +254,7 @@ export const openAttachLinkDialogAtom = atom(false) // 是否展示链接插入�
 export const reportContentDialogAtom = atom<{ id: string } | null>(null) // 是否展示举报内容窗口
 
 export const inputBoxLinksAtom = atom<{ url: string }[]>([])
+export const inputBoxWebBrowsingModeAtom = atom(false)
 
 export const artifactDialogHtmlCodeAtom = atom('') // artifact 预览弹窗（当 html 不为空时则弹窗）
 

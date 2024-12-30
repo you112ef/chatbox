@@ -311,5 +311,6 @@
     "Enabled": "Activé",
     "The {{model}} API itself does not support web browsing. Supported models: <OpenMorePlanButton>Chatbox AI models</OpenMorePlanButton>, {{supported_web_browsing_models}}": "Le modèle actuel {{model}} API ne prend pas en charge la navigation web. Modèles pris en charge : <OpenMorePlanButton>Chatbox AI</OpenMorePlanButton>, {{supported_web_browsing_models}}",
     "The {{model}} API itself does not support web browsing. Supported models: {{supported_web_browsing_models}}": "Le modèle actuel {{model}} API ne prend pas en charge la navigation web. Modèles pris en charge : {{supported_web_browsing_models}}",
-    "show first token latency": "Afficher la latence du premier token"
+    "show first token latency": "Afficher la latence du premier token",
+    "Focus on the Input Box and Enter Web Browsing Mode": "Focaliser sur la zone de saisie et entrer dans le mode de navigation web"
 }

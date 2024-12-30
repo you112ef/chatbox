@@ -35,7 +35,7 @@ export default function InputBox(props: {}) {
     const [messageInput, setMessageInput] = useState('')
     const [pictureKeys, setPictureKeys] = useState<string[]>([])
     const [attachments, setAttachments] = useState<File[]>([])
-    const [webBrowsingMode, setWebBrowsingMode] = useState(false)
+    const [webBrowsingMode, setWebBrowsingMode] = useAtom(atoms.inputBoxWebBrowsingModeAtom)
     const [links, setLinks] = useAtom(atoms.inputBoxLinksAtom)
     const pictureInputRef = useRef<HTMLInputElement | null>(null)
     const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -424,6 +424,8 @@ export default function InputBox(props: {}) {
                             tooltipTitle={
                                 <div className="text-center inline-block">
                                     <span>{t('Web Browsing')}</span>
+                                    <br />
+                                    <Shortcut keys={['Option', 'E']} size="small" opacity={0.7} />
                                 </div>
                             }
                             tooltipPlacement="top"

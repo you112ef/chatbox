@@ -32,6 +32,12 @@ function keyboardShortcut(e: KeyboardEvent) {
         dom.focusMessageInput()
         return
     }
+    if (e.key === 'e' && ctrlOrCmd) {
+        dom.focusMessageInput()
+        const store = getDefaultStore()
+        store.set(atoms.inputBoxWebBrowsingModeAtom, (v) => !v)
+        return
+    }
 
     // 创建新会话 CmdOrCtrl + C
     if (e.key === 'n' && ctrlOrCmd && !shift) {

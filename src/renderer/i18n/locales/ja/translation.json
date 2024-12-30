@@ -311,5 +311,6 @@
     "Enabled": "有効",
     "The {{model}} API itself does not support web browsing. Supported models: <OpenMorePlanButton>Chatbox AI models</OpenMorePlanButton>, {{supported_web_browsing_models}}": "現在のモデル{{model}} APIはWebブラウジングをサポートしていません。サポートされているモデル：<OpenMorePlanButton>Chatbox AIモデル</OpenMorePlanButton>, {{supported_web_browsing_models}}",
     "The {{model}} API itself does not support web browsing. Supported models: {{supported_web_browsing_models}}": "現在のモデル{{model}} APIはWebブラウジングをサポートしていません。サポートされているモデル：{{supported_web_browsing_models}}",
-    "show first token latency": "最初のトークンの遅延を表示"
+    "show first token latency": "最初のトークンの遅延を表示",
+    "Focus on the Input Box and Enter Web Browsing Mode": "入力ボックスにフォーカスを移し、Webブラウジングモードに入る"
 }
