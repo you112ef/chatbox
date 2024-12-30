@@ -52,8 +52,8 @@ export function getModel(setting: Settings, config: Config) {
 }
 
 export const aiProviderNameHash: Record<ModelProvider, string> = {
-    [ModelProvider.OpenAI]: 'OpenAI API',
-    [ModelProvider.Azure]: 'Azure OpenAI API',
+    [ModelProvider.OpenAI]: 'OpenAI',
+    [ModelProvider.Azure]: 'Azure OpenAI',
     [ModelProvider.ChatGLM6B]: 'ChatGLM',
     [ModelProvider.ChatboxAI]: 'Chatbox AI',
     [ModelProvider.Claude]: 'Claude',
@@ -76,11 +76,6 @@ export const AIModelProviderMenuOptionList = [
         disabled: false,
     },
     {
-        value: ModelProvider.Azure,
-        label: aiProviderNameHash[ModelProvider.Azure],
-        disabled: false,
-    },
-    {
         value: ModelProvider.Claude,
         label: aiProviderNameHash[ModelProvider.Claude],
         disabled: false,
@@ -93,6 +88,11 @@ export const AIModelProviderMenuOptionList = [
     {
         value: ModelProvider.Ollama,
         label: aiProviderNameHash[ModelProvider.Ollama],
+        disabled: false,
+    },
+    {
+        value: ModelProvider.Azure,
+        label: aiProviderNameHash[ModelProvider.Azure],
         disabled: false,
     },
     {
