@@ -3,81 +3,113 @@ import platform from '../platform'
 import * as dom from './dom'
 import * as atoms from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
-import { getDefaultStore } from 'jotai'
+import { useAtomValue, getDefaultStore } from 'jotai'
 import { useIsSmallScreen } from './useScreenChange'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 export default function useShortcut() {
+    const shortcuts = useAtomValue(atoms.shortcutsAtom)
+    const openSettingDialog = useAtomValue(atoms.openSettingDialogAtom)
+
     const isSmallScreen = useIsSmallScreen()
+    // 大屏幕下，窗口显示时自动聚焦输入框
     useEffect(() => {
         const cancel = platform.onWindowShow(() => {
-            // 大屏幕下，窗口显示时自动聚焦输入框
             if (!isSmallScreen) {
                 dom.focusMessageInput()
             }
         })
-        window.addEventListener('keydown', keyboardShortcut)
         return () => {
             cancel()
-            window.removeEventListener('keydown', keyboardShortcut)
         }
     }, [isSmallScreen])
-}
 
-function keyboardShortcut(e: KeyboardEvent) {
-    const ctrlOrCmd = e.ctrlKey || e.metaKey
-    const shift = e.shiftKey
-    const altOrOption = e.altKey
+    // mod (which listens for ctrl on Windows/Linux and cmd on macOS)
+    // Since version 4 alt and option are identical. The meta key is the same as cmd on macOS and os key on Windows.
+    // options 就是 alt
 
-    if (e.key === 'i' && ctrlOrCmd) {
+    // 聚焦输入框
+    useHotkeys(shortcuts.inputBoxFocus, () => {
         dom.focusMessageInput()
-        return
-    }
-    if (e.key === 'e' && ctrlOrCmd) {
+    }, {
+        enableOnFormTags: true,
+        preventDefault: true,
+        enabled: !openSettingDialog,
+    })
+
+    // 切换输入框的 web 浏览模式
+    useHotkeys(shortcuts.inputBoxWebBrowsingMode, (event) => {
         dom.focusMessageInput()
         const store = getDefaultStore()
         store.set(atoms.inputBoxWebBrowsingModeAtom, (v) => !v)
-        return
-    }
+    }, {
+        enableOnFormTags: true,
+        preventDefault: true,
+        enabled: !openSettingDialog,
+    })
 
-    // 创建新会话 CmdOrCtrl + C
-    if (e.key === 'n' && ctrlOrCmd && !shift) {
+    // 创建新会话
+    useHotkeys(shortcuts.newChat, () => {
         sessionActions.createEmpty('chat')
-        return
-    }
-    // 创建新图片会话 CmdOrCtrl + Shift + C
-    if (e.key === 'n' && ctrlOrCmd && shift) {
+    }, {
+        enableOnFormTags: true,
+        preventDefault: true,
+        enabled: !openSettingDialog,
+    })
+    // 创建新图片会话
+    useHotkeys(shortcuts.newPictureChat, () => {
         sessionActions.createEmpty('picture')
-        return
-    }
-    // 归档当前会话的上下文。
-    // 这里不用 e.key 是因为 alt 和 option 会改变 e.key 的值
-    if (e.code === 'KeyR' && altOrOption) {
-        e.preventDefault()
+    }, {
+        enableOnFormTags: true,
+        preventDefault: true,
+        enabled: !openSettingDialog,
+    })
+
+    // 归档当前会话的上下文
+    useHotkeys(shortcuts.messageListRefreshContext, (event) => {
+        event.preventDefault()
         sessionActions.startNewThread()
-        return
-    }
-    if (platform.type === 'desktop') {
-        // 桌面版本中，CMD+R 也可以归档当前会话的上下文
-        if (e.code === 'KeyR' && ctrlOrCmd) {
-            e.preventDefault()
-            sessionActions.startNewThread()
-            return
-        }
-    }
+    }, {
+        enableOnFormTags: true,
+        preventDefault: true,
+        enabled: !openSettingDialog,
+    })
 
-    if (e.key === 'Tab' && ctrlOrCmd && !shift) {
+    // 会话导航
+    useHotkeys(shortcuts.sessionListNavNext, (event) => {
         sessionActions.switchToNext()
-    }
-    if (e.key === 'Tab' && ctrlOrCmd && shift) {
+    }, {
+        enableOnFormTags: true,
+        preventDefault: true,
+        enabled: !openSettingDialog,
+    })
+    useHotkeys(shortcuts.sessionListNavPrev, (event) => {
         sessionActions.switchToNext(true)
-    }
-    for (let i = 1; i <= 9; i++) {
-        if (e.key === i.toString() && ctrlOrCmd) {
-            sessionActions.switchToIndex(i - 1)
-        }
-    }
+    }, {
+        enableOnFormTags: true,
+        preventDefault: true,
+        enabled: !openSettingDialog,
+    })
+    useHotkeys(
+        shortcuts.sessionListNavTargetIndex && shortcuts.sessionListNavTargetIndex.length > 0
+            ? [1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => `${shortcuts.sessionListNavTargetIndex}+${num}`)
+            : [],
+        (event, handler) => {
+            if (handler.keys === undefined) {
+                return
+            }
+            const num = parseInt(handler.keys[0])
+            if (num >= 1 && num <= 9) {
+                sessionActions.switchToIndex(num - 1)
+            }
+        }, {
+            enableOnFormTags: true,
+            preventDefault: true,
+            enabled: !openSettingDialog,
+        })
 
-    if (e.key === 'k' && ctrlOrCmd) {
+    // 搜索
+    useHotkeys(shortcuts.dialogOpenSearch, () => {
         const store = getDefaultStore()
         const openSearchDialog = store.get(atoms.openSearchDialogAtom)
         if (openSearchDialog) {
@@ -85,5 +117,9 @@ function keyboardShortcut(e: KeyboardEvent) {
         } else {
             store.set(atoms.openSearchDialogAtom, true)
         }
-    }
+    }, {
+        enableOnFormTags: true,
+        preventDefault: true,
+        enabled: !openSettingDialog,
+    })
 }

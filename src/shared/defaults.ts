@@ -69,6 +69,25 @@ export function settings(): Settings {
         autoGenerateTitle: true,
 
         autoLaunch: false,
+
+        shortcuts: {
+            windowQuickToggle: 'alt+`', // 快速切换窗口显隐的快捷键
+            inputBoxFocus: 'mod+i', // 聚焦输入框的快捷键
+            inputBoxWebBrowsingMode: 'mod+e', // 切换输入框的 web 浏览模式的快捷键
+            newChat: 'mod+n', // 新建聊天的快捷键
+            newPictureChat: 'mod+shift+n', // 新建图片会话的快捷键
+            sessionListNavNext: 'mod+tab', // 切换到下一个会话的快捷键
+            sessionListNavPrev: 'mod+shift+tab', // 切换到上一个会话的快捷键
+            sessionListNavTargetIndex: 'mod', // 会话导航的快捷键
+            messageListRefreshContext: 'mod+r', // 刷新上下文的快捷键
+            dialogOpenSearch: 'mod+k', // 打开搜索对话框的快捷键
+            inputBoxSend: 'enter', // 发送消息的快捷键
+            inputBoxInsertNewLine: 'shift+enter', // 输入框换行的快捷键
+            inputBoxSendWithoutResponse: 'mod+enter', // 发送但不生成回复的快捷键
+            optionNavUp: 'up', // 选项导航的快捷键
+            optionNavDown: 'down', // 选项导航的快捷键
+            optionSelect: 'enter', // 选项导航的快捷键
+        },
     }
 }
 

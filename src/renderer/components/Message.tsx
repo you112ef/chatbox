@@ -62,7 +62,7 @@ import { estimateTokensFromMessages } from '@/packages/token'
 import { countWord } from '@/packages/word-count'
 import { isContainRenderableCode, MessageArtifact } from './Artifact'
 import ReportIcon from '@mui/icons-material/Report'
-import ConfirmDeleteButton from './ConfirmDeleteButton'
+import { ConfirmDeleteMenuItem } from './ConfirmDeleteButton'
 import platform from '@/platform'
 
 export interface Props {
@@ -713,7 +713,7 @@ function _Message(props: Props) {
                                                     {t('report')}
                                                 </MenuItem>
                                             )}
-                                            <ConfirmDeleteButton
+                                            <ConfirmDeleteMenuItem
                                                 onDelete={onDelMsg}
                                             />
                                         </StyledMenu>

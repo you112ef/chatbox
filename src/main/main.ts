@@ -29,6 +29,7 @@ import * as windowState from './window_state'
 import * as analystic from './analystic-node'
 import * as autoLauncher from './autoLauncher'
 import { AppUpdater } from './app-updater'
+import { ShortcutSetting } from 'src/shared/types'
 // import { parseFile } from './file-parser'
 // import { v4 as uuidv4 } from 'uuid'
 // import { readability } from './readability'
@@ -54,29 +55,79 @@ let tray: Tray | null = null
 
 // --------- 快捷键 ---------
 
-const shortcutMap = {
-    'Alt+`': showOrHideWindow,
-    'Option+`': showOrHideWindow,
+/**
+ * 将渲染层的 shortcut 转化成 electron 支持的格式
+ * react-hotkeys-hook 的快捷键格式参考： https://react-hotkeys-hook.vercel.app/docs/documentation/useHotkeys/basic-usage#modifiers--special-keys
+ * Electron 的快捷键格式参考： https://www.electronjs.org/docs/latest/api/accelerator
+ */
+function normalizeShortcut(shortcut: string) {
+    if (!shortcut) {
+        return ''
+    }
+    let keys = shortcut.split('+')
+    keys = keys.map((key) => {
+        switch (key) {
+            case 'mod':
+                return 'CommandOrControl'
+            case 'option':
+                return 'Alt'
+            case 'backquote':
+                return '`'
+            default:
+                return key
+        }
+    })
+    return keys.join('+')
 }
 
-function registerShortcuts() {
-    for (const [shortcut, handler] of Object.entries(shortcutMap)) {
-        globalShortcut.register(shortcut, () => handler())
+/**
+ * 检查快捷键是否有效
+ * @param shortcut 快捷键字符串
+ * @returns 是否为有效的快捷键
+ */
+function isValidShortcut(shortcut: string): boolean {
+    if (!shortcut) {
+        return false
+    }
+    const keys = shortcut.split('+')
+    // 检查是否至少包含一个非修饰键
+    const hasNonModifier = keys.some((key) => {
+        const normalizedKey = key.trim().toLowerCase()
+        return ![
+            'mod',
+            'command',
+            'cmd',
+            'control',
+            'ctrl',
+            'commandorcontrol',
+            'option',
+            'alt',
+            'shift',
+            'super',
+        ].includes(normalizedKey)
+    })
+    return hasNonModifier
+}
+
+function registerShortcuts(shortcutSetting?: ShortcutSetting) {
+    if (!shortcutSetting) {
+        shortcutSetting = getSettings().shortcuts
+    }
+    if (!shortcutSetting) {
+        return
+    }
+    try {
+        const windowQuickToggle = normalizeShortcut(shortcutSetting.windowQuickToggle)
+        if (isValidShortcut(windowQuickToggle)) {
+            globalShortcut.register(windowQuickToggle, () => showOrHideWindow())
+        }
+    } catch (error) {
+        log.error('Failed to register shortcut [windowQuickToggle]:', error)
     }
 }
 
 function unregisterShortcuts() {
-    for (const shortcut of Object.keys(shortcutMap)) {
-        globalShortcut.unregister(shortcut)
-    }
-}
-
-function initShortcuts() {
-    const settings = getSettings()
-    if (settings.disableQuickToggleShortcut) {
-        return
-    }
-    registerShortcuts()
+    return globalShortcut.unregisterAll()
 }
 
 // --------- Tray 图标 ---------
@@ -328,7 +379,7 @@ if (!gotTheLock) {
                     windowState.saveState(mainWindow)
                 }
             })
-            initShortcuts()
+            registerShortcuts()
             proxy.init()
             app.on('will-quit', () => {
                 try {
@@ -399,12 +450,9 @@ ipcMain.handle('openLink', (event, link) => {
     return shell.openExternal(link)
 })
 ipcMain.handle('ensureShortcutConfig', (event, json) => {
-    const config: { disableQuickToggleShortcut: boolean } = JSON.parse(json)
-    if (config.disableQuickToggleShortcut) {
-        unregisterShortcuts()
-    } else {
-        registerShortcuts()
-    }
+    const config: ShortcutSetting = JSON.parse(json)
+    unregisterShortcuts()
+    registerShortcuts(config)
 })
 
 ipcMain.handle('shouldUseDarkColors', () => nativeTheme.shouldUseDarkColors)

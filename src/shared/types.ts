@@ -296,7 +296,7 @@ export interface Settings extends ModelSettings {
     fontSize: number
     spellCheck: boolean
 
-    disableQuickToggleShortcut?: boolean // 是否关闭快捷键切换窗口显隐
+    // disableQuickToggleShortcut?: boolean // 是否关闭快捷键切换窗口显隐（弃用，为了兼容历史数据，这个字段永远不要使用）
 
     defaultPrompt?: string // 新会话的默认 prompt
 
@@ -317,7 +317,30 @@ export interface Settings extends ModelSettings {
     autoGenerateTitle: boolean
 
     autoLaunch: boolean
+
+    shortcuts: ShortcutSetting
 }
+
+export interface ShortcutSetting {
+    windowQuickToggle: string // 快速切换窗口显隐的快捷键
+    inputBoxFocus: string // 聚焦输入框的快捷键
+    inputBoxWebBrowsingMode: string // 切换输入框的 web 浏览模式的快捷键
+    newChat: string // 新建聊天的快捷键
+    newPictureChat: string // 新建图片会话的快捷键
+    sessionListNavNext: string // 切换到下一个会话的快捷键
+    sessionListNavPrev: string // 切换到上一个会话的快捷键
+    sessionListNavTargetIndex: string // 切换到指定会话的快捷键
+    messageListRefreshContext: string // 刷新上下文的快捷键
+    dialogOpenSearch: string // 打开搜索对话框的快捷键
+    inputBoxSend: string // 发送消息的快捷键
+    inputBoxInsertNewLine: string // 输入框换行的快捷键
+    inputBoxSendWithoutResponse: string // 发送但不生成回复的快捷键
+    optionNavUp: string // 选项导航的快捷键
+    optionNavDown: string // 选项导航的快捷键
+    optionSelect: string // 选项导航的快捷键
+}
+
+export type ShortcutName = keyof ShortcutSetting
 
 export type Language =
     | 'en'

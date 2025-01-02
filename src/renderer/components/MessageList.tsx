@@ -16,7 +16,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import AddIcon from '@mui/icons-material/AddCircleOutline'
 import { Session } from 'src/shared/types'
-import ConfirmDeleteButton from './ConfirmDeleteButton'
+import { ConfirmDeleteMenuItem } from './ConfirmDeleteButton'
 
 interface Props { }
 
@@ -191,7 +191,7 @@ export default function MessageList(props: Props) {
                         <AddIcon fontSize="small" />
                         {t('Move to Conversations')}
                     </MenuItem>
-                    <ConfirmDeleteButton
+                    <ConfirmDeleteMenuItem
                         onDelete={() => {
                             if (threadMenuClickedTopicId) {
                                 sessionActions.removeThread(currentSession.id, threadMenuClickedTopicId)
@@ -295,7 +295,7 @@ function ForkNav(props: { msgId: string; forks: NonNullable<Session['messageFork
                     <SegmentIcon fontSize="small" />
                     {t('expand')}
                 </MenuItem>
-                <ConfirmDeleteButton
+                <ConfirmDeleteMenuItem
                     onDelete={() => {
                         sessionActions.deleteFork(msgId)
                         closeMenu()

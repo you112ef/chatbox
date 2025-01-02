@@ -145,8 +145,8 @@
     "Custom Model": "自定义模型",
     "Custom Model Name": "自定义模型名",
     "advanced": "其他",
-    "Network Proxy": "Network Proxy",
-    "Proxy Address": "Proxy Address",
+    "Network Proxy": "网络代理",
+    "Proxy Address": "代理地址",
     "not available in browser": "此功能在浏览器中无法使用，请下载桌面应用",
     "Data Backup and Restore": "数据备份与恢复",
     "Chat History": "聊天记录",
@@ -312,5 +312,10 @@
     "The {{model}} API itself does not support web browsing. Supported models: <OpenMorePlanButton>Chatbox AI models</OpenMorePlanButton>, {{supported_web_browsing_models}}": "当前模型 {{model}} API 本身不支持联网问答。支持的模型：<OpenMorePlanButton>Chatbox AI models</OpenMorePlanButton>, {{supported_web_browsing_models}}",
     "The {{model}} API itself does not support web browsing. Supported models: {{supported_web_browsing_models}}": "当前模型 {{model}} API 本身不支持联网问答。支持的模型：{{supported_web_browsing_models}}",
     "show first token latency": "显示首字耗时",
-    "Focus on the Input Box and Enter Web Browsing Mode": "聚焦到输入框并进入联网问答模式"
+    "Focus on the Input Box and Enter Web Browsing Mode": "聚焦到输入框并进入联网问答模式",
+    "Hotkeys": "快捷键",
+    "Reset All Hotkeys": "重置所有快捷键",
+    "Action": "动作",
+    "Operations": "操作",
+    "Press hotkey": "输入快捷键"
 }

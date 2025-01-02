@@ -1,4 +1,4 @@
-import { Config, Settings } from 'src/shared/types'
+import { Config, Settings, ShortcutSetting } from 'src/shared/types'
 import * as defaults from 'src/shared/defaults'
 import { Platform, PlatformType } from './interfaces'
 import store from 'store'
@@ -42,7 +42,7 @@ export default class MobilePlatform implements Platform {
         const lang = window.navigator.language
         return parseLocale(lang)
     }
-    public async ensureShortcutConfig(config: { disableQuickToggleShortcut: boolean }): Promise<void> {
+    public async ensureShortcutConfig(config: ShortcutSetting): Promise<void> {
         return
     }
     public async ensureProxyConfig(config: { proxy?: string }): Promise<void> {

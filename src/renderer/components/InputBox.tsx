@@ -7,7 +7,7 @@ import * as atoms from '../stores/atoms'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import * as sessionActions from '../stores/sessionActions'
 import * as dom from '../hooks/dom'
-import { Shortcut } from './Shortcut'
+import { Keys } from './Shortcut'
 import { useInputBoxHeight, useIsSmallScreen } from '@/hooks/useScreenChange'
 import { Image, FolderClosed, Link, Undo2, SendHorizontal, Eraser, Settings2, Globe } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -23,6 +23,7 @@ import autosize from 'autosize'
 import platform from '@/platform'
 import { useDropzone } from 'react-dropzone'
 import * as picUtils from '@/packages/pic_utils'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 export default function InputBox(props: {}) {
     const theme = useTheme()
@@ -44,6 +45,7 @@ export default function InputBox(props: {}) {
     const inputRef = useRef<HTMLTextAreaElement | null>(null)
     const [previousMessageQuickInputMark, setPreviousMessageQuickInputMark] = useState('')
     const setOpenAttachLinkDialog = useSetAtom(atoms.openAttachLinkDialogAtom)
+    const shortcuts = useAtomValue(atoms.shortcutsAtom)
 
     const { min: minTextareaHeight, max: maxTextareaHeight } = useInputBoxHeight()
 
@@ -125,27 +127,38 @@ export default function InputBox(props: {}) {
         }
     }
 
-    const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        // 发送
-        if (
-            event.keyCode === 13 &&
-            !event.shiftKey &&
-            !event.ctrlKey &&
-            !event.altKey &&
-            !event.metaKey &&
-            platform.type !== 'mobile' // 移动端点击回车不会发送消息
-        ) {
-            event.preventDefault()
+    // 快捷键：发送
+    useHotkeys(
+        shortcuts.inputBoxSend,
+        (event) => {
             handleSubmit()
-            return
-        }
-        // 发送但不生成
-        if (event.keyCode === 13 && event.ctrlKey) {
-            event.preventDefault()
+        },
+        [handleSubmit],
+        {
+            enabled: () => {
+                return inputRef.current === document.activeElement // 聚焦在输入框
+            },
+            enableOnFormTags: true,
+            preventDefault: true,
+        },
+    )
+    // 快捷键：发送但不生成回复
+    useHotkeys(
+        shortcuts.inputBoxSendWithoutResponse,
+        (event) => {
             handleSubmit(false)
-            return
-        }
-        // 向上向下键翻阅历史消息
+        },
+        [handleSubmit],
+        {
+            enabled: () => {
+                return inputRef.current === document.activeElement // 聚焦在输入框
+            },
+            enableOnFormTags: true,
+            preventDefault: true,
+        },
+    )
+    // 向上向下键翻阅历史消息。使用 useHotkeys 会导致上下键盘无法在多段文本中换行，所以依然使用 onKeyDown
+    const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (
             (event.key === 'ArrowUp' || event.key === 'ArrowDown') &&
             inputRef.current &&
@@ -185,13 +198,8 @@ export default function InputBox(props: {}) {
                 return
             }
         }
-        // 防止创建新话题时键入字符
-        if (event.code === 'KeyR' && event.altKey) {
-            event.preventDefault()
-            // setMessageInput(messageInput.replace(`®`, ''))
-            return
-        }
     }
+
     const startNewThread = () => {
         sessionActions.startNewThread()
         // 显示撤回上下文按钮
@@ -353,7 +361,7 @@ export default function InputBox(props: {}) {
                                     <div className="text-center inline-block">
                                         <span>{t('Refresh Context, Start a New Thread')}</span>
                                         <br />
-                                        <Shortcut keys={['Option', 'R']} size="small" opacity={0.7} />
+                                        <Keys keys={shortcuts.messageListRefreshContext.split('+')} size="small" opacity={0.7} />
                                     </div>
                                 }
                                 tooltipPlacement="top"
@@ -425,7 +433,7 @@ export default function InputBox(props: {}) {
                                 <div className="text-center inline-block">
                                     <span>{t('Web Browsing')}</span>
                                     <br />
-                                    <Shortcut keys={['Option', 'E']} size="small" opacity={0.7} />
+                                    <Keys keys={shortcuts.inputBoxWebBrowsingMode.split('+')} size="small" opacity={0.7} />
                                 </div>
                             }
                             tooltipPlacement="top"
@@ -466,15 +474,6 @@ export default function InputBox(props: {}) {
                                         ? theme.palette.secondary.main
                                         : theme.palette.primary.main,
                             }}
-                            tooltipTitle={
-                                isSmallScreen ? undefined : (
-                                    <Typography variant="caption">
-                                        {t(
-                                            '[Enter] send, [Shift+Enter] line break, [Ctrl+Enter] send without generating'
-                                        )}
-                                    </Typography>
-                                )
-                            }
                             tooltipPlacement="top"
                             onClick={() => handleSubmit()}
                         >

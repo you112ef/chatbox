@@ -27,7 +27,7 @@ import StyledMenu from '@/components/StyledMenu'
 import { cn } from '@/lib/utils'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import * as atoms from '@/stores/atoms'
-import ConfirmDeleteButton from './ConfirmDeleteButton'
+import { ConfirmDeleteMenuItem } from './ConfirmDeleteButton'
 
 export default function ThreadHistoryDrawer(props: {}) {
     const { t } = useTranslation()
@@ -196,7 +196,7 @@ function ThreadItem(props: {
                     <SwapCallsIcon fontSize="small" />
                     {t('Switch')}
                 </MenuItem>
-                <ConfirmDeleteButton
+                <ConfirmDeleteMenuItem
                     onDelete={() => {
                         setAnchorEl(null)
                         handleMenuClose()

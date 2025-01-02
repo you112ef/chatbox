@@ -37,7 +37,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import platform from '../platform'
 import { trackingEvent } from '@/packages/event'
-import ConfirmDeleteButton from '../components/ConfirmDeleteButton'
+import { ConfirmDeleteMenuItem } from '../components/ConfirmDeleteButton'
 
 export default function CopilotWindow(props: {}) {
     const language = useAtomValue(atoms.languageAtom)
@@ -326,7 +326,7 @@ function MiniItem(props: MiniItemProps) {
 
                         <Divider sx={{ my: 0.5 }} />
 
-                        <ConfirmDeleteButton
+                        <ConfirmDeleteMenuItem
                             onDelete={() => {
                                 setAnchorEl(null)
                                 closeMenu()

@@ -311,5 +311,10 @@
     "The {{model}} API itself does not support web browsing. Supported models: <OpenMorePlanButton>Chatbox AI models</OpenMorePlanButton>, {{supported_web_browsing_models}}": "Il modello attuale {{model}} API non supporta la navigazione web. Modelli supportati: <OpenMorePlanButton>modelli Chatbox AI</OpenMorePlanButton>, {{supported_web_browsing_models}}",
     "The {{model}} API itself does not support web browsing. Supported models: {{supported_web_browsing_models}}": "Il modello attuale {{model}} API non supporta la navigazione web. Modelli supportati: {{supported_web_browsing_models}}",
     "show first token latency": "Mostra latenza del primo token",
-    "Focus on the Input Box and Enter Web Browsing Mode": "Focalizza l'area di input e entra nel modo di navigazione web"
+    "Focus on the Input Box and Enter Web Browsing Mode": "Focalizza l'area di input e entra nel modo di navigazione web",
+    "Hotkeys": "Hotkeys",
+    "Reset All Hotkeys": "Ripristina tutti i Hotkeys",
+    "Action": "Azione",
+    "Operations": "Operazioni",
+    "Press hotkey": "Inserisci hotkey"
 }

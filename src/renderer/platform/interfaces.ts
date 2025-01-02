@@ -1,4 +1,4 @@
-import { Config, Language, Settings } from 'src/shared/types'
+import { Config, Language, Settings, ShortcutSetting } from 'src/shared/types'
 
 export type PlatformType = 'web' | 'desktop' | 'mobile'
 
@@ -17,7 +17,7 @@ export interface Platform {
     openLink(url: string): Promise<void>
     getInstanceName(): Promise<string>
     getLocale(): Promise<Language>
-    ensureShortcutConfig(config: { disableQuickToggleShortcut: boolean }): Promise<void>
+    ensureShortcutConfig(config: ShortcutSetting): Promise<void>
     ensureProxyConfig(config: { proxy?: string }): Promise<void>
     relaunch(): Promise<void>
 

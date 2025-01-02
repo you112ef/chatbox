@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import VrpanoIcon from '@mui/icons-material/Vrpano'
 import { ImageInStorage } from '@/components/Image'
-import ConfirmDeleteButton from './ConfirmDeleteButton'
+import { ConfirmDeleteMenuItem } from './ConfirmDeleteButton'
 
 export interface Props {
     session: Session
@@ -155,7 +155,7 @@ function _SessionItem(props: Props) {
                     )}
                 </MenuItem>
 
-                <ConfirmDeleteButton
+                <ConfirmDeleteMenuItem
                     onDelete={() => {
                         setAnchorEl(null)
                         handleMenuClose()

@@ -16,7 +16,7 @@ import WidthNormalIcon from '@mui/icons-material/WidthNormal'
 import WidthWideIcon from '@mui/icons-material/WidthWide'
 import { useIsLargeScreen, useIsSmallScreen } from '@/hooks/useScreenChange'
 import * as sessionActions from '@/stores/sessionActions'
-import ConfirmDeleteButton from './ConfirmDeleteButton'
+import { ConfirmDeleteMenuItem } from './ConfirmDeleteButton'
 
 /**
  * 顶部标题工具栏（右侧）
@@ -117,13 +117,13 @@ export default function Toolbar() {
                     <Save fontSize="small" />
                     {t('Export Chat')}
                 </MenuItem>
-                <ConfirmDeleteButton
+                <ConfirmDeleteMenuItem
                     onDelete={handleSessionClean}
                     label={t('Clear All Messages')}
                     color="warning"
                     icon={<CleaningServicesIcon fontSize="small" />}
                 />
-                <ConfirmDeleteButton
+                <ConfirmDeleteMenuItem
                     onDelete={handleSessionDelete}
                     label={t('Delete Current Session')}
                 />

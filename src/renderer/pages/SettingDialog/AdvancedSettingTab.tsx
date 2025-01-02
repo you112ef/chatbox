@@ -1,13 +1,6 @@
 import { useState, useRef } from 'react'
 import {
     Typography,
-    TableContainer,
-    Table,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableBody,
-    Paper,
     Switch,
     Box,
     FormGroup,
@@ -19,7 +12,6 @@ import {
     useTheme,
 } from '@mui/material'
 import platform from '../../platform'
-import { Shortcut } from '../../components/Shortcut'
 import { Settings } from '../../../shared/types'
 import { useTranslation } from 'react-i18next'
 import { Accordion, AccordionSummary, AccordionDetails } from '../../components/Accordion'
@@ -28,6 +20,7 @@ import storage, { StorageKey } from '../../storage'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import { useAtom } from 'jotai'
 import * as atoms from '../../stores/atoms'
+import { ShortcutConfig } from '../../components/Shortcut'
 
 interface Props {
     settingsEdit: Settings
@@ -72,92 +65,13 @@ export default function AdvancedSettingTab(props: Props) {
             {!isSmallScreen && (
                 <Accordion>
                     <AccordionSummary aria-controls="panel1a-content">
-                        <Typography>{t('Keyboard Shortcuts')}</Typography>
+                        <Typography>{t('Hotkeys')}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <TableContainer component={Paper}>
-                            <Table size="small">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>{t('Description')}</TableCell>
-                                        <TableCell align="center">{t('Key Combination')}</TableCell>
-                                        <TableCell align="center">{t('Toggle')}</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell component="th" scope="row">
-                                            {t('Show/Hide the Application Window')}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            <Shortcut keys={['alt', '`']} />
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            <Switch
-                                                size="small"
-                                                checked={!props.settingsEdit.disableQuickToggleShortcut}
-                                                onChange={(e) =>
-                                                    props.setSettingsEdit({
-                                                        ...props.settingsEdit,
-                                                        disableQuickToggleShortcut: !e.target.checked,
-                                                    })
-                                                }
-                                            />
-                                        </TableCell>
-                                    </TableRow>
-                                    {[
-                                        { description: t('Navigate to the Next Conversation'), keys: ['Ctrl', 'Tab'] },
-                                        {
-                                            description: t('Navigate to the Previous Conversation'),
-                                            keys: ['Ctrl', 'Shift', 'Tab'],
-                                        },
-                                        {
-                                            description: t('Navigate to the Specific Conversation'),
-                                            keys: ['Ctrl', t('any number key')],
-                                        },
-                                        { description: t('Create a New Conversation'), keys: ['Ctrl', 'N'] },
-                                        {
-                                            description: t('Create a New Image-Creator Conversation'),
-                                            keys: ['Ctrl', 'Shift', 'N'],
-                                        },
-                                        { description: t('Focus on the Input Box'), keys: ['Ctrl', 'I'] },
-                                        { description: t('Focus on the Input Box and Enter Web Browsing Mode'), keys: ['Ctrl', 'E'] },
-                                        { description: t('Send'), keys: ['enter'] },
-                                        {
-                                            description: t('Insert a New Line into the Input Box'),
-                                            keys: ['Shift', 'enter'],
-                                        },
-                                        { description: t('Send Without Generating Response'), keys: ['Ctrl', 'enter'] },
-                                        { description: t('Refresh Context, Start a New Thread'), keys: ['alt', 'R'] },
-                                        { description: t('Show/Hide the Search Dialog'), keys: ['Ctrl', 'K'] },
-                                        {
-                                            description: t('Navigate to the Previous Option (in search dialog)'),
-                                            keys: ['↑'],
-                                        },
-                                        {
-                                            description: t('Navigate to the Next Option (in search dialog)'),
-                                            keys: ['↓'],
-                                        },
-                                        {
-                                            description: t('Select the Current Option (in search dialog)'),
-                                            keys: ['enter'],
-                                        },
-                                    ].map((item, ix) => (
-                                        <TableRow key={ix}>
-                                            <TableCell component="th" scope="row">
-                                                {item.description}
-                                            </TableCell>
-                                            <TableCell align="center">
-                                                <Shortcut keys={item.keys} />
-                                            </TableCell>
-                                            <TableCell align="center">
-                                                <Switch size="small" checked disabled />
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                        <ShortcutConfig
+                            shortcuts={settingsEdit.shortcuts}
+                            setShortcuts={(shortcuts) => setSettingsEdit({ ...settingsEdit, shortcuts })}
+                        />
                     </AccordionDetails>
                 </Accordion>
             )}
@@ -220,13 +134,13 @@ function ExportAndImport(props: { onCancel: () => void }) {
     const onExport = async () => {
         const data = await storage.getAll()
         delete data[StorageKey.Configs] // 不导出 uuid
-        ;(data[StorageKey.Settings] as Settings).licenseDetail = undefined // 不导出license认证数据
-        ;(data[StorageKey.Settings] as Settings).licenseInstances = undefined // 不导出license设备数据，导入数据的新设备也应该计入设备数
+            ; (data[StorageKey.Settings] as Settings).licenseDetail = undefined // 不导出license认证数据
+            ; (data[StorageKey.Settings] as Settings).licenseInstances = undefined // 不导出license设备数据，导入数据的新设备也应该计入设备数
         if (!exportItems.includes(ExportDataItem.Key)) {
             delete (data[StorageKey.Settings] as Settings).licenseKey
-            ;(data[StorageKey.Settings] as Settings).openaiKey = ''
-            ;(data[StorageKey.Settings] as Settings).azureApikey = ''
-            ;(data[StorageKey.Settings] as Settings).claudeApiKey = ''
+                ; (data[StorageKey.Settings] as Settings).openaiKey = ''
+                ; (data[StorageKey.Settings] as Settings).azureApikey = ''
+                ; (data[StorageKey.Settings] as Settings).claudeApiKey = ''
         }
         if (!exportItems.includes(ExportDataItem.Setting)) {
             delete data[StorageKey.Settings]
@@ -251,7 +165,7 @@ function ExportAndImport(props: { onCancel: () => void }) {
         }
         const reader = new FileReader()
         reader.onload = (event) => {
-            ;(async () => {
+            ; (async () => {
                 setImportTips('')
                 try {
                     let result = event.target?.result

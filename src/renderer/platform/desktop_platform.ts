@@ -1,7 +1,7 @@
 import { ElectronIPC } from 'src/shared/electron-types'
 import { Platform, PlatformType } from './interfaces'
-import { Config, Settings } from 'src/shared/types'
-import { getOS, getBrowser } from '../packages/navigator'
+import { Config, Settings, ShortcutSetting } from 'src/shared/types'
+import { getOS } from '../packages/navigator'
 import { parseLocale } from '@/i18n/parser'
 import WebExporter from './web_exporter'
 
@@ -41,7 +41,7 @@ export default class DesktopPlatform implements Platform {
         const locale = await this.ipc.invoke('getLocale')
         return parseLocale(locale)
     }
-    public async ensureShortcutConfig(config: { disableQuickToggleShortcut: boolean }): Promise<void> {
+    public async ensureShortcutConfig(config: ShortcutSetting): Promise<void> {
         return this.ipc.invoke('ensureShortcutConfig', JSON.stringify(config))
     }
     public async ensureProxyConfig(config: { proxy?: string }): Promise<void> {

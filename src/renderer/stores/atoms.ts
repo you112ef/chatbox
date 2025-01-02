@@ -34,10 +34,8 @@ export const settingsAtom = atom(
             newSettings.apiHost = defaults.settings().apiHost
         }
         // 如果快捷键配置发生变化，需要重新注册快捷键
-        if (!!newSettings.disableQuickToggleShortcut !== !!settings.disableQuickToggleShortcut) {
-            platform.ensureShortcutConfig({
-                disableQuickToggleShortcut: !!newSettings.disableQuickToggleShortcut,
-            })
+        if (newSettings.shortcuts !== settings.shortcuts) {
+            platform.ensureShortcutConfig(newSettings.shortcuts)
         }
         // 如果代理配置发生变化，需要重新注册代理
         if (newSettings.proxy !== settings.proxy) {
@@ -71,6 +69,7 @@ export const selectedCustomProviderIdAtom = focusAtom(settingsAtom, (optic) => o
 export const autoPreviewArtifactsAtom = focusAtom(settingsAtom, (optic) => optic.prop('autoPreviewArtifacts'))
 export const autoGenerateTitleAtom = focusAtom(settingsAtom, (optic) => optic.prop('autoGenerateTitle'))
 export const autoCollapseCodeBlockAtom = focusAtom(settingsAtom, (optic) => optic.prop('autoCollapseCodeBlock'))
+export const shortcutsAtom = focusAtom(settingsAtom, (optic) => optic.prop('shortcuts'))
 
 export const licenseDetailAtom = focusAtom(settingsAtom, (optic) => optic.prop('licenseDetail'))
 

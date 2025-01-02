@@ -312,5 +312,10 @@
     "The {{model}} API itself does not support web browsing. Supported models: <OpenMorePlanButton>Chatbox AI models</OpenMorePlanButton>, {{supported_web_browsing_models}}": "현재 모델 {{model}} API는 웹 브라우징을 지원하지 않습니다. 지원되는 모델: <OpenMorePlanButton>Chatbox AI 모델</OpenMorePlanButton>, {{supported_web_browsing_models}}",
     "The {{model}} API itself does not support web browsing. Supported models: {{supported_web_browsing_models}}": "현재 모델 {{model}} API는 웹 브라우징을 지원하지 않습니다. 지원되는 모델: {{supported_web_browsing_models}}",
     "show first token latency": "첫 토큰 지연 표시",
-    "Focus on the Input Box and Enter Web Browsing Mode": "입력 상자에 포커스를 맞추고 웹 브라우징 모드로 진입"
+    "Focus on the Input Box and Enter Web Browsing Mode": "입력 상자에 포커스를 맞추고 웹 브라우징 모드로 진입",
+    "Hotkeys": "단축키",
+    "Reset All Hotkeys": "모든 단축키 재설정",
+    "Action": "작업",
+    "Operations": "작업",
+    "Press hotkey": "단축키 입력"
 }
