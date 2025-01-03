@@ -134,6 +134,9 @@ export default function InputBox(props: {}) {
             if (event.isComposing) {
                 return // 使用输入法时点击回车，不应该触发动作
             }
+            if (platform.type === 'mobile') {
+                return // 移动端点击回车不会发送消息
+            }
             handleSubmit()
         },
         [handleSubmit],
