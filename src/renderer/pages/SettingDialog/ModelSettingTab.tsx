@@ -12,6 +12,7 @@ import { OllamaHostInput, OllamaModelSelect } from './OllamaSetting'
 import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
 import TemperatureSlider from '@/components/TemperatureSlider'
 import CustomProviderSetting from './CustomProviderSetting'
+import DeepSeekSetting from './DeepSeekSetting'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -76,6 +77,9 @@ export default function ModelSettingTab(props: ModelConfigProps) {
                         onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
                     />
                 </>
+            )}
+            {settingsEdit.aiProvider === ModelProvider.DeepSeek && (
+                <DeepSeekSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
             )}
             {settingsEdit.aiProvider === ModelProvider.Custom && (
                 <CustomProviderSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />

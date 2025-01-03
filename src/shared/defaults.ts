@@ -40,6 +40,9 @@ export function settings(): Settings {
         groqAPIKey: '',
         groqModel: 'llama3-70b-8192',
 
+        deepseekAPIKey: '',
+        deepseekModel: 'deepseek-chat',
+
         customProviders: [],
 
         showWordCount: false,

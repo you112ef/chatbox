@@ -9,6 +9,7 @@ import GroqSettingUtil from './groq-setting-util'
 import OllamaSettingUtil from './ollama-setting-util'
 import OpenAISettingUtil from './openai-setting-util'
 import CustomModelSettingUtil from './custom-setting-util'
+import DeepSeekSettingUtil from './deepseek-setting-util'
 
 export function getModelSettingUtil(aiProvider: ModelProvider): ModelSettingUtil {
     const hash: Record<ModelProvider, new () => ModelSettingUtil> = {
@@ -20,6 +21,7 @@ export function getModelSettingUtil(aiProvider: ModelProvider): ModelSettingUtil
         [ModelProvider.Groq]: GroqSettingUtil,
         [ModelProvider.Ollama]: OllamaSettingUtil,
         [ModelProvider.OpenAI]: OpenAISettingUtil,
+        [ModelProvider.DeepSeek]: DeepSeekSettingUtil,
         [ModelProvider.Custom]: CustomModelSettingUtil,
     }
     const Class = hash[aiProvider]

@@ -177,6 +177,8 @@ export function settings2SessionSettings(settings: ModelSettings) {
 
         'groqModel',
 
+        'deepseekModel',
+
         'selectedCustomProviderId',
         'customProviders',
     ])
@@ -204,6 +206,7 @@ export enum ModelProvider {
     Gemini = 'gemini',
     Ollama = 'ollama',
     Groq = 'groq',
+    DeepSeek = 'deepseek',
     Custom = 'custom',
 }
 
@@ -256,6 +259,10 @@ export interface ModelSettings {
     // groq
     groqAPIKey: string
     groqModel: GroqModel
+
+    // deepseek
+    deepseekAPIKey: string
+    deepseekModel: string
 
     // custom provider
     selectedCustomProviderId?: string // 选中的自定义提供者 ID，仅当 aiProvider 为 custom 时有效

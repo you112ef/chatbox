@@ -33,6 +33,7 @@ import AIProviderSelect from '../components/AIProviderSelect'
 import OpenAIModelSelect from '../components/OpenAIModelSelect'
 import ImageCountSlider from '@/components/ImageCountSlider'
 import ImageStyleSelect from '@/components/ImageStyleSelect'
+import DeepSeekModelSelect from '@/components/DeepSeekModelSelect'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import { trackingEvent } from '@/packages/event'
 import GeminiModelSelect from '@/components/GeminiModelSelect'
@@ -444,6 +445,25 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                         value={mergedSettings.groqModel}
                         onChange={(v) => updateSettingsEdit({ groqModel: v })}
                         className={specificSettings.groqModel === undefined ? 'opacity-50' : ''}
+                    />
+                    <MaxContextMessageCountSlider
+                        value={mergedSettings.openaiMaxContextMessageCount}
+                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
+                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
+                    />
+                    <TemperatureSlider
+                        value={mergedSettings.temperature}
+                        onChange={(v) => updateSettingsEdit({ temperature: v })}
+                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
+                    />
+                </>
+            )}
+            {mergedSettings.aiProvider === ModelProvider.DeepSeek && (
+                <>
+                    <DeepSeekModelSelect
+                        value={mergedSettings.deepseekModel}
+                        onChange={(v) => updateSettingsEdit({ deepseekModel: v })}
+                        className={specificSettings.deepseekModel === undefined ? 'opacity-50' : ''}
                     />
                     <MaxContextMessageCountSlider
                         value={mergedSettings.openaiMaxContextMessageCount}
