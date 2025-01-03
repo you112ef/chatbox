@@ -141,16 +141,10 @@ export default class Claude extends Base {
         }
 
         let url = `${this.options.claudeApiHost}/v1/messages`
-        const extraHeaders: Record<string, string> = {}
 
         const response = await this.post(
             url,
-            {
-                'Content-Type': 'application/json',
-                'anthropic-version': '2023-06-01',
-                'x-api-key': this.options.claudeApiKey,
-                ...extraHeaders,
-            },
+            this.getHeaders(),
             {
                 model: this.options.claudeModel,
                 max_tokens: modelConfig[this.options.claudeModel] // 兼容旧版本的问题（不一定存在）
@@ -182,22 +176,61 @@ export default class Claude extends Base {
         })
         return result
     }
+
+    getHeaders() {
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+            'anthropic-version': '2023-06-01',
+            'x-api-key': this.options.claudeApiKey,
+        }
+        return headers
+    }
+
+    // https://docs.anthropic.com/en/docs/api/models
+    async listModels(): Promise<string[]> {
+        type Response = {
+            data: {
+                id: string
+                type: string
+            }[]
+        }
+        const url = `${this.options.claudeApiHost}/v1/models?limit=990`
+        const res = await this.get(url, this.getHeaders())
+        const json: Response = await res.json()
+        // {
+        //   "data": [
+        //     {
+        //       "type": "model",
+        //       "id": "claude-3-5-sonnet-20241022",
+        //       "display_name": "Claude 3.5 Sonnet (New)",
+        //       "created_at": "2024-10-22T00:00:00Z"
+        //     }
+        //   ],
+        //   "has_more": true,
+        //   "first_id": "<string>",
+        //   "last_id": "<string>"
+        // }
+        if (!json['data']) {
+            throw new ApiError(JSON.stringify(json))
+        }
+        return json['data'].filter((item) => item.type === 'model').map((item) => item.id)
+    }
 }
 
 export interface ClaudeMessage {
     role: 'assistant' | 'user'
     content: (
         | {
-              text: string
-              type: 'text'
-          }
+            text: string
+            type: 'text'
+        }
         | {
-              type: 'image'
-              source: {
-                  type: 'base64'
-                  media_type: string
-                  data: string
-              }
-          }
+            type: 'image'
+            source: {
+                type: 'base64'
+                media_type: string
+                data: string
+            }
+        }
     )[]
 }

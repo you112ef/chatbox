@@ -1,7 +1,8 @@
-import { ModelSettings, Session, SessionType, Settings } from 'src/shared/types'
+import { ModelOptionGroup, ModelSettings, Session, SessionType, Settings } from 'src/shared/types'
 import { ModelSettingUtil } from './interface'
 import { ClaudeModel, claudeModels } from '../models/claude'
 import BaseConfig from './base-config'
+import Claude from '../models/claude'
 
 export default class ClaudeSettingUtil extends BaseConfig implements ModelSettingUtil {
     async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType) {
@@ -19,6 +20,23 @@ export default class ClaudeSettingUtil extends BaseConfig implements ModelSettin
                     label: value,
                     value: value,
                 })),
+            },
+        ]
+    }
+
+    async getRemoteOptionGroups(settings: Settings) {
+        const remoteModels = await super.getRemoteOptionGroups(settings).catch(() => [])
+        const claude = new Claude(settings)
+        const claudeAPIModels = await claude.listModels().catch(() => [])
+        return [
+            ...remoteModels,
+            {
+                options: claudeAPIModels.map((model) => {
+                    return {
+                        label: model,
+                        value: model,
+                    }
+                }),
             },
         ]
     }
