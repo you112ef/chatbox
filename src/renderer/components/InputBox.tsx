@@ -131,6 +131,9 @@ export default function InputBox(props: {}) {
     useHotkeys(
         shortcuts.inputBoxSend,
         (event) => {
+            if (event.isComposing) {
+                return // 使用输入法时点击回车，不应该触发动作
+            }
             handleSubmit()
         },
         [handleSubmit],
@@ -146,6 +149,9 @@ export default function InputBox(props: {}) {
     useHotkeys(
         shortcuts.inputBoxSendWithoutResponse,
         (event) => {
+            if (event.isComposing) {
+                return // 使用输入法时点击回车，不应该触发动作
+            }
             handleSubmit(false)
         },
         [handleSubmit],

@@ -77,6 +77,9 @@ export default function useShortcut() {
 
     // 会话导航
     useHotkeys(shortcuts.sessionListNavNext, (event) => {
+        if (event.isComposing) {
+            return // 使用输入法时不应该触发动作
+        }
         sessionActions.switchToNext()
     }, {
         enableOnFormTags: true,
@@ -84,6 +87,9 @@ export default function useShortcut() {
         enabled: !openSettingDialog,
     })
     useHotkeys(shortcuts.sessionListNavPrev, (event) => {
+        if (event.isComposing) {
+            return // 使用输入法时不应该触发动作
+        }
         sessionActions.switchToNext(true)
     }, {
         enableOnFormTags: true,
@@ -95,6 +101,9 @@ export default function useShortcut() {
             ? [1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => `${shortcuts.sessionListNavTargetIndex}+${num}`)
             : [],
         (event, handler) => {
+            if (event.isComposing) {
+                return // 使用输入法时不应该触发动作
+            }
             if (handler.keys === undefined) {
                 return
             }
