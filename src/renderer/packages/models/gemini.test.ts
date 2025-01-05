@@ -12,19 +12,25 @@ describe('populateGeminiMessages', () => {
             { id: '', role: 'user', content: 'U3' },
         ]
         const result = await populateGeminiMessages(messages, 'gemini-1.5-pro-latest')
-        expect(result).toEqual([
-            { role: 'user', parts: [{ text: 'S1' }, { text: 'U1' }] },
-            { role: 'model', parts: [{ text: 'A1' }] },
-            { role: 'user', parts: [{ text: 'U2' }] },
-            { role: 'model', parts: [{ text: 'A2' }] },
-            { role: 'user', parts: [{ text: 'U3' }] },
-        ])
+        expect(result).toEqual({
+            contents: [
+                { role: 'user', parts: [{ text: 'U1' }] },
+                { role: 'model', parts: [{ text: 'A1' }] },
+                { role: 'user', parts: [{ text: 'U2' }] },
+                { role: 'model', parts: [{ text: 'A2' }] },
+                { role: 'user', parts: [{ text: 'U3' }] },
+            ],
+            systemInstruction: 'S1',
+        })
     })
 
     it('should handle empty messages array correctly', async () => {
         const messages: Message[] = []
         const result = await populateGeminiMessages(messages, 'gemini-1.5-pro-latest')
-        expect(result).toEqual([])
+        expect(result).toEqual({
+            contents: [],
+            systemInstruction: '',
+        })
     })
 
     it('should populate Gemini messages correctly', async () => {
@@ -39,13 +45,16 @@ describe('populateGeminiMessages', () => {
             { id: '', role: 'user', content: 'U3' },
         ]
         const result = await populateGeminiMessages(messages, 'gemini-1.5-pro-latest')
-        expect(result).toEqual([
-            {
-                role: 'user',
-                parts: [{ text: 'U1' }, { text: 'S1' }, { text: 'U2.1' }, { text: 'U2.2' }, { text: 'U2.3' }],
-            },
-            { role: 'model', parts: [{ text: 'A2' }] },
-            { role: 'user', parts: [{ text: 'U3' }] },
-        ])
+        expect(result).toEqual({
+            contents: [
+                {
+                    role: 'user',
+                parts: [{ text: 'U1' }, { text: 'U2.1' }, { text: 'U2.2' }, { text: 'U2.3' }],
+                },
+                { role: 'model', parts: [{ text: 'A2' }] },
+                { role: 'user', parts: [{ text: 'U3' }] },
+            ],
+            systemInstruction: 'S1',
+        })
     })
 })

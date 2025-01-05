@@ -74,13 +74,23 @@ export default class Gemeni extends Base {
             webBrowsing?: boolean
         }
     ): Promise<string> {
+        const { contents, systemInstruction } = await populateGeminiMessages(messages, this.options.geminiModel)
         const res = await this.post(
             `${this.options.geminiAPIHost}/v1beta/models/${this.options.geminiModel}:streamGenerateContent?alt=sse&key=${this.options.geminiAPIKey}`,
             {
                 'Content-Type': 'application/json',
             },
             {
-                contents: await populateGeminiMessages(messages, this.options.geminiModel),
+                contents,
+                ...(
+                    systemInstruction
+                        ? {
+                            system_instruction: {
+                                parts: [{ text: systemInstruction }],
+                            },
+                        }
+                        : {}
+                ),
                 ...(
                     options?.webBrowsing
                         ? {
@@ -280,22 +290,22 @@ interface InlineDataPart {
     inlineData: { mimeType: string; data: string }
 }
 
-export async function populateGeminiMessages(messages: Message[], model: GeminiModel): Promise<Content[]> {
+export async function populateGeminiMessages(messages: Message[], model: GeminiModel): Promise<{
+    contents: Content[]
+    systemInstruction: string
+}> {
     const contents: Content[] = []
     let previousContent: Content | null = null
+    let systemInstruction = ''
     for (const msg of messages) {
         switch (msg.role) {
             case 'system':
-                if (previousContent === null) {
-                    // 初始化第一条消息
-                    previousContent = { role: 'user', parts: [{ text: msg.content }] }
-                } else if (previousContent.role === 'model') {
-                    // 若上条消息是机器人消息，那么将其加入上下文，并将本条 system 消息作为下一条用户消息
-                    contents.push(previousContent)
-                    previousContent = { role: 'user', parts: [{ text: msg.content }] }
-                } else if (previousContent.role === 'user') {
-                    // 若上条消息是用户消息，那么将本条 system 消息合并到上条用户消息中
-                    previousContent.parts.push({ text: msg.content })
+                if (
+                    !model.startsWith('gemini-pro')
+                    && !model.startsWith('gemini-1.0')
+                    && !model.startsWith('gemini-exp')
+                ) {
+                    systemInstruction = msg.content
                 }
                 break
             case 'user':
@@ -348,7 +358,7 @@ export async function populateGeminiMessages(messages: Message[], model: GeminiM
         // 最后一条必须是用户消息
         contents.push(previousContent)
     }
-    return contents
+    return { contents, systemInstruction }
 }
 
 // #!/bin/bash
