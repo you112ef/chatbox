@@ -223,7 +223,20 @@ export default class Base {
         }
     }
 
-    async get(url: string, headers: Record<string, string>, signal?: AbortSignal, retry = 3) {
+    async get(url: string, headers: Record<string, string>, options?: {
+        signal?: AbortSignal
+        retry?: number
+        useProxy?: boolean
+    }) {
+        const { signal, retry = 3, useProxy = false } = options || {}
+
+        if (useProxy && !isLocalHost(url)) {
+            headers['CHATBOX-TARGET-URI'] = url
+            headers['CHATBOX-PLATFORM'] = platform.type
+            headers['CHATBOX-VERSION'] = (await platform.getVersion()) || 'unknown'
+            url = 'https://proxy.ai-chatbox.com/proxy-api/completions'
+        }
+
         let requestError: ApiError | NetworkError | null = null
         for (let i = 0; i < retry + 1; i++) {
             try {

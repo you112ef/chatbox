@@ -195,7 +195,13 @@ export default class Claude extends Base {
             }[]
         }
         const url = `${this.options.claudeApiHost}/v1/models?limit=990`
-        const res = await this.get(url, this.getHeaders())
+        const res = await this.get(
+            url,
+            this.getHeaders(),
+            {
+                useProxy: platform.type !== 'desktop' && this.options.claudeApiHost === defaults.settings().claudeApiHost,
+            }
+        )
         const json: Response = await res.json()
         // {
         //   "data": [

@@ -2,6 +2,7 @@ import { Message } from 'src/shared/types'
 import Base, { onResultChange } from './base'
 import { ApiError } from './errors'
 import { populateOpenAIMessageText } from './openai'
+import platform from '@/platform'
 
 // https://api-docs.deepseek.com/zh-cn/quick_start/pricing
 export const modelConfig = {
@@ -49,7 +50,10 @@ export default class DeepSeek extends Base {
                 temperature: this.options.temperature,
                 stream: true,
             },
-            { signal }
+            {
+                signal,
+                useProxy: platform.type !== 'desktop',
+            }
         )
         let result = ''
         await this.handleSSE(response, (message) => {
@@ -89,7 +93,13 @@ export default class DeepSeek extends Base {
                 owned_by: string
             }[]
         }
-        const res = await this.get(`https://api.deepseek.com/models`, this.getHeaders())
+        const res = await this.get(
+            `https://api.deepseek.com/models`,
+            this.getHeaders(),
+            {
+                useProxy: platform.type !== 'desktop',
+            },
+        )
         const json: Response = await res.json()
         if (!json['data']) {
             throw new ApiError(JSON.stringify(json))

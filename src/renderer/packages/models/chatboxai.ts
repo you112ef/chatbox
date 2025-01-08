@@ -188,7 +188,11 @@ export default class ChatboxAI extends Base {
         }
     }
 
-    async get(url: string, headers: Record<string, string>, signal?: AbortSignal, retry = 3) {
+    async get(url: string, headers: Record<string, string>, options?: {
+        signal?: AbortSignal
+        retry?: number
+    }) {
+        const { signal, retry = 3 } = options || {}
         let requestError: ApiError | NetworkError | null = null
         for (let i = 0; i < retry + 1; i++) {
             try {
