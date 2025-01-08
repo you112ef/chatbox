@@ -157,6 +157,11 @@ export default function AIProviderSelect(props: ModelConfigProps) {
                         vertical: 'top',
                         horizontal: 'left',
                     }}
+                    PaperProps={{
+                        style: {
+                            maxHeight: 'calc(60vh - 96px)',
+                        },
+                    }}
                 >
                     {globalSettings.customProviders.length > 0 && (
                         <div>

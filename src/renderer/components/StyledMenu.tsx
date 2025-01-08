@@ -51,6 +51,19 @@ const StyledMenu = styled((props: MenuProps) => {
             margin: '2px 0',
         },
     },
+    '& .MuiPaper-root::-webkit-scrollbar': {
+        width: '6px',
+    },
+    '& .MuiPaper-root::-webkit-scrollbar-track': {
+        background: 'transparent',
+    },
+    '& .MuiPaper-root::-webkit-scrollbar-thumb': {
+        backgroundColor: theme.palette.mode === 'light' ? '#0000001a' : '#ffffff1a',
+        borderRadius: '4px',
+    },
+    '& .MuiPaper-root::-webkit-scrollbar-thumb:hover': {
+        backgroundColor: theme.palette.mode === 'light' ? '#0000003a' : '#ffffff3a',
+    },
 }))
 
 export default StyledMenu
