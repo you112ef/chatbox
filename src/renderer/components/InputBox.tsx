@@ -337,7 +337,7 @@ export default function InputBox(props: {}) {
         >
             <div className={'w-full mx-auto flex flex-col'}>
                 <div className="flex flex-row flex-nowrap justify-between py-1">
-                    <div className="flex flex-row items-center">
+                    <div className="flex flex-row items-center overflow-x-auto scrollbar-none">
                         <MiniButton
                             className="mr-1 sm:mr-2 hover:bg-transparent"
                             style={{ color: theme.palette.text.primary }}
