@@ -84,7 +84,9 @@ export default function MessageList(props: Props) {
                                             onClick={(event) => openThreadMenu(event, currentThreadHash[msg.id].id)}
                                         >
                                             <span className="pr-1 opacity-60">#</span>
-                                            {currentThreadHash[msg.id].name || t('New Thread')}
+                                            <span className="truncate inline-block align-bottom max-w-[calc(50%-4rem)] md:max-w-[calc(30%-4rem)]">
+                                                {currentThreadHash[msg.id].name || t('New Thread')}
+                                            </span>
                                             {currentThreadHash[msg.id].createdAtLabel && (
                                                 <span className="pl-1 opacity-60 text-xs">
                                                     {currentThreadHash[msg.id].createdAtLabel}
