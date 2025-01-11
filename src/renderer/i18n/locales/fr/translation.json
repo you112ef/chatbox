@@ -317,5 +317,6 @@
     "Reset All Hotkeys": "Réinitialiser tous les raccourcis clavier",
     "Action": "Action",
     "Operations": "Opérations",
-    "Press hotkey": "Entrer un raccourci"
+    "Press hotkey": "Entrer un raccourci",
+    "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "Veuillez vous assurer que le Service LM Studio distant peut se connecter à distance. Pour plus de détails, consultez <a>ce tutoriel</a>."
 }

@@ -316,5 +316,6 @@
     "Reset All Hotkeys": "Restablecer todos los accesos directos",
     "Action": "Acción",
     "Operations": "Operaciones",
-    "Press hotkey": "Introducir acceso directo"
+    "Press hotkey": "Introducir acceso directo",
+    "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "Por favor, asegúrese de que el Servicio LM Studio Remoto pueda conectarse de forma remota. Para más detalles, consulte <a>este tutorial</a>."
 }

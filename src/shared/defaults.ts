@@ -46,6 +46,9 @@ export function settings(): Settings {
         siliconCloudKey: '',
         siliconCloudModel: 'Qwen/Qwen2.5-7B-Instruct',
 
+        lmStudioHost: 'http://127.0.0.1:1234/v1',
+        lmStudioModel: '',
+
         customProviders: [],
 
         showWordCount: false,

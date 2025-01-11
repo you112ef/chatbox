@@ -317,5 +317,6 @@
     "Reset All Hotkeys": "Redefinir todos os atalhos de teclado",
     "Action": "Ação",
     "Operations": "Operações",
-    "Press hotkey": "Pressionar atalho"
+    "Press hotkey": "Pressionar atalho",
+    "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "Por favor, certifique-se de que o Serviço Remoto LM Studio pode se conectar remotamente. Para mais detalhes, consulte <a>este tutorial</a>."
 }

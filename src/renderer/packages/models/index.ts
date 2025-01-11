@@ -6,6 +6,7 @@ import ChatGLM from './chatglm'
 import Claude from './claude'
 import Gemini from './gemini'
 import Ollama from './ollama'
+import LMStudio from './lmstudio'
 import Groq from './groq'
 import DeepSeek from './deepseek'
 import SiliconFlow from './siliconflow'
@@ -32,6 +33,8 @@ export function getModel(setting: Settings, config: Config) {
             return new DeepSeek(setting)
         case ModelProvider.SiliconFlow:
             return new SiliconFlow(setting)
+        case ModelProvider.LMStudio:
+            return new LMStudio(setting)
         case ModelProvider.Custom:
             const customProvider = setting.customProviders.find(
                 (provider) => provider.id === setting.selectedCustomProviderId
@@ -68,6 +71,7 @@ export const aiProviderNameHash: Record<ModelProvider, string> = {
     [ModelProvider.Groq]: 'Groq',
     [ModelProvider.DeepSeek]: 'DeepSeek',
     [ModelProvider.SiliconFlow]: 'SiliconFlow',
+    [ModelProvider.LMStudio]: 'LM Studio',
     [ModelProvider.Custom]: 'Custom Provider',
 }
 
@@ -96,6 +100,11 @@ export const AIModelProviderMenuOptionList = [
     {
         value: ModelProvider.Ollama,
         label: aiProviderNameHash[ModelProvider.Ollama],
+        disabled: false,
+    },
+    {
+        value: ModelProvider.LMStudio,
+        label: aiProviderNameHash[ModelProvider.LMStudio],
         disabled: false,
     },
     {

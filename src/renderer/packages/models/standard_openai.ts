@@ -184,7 +184,7 @@ export default class StandardOpenAI extends Base {
     }
 
     async populateMessages(rawMessages: Message[], model: string): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
-        if (this.isSupportVision(model)) {
+        if (this.isSupportVision(model) && rawMessages.some(m => m.pictures && m.pictures.length > 0)) {
             return await populateOpenAIMessageVision(rawMessages)
         } else {
             return await populateOpenAIMessageText(rawMessages)

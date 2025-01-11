@@ -25,28 +25,23 @@ export function OllamaHostInput(props: {
                 fullWidth
                 className={props.className}
             />
-            {props.ollamaHost &&
-                props.ollamaHost.length > 16 &&
-                !props.ollamaHost.includes('localhost') &&
-                !props.ollamaHost.includes('127.0.0.1') && (
-                    <Alert icon={false} severity="info" className="my-4">
-                        <Trans
-                            i18nKey="Please ensure that the Remote Ollama Service is able to connect remotely. For more details, refer to <a>this tutorial</a>."
-                            components={{
-                                a: (
-                                    <a
-                                        className="cursor-pointer font-bold"
-                                        onClick={() => {
-                                            platform.openLink(
-                                                `https://chatboxai.app/redirect_app/ollama_guide/${language}`
-                                            )
-                                        }}
-                                    ></a>
-                                ),
-                            }}
-                        />
-                    </Alert>
-                )}
+            <Alert icon={false} severity="info" className="my-4">
+                <Trans
+                    i18nKey="Please ensure that the Remote Ollama Service is able to connect remotely. For more details, refer to <a>this tutorial</a>."
+                    components={{
+                        a: (
+                            <a
+                                className="cursor-pointer font-bold"
+                                onClick={() => {
+                                    platform.openLink(
+                                        `https://chatboxai.app/redirect_app/ollama_guide/${language}`
+                                    )
+                                }}
+                            ></a>
+                        ),
+                    }}
+                />
+            </Alert>
         </>
     )
 }

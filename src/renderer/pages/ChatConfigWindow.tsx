@@ -46,6 +46,7 @@ import { ImageInStorage, handleImageInputAndSave } from '@/components/Image'
 import ImageIcon from '@mui/icons-material/Image'
 import CreatableSelect from '@/components/CreatableSelect'
 import { SiliconflowModelSelect } from './SettingDialog/SiliconflowSetting'
+import { LMStudioModelSelect } from './SettingDialog/LMStudioSetting'
 
 export default function ChatConfigWindow(props: {}) {
     const { t } = useTranslation()
@@ -144,8 +145,8 @@ export default function ChatConfigWindow(props: {}) {
                             editingData.type === 'picture'
                                 ? theme.palette.secondary.main
                                 : editingData.picUrl
-                                ? theme.palette.background.default
-                                : theme.palette.primary.main,
+                                    ? theme.palette.background.default
+                                    : theme.palette.primary.main,
                     }}
                 >
                     {editingData.assistantAvatarKey ? (
@@ -284,16 +285,6 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                             className={specificSettings.chatboxAIModel === undefined ? 'opacity-50' : ''}
                         />
                     )}
-                    <MaxContextMessageCountSlider
-                        value={mergedSettings.openaiMaxContextMessageCount}
-                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
-                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
-                    />
-                    <TemperatureSlider
-                        value={mergedSettings.temperature}
-                        onChange={(v) => updateSettingsEdit({ temperature: v })}
-                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
-                    />
                 </>
             )}
             {mergedSettings.aiProvider === ModelProvider.OpenAI && (
@@ -313,21 +304,6 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                         }}
                         className={specificSettings.model === undefined ? 'opacity-50' : ''}
                     />
-                    <MaxContextMessageCountSlider
-                        value={mergedSettings.openaiMaxContextMessageCount}
-                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
-                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
-                    />
-                    <TemperatureSlider
-                        value={mergedSettings.temperature}
-                        onChange={(v) => updateSettingsEdit({ temperature: v })}
-                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
-                    />
-                    <TopPSlider
-                        topP={mergedSettings.topP}
-                        setTopP={(v) => updateSettingsEdit({ topP: v })}
-                        className={specificSettings.topP === undefined ? 'opacity-50' : ''}
-                    />
                 </>
             )}
             {mergedSettings.aiProvider === ModelProvider.Azure && (
@@ -346,35 +322,10 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                         }}
                         className={specificSettings.azureDeploymentName === undefined ? 'opacity-50' : ''}
                     />
-                    <MaxContextMessageCountSlider
-                        value={mergedSettings.openaiMaxContextMessageCount}
-                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
-                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
-                    />
-                    <TemperatureSlider
-                        value={mergedSettings.temperature}
-                        onChange={(v) => updateSettingsEdit({ temperature: v })}
-                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
-                    />
-                    <TopPSlider
-                        topP={mergedSettings.topP}
-                        setTopP={(v) => updateSettingsEdit({ topP: v })}
-                        className={specificSettings.topP === undefined ? 'opacity-50' : ''}
-                    />
                 </>
             )}
             {mergedSettings.aiProvider === ModelProvider.ChatGLM6B && (
                 <>
-                    <MaxContextMessageCountSlider
-                        value={mergedSettings.openaiMaxContextMessageCount}
-                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
-                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
-                    />
-                    <TemperatureSlider
-                        value={mergedSettings.temperature}
-                        onChange={(v) => updateSettingsEdit({ temperature: v })}
-                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
-                    />
                 </>
             )}
             {mergedSettings.aiProvider === ModelProvider.Claude && (
@@ -383,16 +334,6 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                         value={mergedSettings.claudeModel}
                         onChange={(v) => updateSettingsEdit({ claudeModel: v })}
                         className={specificSettings.claudeModel === undefined ? 'opacity-50' : ''}
-                    />
-                    <MaxContextMessageCountSlider
-                        value={mergedSettings.openaiMaxContextMessageCount}
-                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
-                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
-                    />
-                    <TemperatureSlider
-                        value={mergedSettings.temperature}
-                        onChange={(v) => updateSettingsEdit({ temperature: v })}
-                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
                     />
                 </>
             )}
@@ -409,16 +350,6 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                         setOlamaModel={(v) => updateSettingsEdit({ ollamaModel: v })}
                         className={specificSettings.ollamaModel === undefined ? 'opacity-50' : ''}
                     />
-                    <MaxContextMessageCountSlider
-                        value={mergedSettings.openaiMaxContextMessageCount}
-                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
-                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
-                    />
-                    <TemperatureSlider
-                        value={mergedSettings.temperature}
-                        onChange={(v) => updateSettingsEdit({ temperature: v })}
-                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
-                    />
                 </>
             )}
             {mergedSettings.aiProvider === ModelProvider.Gemini && (
@@ -427,16 +358,6 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                         value={mergedSettings.geminiModel}
                         onChange={(v) => updateSettingsEdit({ geminiModel: v })}
                         className={specificSettings.geminiModel === undefined ? 'opacity-50' : ''}
-                    />
-                    <MaxContextMessageCountSlider
-                        value={mergedSettings.openaiMaxContextMessageCount}
-                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
-                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
-                    />
-                    <TemperatureSlider
-                        value={mergedSettings.temperature}
-                        onChange={(v) => updateSettingsEdit({ temperature: v })}
-                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
                     />
                 </>
             )}
@@ -447,16 +368,6 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                         onChange={(v) => updateSettingsEdit({ groqModel: v })}
                         className={specificSettings.groqModel === undefined ? 'opacity-50' : ''}
                     />
-                    <MaxContextMessageCountSlider
-                        value={mergedSettings.openaiMaxContextMessageCount}
-                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
-                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
-                    />
-                    <TemperatureSlider
-                        value={mergedSettings.temperature}
-                        onChange={(v) => updateSettingsEdit({ temperature: v })}
-                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
-                    />
                 </>
             )}
             {mergedSettings.aiProvider === ModelProvider.DeepSeek && (
@@ -465,16 +376,6 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                         value={mergedSettings.deepseekModel}
                         onChange={(v) => updateSettingsEdit({ deepseekModel: v })}
                         className={specificSettings.deepseekModel === undefined ? 'opacity-50' : ''}
-                    />
-                    <MaxContextMessageCountSlider
-                        value={mergedSettings.openaiMaxContextMessageCount}
-                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
-                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
-                    />
-                    <TemperatureSlider
-                        value={mergedSettings.temperature}
-                        onChange={(v) => updateSettingsEdit({ temperature: v })}
-                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
                     />
                 </>
             )}
@@ -486,15 +387,15 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                         siliconCloudKey={mergedSettings.siliconCloudKey}
                         className={specificSettings.siliconCloudModel === undefined ? 'opacity-50' : ''}
                     />
-                    <MaxContextMessageCountSlider
-                        value={mergedSettings.openaiMaxContextMessageCount}
-                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
-                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
-                    />
-                    <TemperatureSlider
-                        value={mergedSettings.temperature}
-                        onChange={(v) => updateSettingsEdit({ temperature: v })}
-                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
+                </>
+            )}
+            {mergedSettings.aiProvider === ModelProvider.LMStudio && (
+                <>
+                    <LMStudioModelSelect
+                        lmStudioModel={mergedSettings.lmStudioModel}
+                        setLmStudioModel={(v) => updateSettingsEdit({ lmStudioModel: v })}
+                        lmStudioHost={mergedSettings.lmStudioHost}
+                        className={specificSettings.lmStudioModel === undefined ? 'opacity-50' : ''}
                     />
                 </>
             )}
@@ -529,18 +430,23 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                             }}
                             className={specificSettings.customProviders === undefined ? 'opacity-50' : ''}
                         />
-                        <MaxContextMessageCountSlider
-                            value={mergedSettings.openaiMaxContextMessageCount}
-                            onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
-                            className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
-                        />
-                        <TemperatureSlider
-                            value={mergedSettings.temperature}
-                            onChange={(v) => updateSettingsEdit({ temperature: v })}
-                            className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
-                        />
                     </>
                 )}
+            <MaxContextMessageCountSlider
+                value={mergedSettings.openaiMaxContextMessageCount}
+                onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
+                className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
+            />
+            <TemperatureSlider
+                value={mergedSettings.temperature}
+                onChange={(v) => updateSettingsEdit({ temperature: v })}
+                className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
+            />
+            <TopPSlider
+                topP={mergedSettings.topP}
+                setTopP={(v) => updateSettingsEdit({ topP: v })}
+                className={specificSettings.topP === undefined ? 'opacity-50' : ''}
+            />
         </>
     )
 }

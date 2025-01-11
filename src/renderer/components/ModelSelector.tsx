@@ -99,7 +99,6 @@ export function ChatModelSelector(props: {}) {
                 onClose={handleMenuClose}
                 PaperProps={{
                     style: {
-                        minHeight: ITEM_HEIGHT * 8,
                         maxHeight: 'calc(60vh - 96px)',
                         marginTop: '0px', // 调整弹出菜单的位置
                     },

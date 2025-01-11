@@ -317,5 +317,6 @@
     "Reset All Hotkeys": "重置所有快捷键",
     "Action": "动作",
     "Operations": "操作",
-    "Press hotkey": "输入快捷键"
+    "Press hotkey": "输入快捷键",
+    "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "请确保远程 LM Studio 服务能够远程连接。更多详情请参考<a>此教程</a>。"
 }

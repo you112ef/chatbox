@@ -14,6 +14,7 @@ import TemperatureSlider from '@/components/TemperatureSlider'
 import CustomProviderSetting from './CustomProviderSetting'
 import DeepSeekSetting from './DeepSeekSetting'
 import SiliconflowSetting from './SiliconflowSetting'
+import LMStudioSetting from './LMStudioSetting'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -87,6 +88,9 @@ export default function ModelSettingTab(props: ModelConfigProps) {
             )}
             {settingsEdit.aiProvider === ModelProvider.SiliconFlow && (
                 <SiliconflowSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+            )}
+            {settingsEdit.aiProvider === ModelProvider.LMStudio && (
+                <LMStudioSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
             )}
         </Box>
     )

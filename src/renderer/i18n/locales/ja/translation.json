@@ -317,5 +317,6 @@
     "Reset All Hotkeys": "すべてのショートカットキーをリセット",
     "Action": "アクション",
     "Operations": "操作",
-    "Press hotkey": "ショートカットキーを入力"
+    "Press hotkey": "ショートカットキーを入力",
+    "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "リモートLM Studioサービスがリモート接続できることを確認してください。詳細については、<a>このチュートリアル</a>を参照してください。"
 }

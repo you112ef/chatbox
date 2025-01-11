@@ -316,5 +316,6 @@
     "Reset All Hotkeys": "إعادة تعيين جميع مفاتيح السرعة",
     "Action": "العمل",
     "Operations": "العمليات",
-    "Press hotkey": "أدخل مفتاح السرعة"
+    "Press hotkey": "أدخل مفتاح السرعة",
+    "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "يرجى التأكد من أن خدمة Remote LM Studio قادرة على الاتصال عن بُعد. لمزيد من التفاصيل، راجع <a>هذا الدليل</a>."
 }

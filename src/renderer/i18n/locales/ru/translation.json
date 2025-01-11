@@ -317,5 +317,6 @@
     "Reset All Hotkeys": "Сбросить все горячие клавиши",
     "Action": "Действие",
     "Operations": "Операции",
-    "Press hotkey": "Ввести горячую клавишу"
+    "Press hotkey": "Ввести горячую клавишу",
+    "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "Пожалуйста, убедитесь, что удаленный сервис LM Studio может подключаться удаленно. Для получения дополнительной информации обратитесь к <a>этому руководству</a>."
 }

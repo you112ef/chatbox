@@ -6,6 +6,7 @@ import ChatboxAISettingUtil from './chatboxai-setting-util'
 import ClaudeSettingUtil from './claude-setting-util'
 import GeminiSettingUtil from './gemini-setting-util'
 import GroqSettingUtil from './groq-setting-util'
+import LMStudioSettingUtil from './lmstudio-setting-util'
 import OllamaSettingUtil from './ollama-setting-util'
 import OpenAISettingUtil from './openai-setting-util'
 import CustomModelSettingUtil from './custom-setting-util'
@@ -24,6 +25,7 @@ export function getModelSettingUtil(aiProvider: ModelProvider): ModelSettingUtil
         [ModelProvider.OpenAI]: OpenAISettingUtil,
         [ModelProvider.DeepSeek]: DeepSeekSettingUtil,
         [ModelProvider.SiliconFlow]: SiliconFlowSettingUtil,
+        [ModelProvider.LMStudio]: LMStudioSettingUtil,
         [ModelProvider.Custom]: CustomModelSettingUtil,
     }
     const Class = hash[aiProvider]

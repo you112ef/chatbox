@@ -317,5 +317,6 @@
     "Reset All Hotkeys": "모든 단축키 재설정",
     "Action": "작업",
     "Operations": "작업",
-    "Press hotkey": "단축키 입력"
+    "Press hotkey": "단축키 입력",
+    "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "원격 LM Studio 서비스가 원격으로 연결할 수 있는지 확인하십시오. 자세한 내용은 <a>이 튜토리얼</a>을 참조하십시오."
 }

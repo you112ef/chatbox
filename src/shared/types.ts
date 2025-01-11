@@ -181,6 +181,8 @@ export function settings2SessionSettings(settings: ModelSettings) {
 
         'siliconCloudModel',
 
+        'lmStudioModel',
+
         'selectedCustomProviderId',
         'customProviders',
     ])
@@ -210,6 +212,7 @@ export enum ModelProvider {
     Groq = 'groq',
     DeepSeek = 'deepseek',
     SiliconFlow = 'siliconflow',
+    LMStudio = 'lm-studio',
     Custom = 'custom',
 }
 
@@ -270,6 +273,10 @@ export interface ModelSettings {
     // siliconflow
     siliconCloudKey: string
     siliconCloudModel: string
+
+    // LMStudio
+    lmStudioHost: string
+    lmStudioModel: string
 
     // custom provider
     selectedCustomProviderId?: string // 选中的自定义提供者 ID，仅当 aiProvider 为 custom 时有效

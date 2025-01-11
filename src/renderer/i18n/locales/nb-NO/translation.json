@@ -316,5 +316,6 @@
     "Reset All Hotkeys": "Återställ alla snabbknappar",
     "Action": "Åtgärd",
     "Operations": "Åtgärder",
-    "Press hotkey": "Skriv in snabbknapp"
+    "Press hotkey": "Skriv in snabbknapp",
+    "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "Vennligst sørg for at den eksterne LM Studio-tjenesten kan koble til eksternt. For mer informasjon, se <a>denne veiledningen</a>."
 }
