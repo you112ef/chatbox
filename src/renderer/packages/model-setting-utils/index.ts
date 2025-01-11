@@ -10,6 +10,7 @@ import OllamaSettingUtil from './ollama-setting-util'
 import OpenAISettingUtil from './openai-setting-util'
 import CustomModelSettingUtil from './custom-setting-util'
 import DeepSeekSettingUtil from './deepseek-setting-util'
+import SiliconFlowSettingUtil from './siliconflow-setting-util'
 
 export function getModelSettingUtil(aiProvider: ModelProvider): ModelSettingUtil {
     const hash: Record<ModelProvider, new () => ModelSettingUtil> = {
@@ -22,6 +23,7 @@ export function getModelSettingUtil(aiProvider: ModelProvider): ModelSettingUtil
         [ModelProvider.Ollama]: OllamaSettingUtil,
         [ModelProvider.OpenAI]: OpenAISettingUtil,
         [ModelProvider.DeepSeek]: DeepSeekSettingUtil,
+        [ModelProvider.SiliconFlow]: SiliconFlowSettingUtil,
         [ModelProvider.Custom]: CustomModelSettingUtil,
     }
     const Class = hash[aiProvider]

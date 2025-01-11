@@ -24,7 +24,18 @@ export default function SimpleSelect<T extends string | number>(props: Props<T>)
             style={style}
         >
             <InputLabel>{props.label}</InputLabel>
-            <Select label={props.label} value={props.value} onChange={(e) => props.onChange(e.target.value as T)}>
+            <Select 
+                label={props.label} 
+                value={props.value} 
+                onChange={(e) => props.onChange(e.target.value as T)}
+                MenuProps={{
+                    PaperProps: {
+                        style: {
+                            maxHeight: 'calc(50vh - 96px)',
+                        }
+                    }
+                }}
+            >
                 {props.options.map((option) => (
                     <MenuItem key={option.value} value={option.value} style={option.style}>
                         {option.label}

@@ -8,6 +8,7 @@ import Gemini from './gemini'
 import Ollama from './ollama'
 import Groq from './groq'
 import DeepSeek from './deepseek'
+import SiliconFlow from './siliconflow'
 
 export function getModel(setting: Settings, config: Config) {
     switch (setting.aiProvider) {
@@ -29,6 +30,8 @@ export function getModel(setting: Settings, config: Config) {
             return new Groq(setting)
         case ModelProvider.DeepSeek:
             return new DeepSeek(setting)
+        case ModelProvider.SiliconFlow:
+            return new SiliconFlow(setting)
         case ModelProvider.Custom:
             const customProvider = setting.customProviders.find(
                 (provider) => provider.id === setting.selectedCustomProviderId
@@ -64,6 +67,7 @@ export const aiProviderNameHash: Record<ModelProvider, string> = {
     [ModelProvider.Ollama]: 'Ollama',
     [ModelProvider.Groq]: 'Groq',
     [ModelProvider.DeepSeek]: 'DeepSeek',
+    [ModelProvider.SiliconFlow]: 'SiliconFlow',
     [ModelProvider.Custom]: 'Custom Provider',
 }
 
@@ -97,6 +101,11 @@ export const AIModelProviderMenuOptionList = [
     {
         value: ModelProvider.DeepSeek,
         label: aiProviderNameHash[ModelProvider.DeepSeek],
+        disabled: false,
+    },
+    {
+        value: ModelProvider.SiliconFlow,
+        label: aiProviderNameHash[ModelProvider.SiliconFlow],
         disabled: false,
     },
     {

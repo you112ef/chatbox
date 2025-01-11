@@ -13,6 +13,7 @@ import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSli
 import TemperatureSlider from '@/components/TemperatureSlider'
 import CustomProviderSetting from './CustomProviderSetting'
 import DeepSeekSetting from './DeepSeekSetting'
+import SiliconflowSetting from './SiliconflowSetting'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -83,6 +84,9 @@ export default function ModelSettingTab(props: ModelConfigProps) {
             )}
             {settingsEdit.aiProvider === ModelProvider.Custom && (
                 <CustomProviderSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+            )}
+            {settingsEdit.aiProvider === ModelProvider.SiliconFlow && (
+                <SiliconflowSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
             )}
         </Box>
     )

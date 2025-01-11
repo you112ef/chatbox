@@ -179,6 +179,8 @@ export function settings2SessionSettings(settings: ModelSettings) {
 
         'deepseekModel',
 
+        'siliconCloudModel',
+
         'selectedCustomProviderId',
         'customProviders',
     ])
@@ -207,6 +209,7 @@ export enum ModelProvider {
     Ollama = 'ollama',
     Groq = 'groq',
     DeepSeek = 'deepseek',
+    SiliconFlow = 'siliconflow',
     Custom = 'custom',
 }
 
@@ -263,6 +266,10 @@ export interface ModelSettings {
     // deepseek
     deepseekAPIKey: string
     deepseekModel: string
+
+    // siliconflow
+    siliconCloudKey: string
+    siliconCloudModel: string
 
     // custom provider
     selectedCustomProviderId?: string // 选中的自定义提供者 ID，仅当 aiProvider 为 custom 时有效

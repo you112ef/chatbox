@@ -45,6 +45,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { ImageInStorage, handleImageInputAndSave } from '@/components/Image'
 import ImageIcon from '@mui/icons-material/Image'
 import CreatableSelect from '@/components/CreatableSelect'
+import { SiliconflowModelSelect } from './SettingDialog/SiliconflowSetting'
 
 export default function ChatConfigWindow(props: {}) {
     const { t } = useTranslation()
@@ -464,6 +465,26 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                         value={mergedSettings.deepseekModel}
                         onChange={(v) => updateSettingsEdit({ deepseekModel: v })}
                         className={specificSettings.deepseekModel === undefined ? 'opacity-50' : ''}
+                    />
+                    <MaxContextMessageCountSlider
+                        value={mergedSettings.openaiMaxContextMessageCount}
+                        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
+                        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
+                    />
+                    <TemperatureSlider
+                        value={mergedSettings.temperature}
+                        onChange={(v) => updateSettingsEdit({ temperature: v })}
+                        className={specificSettings.temperature === undefined ? 'opacity-50' : ''}
+                    />
+                </>
+            )}
+            {mergedSettings.aiProvider === ModelProvider.SiliconFlow && (
+                <>
+                    <SiliconflowModelSelect
+                        siliconCloudModel={mergedSettings.siliconCloudModel}
+                        setSiliconCloudModel={(v) => updateSettingsEdit({ siliconCloudModel: v })}
+                        siliconCloudKey={mergedSettings.siliconCloudKey}
+                        className={specificSettings.siliconCloudModel === undefined ? 'opacity-50' : ''}
                     />
                     <MaxContextMessageCountSlider
                         value={mergedSettings.openaiMaxContextMessageCount}

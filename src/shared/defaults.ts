@@ -43,6 +43,9 @@ export function settings(): Settings {
         deepseekAPIKey: '',
         deepseekModel: 'deepseek-chat',
 
+        siliconCloudKey: '',
+        siliconCloudModel: 'Qwen/Qwen2.5-7B-Instruct',
+
         customProviders: [],
 
         showWordCount: false,
