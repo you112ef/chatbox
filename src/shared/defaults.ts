@@ -55,7 +55,7 @@ export function settings(): Settings {
         defaultAssistantAvatarKey: '',
         theme: Theme.System,
         language: 'en',
-        fontSize: 12,
+        fontSize: 11,
         spellCheck: true,
 
         defaultPrompt: getDefaultPrompt(),
