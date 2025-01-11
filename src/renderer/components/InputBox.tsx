@@ -129,13 +129,10 @@ export default function InputBox(props: {}) {
 
     // 快捷键：发送
     useHotkeys(
-        shortcuts.inputBoxSend,
+        platform.type !== 'mobile' ? shortcuts.inputBoxSend : '',
         (event) => {
             if (event.isComposing) {
                 return // 使用输入法时点击回车，不应该触发动作
-            }
-            if (platform.type === 'mobile') {
-                return // 移动端点击回车不会发送消息
             }
             handleSubmit()
         },
