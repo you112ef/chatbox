@@ -74,7 +74,7 @@ export default class Gemeni extends Base {
             webBrowsing?: boolean
         }
     ): Promise<string> {
-        const { contents, systemInstruction } = await populateGeminiMessages(messages, this.options.geminiModel)
+        const { contents, systemInstruction } = await populateGeminiMessages(messages, this.options.geminiModel, options?.webBrowsing)
         const res = await this.post(
             `${this.options.geminiAPIHost}/v1beta/models/${this.options.geminiModel}:streamGenerateContent?alt=sse&key=${this.options.geminiAPIKey}`,
             {
@@ -290,7 +290,7 @@ interface InlineDataPart {
     inlineData: { mimeType: string; data: string }
 }
 
-export async function populateGeminiMessages(messages: Message[], model: GeminiModel): Promise<{
+export async function populateGeminiMessages(messages: Message[], model: GeminiModel, webBrowsing?: boolean): Promise<{
     contents: Content[]
     systemInstruction: string
 }> {
@@ -357,6 +357,13 @@ export async function populateGeminiMessages(messages: Message[], model: GeminiM
     if (previousContent !== null && previousContent.role === 'user') {
         // 最后一条必须是用户消息
         contents.push(previousContent)
+    }
+    if (webBrowsing) {
+        systemInstruction += `
+        
+Before answering any question, please search the web for the most up-to-date and accurate information. Base your response on both your training data and current online sources.
+Please acknowledge that you have searched the web before providing your answer.
+Always respond in the same language as the user's query, and cite your sources when possible.`
     }
     return { contents, systemInstruction }
 }
