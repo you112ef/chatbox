@@ -10,6 +10,7 @@ import LMStudio from './lmstudio'
 import Groq from './groq'
 import DeepSeek from './deepseek'
 import SiliconFlow from './siliconflow'
+import Perplexity from './perplexity'
 
 export function getModel(setting: Settings, config: Config) {
     switch (setting.aiProvider) {
@@ -35,6 +36,8 @@ export function getModel(setting: Settings, config: Config) {
             return new SiliconFlow(setting)
         case ModelProvider.LMStudio:
             return new LMStudio(setting)
+        case ModelProvider.Perplexity:
+            return new Perplexity(setting)
         case ModelProvider.Custom:
             const customProvider = setting.customProviders.find(
                 (provider) => provider.id === setting.selectedCustomProviderId
@@ -72,6 +75,7 @@ export const aiProviderNameHash: Record<ModelProvider, string> = {
     [ModelProvider.DeepSeek]: 'DeepSeek',
     [ModelProvider.SiliconFlow]: 'SiliconFlow',
     [ModelProvider.LMStudio]: 'LM Studio',
+    [ModelProvider.Perplexity]: 'Perplexity API',
     [ModelProvider.Custom]: 'Custom Provider',
 }
 
@@ -120,6 +124,11 @@ export const AIModelProviderMenuOptionList = [
     {
         value: ModelProvider.Azure,
         label: aiProviderNameHash[ModelProvider.Azure],
+        disabled: false,
+    },
+    {
+        value: ModelProvider.Perplexity,
+        label: aiProviderNameHash[ModelProvider.Perplexity],
         disabled: false,
     },
     {

@@ -24,15 +24,18 @@ function WebBrowsingCard(props: { webBrowsing: MessageWebBrowsing }) {
                 <div className="flex items-center gap-1.5">
                     <Globe className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                        <span className="font-medium bg-blue-100/90 dark:bg-blue-500/30 px-2.5 py-1 rounded-full 
-                            inline-block max-w-full">
-                            <span className="block truncate">
-                                {webBrowsing.query.join(', ')}
-                            </span>
-                        </span>
+                        {
+                            webBrowsing.query && webBrowsing.query.length > 0 && (
+                                <span className="font-medium bg-blue-100/90 dark:bg-blue-500/30 px-2.5 py-1 rounded-full inline-block max-w-full">
+                                    <span className="block truncate">
+                                        {webBrowsing.query.join(', ')}
+                                    </span>
+                                </span>
+                            )
+                        }
                     </div>
                     {webBrowsing.links.length > DISPLAY_LINKS_COUNT && (
-                        <button 
+                        <button
                             onClick={() => setShowAll(!showAll)}
                             className="cursor-pointer
                             bg-white dark:bg-blue-500/30

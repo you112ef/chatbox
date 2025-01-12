@@ -183,6 +183,8 @@ export function settings2SessionSettings(settings: ModelSettings) {
 
         'lmStudioModel',
 
+        'perplexityModel',
+
         'selectedCustomProviderId',
         'customProviders',
     ])
@@ -213,6 +215,7 @@ export enum ModelProvider {
     DeepSeek = 'deepseek',
     SiliconFlow = 'siliconflow',
     LMStudio = 'lm-studio',
+    Perplexity = 'perplexity',
     Custom = 'custom',
 }
 
@@ -277,6 +280,10 @@ export interface ModelSettings {
     // LMStudio
     lmStudioHost: string
     lmStudioModel: string
+
+    // perplexity
+    perplexityApiKey: string
+    perplexityModel: string
 
     // custom provider
     selectedCustomProviderId?: string // 选中的自定义提供者 ID，仅当 aiProvider 为 custom 时有效

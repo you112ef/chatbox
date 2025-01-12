@@ -15,6 +15,7 @@ import CustomProviderSetting from './CustomProviderSetting'
 import DeepSeekSetting from './DeepSeekSetting'
 import SiliconflowSetting from './SiliconflowSetting'
 import LMStudioSetting from './LMStudioSetting'
+import PerplexitySetting from './PerplexitySetting'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -91,6 +92,9 @@ export default function ModelSettingTab(props: ModelConfigProps) {
             )}
             {settingsEdit.aiProvider === ModelProvider.LMStudio && (
                 <LMStudioSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+            )}
+            {settingsEdit.aiProvider === ModelProvider.Perplexity && (
+                <PerplexitySetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
             )}
         </Box>
     )

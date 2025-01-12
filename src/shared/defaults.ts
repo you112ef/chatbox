@@ -49,6 +49,9 @@ export function settings(): Settings {
         lmStudioHost: 'http://127.0.0.1:1234/v1',
         lmStudioModel: '',
 
+        perplexityApiKey: '',
+        perplexityModel: 'llama-3.1-sonar-large-128k-online',
+
         customProviders: [],
 
         showWordCount: false,

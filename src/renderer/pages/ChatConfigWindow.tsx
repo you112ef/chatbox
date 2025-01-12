@@ -47,6 +47,7 @@ import ImageIcon from '@mui/icons-material/Image'
 import CreatableSelect from '@/components/CreatableSelect'
 import { SiliconflowModelSelect } from './SettingDialog/SiliconflowSetting'
 import { LMStudioModelSelect } from './SettingDialog/LMStudioSetting'
+import { PerplexityModelSelect } from './SettingDialog/PerplexitySetting'
 
 export default function ChatConfigWindow(props: {}) {
     const { t } = useTranslation()
@@ -396,6 +397,16 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                         setLmStudioModel={(v) => updateSettingsEdit({ lmStudioModel: v })}
                         lmStudioHost={mergedSettings.lmStudioHost}
                         className={specificSettings.lmStudioModel === undefined ? 'opacity-50' : ''}
+                    />
+                </>
+            )}
+            {mergedSettings.aiProvider === ModelProvider.Perplexity && (
+                <>
+                    <PerplexityModelSelect
+                        perplexityModel={mergedSettings.perplexityModel}
+                        setPerplexityModel={(v) => updateSettingsEdit({ perplexityModel: v })}
+                        perplexityApiKey={mergedSettings.perplexityApiKey}
+                        className={specificSettings.perplexityModel === undefined ? 'opacity-50' : ''}
                     />
                 </>
             )}
