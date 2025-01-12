@@ -78,8 +78,8 @@ export default function Sidebar(props: {}) {
                         <Box className="flex justify-between items-center p-0 m-0 mx-2 mb-4">
                             <Box>
                                 <a href="https://chatboxai.app" target="_blank">
-                                    <img src={icon} className="w-8 h-8 mr-2 align-middle inline-block" />
-                                    <span className="text-2xl align-middle inline-block">Chatbox</span>
+                                    <img src={icon} className="w-6 h-6 mr-2 align-middle inline-block" />
+                                    <span className="text-xl font-semibold align-middle inline-block opacity-75">Chatbox</span>
                                 </a>
                             </Box>
                             <Box onClick={() => setShowSidebar(!showSidebar)}>
