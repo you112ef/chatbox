@@ -25,7 +25,7 @@ export default class XAI extends StandardOpenAI {
     }
 
     isSupportVision(model: string): boolean {
-        return true // 有些支持，有些不支持。不支持的会报错。
+        return true
     }
 
     listLocalModels(): string[] {
