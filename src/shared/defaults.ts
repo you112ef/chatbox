@@ -52,6 +52,9 @@ export function settings(): Settings {
         perplexityApiKey: '',
         perplexityModel: 'llama-3.1-sonar-large-128k-online',
 
+        xAIKey: '',
+        xAIModel: 'grok-beta',
+
         customProviders: [],
 
         showWordCount: false,

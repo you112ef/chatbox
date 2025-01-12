@@ -48,6 +48,7 @@ import CreatableSelect from '@/components/CreatableSelect'
 import { SiliconflowModelSelect } from './SettingDialog/SiliconflowSetting'
 import { LMStudioModelSelect } from './SettingDialog/LMStudioSetting'
 import { PerplexityModelSelect } from './SettingDialog/PerplexitySetting'
+import { XAIModelSelect } from './SettingDialog/XAISetting'
 
 export default function ChatConfigWindow(props: {}) {
     const { t } = useTranslation()
@@ -407,6 +408,16 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
                         setPerplexityModel={(v) => updateSettingsEdit({ perplexityModel: v })}
                         perplexityApiKey={mergedSettings.perplexityApiKey}
                         className={specificSettings.perplexityModel === undefined ? 'opacity-50' : ''}
+                    />
+                </>
+            )}
+            {mergedSettings.aiProvider === ModelProvider.XAI && (
+                <>
+                    <XAIModelSelect
+                        xAIModel={mergedSettings.xAIModel}
+                        setXAIModel={(v) => updateSettingsEdit({ xAIModel: v })}
+                        xAIKey={mergedSettings.xAIKey}
+                        className={specificSettings.xAIModel === undefined ? 'opacity-50' : ''}
                     />
                 </>
             )}

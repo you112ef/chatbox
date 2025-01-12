@@ -16,6 +16,7 @@ import DeepSeekSetting from './DeepSeekSetting'
 import SiliconflowSetting from './SiliconflowSetting'
 import LMStudioSetting from './LMStudioSetting'
 import PerplexitySetting from './PerplexitySetting'
+import XAISetting from './XAISetting'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -95,6 +96,9 @@ export default function ModelSettingTab(props: ModelConfigProps) {
             )}
             {settingsEdit.aiProvider === ModelProvider.Perplexity && (
                 <PerplexitySetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+            )}
+            {settingsEdit.aiProvider === ModelProvider.XAI && (
+                <XAISetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
             )}
         </Box>
     )

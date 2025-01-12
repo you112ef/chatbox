@@ -185,6 +185,8 @@ export function settings2SessionSettings(settings: ModelSettings) {
 
         'perplexityModel',
 
+        'xAIModel',
+
         'selectedCustomProviderId',
         'customProviders',
     ])
@@ -216,6 +218,7 @@ export enum ModelProvider {
     SiliconFlow = 'siliconflow',
     LMStudio = 'lm-studio',
     Perplexity = 'perplexity',
+    XAI = 'xAI',
     Custom = 'custom',
 }
 
@@ -284,6 +287,10 @@ export interface ModelSettings {
     // perplexity
     perplexityApiKey: string
     perplexityModel: string
+
+    // xai
+    xAIKey: string
+    xAIModel: string
 
     // custom provider
     selectedCustomProviderId?: string // 选中的自定义提供者 ID，仅当 aiProvider 为 custom 时有效

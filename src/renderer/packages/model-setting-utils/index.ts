@@ -13,6 +13,7 @@ import PerplexitySettingUtil from './perplexity-setting-util'
 import CustomModelSettingUtil from './custom-setting-util'
 import DeepSeekSettingUtil from './deepseek-setting-util'
 import SiliconFlowSettingUtil from './siliconflow-setting-util'
+import XAISettingUtil from './xai-setting-util'
 
 export function getModelSettingUtil(aiProvider: ModelProvider): ModelSettingUtil {
     const hash: Record<ModelProvider, new () => ModelSettingUtil> = {
@@ -28,6 +29,7 @@ export function getModelSettingUtil(aiProvider: ModelProvider): ModelSettingUtil
         [ModelProvider.SiliconFlow]: SiliconFlowSettingUtil,
         [ModelProvider.LMStudio]: LMStudioSettingUtil,
         [ModelProvider.Perplexity]: PerplexitySettingUtil,
+        [ModelProvider.XAI]: XAISettingUtil,
         [ModelProvider.Custom]: CustomModelSettingUtil,
     }
     const Class = hash[aiProvider]
