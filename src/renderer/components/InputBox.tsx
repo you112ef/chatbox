@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { Typography, useTheme } from '@mui/material'
-import { createMessage } from '../../shared/types'
+import { useTheme } from '@mui/material'
+import { createMessage, ShortcutSetting } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as atoms from '../stores/atoms'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
@@ -126,43 +126,7 @@ export default function InputBox(props: {}) {
             inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, maxTextareaHeight)}px`
         }
     }
-
-    // 快捷键：发送
-    useHotkeys(
-        platform.type !== 'mobile' ? shortcuts.inputBoxSend : '',
-        (event) => {
-            if (event.isComposing) {
-                return // 使用输入法时点击回车，不应该触发动作
-            }
-            handleSubmit()
-        },
-        [handleSubmit],
-        {
-            enabled: () => {
-                return inputRef.current === document.activeElement // 聚焦在输入框
-            },
-            enableOnFormTags: true,
-            preventDefault: true,
-        },
-    )
-    // 快捷键：发送但不生成回复
-    useHotkeys(
-        shortcuts.inputBoxSendWithoutResponse,
-        (event) => {
-            if (event.isComposing) {
-                return // 使用输入法时点击回车，不应该触发动作
-            }
-            handleSubmit(false)
-        },
-        [handleSubmit],
-        {
-            enabled: () => {
-                return inputRef.current === document.activeElement // 聚焦在输入框
-            },
-            enableOnFormTags: true,
-            preventDefault: true,
-        },
-    )
+ 
     // 向上向下键翻阅历史消息。使用 useHotkeys 会导致上下键盘无法在多段文本中换行，所以依然使用 onKeyDown
     const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (
@@ -540,6 +504,56 @@ export default function InputBox(props: {}) {
                     </div>
                 </div>
             </div>
+            {
+                platform.type !== 'mobile' && (
+                    <ShortcutBinding shortcuts={shortcuts} handleSubmit={handleSubmit} inputRef={inputRef} />
+                )
+            }
         </div>
     )
+}
+
+function ShortcutBinding(props: {
+    shortcuts: ShortcutSetting
+    handleSubmit: (withResponse?: boolean) => void
+    inputRef: React.RefObject<HTMLTextAreaElement>
+}) {
+    const { shortcuts, handleSubmit, inputRef } = props
+    // 快捷键：发送
+    useHotkeys(
+        shortcuts.inputBoxSend,
+        (event) => {
+            if (event.isComposing) {
+                return // 使用输入法时点击回车，不应该触发动作
+            }
+            handleSubmit()
+        },
+        [handleSubmit],
+        {
+            enabled: () => {
+                return inputRef.current === document.activeElement // 聚焦在输入框
+            },
+            enableOnFormTags: true,
+            preventDefault: true,
+        },
+    )
+    // 快捷键：发送但不生成回复
+    useHotkeys(
+        shortcuts.inputBoxSendWithoutResponse,
+        (event) => {
+            if (event.isComposing) {
+                return // 使用输入法时点击回车，不应该触发动作
+            }
+            handleSubmit(false)
+        },
+        [handleSubmit],
+        {
+            enabled: () => {
+                return inputRef.current === document.activeElement // 聚焦在输入框
+            },
+            enableOnFormTags: true,
+            preventDefault: true,
+        },
+    )
+    return <></>
 }
