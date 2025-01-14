@@ -100,11 +100,15 @@ export function MermaidSVGPreviewDangerous(props: {
 }
 
 export function SVGPreview(props: { xmlCode: string; className?: string; generating?: boolean }) {
-    const { xmlCode, className, generating } = props
+    let { xmlCode, className, generating } = props
     const setPictureShow = useSetAtom(atoms.pictureShowAtom)
     const svgBase64 = useMemo(() => {
         if (!xmlCode.includes('</svg') && generating) {
             return ''
+        }
+        // xmlns 属性告诉浏览器该 XML 文档使用的是 SVG 命名空间，缺少该属性会导致浏览器无法正确渲染 SVG 代码。
+        if (!xmlCode.includes('xmlns="http://www.w3.org/2000/svg"')) {
+            xmlCode = xmlCode.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"')
         }
         try {
             return picUtils.svgCodeToBase64(xmlCode)
