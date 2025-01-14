@@ -50,7 +50,8 @@ export default class DeepSeekSettingUtil extends BaseConfig implements ModelSett
     }
 
     isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
-        return true // 看样子 deepseek 虽然不支持图片输入，但是自动兼容了图片输入接口
+        const deepSeek = new DeepSeek(settings)
+        return deepSeek.isSupportVision(settings.deepseekModel)
     }
 
     isCurrentModelSupportWebBrowsing(settings: ModelSettings): boolean {

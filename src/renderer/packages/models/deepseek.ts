@@ -41,7 +41,7 @@ export default class DeepSeek extends StandardOpenAI {
     }
 
     isSupportVision(model: string): boolean {
-        return false
+        return false // 看样子 deepseek 虽然不支持图片输入，但是自动兼容了图片输入接口
     }
 
     listLocalModels(): string[] {

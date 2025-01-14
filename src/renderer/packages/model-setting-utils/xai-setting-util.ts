@@ -41,7 +41,8 @@ export default class XAISettingUtil extends BaseConfig implements ModelSettingUt
     }
 
     isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
-        return true
+        const xai = new XAI(settings)
+        return xai.isSupportVision(settings.xAIModel)
     }
 
     isCurrentModelSupportWebBrowsing(settings: ModelSettings): boolean {

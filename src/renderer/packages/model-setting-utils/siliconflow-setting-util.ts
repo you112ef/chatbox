@@ -50,7 +50,8 @@ export default class SiliconFlowSettingUtil extends BaseConfig implements ModelS
     }
 
     isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
-        return true
+        const siliconFlow = new SiliconFlow(settings)
+        return siliconFlow.isSupportVision(settings.siliconCloudModel)
     }
 
     isCurrentModelSupportWebBrowsing(settings: ModelSettings): boolean {
