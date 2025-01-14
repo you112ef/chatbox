@@ -45,6 +45,7 @@ export default function InputBox(props: {}) {
     const inputRef = useRef<HTMLTextAreaElement | null>(null)
     const [previousMessageQuickInputMark, setPreviousMessageQuickInputMark] = useState('')
     const setOpenAttachLinkDialog = useSetAtom(atoms.openAttachLinkDialogAtom)
+    const pasteLongTextAsAFile = useAtomValue(atoms.pasteLongTextAsAFileAtom)
     const shortcuts = useAtomValue(atoms.shortcutsAtom)
 
     const { min: minTextareaHeight, max: maxTextareaHeight } = useInputBoxHeight()
@@ -126,7 +127,7 @@ export default function InputBox(props: {}) {
             inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, maxTextareaHeight)}px`
         }
     }
- 
+
     // 向上向下键翻阅历史消息。使用 useHotkeys 会导致上下键盘无法在多段文本中换行，所以依然使用 onKeyDown
     const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (
@@ -262,6 +263,15 @@ export default function InputBox(props: {}) {
                                 .map((url) => url.trim())
                                 .filter((url) => url.startsWith('http://') || url.startsWith('https://'))
                             insertLinks(urls)
+                        }
+                        if (pasteLongTextAsAFile && raw.length > 3000) {
+                            const file = new File(
+                                [text],
+                                `pasted_text_${attachments.length}.txt`,
+                                { type: 'text/plain' },
+                            )
+                            insertFiles([file])
+                            setMessageInput(messageInput)   // 删除掉默认粘贴进去的长文本
                         }
                     })
                     continue

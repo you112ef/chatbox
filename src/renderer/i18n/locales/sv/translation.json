@@ -317,5 +317,7 @@
     "Press hotkey": "Skriv in snabbknapp",
     "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "Se till att fjärr-LM Studio-tjänsten kan ansluta på distans. För mer information, se <a>denna guide</a>.",
     "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model or use the recommended <OpenMorePlanButton>Chatbox AI Models</OpenMorePlanButton>.": "Tyvärr, den aktuella modellen {{model}} API:et självt stöder inte bildförståelse. Om du behöver skicka bilder, vänligen byt till en annan modell eller använd den rekommenderade <OpenMorePlanButton>Chatbox AI Modeller</OpenMorePlanButton>.",
-    "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "Tyvärr, den aktuella modellen {{model}} API:et självt stöder inte bildförståelse. Om du behöver skicka bilder, vänligen byt till en annan modell."
+    "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "Tyvärr, den aktuella modellen {{model}} API:et självt stöder inte bildförståelse. Om du behöver skicka bilder, vänligen byt till en annan modell.",
+    "Paste long text as a file": "Klistra in lång text som en fil",
+    "Pasting long text will automatically insert it as a file, keeping chats clean and reducing token usage with prompt caching.": "Klistra in lång text som en fil för att hålla chattlistan ren och minska tokenanvändningen med prompt-cache."
 }

@@ -318,5 +318,7 @@
     "Press hotkey": "Tastenkürzel eingeben",
     "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "Bitte stellen Sie sicher, dass der Remote LMStudio-Dienst eine Remoteverbindung herstellen kann. Weitere Informationen finden Sie in <a>diesem Tutorial</a>.",
     "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model or use the recommended <OpenMorePlanButton>Chatbox AI Models</OpenMorePlanButton>.": "Leider unterstützt das aktuelle Modell {{model}} API selbst keine Bildverständnis. Wenn Sie Bilder senden müssen, bitte wechseln Sie zu einem anderen Modell oder verwenden Sie die empfohlenen <OpenMorePlanButton>Chatbox AI Modelle</OpenMorePlanButton>.",
-    "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "Leider unterstützt das aktuelle Modell {{model}} API selbst keine Bildverständnis. Wenn Sie Bilder senden müssen, bitte wechseln Sie zu einem anderen Modell."
+    "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "Leider unterstützt das aktuelle Modell {{model}} API selbst keine Bildverständnis. Wenn Sie Bilder senden müssen, bitte wechseln Sie zu einem anderen Modell.",
+    "Paste long text as a file": "Langen Text als Datei einfügen",
+    "Pasting long text will automatically insert it as a file, keeping chats clean and reducing token usage with prompt caching.": "Langen Text als Datei einfügen, um die Chats sauber zu halten und den Token-Verbrauch mit Prompt-Caching zu reduzieren."
 }

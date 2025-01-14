@@ -249,6 +249,28 @@ export default function ChatSettingTab(props: {
                         setSettingsEdit({ ...settingsEdit })
                     }}
                 />
+                <FormControlLabel
+                    control={<Switch />}
+                    label={
+                        <span className="flex items-start justify-center">
+                            {t('Paste long text as a file')}
+                            <Tooltip
+                                title={t(
+                                    'Pasting long text will automatically insert it as a file, keeping chats clean and reducing token usage with prompt caching.'
+                                )}
+                                className="cursor-pointer"
+                                placement="top"
+                            >
+                                <HelpOutlineIcon className="opacity-60 ml-0.5" fontSize="small" />
+                            </Tooltip>
+                        </span>
+                    }
+                    checked={settingsEdit.pasteLongTextAsAFile}
+                    onChange={(e, checked) => {
+                        settingsEdit.pasteLongTextAsAFile = checked
+                        setSettingsEdit({ ...settingsEdit })
+                    }}
+                />
             </FormGroup>
         </Box>
     )

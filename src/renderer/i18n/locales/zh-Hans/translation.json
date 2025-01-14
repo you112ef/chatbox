@@ -318,5 +318,7 @@
     "Press hotkey": "输入快捷键",
     "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "请确保远程 LM Studio 服务能够远程连接。更多详情请参考<a>此教程</a>。",
     "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model or use the recommended <OpenMorePlanButton>Chatbox AI Models</OpenMorePlanButton>.": "抱歉，当前模型 {{model}} API 本身不支持图片理解。如果您需要发送图片，请切换到其他模型或使用推荐的 <OpenMorePlanButton>Chatbox AI Models</OpenMorePlanButton>。",
-    "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "抱歉，当前模型 {{model}} API 本身不支持图片理解。如果您需要发送图片，请切换到其他模型。"
+    "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "抱歉，当前模型 {{model}} API 本身不支持图片理解。如果您需要发送图片，请切换到其他模型。",
+    "Paste long text as a file": "粘贴长文本为文件",
+    "Pasting long text will automatically insert it as a file, keeping chats clean and reducing token usage with prompt caching.": "粘贴长文本时将以文件形式插入，有助于保持聊天列表简洁，并减少在 prompt caching 可用时大幅减少 token 使用量。"
 }

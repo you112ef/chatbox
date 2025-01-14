@@ -317,5 +317,7 @@
     "Press hotkey": "Press hotkey",
     "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.",
     "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model or use the recommended <OpenMorePlanButton>Chatbox AI Models</OpenMorePlanButton>.": "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model or use the recommended <OpenMorePlanButton>Chatbox AI Models</OpenMorePlanButton>.",
-    "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model."
+    "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.",
+    "Paste long text as a file": "Paste long text as a file",
+    "Pasting long text will automatically insert it as a file, keeping chats clean and reducing token usage with prompt caching.": "Pasting long text will automatically insert it as a file, keeping chats clean and reducing token usage with prompt caching."
 }
