@@ -63,8 +63,24 @@ const translations = {
         en: 'Paste',
         zh: '粘贴',
     },
+    PasteAsPlainText: {
+        en: 'Paste as Plain Text',
+        zh: '粘贴为文本',
+    },
     ReplaceWith: {
         en: 'Replace with',
         zh: '替换成',
+    },
+    ResetZoom: {
+        en: 'Reset Zoom',
+        zh: '重置缩放',
+    },
+    ZoomIn: {
+        en: 'Zoom In',
+        zh: '放大',
+    },
+    ZoomOut: {
+        en: 'Zoom Out',
+        zh: '缩小',
     },
 }

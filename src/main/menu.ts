@@ -15,15 +15,17 @@ export default class MenuBuilder {
 
     buildMenu(): Menu {
         const locale = new Locale()
+        // 监听右键菜单
         this.mainWindow.webContents.on('context-menu', (_, props) => {
             const items: (Electron.MenuItem | Electron.MenuItemConstructorOptions)[] = [
                 { role: 'copy', label: locale.t('Copy'), accelerator: 'CmdOrCtrl+C' },
                 { role: 'cut', label: locale.t('Cut'), accelerator: 'CmdOrCtrl+X' },
                 { role: 'paste', label: locale.t('Paste'), accelerator: 'CmdOrCtrl+V' },
-                // { role: 'selectAll' },
-                // { role: 'zoom' },
-                // { role: 'zoomIn' },
-                // { role: 'zoomOut' },
+                { role: 'pasteAndMatchStyle', label: locale.t('PasteAsPlainText'), accelerator: 'CmdOrCtrl+Shift+V' },
+                // { type: 'separator' },
+                // { role: 'resetZoom', label: locale.t('ResetZoom'), accelerator: 'CmdOrCtrl+0' },
+                // { role: 'zoomIn', label: locale.t('ZoomIn'), accelerator: 'CmdOrCtrl+=' },
+                // { role: 'zoomOut', label: locale.t('ZoomOut'), accelerator: 'CmdOrCtrl+-' },
             ]
             // Add each spelling suggestion
             for (const suggestion of props.dictionarySuggestions.slice(0, 3)) {
@@ -102,6 +104,11 @@ export default class MenuBuilder {
                     selector: 'paste:',
                 },
                 {
+                    label: 'Paste and Match Style',
+                    accelerator: 'Command+Shift+V',
+                    role: 'pasteAndMatchStyle',
+                },
+                {
                     label: 'Select All',
                     accelerator: 'Command+A',
                     selector: 'selectAll:',
@@ -125,6 +132,21 @@ export default class MenuBuilder {
                         this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
                     },
                 },
+                // {
+                //     label: 'Reset Zoom',
+                //     accelerator: 'Command+0',
+                //     role: 'resetZoom',
+                // },
+                // {
+                //     label: 'Zoom In',
+                //     accelerator: 'Command+=',
+                //     role: 'zoomIn',
+                // },
+                // {
+                //     label: 'Zoom Out',
+                //     accelerator: 'Command+-',
+                //     role: 'zoomOut',
+                // },
                 // {
                 //   label: 'Toggle Developer Tools',
                 //   accelerator: 'Alt+Command+I',
