@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { MenuItem, Button } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import CheckIcon from '@mui/icons-material/Check'
 import { SxProps, useTheme } from '@mui/material/styles'
 import { useTranslation } from 'react-i18next'
+import { isHotkeyPressed } from 'react-hotkeys-hook'
 
 interface Props {
     onDelete: () => void
@@ -70,6 +71,12 @@ export function ConfirmDeleteMenuItem({
             disableRipple
             onClick={() => {
                 setConfirmDelete(true)
+                // 按住 shift 键可以跳过确认直接删除
+                const shiftKeyPressed = isHotkeyPressed('shift')
+                if (shiftKeyPressed) {
+                    onDelete()
+                    setConfirmDelete(false)
+                }
             }}
             sx={hoverStyleHash[color]}
         >
@@ -138,6 +145,12 @@ export function ConfirmDeleteButton({
             variant="text"
             onClick={() => {
                 setConfirmDelete(true)
+                // 按住 shift 键可以跳过确认直接删除
+                const shiftKeyPressed = isHotkeyPressed('shift')
+                if (shiftKeyPressed) {
+                    onDelete()
+                    setConfirmDelete(false)
+                }
             }}
             sx={hoverStyleHash[color]}
             startIcon={icon || <DeleteIcon />}
