@@ -25,6 +25,10 @@ export function isContainRenderableCode(markdown: string): boolean {
     )
 }
 
+export function isRenderableCodeLanguage(language: string): boolean {
+    return !!language && RENDERABLE_CODE_LANGUAGES.includes(language.toLowerCase() as RenderableCodeLanguage)
+}
+
 export function MessageArtifact(props: {
     sessionId: string
     messageId: string

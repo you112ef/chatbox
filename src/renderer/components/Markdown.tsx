@@ -12,6 +12,9 @@ import * as toastActions from '../stores/toastActions'
 import { sanitizeUrl } from '@braintree/sanitize-url'
 import * as latex from '../packages/latex'
 import * as codeblockStateRecorder from '../packages/codeblock_state_recorder'
+import { useSetAtom } from 'jotai'
+import * as atoms from '../stores/atoms'
+import { isRenderableCodeLanguage } from './Artifact'
 
 import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for you
 import { copyToClipboard } from '@/packages/navigator'
@@ -19,6 +22,7 @@ import { MessageMermaid, SVGPreview } from './Mermaid'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 
 export default function Markdown(props: {
     children: string
@@ -154,6 +158,7 @@ function BlockCode(props: {
     const { children, hiddenCodeCopyButton, preferCollapsed, language, generating } = props
     const theme = useTheme()
     const { t } = useTranslation()
+    const setArtifactDialogHtmlCode = useSetAtom(atoms.artifactDialogHtmlCodeAtom)
 
     const initialState = useMemo(() => codeblockStateRecorder.needCollapse({
         content: String(children),
@@ -177,6 +182,7 @@ function BlockCode(props: {
     const languageName = useMemo(() => {
         return language.toUpperCase()
     }, [language])
+    const isRenderableCode = useMemo(() => isRenderableCodeLanguage(language), [language])
 
     const onClickCollapse = (event: React.MouseEvent) => {
         event.stopPropagation() // 优化搜索窗口中的展开逻辑
@@ -195,6 +201,11 @@ function BlockCode(props: {
         event.preventDefault()
         copyToClipboard(String(children))
         toastActions.add(t('copied to clipboard'))
+    }, [children])
+    const onClickArtifact = useCallback((event: React.MouseEvent) => {
+        event.stopPropagation() // 优化搜索窗口中的展开逻辑
+        event.preventDefault()
+        setArtifactDialogHtmlCode(String(children))
     }, [children])
 
     return (
@@ -241,6 +252,13 @@ function BlockCode(props: {
                                     onClick={onClickCollapse}
                                 />
                             )
+                    )}
+                    {isRenderableCode && (
+                        <PlayCircleIcon
+                            className='cursor-pointer text-white opacity-30 hover:bg-gray-800 hover:opacity-100 mx-1'
+                            fontSize='small'
+                            onClick={onClickArtifact}
+                        />
                     )}
                     {!hiddenCodeCopyButton && (
                         <ContentCopyIcon
