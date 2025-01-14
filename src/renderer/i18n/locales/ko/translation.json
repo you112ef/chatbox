@@ -233,8 +233,6 @@
     "The file you sent has expired. To protect your privacy, all file-related cache data has been cleared. You need to create a new conversation or refresh the context, and then send the file again.": "보낸 파일이 만료되었습니다. 개인 정보 보호를 위해 모든 파일 관련 캐시 데이터가 지워졌습니다. 새 대화를 만들거나 컨텍스트를 새로 고친 후 파일을 다시 보내야 합니다.",
     "The cache data for the file was not found. Please create a new conversation or refresh the context, and then send the file again.": "파일의 캐시 데이터를 찾을 수 없습니다. 새 대화를 만들거나 컨텍스트를 새로 고친 후 파일을 다시 보내야 합니다.",
     "The file size exceeds the limit of 50MB. Please reduce the file size and try again.": "파일 크기가 50MB 제한을 초과합니다. 파일 크기를 줄이고 다시 시도하세요.",
-    "The current model {{model}} does not support sending images. Recommended model: Chatbox AI 4.": "현재 모델 {{model}}은 이미지 전송을 지원하지 않습니다. 권장 모델: Chatbox AI 4.",
-    "The current model {{model}} does not support sending images.": "현재 모델 {{model}}은 이미지 전송을 지원하지 않습니다.",
     "Reading file...": "파일 읽는 중...",
     "Expand": "확장",
     "Collapse": "축소",
@@ -318,5 +316,8 @@
     "Action": "작업",
     "Operations": "작업",
     "Press hotkey": "단축키 입력",
-    "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "원격 LM Studio 서비스가 원격으로 연결할 수 있는지 확인하십시오. 자세한 내용은 <a>이 튜토리얼</a>을 참조하십시오."
+    "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "원격 LM Studio 서비스가 원격으로 연결할 수 있는지 확인하십시오. 자세한 내용은 <a>이 튜토리얼</a>을 참조하십시오.",
+    "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model or use the recommended <OpenMorePlanButton>Chatbox AI Models</OpenMorePlanButton>.": "현재 모델 {{model}} API는 이미지 이해를 지원하지 않습니다. 이미지를 보내려면 다른 모델로 전환하거나 권장되는 <OpenMorePlanButton>Chatbox AI 모델</OpenMorePlanButton>을 사용하세요.",
+    "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "현재 모델 {{model}} API는 이미지 이해를 지원하지 않습니다. 이미지를 보내려면 다른 모델로 전환하세요."
 }
+

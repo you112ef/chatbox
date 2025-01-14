@@ -131,12 +131,12 @@ export class ChatboxAIAPIError extends BaseError {
         model_not_support_image: {
             name: 'model_not_support_image',
             code: 20013,
-            i18nKey: 'The current model {{model}} does not support sending images. Recommended model: Chatbox AI 4.',
+            i18nKey: 'Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model or use the recommended <OpenMorePlanButton>Chatbox AI Models</OpenMorePlanButton>.',
         },
         model_not_support_image_2: {
             name: 'model_not_support_image_2',
             code: 20014,
-            i18nKey: 'The current model {{model}} does not support sending images.',
+            i18nKey: 'Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.',
         },
         // 当前模型不支持发送链接
         // 'model_not_support_link': {

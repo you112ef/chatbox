@@ -232,8 +232,6 @@
     "The file you sent has expired. To protect your privacy, all file-related cache data has been cleared. You need to create a new conversation or refresh the context, and then send the file again.": "الملف الذي أرسلته قد انتهت صلاحيته. لحماية خصوصيتك، تم مسح جميع بيانات ذاكرة التخزين المؤقت المتعلقة بالملف. تحتاج إلى إنشاء محادثة جديدة أو تحديث السياق، ثم إرسال الملف مرة أخرى.",
     "The cache data for the file was not found. Please create a new conversation or refresh the context, and then send the file again.": "لم يتم العثور على بيانات ذاكرة التخزين المؤقت للملف. يرجى إنشاء محادثة جديدة أو تحديث السياق، ثم إرسال الملف مرة أخرى.",
     "The file size exceeds the limit of 50MB. Please reduce the file size and try again.": "حجم الملف يتجاوز الحد الأقصى 50 ميجابايت. يرجى تقليل حجم الملف والمحاولة مرة أخرى.",
-    "The current model {{model}} does not support sending images. Recommended model: Chatbox AI 4.": "النموذج الحالي {{model}} لا يدعم إرسال الصور. النموذج الموصى به: Chatbox AI 4.",
-    "The current model {{model}} does not support sending images.": "النموذج الحالي {{model}} لا يدعم إرسال الصور.",
     "Reading file...": "جارٍ قراءة الملف...",
     "Expand": "توسيع",
     "Collapse": "طي",
@@ -317,5 +315,7 @@
     "Action": "العمل",
     "Operations": "العمليات",
     "Press hotkey": "أدخل مفتاح السرعة",
-    "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "يرجى التأكد من أن خدمة Remote LM Studio قادرة على الاتصال عن بُعد. لمزيد من التفاصيل، راجع <a>هذا الدليل</a>."
+    "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "يرجى التأكد من أن خدمة Remote LM Studio قادرة على الاتصال عن بُعد. لمزيد من التفاصيل، راجع <a>هذا الدليل</a>.",
+    "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model or use the recommended <OpenMorePlanButton>Chatbox AI Models</OpenMorePlanButton>.": "للأسف، النموذج الحالي {{model}} API لا يدعم فهم الصور. إذا كنت تحتاج إلى إرسال صور، يرجى التبديل إلى نموذج آخر أو استخدام النماذج الموصى بها <OpenMorePlanButton>Chatbox AI</OpenMorePlanButton>.",
+    "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "للأسف، النموذج الحالي {{model}} API لا يدعم فهم الصور. إذا كنت تحتاج إلى إرسال صور، يرجى التبديل إلى نموذج آخر."
 }

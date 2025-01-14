@@ -232,8 +232,6 @@
     "The file you sent has expired. To protect your privacy, all file-related cache data has been cleared. You need to create a new conversation or refresh the context, and then send the file again.": "Il file che hai inviato è scaduto. Per proteggere la tua privacy, tutti i dati della cache relativi al file sono stati cancellati. Devi creare una nuova conversazione o aggiornare il contesto, e poi inviare nuovamente il file.",
     "The cache data for the file was not found. Please create a new conversation or refresh the context, and then send the file again.": "I dati della cache per il file non sono stati trovati. Per favore, crea una nuova conversazione o aggiorna il contesto, e poi invia nuovamente il file.",
     "The file size exceeds the limit of 50MB. Please reduce the file size and try again.": "La dimensione del file supera il limite di 50MB. Per favore, riduci la dimensione del file e riprova.",
-    "The current model {{model}} does not support sending images. Recommended model: Chatbox AI 4.": "Il modello attuale {{model}} non supporta l'invio di immagini. Modello consigliato: Chatbox AI 4.",
-    "The current model {{model}} does not support sending images.": "Il modello attuale {{model}} non supporta l'invio di immagini.",
     "Reading file...": "Lettura del file in corso...",
     "Expand": "Espandi",
     "Collapse": "Comprimi",
@@ -317,5 +315,8 @@
     "Action": "Azione",
     "Operations": "Operazioni",
     "Press hotkey": "Inserisci hotkey",
-    "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "Si prega di assicurarsi che il Servizio LM Studio Remoto possa connettersi in remoto. Per maggiori dettagli, consulta <a>questo tutorial</a>."
+    "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "Si prega di assicurarsi che il Servizio LM Studio Remoto possa connettersi in remoto. Per maggiori dettagli, consulta <a>questo tutorial</a>.",
+    "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model or use the recommended <OpenMorePlanButton>Chatbox AI Models</OpenMorePlanButton>.": "Spiacenti, il modello attuale {{model}} API non supporta l'interpretazione delle immagini. Se hai bisogno di inviare immagini, per favore passa a un altro modello o usa i <OpenMorePlanButton>modelli Chatbox AI</OpenMorePlanButton> consigliati.",
+    "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "Spiacenti, il modello attuale {{model}} API non supporta l'interpretazione delle immagini. Se hai bisogno di inviare immagini, per favore passa a un altro modello."
 }
+
