@@ -2,8 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import Message from './Message'
 import * as atoms from '../stores/atoms'
 import { useAtomValue, useSetAtom } from 'jotai'
-import { Virtuoso } from 'react-virtuoso'
-import { VirtuosoHandle } from 'react-virtuoso'
+import { Virtuoso, VirtuosoHandle, StateSnapshot } from 'react-virtuoso'
 import * as scrollActions from '../stores/scrollActions'
 import * as sessionActions from '../stores/sessionActions'
 import { useTranslation } from 'react-i18next'
@@ -18,9 +17,9 @@ import AddIcon from '@mui/icons-material/AddCircleOutline'
 import { Session } from 'src/shared/types'
 import { ConfirmDeleteMenuItem } from './ConfirmDeleteButton'
 
-interface Props { }
+const sessionScrollPositionCache = new Map<string, StateSnapshot>()
 
-export default function MessageList(props: Props) {
+export default function MessageList(props: { className?: string }) {
     const { t } = useTranslation()
     const theme = useTheme()
 
@@ -39,6 +38,14 @@ export default function MessageList(props: Props) {
 
     useEffect(() => {
         setMessageScrollingAtom(virtuoso)
+        const currentVirtuoso = virtuoso.current    // 清理时 virtuoso.current 已经为 null
+        return () => {
+            currentVirtuoso?.getState((state) => {
+                if (state.ranges.length > 0) {  // useEffect 可能执行两次，这里根据 ranges 判断是否为第一次 useEffect 严格测试导致的执行
+                    sessionScrollPositionCache.set(currentSession.id, state)
+                }
+            })
+        }
     }, [])
     useEffect(() => {
         setMessageListElement(messageListRef)
@@ -61,8 +68,8 @@ export default function MessageList(props: Props) {
     }, [threadMenuClickedTopicId])
 
     return (
-        <div className={cn('w-full h-full mx-auto')}>
-            <div className="overflow-auto h-full pr-0 pl-1 sm:pl-0" ref={messageListRef}>
+        <div className={cn('w-full h-full mx-auto', props.className)}>
+            <div className='overflow-auto h-full pr-0 pl-1 sm:pl-0' ref={messageListRef}>
                 <Virtuoso
                     data={currentMessageList}
                     atTopStateChange={(atTop) => {
@@ -72,6 +79,19 @@ export default function MessageList(props: Props) {
                         setAtBottom(atBottom)
                     }}
                     ref={virtuoso}
+                    {
+                    ...(
+                        sessionScrollPositionCache.has(currentSession.id)
+                            ? {
+                                restoreStateFrom: sessionScrollPositionCache.get(currentSession.id),
+                                // 需要额外设置 initialScrollTop，否则恢复位置后 scrollTop 为 0。这时如果用户没有滚动，那么下次保存时 scrollTop 将记为 0，导致下一次恢复时位置始终为顶部。
+                                initialScrollTop: sessionScrollPositionCache.get(currentSession.id)?.scrollTop,
+                            }
+                            : {
+                                initialTopMostItemIndex: currentMessageList.length - 1
+                            }
+                    )
+                    }
                     increaseViewportBy={{ top: 2000, bottom: 2000 }}
                     itemContent={(index, msg) => {
                         return (

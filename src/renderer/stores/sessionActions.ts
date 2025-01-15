@@ -135,7 +135,7 @@ export function createLoadingPictures(n: number): MessagePicture[] {
 export function switchCurrentSession(sessionId: string) {
     const store = getDefaultStore()
     store.set(atoms.currentSessionIdAtom, sessionId)
-    scrollActions.scrollToBottom() // 切换会话时自动滚动到底部
+    // scrollActions.scrollToBottom() // 切换会话时自动滚动到底部
     scrollActions.clearAutoScroll() // 切换会话时清除自动滚动
 }
 

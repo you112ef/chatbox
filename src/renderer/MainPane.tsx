@@ -13,6 +13,8 @@ import Header from './components/Header'
 export default function MainPane(props: {}) {
     const language = useAtomValue(atoms.languageAtom)
     const [showSidebar] = useAtom(atoms.showSidebarAtom)
+    const currentSessionId = useAtomValue(atoms.currentSessionIdAtom)
+
     const sidebarWidth = useSidebarWidth()
     const isSmallScreen = useIsSmallScreen()
 
@@ -44,7 +46,13 @@ export default function MainPane(props: {}) {
                     )
                 } */}
                 <Header />
-                <MessageList />
+
+                {/* MessageList 设置 key，确保每个 session 对应新的 MessageList 实例 */}
+                <MessageList
+                    key={currentSessionId}
+                    // className="animate-fade-in transition-opacity duration-500 ease-in-out"
+                />
+
                 <ScrollButtons />
                 <InputBox />
             </div>
