@@ -85,6 +85,7 @@ export function settings(): Settings {
         autoGenerateTitle: true,
 
         autoLaunch: false,
+        autoUpdate: true,
 
         shortcuts: {
             windowQuickToggle: 'alt+`', // 快速切换窗口显隐的快捷键

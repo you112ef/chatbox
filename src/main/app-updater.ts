@@ -2,6 +2,7 @@ import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
 import Locale from './locales'
 import { dialog } from 'electron'
+import { getSettings } from './store-node'
 
 export class AppUpdater {
     constructor() {
@@ -22,7 +23,10 @@ export class AppUpdater {
                     if (returnValue.response === 0) autoUpdater.quitAndInstall()
                 })
         })
-        this.tryUpdate()
+        const settings = getSettings()
+        if (settings.autoUpdate) {
+            this.tryUpdate()
+        }
     }
 
     async tryUpdate() {

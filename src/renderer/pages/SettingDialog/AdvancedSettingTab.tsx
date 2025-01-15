@@ -109,6 +109,23 @@ export default function AdvancedSettingTab(props: Props) {
                     </FormGroup>
                 </Box>
             )}
+            {platform.type === 'desktop' && (
+                <Box className="mt-2">
+                    <FormGroup>
+                        <FormControlLabel
+                            control={<Switch />}
+                            label={t('Automatic updates')}
+                            checked={settingsEdit.autoUpdate}
+                            onChange={(e, checked) =>
+                                setSettingsEdit({
+                                    ...settingsEdit,
+                                    autoUpdate: checked,
+                                })
+                            }
+                        />
+                    </FormGroup>
+                </Box>
+            )}
         </Box>
     )
 }

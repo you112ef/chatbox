@@ -316,6 +316,7 @@
     "Action": "アクション",
     "Operations": "操作",
     "Press hotkey": "ショートカットキーを入力",
+    "Automatic updates": "自動更新",
     "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "リモートLM Studioサービスがリモート接続できることを確認してください。詳細については、<a>このチュートリアル</a>を参照してください。",
     "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model or use the recommended <OpenMorePlanButton>Chatbox AI Models</OpenMorePlanButton>.": "現在のモデル{{model}} APIは画像の理解をサポートしていません。画像を送信する必要がある場合は、別のモデルに切り替えるか、推奨される<OpenMorePlanButton>Chatbox AIモデル</OpenMorePlanButton>を使用してください。",
     "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "現在のモデル{{model}} APIは画像の理解をサポートしていません。画像を送信する必要がある場合は、別のモデルに切り替えてください。",

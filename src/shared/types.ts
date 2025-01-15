@@ -353,6 +353,7 @@ export interface Settings extends ModelSettings {
     autoGenerateTitle: boolean
 
     autoLaunch: boolean
+    autoUpdate: boolean // 是否自动检查更新
 
     shortcuts: ShortcutSetting
 }
