@@ -70,7 +70,7 @@ function WebBrowsingCard(props: { webBrowsing: MessageWebBrowsing }) {
                             href={link.url}
                             className="text-xs py-0.5 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded px-1.5"
                         >
-                            <span className="whitespace-pre-wrap flex-1">
+                            <span className="whitespace-pre-wrap flex-1 break-all">
                                 {link.title}
                             </span>
                             <ExternalLink className="w-2.5 h-2.5 ml-1.5 text-gray-500 flex-shrink-0" />
