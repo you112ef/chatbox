@@ -1,4 +1,26 @@
 const changelog = `
+### v1.9.0 - 2025.01.18
+
+1. Added DeepSeek as a model provider
+2. Added xAI as a model provider
+3. Added LM Studio as a model provider
+4. Added Perplexity as a model provider
+5. Added SiliconFlow as a model provider
+6. Added shortcut key customization feature with recording capability
+7. Scroll position is now remembered when switching between conversations
+8. Added option to disable automatic software updates
+9. Long pasted text now inserts as a file (can be disabled in settings)
+10. Hold Shift while clicking the delete button to bypass confirmation
+11. Added Ctrl+E shortcut for quick access to web browsing mode
+12. Added Ctrl+Shift+V shortcut for pasting plain text
+13. Improved backup import to retain existing data that is not included in the backup file
+14. Added individual artifact preview support for each HTML code block
+15. Fixed SVG display issues in certain scenarios
+16. Fixed LaTeX rendering issues and improved compatibility
+17. Fixed occasional web search failure with Gemini
+18. Optimized Gemini system prompts for better performance
+19. Fixed various minor issues
+
 ### v1.8.1 - 2024.12.23
 
 1. Fixed an issue with DALL-E API requests.
