@@ -41,4 +41,4 @@ jobs:
                   CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
                   CSC_LINK: ${{ secrets.CSC_LINK }}
               run: |
-                  npm run release:mac
+                  npm run release:linux
