@@ -1,10 +1,8 @@
-// import { useEffect, useState } from 'react'
 import {
     Button,
     Paper,
     Badge,
     Box,
-    // Divider,
     Dialog,
     DialogContent,
     DialogActions,
@@ -14,14 +12,12 @@ import {
 import iconPNG from '../static/icon.png'
 import { useTranslation } from 'react-i18next'
 import platform from '../platform'
-// import * as remote from '../packages/remote'
-// import { SponsorAboutBanner } from '../../shared/types'
 import * as i18n from '../i18n'
 import useVersion from '../hooks/useVersion'
 import * as atoms from '../stores/atoms'
 import { useAtom, useAtomValue } from 'jotai'
 import Markdown from '@/components/Markdown'
-// import { trackingEvent } from '@/packages/event'
+import LinkTargetBlank from '@/components/Link'
 
 export default function AboutWindow(props: {}) {
     const { t } = useTranslation()
@@ -53,6 +49,22 @@ export default function AboutWindow(props: {}) {
                     </h3>
                     <p className="p-0 m-0">{t('about-slogan')}</p>
                     <p className="p-0 m-0 opacity-60 text-xs">{t('about-introduction')}</p>
+                    <p className="p-0 m-0 text-center text-xs opacity-70">
+                        <LinkTargetBlank
+                            href="https://chatboxai.app/privacy"
+                            className="mx-2 no-underline hover:underline"
+                            style={{ color: theme.palette.text.primary }}
+                        >
+                            Privacy Policy
+                        </LinkTargetBlank>
+                        <LinkTargetBlank
+                            href="https://chatboxai.app/terms"
+                            className="mx-2 no-underline hover:underline"
+                            style={{ color: theme.palette.text.primary }}
+                        >
+                            User Terms
+                        </LinkTargetBlank>
+                    </p>
                 </Box>
                 <Box
                     sx={{

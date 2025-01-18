@@ -1,8 +1,6 @@
 import { Box, Button, Paper, Dialog, DialogContent } from '@mui/material'
 import icon from '../static/icon.png'
 import { useTranslation } from 'react-i18next'
-import { AllowReportingAndTrackingCheckbox } from './SettingDialog/AdvancedSettingTab'
-import LinkTargetBlank from '@/components/Link'
 import { useAtom, useSetAtom } from 'jotai'
 import * as atoms from '@/stores/atoms'
 
@@ -21,53 +19,59 @@ export default function WelcomeDialog(props: {}) {
     return (
         <Dialog open={open} onClose={onClose} maxWidth="xs">
             <DialogContent>
-                <Box sx={{ textAlign: 'center', padding: '0 20px' }}>
-                    <img src={icon} style={{ width: '80px', margin: 0, display: 'inline-block' }} />
-                    <h3 style={{ margin: '4px 0 5px 0' }}>Chatbox</h3>
-                    <p className="p-0 m-0">{t('An easy-to-use AI client app')}</p>
-                    {/* <p className="p-0 m-0">{t('about-slogan')}</p> */}
-                    <div className="p-0 m-0 opacity-60 text-xs text-left">
-                        <ul className="mb-8 px-6 opacity-90">
-                            <li>{t('Supports a variety of advanced AI models')}</li>
-                            <li>{t('All data is stored locally, ensuring privacy and rapid access')}</li>
-                            <li>{t('Ideal for both work and educational scenarios')}</li>
+                <Box sx={{ textAlign: 'center', padding: '12px 24px' }}>
+                    <img src={icon} style={{ width: '64px', margin: '0 auto 8px', display: 'block' }} />
+                    <h2 style={{ margin: '0 0 4px', fontSize: '24px', fontWeight: 700, letterSpacing: '-0.5px' }}>Chatbox</h2>
+                    <p className="text-sm mb-4 text-gray-600 dark:text-gray-300">{t('An easy-to-use AI client app')}</p>
+                    <div className="text-xs text-gray-600 dark:text-gray-300">
+                        <ul className="list-none p-0 m-0 space-y-1.5">
+                            <li className="flex items-center">
+                                <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 flex-shrink-0"></span>
+                                <span className="text-left">{t('Supports a variety of advanced AI models')}</span>
+                            </li>
+                            <li className="flex items-center">
+                                <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 flex-shrink-0"></span>
+                                <span className="text-left">{t('All data is stored locally, ensuring privacy and rapid access')}</span>
+                            </li>
+                            <li className="flex items-center">
+                                <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2 flex-shrink-0"></span>
+                                <span className="text-left">{t('Ideal for both work and educational scenarios')}</span>
+                            </li>
                         </ul>
                     </div>
                 </Box>
                 <Paper
                     elevation={2}
-                    className="font-light text-sm mb-1 py-2 px-4 text-center"
+                    className="mx-4 mb-2 mt-4 p-3 text-center rounded-lg"
                     sx={{
                         backgroundColor: 'paper',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
                     }}
                 >
-                    <div className="">
-                        <b className="">{t('Select and configure an AI model provider')}</b>
+                    <div className="mb-2">
+                        <h3 className="text-base font-medium m-0 text-gray-800 dark:text-gray-100">
+                            {t('Select and configure an AI model provider')}
+                        </h3>
                     </div>
-                    <div className="my-2">
-                        <Button
-                            variant="contained"
-                            sx={{ fontSize: '18px', fontWeight: 'bold' }}
-                            onClick={() => {
-                                onClose()
-                                onSetup()
-                            }}
-                        >
-                            {t('Start Setup')}
-                        </Button>
-                    </div>
-                    <div>
-                        <AllowReportingAndTrackingCheckbox className="opacity-75 text-xs" />
-                    </div>
+                    <Button
+                        variant="contained"
+                        fullWidth
+                        sx={{
+                            fontSize: '14px',
+                            fontWeight: 600,
+                            padding: '6px',
+                            borderRadius: '6px',
+                            textTransform: 'none',
+                            boxShadow: 'none'
+                        }}
+                        onClick={() => {
+                            onClose()
+                            onSetup()
+                        }}
+                    >
+                        {t('Start Setup')}
+                    </Button>
                 </Paper>
-                <div className="text-center mt-4 text-xs">
-                    <LinkTargetBlank href="https://chatboxai.app/privacy" className="mx-2">
-                        Privacy Policy
-                    </LinkTargetBlank>
-                    <LinkTargetBlank href="https://chatboxai.app/terms" className="mx-2">
-                        User Terms
-                    </LinkTargetBlank>
-                </div>
             </DialogContent>
         </Dialog>
     )
