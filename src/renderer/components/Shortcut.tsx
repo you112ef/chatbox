@@ -40,8 +40,7 @@ function formatKey(key: string) {
     const WINDOWS_KEY_MAPS: Record<string, string> = {
         ...COMMON_KEY_MAPS,
         meta: 'Win',
-        mod: 'Win',
-        command: 'Win',
+        // command: 'Win',
     }
     const LINUX_KEY_MAPS: Record<string, string> = {
         ...COMMON_KEY_MAPS,
