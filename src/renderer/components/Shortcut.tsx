@@ -295,6 +295,8 @@ function ShortcutText(props: {
     // 已知问题：
     // 无法在 MacOS 录制 ctrl+space，因为与系统快捷键“切换输入法”冲突
     // 无法实现录制 cmd+`，即使自行编写原生实现也无法录制
+    // MacOS 无法录制 ctrl+space 和 cmd+space，因为和系统切换输入法、聚焦搜索冲突，只能录制 option+space
+    // Windows 无法录制 ctrl+space 和 alt+space，因为和系统切换输入法、聚焦搜索冲突，只能录制 win+space
     const onKeyUp = (e: React.KeyboardEvent) => {
         e.preventDefault()  // 阻止默认行为
         if (!setShortcut) {
@@ -308,6 +310,10 @@ function ShortcutText(props: {
         if (keys.has('backquote')) {
             keys.delete('backquote')
             keys.add('`')
+        }
+        // 修复 windows 下无法录制 Wins+space 的问题
+        if (e.key === ' ' && !keys.has('space')) {
+            keys.add('space')
         }
         // 当所有按键都释放时,结束录制
         if (!e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
