@@ -149,7 +149,7 @@ function createTray() {
         {
             label: locale.t('Show/Hide'),
             click: showOrHideWindow,
-            accelerator: 'Alt+`',
+            accelerator: 'Alt+`',   // TODO: 从设置中获取快捷键
         },
         {
             label: locale.t('Exit'),
