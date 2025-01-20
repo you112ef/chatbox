@@ -93,6 +93,7 @@ export default class ChatboxAI extends Base {
             { signal }
         )
         let result = ''
+        let reasoningContent: string | undefined = undefined
         await this.handleSSE(response, (message) => {
             if (message === '[DONE]') {
                 return
@@ -102,10 +103,20 @@ export default class ChatboxAI extends Base {
                 throw new ApiError(`Error from Chatbox AI: ${JSON.stringify(data)}`)
             }
             const word = data.choices[0]?.delta?.content
+            const reasoningContentPart = data.choices[0]?.delta?.reasoning_content
+            if (reasoningContentPart !== undefined) {
+                if (!reasoningContent) {
+                    reasoningContent = ''
+                }
+                reasoningContent += reasoningContentPart
+                if (onResultChange) {
+                    onResultChange({ content: result, reasoningContent })
+                }
+            }
             if (word !== undefined) {
                 result += word
                 if (onResultChange) {
-                    onResultChange({ content: result })
+                    onResultChange({ content: result, reasoningContent })
                 }
             }
         })
