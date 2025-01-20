@@ -66,6 +66,8 @@ export interface Message {
     links?: MessageLink[]
     webBrowsing?: MessageWebBrowsing
 
+    reasoningContent?: string
+
     errorCode?: number
     error?: string
     errorExtra?: {

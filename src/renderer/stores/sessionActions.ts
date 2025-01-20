@@ -865,6 +865,7 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
                     targetMsg = {
                         ...targetMsg,
                         content: updated.content,
+                        reasoningContent: updated.reasoningContent,
                         cancel: updated.cancel,
                         webBrowsing: updated.webBrowsing,
                         status: updated.content ? [] : targetMsg.status,

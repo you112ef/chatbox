@@ -116,7 +116,7 @@ function _Message(props: Props) {
         JSON.stringify(msg.content).length > collapseThreshold &&
         JSON.stringify(msg.content).length - collapseThreshold > 50 // 只有折叠有明显效果才折叠，为了更好的用户体验
     const [isCollapsed, setIsCollapsed] = useState(needCollapse)
-
+    const [isCollapsedReasoning, setIsCollapsedReasoning] = useState(false) // 推理内容是否折叠
     const ref = useRef<HTMLDivElement>(null)
 
     const [autoScrollId, setAutoScrollId] = useState<null | string>(null)
@@ -297,7 +297,7 @@ function _Message(props: Props) {
                 scrollActions.tickAutoScroll(autoScrollId)
             }
         }
-    }, [msg.content, needArtifact])
+    }, [msg.content, msg.reasoningContent, needArtifact])
 
     let content = msg.content // 消息正文
     if (typeof msg.content !== 'string') {
@@ -473,6 +473,32 @@ function _Message(props: Props) {
                                 msg.role !== 'assistant' ? 'bg-stone-400/10 dark:bg-blue-400/10 px-2 rounded ' : ''
                             )}
                         >
+                            {msg.reasoningContent && (
+                                <Box
+                                    className="bg-stone-100 dark:bg-slate-800 rounded p-2 mb-2 cursor-pointer"
+                                    onClick={() => setIsCollapsedReasoning(!isCollapsedReasoning)}
+                                >
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        <Typography variant="caption" color="text.secondary">
+                                            {t('Thinking')}
+                                        </Typography>
+                                        <SouthIcon
+                                            sx={{
+                                                fontSize: 12,
+                                                transform: isCollapsedReasoning ? 'rotate(0deg)' : 'rotate(180deg)',
+                                                transition: 'transform 0.2s',
+                                            }}
+                                        />
+                                    </Box>
+                                    {!isCollapsedReasoning && (
+                                        <Box sx={{ mt: 1 }}>
+                                            <Typography variant="body2" color="text.secondary">
+                                                {msg.reasoningContent}
+                                            </Typography>
+                                        </Box>
+                                    )}
+                                </Box>
+                            )}
                             <Box
                                 className={cn('msg-content', { 'msg-content-small': small })}
                                 sx={small ? { fontSize: theme.typography.body2.fontSize } : {}}

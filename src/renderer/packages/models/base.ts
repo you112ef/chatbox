@@ -380,6 +380,7 @@ export default class Base {
 export interface ResultChange {
     content: string
     webBrowsing?: MessageWebBrowsing
+    reasoningContent?: string
 }
 
 export type onResultChangeWithCancel = (data: ResultChange & { cancel?: () => void }) => void
