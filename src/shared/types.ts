@@ -199,7 +199,7 @@ export function pickPictureSettings(settings: ModelSettings) {
 export function createMessage(role: MessageRole = MessageRoleEnum.User, content: string = ''): Message {
     return {
         id: uuidv4(),
-        content: content,
+        content: content || '', // 防止为 undefined 或 null
         role: role,
         timestamp: new Date().getTime(),
     }

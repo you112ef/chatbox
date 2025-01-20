@@ -19,6 +19,9 @@ const CODE_BLOCK_LANGUAGES = [...RENDERABLE_CODE_LANGUAGES, 'js', 'javascript', 
 export type CodeBlockLanguage = (typeof CODE_BLOCK_LANGUAGES)[number]
 
 export function isContainRenderableCode(markdown: string): boolean {
+    if (!markdown) {
+        return false
+    }
     return (
         RENDERABLE_CODE_LANGUAGES.some((l) => markdown.includes('```' + l + '\n')) ||
         RENDERABLE_CODE_LANGUAGES.some((l) => markdown.includes('```' + l.toUpperCase() + '\n'))

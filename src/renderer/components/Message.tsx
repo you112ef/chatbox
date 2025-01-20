@@ -79,9 +79,12 @@ export interface Props {
 
 function _Message(props: Props) {
     const { msg, className, collapseThreshold, hiddenButtonGroup, small, preferCollapsedCodeBlock } = props
+    // 防止为 undefined 或 null，在部分情况下可能引入 null 脏数据，如果这里不处理将导致白屏
+    if (!msg.content && msg.content !== '') {
+        msg.content = ''
+    }
     const { t } = useTranslation()
     const theme = useTheme()
-
     const currentSessionAssistantAvatarKey = useAtomValue(currentSessionAssistantAvatarKeyAtom)
     const defaultAssistantAvatarKey = useAtomValue(defaultAssistantAvatarKeyAtom)
     const userAvatarKey = useAtomValue(userAvatarKeyAtom)
