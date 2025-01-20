@@ -13,6 +13,11 @@ export const modelConfig = {
         maxTokens: 8_000,
         vision: false,
     },
+    'deepseek-reasoner': {
+        contextWindow: 64_000,
+        maxTokens: 8_000,
+        vision: false,
+    }
 }
 
 export const deepSeekModels = Object.keys(modelConfig)
@@ -38,6 +43,10 @@ export default class DeepSeek extends StandardOpenAI {
         this.model = options.deepseekModel
         this.temperature = options.temperature
         this.topP = options.topP
+        if (this.model === 'deepseek-reasoner') {
+            this.temperature = undefined
+            this.topP = undefined
+        }
     }
 
     isSupportVision(model: string): boolean {
