@@ -1,4 +1,10 @@
 const changelog = `
+### v1.9.1 - 2025.01.20
+
+1. Added support for the DeepSeek R1 model.
+2. Enabled display of the model's thought process (if supported by the model).
+3. Fixed the issue where Artifact previews failed due to network problems.
+
 ### v1.9.0 - 2025.01.18
 
 1. Added DeepSeek as a model provider
