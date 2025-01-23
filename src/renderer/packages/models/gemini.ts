@@ -58,7 +58,7 @@ export function isSupportVision(model: GeminiModel): boolean {
 }
 
 export default class Gemeni extends Base {
-    public name = 'Google Gemini Pro'
+    public name = 'Google Gemini'
 
     public options: Options
     constructor(options: Options) {
