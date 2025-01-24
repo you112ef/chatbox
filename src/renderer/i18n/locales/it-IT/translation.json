@@ -320,5 +320,6 @@
     "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model or use the recommended <OpenMorePlanButton>Chatbox AI Models</OpenMorePlanButton>.": "Spiacenti, il modello attuale {{model}} API non supporta l'interpretazione delle immagini. Se hai bisogno di inviare immagini, per favore passa a un altro modello o usa i <OpenMorePlanButton>modelli Chatbox AI</OpenMorePlanButton> consigliati.",
     "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "Spiacenti, il modello attuale {{model}} API non supporta l'interpretazione delle immagini. Se hai bisogno di inviare immagini, per favore passa a un altro modello.",
     "Paste long text as a file": "Incolla testo lungo come file",
-    "Pasting long text will automatically insert it as a file, keeping chats clean and reducing token usage with prompt caching.": "Incolla testo lungo come file per mantenere le conversazioni pulite e ridurre l'utilizzo dei token con il caching dei prompt."
+    "Pasting long text will automatically insert it as a file, keeping chats clean and reducing token usage with prompt caching.": "Incolla testo lungo come file per mantenere le conversazioni pulite e ridurre l'utilizzo dei token con il caching dei prompt.",
+    "None": "Nessuno"
 }

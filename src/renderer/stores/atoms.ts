@@ -23,8 +23,11 @@ import { mergeSettings } from './sessionActions'
 const _settingsAtom = atomWithStorage<Settings>(StorageKey.Settings, defaults.settings(), storage)
 export const settingsAtom = atom(
     (get) => {
-        const settings = get(_settingsAtom)
-        return Object.assign({}, defaults.settings(), settings) // 兼容早期版本
+        const _settings = get(_settingsAtom)
+        // 兼容早期版本
+        const settings = Object.assign({}, defaults.settings(), _settings)
+        settings.shortcuts = Object.assign({}, defaults.settings().shortcuts, _settings.shortcuts)
+        return settings
     },
     (get, set, update: SetStateAction<Settings>) => {
         const settings = get(_settingsAtom)

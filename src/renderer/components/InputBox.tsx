@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { useTheme } from '@mui/material'
-import { createMessage, ShortcutSetting } from '../../shared/types'
+import { createMessage, ShortcutSendValue } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as atoms from '../stores/atoms'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
@@ -128,8 +128,31 @@ export default function InputBox(props: {}) {
         }
     }
 
-    // 向上向下键翻阅历史消息。使用 useHotkeys 会导致上下键盘无法在多段文本中换行，所以依然使用 onKeyDown
     const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        const isPressedHash: Record<ShortcutSendValue, boolean> = {
+            '': false,
+            'Enter': event.keyCode === 13 && !event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey,
+            'CommandOrControl+Enter': event.keyCode === 13 && (event.ctrlKey || event.metaKey) && !event.shiftKey,
+            'Ctrl+Enter': event.keyCode === 13 && event.ctrlKey && !event.shiftKey,
+            'Command+Enter': event.keyCode === 13 && event.metaKey,
+            'Shift+Enter': event.keyCode === 13 && event.shiftKey,
+            'Ctrl+Shift+Enter': event.keyCode === 13 && event.ctrlKey && event.shiftKey,
+        }
+        // 发送消息
+        if (isPressedHash[shortcuts.inpubBoxSendMessage]) {
+            if (platform.type !== 'mobile') { // 移动端点击回车不会发送消息
+                event.preventDefault()
+                handleSubmit()
+                return
+            }
+        }
+        // 发送消息但不生成回复
+        if (isPressedHash[shortcuts.inpubBoxSendMessageWithoutResponse]) {
+            event.preventDefault()
+            handleSubmit(false)
+            return
+        }
+        // 向上向下键翻阅历史消息
         if (
             (event.key === 'ArrowUp' || event.key === 'ArrowDown') &&
             inputRef.current &&
@@ -485,7 +508,7 @@ export default function InputBox(props: {}) {
                         }}
                         placeholder={t('Type your question here...') || ''}
                         onPaste={onPaste}
-                        // {...{ enterKeyHint: 'send' } as any}
+                    // {...{ enterKeyHint: 'send' } as any}
                     />
                     <div className="flex flex-row items-center" onClick={() => dom.focusMessageInput()}>
                         {
@@ -514,56 +537,6 @@ export default function InputBox(props: {}) {
                     </div>
                 </div>
             </div>
-            {
-                platform.type !== 'mobile' && (
-                    <ShortcutBinding shortcuts={shortcuts} handleSubmit={handleSubmit} inputRef={inputRef} />
-                )
-            }
         </div>
     )
-}
-
-function ShortcutBinding(props: {
-    shortcuts: ShortcutSetting
-    handleSubmit: (withResponse?: boolean) => void
-    inputRef: React.RefObject<HTMLTextAreaElement>
-}) {
-    const { shortcuts, handleSubmit, inputRef } = props
-    // 快捷键：发送
-    useHotkeys(
-        shortcuts.inputBoxSend,
-        (event) => {
-            if (event.isComposing) {
-                return // 使用输入法时点击回车，不应该触发动作
-            }
-            handleSubmit()
-        },
-        [handleSubmit],
-        {
-            enabled: () => {
-                return inputRef.current === document.activeElement // 聚焦在输入框
-            },
-            enableOnFormTags: true,
-            preventDefault: true,
-        },
-    )
-    // 快捷键：发送但不生成回复
-    useHotkeys(
-        shortcuts.inputBoxSendWithoutResponse,
-        (event) => {
-            if (event.isComposing) {
-                return // 使用输入法时点击回车，不应该触发动作
-            }
-            handleSubmit(false)
-        },
-        [handleSubmit],
-        {
-            enabled: () => {
-                return inputRef.current === document.activeElement // 聚焦在输入框
-            },
-            enableOnFormTags: true,
-            preventDefault: true,
-        },
-    )
-    return <></>
 }

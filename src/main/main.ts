@@ -117,9 +117,9 @@ function registerShortcuts(shortcutSetting?: ShortcutSetting) {
         return
     }
     try {
-        const windowQuickToggle = normalizeShortcut(shortcutSetting.windowQuickToggle)
-        if (isValidShortcut(windowQuickToggle)) {
-            globalShortcut.register(windowQuickToggle, () => showOrHideWindow())
+        const quickToggle = normalizeShortcut(shortcutSetting.quickToggle)
+        if (isValidShortcut(quickToggle)) {
+            globalShortcut.register(quickToggle, () => showOrHideWindow())
         }
     } catch (error) {
         log.error('Failed to register shortcut [windowQuickToggle]:', error)
@@ -149,7 +149,7 @@ function createTray() {
         {
             label: locale.t('Show/Hide'),
             click: showOrHideWindow,
-            accelerator: 'Alt+`',   // TODO: 从设置中获取快捷键
+            accelerator: getSettings().shortcuts.quickToggle,
         },
         {
             label: locale.t('Exit'),

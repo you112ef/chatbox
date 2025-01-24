@@ -321,5 +321,6 @@
     "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model or use the recommended <OpenMorePlanButton>Chatbox AI Models</OpenMorePlanButton>.": "現在のモデル{{model}} APIは画像の理解をサポートしていません。画像を送信する必要がある場合は、別のモデルに切り替えるか、推奨される<OpenMorePlanButton>Chatbox AIモデル</OpenMorePlanButton>を使用してください。",
     "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "現在のモデル{{model}} APIは画像の理解をサポートしていません。画像を送信する必要がある場合は、別のモデルに切り替えてください。",
     "Paste long text as a file": "長文をファイルとして貼り付け",
-    "Pasting long text will automatically insert it as a file, keeping chats clean and reducing token usage with prompt caching.": "長文をファイルとして貼り付けると、チャットをクリーンに保ち、プロンプトキャッシュを使用してトークン使用量を削減できます。"
+    "Pasting long text will automatically insert it as a file, keeping chats clean and reducing token usage with prompt caching.": "長文をファイルとして貼り付けると、チャットをクリーンに保ち、プロンプトキャッシュを使用してトークン使用量を削減できます。",
+    "None": "なし"
 }
