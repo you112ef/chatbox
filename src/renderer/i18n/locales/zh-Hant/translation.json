@@ -326,4 +326,3 @@
     "The {{model}} API doesn't support document understanding. You can use <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> for cloud-based document analysis, or download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "當前模型 {{model}} API 不支持文檔理解。您可以使用 <LinkToAdvancedFileProcessing>Chatbox AI 服務</LinkToAdvancedFileProcessing> 進行雲端文檔分析，或下載 <LinkToHomePage>Chatbox 桌面版</LinkToHomePage> 進行本地文檔分析。",
     "The {{model}} API doesn't support document understanding. You can download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "當前模型 {{model}} API 不支持文檔理解。您可以使用 <LinkToHomePage>Chatbox 桌面版</LinkToHomePage> 進行本地文檔分析。"
 }
-

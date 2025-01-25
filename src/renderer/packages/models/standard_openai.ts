@@ -4,6 +4,7 @@ import Base, { onResultChange } from './base'
 import * as settingActions from '@/stores/settingActions'
 import { injectModelSystemPrompt, populateOpenAIMessageVision, populateOpenAIMessageText, OpenAIMessage, OpenAIMessageVision } from './openai'
 import { uniq } from 'lodash'
+import { fixMessageRoleSequence } from './llm_utils'
 
 export default class StandardOpenAI extends Base {
     public name = 'OpenAI Compatible'
@@ -56,7 +57,7 @@ export default class StandardOpenAI extends Base {
         if (this.injectDefaultMetadata) {
             rawMessages = injectModelSystemPrompt(model, rawMessages)
         }
-        const messages = await this.populateMessages(rawMessages, model)
+        let messages = await this.populateMessages(fixMessageRoleSequence(rawMessages), model)
         return this.requestChatCompletionsStream(
             {
                 messages,

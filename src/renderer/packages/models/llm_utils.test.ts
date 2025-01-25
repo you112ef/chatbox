@@ -1,4 +1,6 @@
 import { normalizeOpenAIApiHostAndPath } from './llm_utils'
+import { fixMessageRoleSequence } from './llm_utils'
+import { Message } from 'src/shared/types'
 
 describe('normalizeOpenAIApiHostAndPath', () => {
     it('默认值', () => {
@@ -98,5 +100,59 @@ describe('normalizeOpenAIApiHostAndPath', () => {
     it('http 协议 3', () => {
         const result = normalizeOpenAIApiHostAndPath({ apiHost: 'my-proxy.com', apiPath: '/chat/completions' })
         expect(result).toEqual({ apiHost: 'https://my-proxy.com', apiPath: '/chat/completions' })
+    })
+})
+
+describe('fixMessageRoleSequence', () => {
+    it('应该处理空数组', () => {
+        const messages: Message[] = []
+        expect(fixMessageRoleSequence(messages)).toEqual([])
+    })
+
+    it('应该处理单条消息', () => {
+        const messages: Message[] = [
+            { id: '', role: 'user', content: '你好' }
+        ]
+        expect(fixMessageRoleSequence(messages)).toEqual([
+            { id: '', role: 'user', content: '你好' }
+        ])
+    })
+
+    it('应该合并连续的相同角色消息', () => {
+        const messages: Message[] = [
+            { id: '', role: 'user', content: '你好' },
+            { id: '', role: 'user', content: '请问一下' }
+        ]
+        expect(fixMessageRoleSequence(messages)).toEqual([
+            { id: '', role: 'user', content: '你好\n\n请问一下' }
+        ])
+    })
+
+    it('应该正确处理交替的角色消息', () => {
+        const messages: Message[] = [
+            { id: '', role: 'user', content: '你好' },
+            { id: '', role: 'assistant', content: '你好！有什么可以帮你的？' },
+            { id: '', role: 'user', content: '请问一下' }
+        ]
+        expect(fixMessageRoleSequence(messages)).toEqual([
+            { id: '', role: 'user', content: '你好' },
+            { id: '', role: 'assistant', content: '你好！有什么可以帮你的？' },
+            { id: '', role: 'user', content: '请问一下' }
+        ])
+    })
+
+    it('应该处理多个连续相同角色的消息', () => {
+        const messages: Message[] = [
+            { id: '', role: 'user', content: '你好' },
+            { id: '', role: 'assistant', content: '你好！' },
+            { id: '', role: 'assistant', content: '有什么可以帮你的？' },
+            { id: '', role: 'assistant', content: '请随时告诉我' },
+            { id: '', role: 'user', content: '谢谢' }
+        ]
+        expect(fixMessageRoleSequence(messages)).toEqual([
+            { id: '', role: 'user', content: '你好' },
+            { id: '', role: 'assistant', content: '你好！\n\n有什么可以帮你的？\n\n请随时告诉我' },
+            { id: '', role: 'user', content: '谢谢' }
+        ])
     })
 })
