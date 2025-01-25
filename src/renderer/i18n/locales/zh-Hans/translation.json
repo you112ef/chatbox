@@ -322,5 +322,7 @@
     "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "抱歉，当前模型 {{model}} API 本身不支持图片理解。如果您需要发送图片，请切换到其他模型。",
     "Paste long text as a file": "粘贴长文本为文件",
     "Pasting long text will automatically insert it as a file, keeping chats clean and reducing token usage with prompt caching.": "粘贴长文本时将以文件形式插入，有助于保持聊天列表简洁，并减少在 prompt caching 可用时大幅减少 token 使用量。",
-    "None": "无"
+    "None": "无",
+    "The {{model}} API doesn't support document understanding. You can use <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> for cloud-based document analysis, or download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "当前模型 {{model}} API 不支持文档理解。您可以使用 <LinkToAdvancedFileProcessing>Chatbox AI 服务</LinkToAdvancedFileProcessing> 进行云端文档分析，或下载 <LinkToHomePage>Chatbox 桌面版</LinkToHomePage> 进行本地文档分析。",
+    "The {{model}} API doesn't support document understanding. You can download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "当前模型 {{model}} API 不支持文档理解。您可以使用 <LinkToHomePage>Chatbox 桌面版</LinkToHomePage> 进行本地文档分析。"
 }

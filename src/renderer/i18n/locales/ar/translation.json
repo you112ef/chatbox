@@ -321,5 +321,7 @@
     "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "للأسف، النموذج الحالي {{model}} API لا يدعم فهم الصور. إذا كنت تحتاج إلى إرسال صور، يرجى التبديل إلى نموذج آخر.",
     "Paste long text as a file": "إرفاق نص طويل كملف",
     "Pasting long text will automatically insert it as a file, keeping chats clean and reducing token usage with prompt caching.": "إرفاق نص طويل سيضيفه كملف للحفاظ على المحادثات نظيفة وتقليل استخدام الرموز باستخدام تخزين المحادثات.",
-    "None": "لا شيء"
+    "None": "لا شيء",
+    "The {{model}} API doesn't support document understanding. You can use <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> for cloud-based document analysis, or download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "النموذج {{model}} API لا يدعم فهم المستندات. يمكنك استخدام <LinkToAdvancedFileProcessing>خدمة Chatbox AI</LinkToAdvancedFileProcessing> لتحليل المستندات بالأنظمة الأساسية أو تحميل <LinkToHomePage>تطبيق Chatbox Desktop</LinkToHomePage> لتحليل المستندات المحلية.",
+    "The {{model}} API doesn't support document understanding. You can download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "النموذج {{model}} API لا يدعم فهم المستندات. يمكنك تحميل <LinkToHomePage>تطبيق Chatbox Desktop</LinkToHomePage> لتحليل المستندات المحلية."
 }

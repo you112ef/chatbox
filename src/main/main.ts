@@ -30,8 +30,8 @@ import * as analystic from './analystic-node'
 import * as autoLauncher from './autoLauncher'
 import { AppUpdater } from './app-updater'
 import { ShortcutSetting } from 'src/shared/types'
-// import { parseFile } from './file-parser'
-// import { v4 as uuidv4 } from 'uuid'
+import { parseFile } from './file-parser'
+import { v4 as uuidv4 } from 'uuid'
 // import { readability } from './readability'
 
 // 这行代码是解决 Windows 通知的标题和图标不正确的问题，标题会错误显示成 electron.app.Chatbox
@@ -514,12 +514,14 @@ ipcMain.handle('ensureAutoLaunch', (event, enable: boolean) => {
     return autoLauncher.ensure(enable)
 })
 
-ipcMain.handle('parseFile', async (event, filePath: string) => {
-    return ''
-    // const data = await parseFile(filePath)
-    // const key = 'parseFile-' + uuidv4()
-    // await setStoreBlob(key, data)
-    // return key
+ipcMain.handle('parseFileLocally', async (event, dataJSON: string) => {
+    const params: { filePath: string } = JSON.parse(dataJSON)
+    try {
+        const data = await parseFile(params.filePath)
+        return JSON.stringify({ text: data, isSupported: true })
+    } catch (e) {
+        return JSON.stringify({ isSupported: false })
+    }
 })
 
 ipcMain.handle('parseUrl', async (event, url: string) => {

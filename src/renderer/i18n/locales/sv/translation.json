@@ -321,5 +321,7 @@
     "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "Tyvärr, den aktuella modellen {{model}} API:et självt stöder inte bildförståelse. Om du behöver skicka bilder, vänligen byt till en annan modell.",
     "Paste long text as a file": "Klistra in lång text som en fil",
     "Pasting long text will automatically insert it as a file, keeping chats clean and reducing token usage with prompt caching.": "Klistra in lång text som en fil för att hålla chattlistan ren och minska tokenanvändningen med prompt-cache.",
-    "None": "Inget"
+    "None": "Inget",
+    "The {{model}} API doesn't support document understanding. You can use <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> for cloud-based document analysis, or download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "Den aktuella modellen {{model}} API:et stöder inte dokumentförståelse. Du kan använda <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> för dokumentanalys i molnet, eller ladda ner <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> för dokumentanalys lokalt.",
+    "The {{model}} API doesn't support document understanding. You can download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "Den aktuella modellen {{model}} API:et stöder inte dokumentförståelse. Du kan ladda ner <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> för dokumentanalys lokalt."
 }

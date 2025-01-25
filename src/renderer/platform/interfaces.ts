@@ -51,7 +51,8 @@ export interface Platform {
 
     ensureAutoLaunch(enable: boolean): Promise<void>
 
-    // parseFile(filePath: string): Promise<string>
+    parseFileLocally(file: File, options?: { tokenLimit?: number }): Promise<{ key?: string, isSupported: boolean }>
+
     // parseUrl(url: string): Promise<{ key: string, title: string }>
 
     isFullscreen(): Promise<boolean>

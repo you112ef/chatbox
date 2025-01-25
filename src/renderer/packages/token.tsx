@@ -35,3 +35,20 @@ export function estimateTokensFromMessages(messages: Message[]) {
         return -1
     }
 }
+
+export function sliceTextByTokenLimit(text: string, limit: number) {
+    let ret = ''
+    let retTokenCount = 0
+    const STEP_LEN = 100
+    while (text.length > 0) {
+        const part = text.slice(0, STEP_LEN)
+        text = text.slice(STEP_LEN)
+        const partTokenCount = estimateTokens(part)
+        if (retTokenCount + partTokenCount > limit) {
+            break
+        }
+        ret += part
+        retTokenCount += partTokenCount
+    }
+    return ret
+}

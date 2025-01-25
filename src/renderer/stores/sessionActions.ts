@@ -680,29 +680,29 @@ export async function submitNewUserMessage(params: {
             } else {
                 // 本地方案
                 const newFiles: MessageFile[] = []
+                const tokenLimitPerFile = Math.ceil(3500 / attachments.length) // 一些免费的开源模型支持的大小为 4000 tokens。（2025.01）
                 for (const attachment of attachments) {
-                    await new Promise((resolve) => setTimeout(resolve, 1000)) // 等待一段时间，方便显示提示
-                    if (!isTextFilePath(attachment.name)) {
-                        // 只在桌面端有 attachment.path，网页版本只有 attachment.name
+                    await new Promise((resolve) => setTimeout(resolve, 3000)) // 等待一段时间，方便显示提示
+                    const result = await platform.parseFileLocally(attachment, { tokenLimit: tokenLimitPerFile })
+                    if (!result.isSupported || !result.key) {
                         // 根据当前 IP，判断是否在错误中推荐 Chatbox AI
                         if (remoteConfig.setting_chatboxai_first) {
                             throw ChatboxAIAPIError.fromCodeName(
-                                'model_not_support_non_text_file',
-                                'model_not_support_non_text_file'
+                                'model_not_support_file',
+                                'model_not_support_file'
                             )
                         } else {
                             throw ChatboxAIAPIError.fromCodeName(
-                                'model_not_support_non_text_file_2',
-                                'model_not_support_non_text_file_2'
+                                'model_not_support_file_2',
+                                'model_not_support_file_2'
                             )
                         }
                     }
-                    const { key } = await localParser.parseTextFile(attachment, { maxLength: 20 * 1000 })
                     newFiles.push({
-                        id: key,
+                        id: result.key,
                         name: attachment.name,
                         fileType: attachment.type,
-                        storageKey: key,
+                        storageKey: result.key,
                     })
                 }
                 modifyMessage(currentSessionId, { ...newUserMsg, files: newFiles }, false)

@@ -321,5 +321,7 @@
     "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "Spiacenti, il modello attuale {{model}} API non supporta l'interpretazione delle immagini. Se hai bisogno di inviare immagini, per favore passa a un altro modello.",
     "Paste long text as a file": "Incolla testo lungo come file",
     "Pasting long text will automatically insert it as a file, keeping chats clean and reducing token usage with prompt caching.": "Incolla testo lungo come file per mantenere le conversazioni pulite e ridurre l'utilizzo dei token con il caching dei prompt.",
-    "None": "Nessuno"
+    "None": "Nessuno",
+    "The {{model}} API doesn't support document understanding. You can use <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> for cloud-based document analysis, or download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "Il modello {{model}} API non supporta la comprensione dei documenti. Puoi usare <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> per l'analisi dei documenti in cloud o scaricare <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> per l'analisi dei documenti locali.",
+    "The {{model}} API doesn't support document understanding. You can download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "Il modello {{model}} API non supporta la comprensione dei documenti. Puoi scaricare <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> per l'analisi dei documenti locali."
 }

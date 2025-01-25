@@ -6,6 +6,9 @@ import { getOS, getBrowser } from '../packages/navigator'
 import { parseLocale } from '@/i18n/parser'
 import localforage from 'localforage'
 import MobileExporter from './mobile_exporter'
+import { parseTextFileLocally } from './web_platform_utils'
+import { v4 as uuidv4 } from 'uuid'
+import { sliceTextByTokenLimit } from '@/packages/token'
 
 export default class MobilePlatform implements Platform {
     public type: PlatformType = 'mobile'
@@ -140,9 +143,19 @@ export default class MobilePlatform implements Platform {
         return
     }
 
-    public async parseFile(filePath: string): Promise<string> {
-        throw new Error('Not implemented')
+    async parseFileLocally(file: File, options?: { tokenLimit?: number }): Promise<{ key?: string, isSupported: boolean }> {
+        const result = await parseTextFileLocally(file)
+        if (!result.isSupported) {
+            return { isSupported: false }
+        }
+        if (options?.tokenLimit) {
+            result.text = sliceTextByTokenLimit(result.text, options.tokenLimit)
+        }
+        const key = `parseFile-` + uuidv4()
+        await this.setStoreBlob(key, result.text)
+        return { key, isSupported: true }
     }
+
     public async parseUrl(url: string): Promise<{ key: string; title: string }> {
         throw new Error('Not implemented')
     }

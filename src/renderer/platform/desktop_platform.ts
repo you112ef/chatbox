@@ -4,6 +4,8 @@ import { Config, Settings, ShortcutSetting } from 'src/shared/types'
 import { getOS } from '../packages/navigator'
 import { parseLocale } from '@/i18n/parser'
 import WebExporter from './web_exporter'
+import { v4 as uuidv4 } from 'uuid'
+import { sliceTextByTokenLimit } from '@/packages/token'
 
 export default class DesktopPlatform implements Platform {
     public type: PlatformType = 'desktop'
@@ -116,9 +118,20 @@ export default class DesktopPlatform implements Platform {
         return this.ipc.invoke('ensureAutoLaunch', enable)
     }
 
-    public async parseFile(filePath: string): Promise<string> {
-        return this.ipc.invoke('parseFile', filePath)
+    async parseFileLocally(file: File, options?: { tokenLimit?: number }): Promise<{ key?: string, isSupported: boolean }> {
+        const resultJSON = await this.ipc.invoke('parseFileLocally', JSON.stringify({ filePath: file.path }))
+        const result: { text: string, isSupported: boolean } = JSON.parse(resultJSON)
+        if (!result.isSupported) {
+            return { isSupported: false }
+        }
+        if (options?.tokenLimit) {
+            result.text = sliceTextByTokenLimit(result.text, options.tokenLimit)
+        }
+        const key = `parseFile-` + uuidv4()
+        await this.setStoreBlob(key, result.text)
+        return { key, isSupported: true }
     }
+
     public async parseUrl(url: string): Promise<{ key: string; title: string }> {
         const json = await this.ipc.invoke('parseUrl', url)
         return JSON.parse(json)

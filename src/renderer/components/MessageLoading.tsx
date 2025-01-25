@@ -38,7 +38,7 @@ function MessageStatus(props: { status: NonNullable<Message['status']>[number] }
                         )}
                     </span>
                 </LoadingBubble>
-                {/* {
+                {
                     status.mode === 'local' && remoteConfig.setting_chatboxai_first && (
                         <Typography variant="body2" sx={{ opacity: 0.5 }} className='pb-1'>
                             <Trans
@@ -49,7 +49,7 @@ function MessageStatus(props: { status: NonNullable<Message['status']>[number] }
                             />
                         </Typography>
                     )
-                } */}
+                }
             </div>
         )
     }

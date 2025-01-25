@@ -117,16 +117,16 @@ export class ChatboxAIAPIError extends BaseError {
             i18nKey: 'The file size exceeds the limit of 50MB. Please reduce the file size and try again.',
         },
         // 当前模型不支持发送文件。目前支持的模型有 Chatbox AI 4
-        // 'model_not_support_file': {
-        //     name: 'model_not_support_file',
-        //     code: 20011,
-        //     i18nKey: "The {{model}} API does not support files. Please use <LinkToAdvancedFileProcessing>Chatbox AI models</LinkToAdvancedFileProcessing> instead, or download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing."
-        // },
-        // 'model_not_support_file_2': {
-        //     name: 'model_not_support_file_2',
-        //     code: 20012,
-        //     i18nKey: "The {{model}} API does not support files. Please download <LinkToHomePage>the desktop app</LinkToHomePage> for local processing."
-        // },
+        'model_not_support_file': {
+            name: 'model_not_support_file',
+            code: 20011,
+            i18nKey: "The {{model}} API doesn't support document understanding. You can use <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> for cloud-based document analysis, or download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis."
+        },
+        'model_not_support_file_2': {
+            name: 'model_not_support_file_2',
+            code: 20012,
+            i18nKey: "The {{model}} API doesn't support document understanding. You can download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis."
+        },
         // 当前模型不支持发送图片，推荐模型：Chatbox AI 4
         model_not_support_image: {
             name: 'model_not_support_image',

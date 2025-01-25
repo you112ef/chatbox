@@ -322,5 +322,7 @@
     "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "現在のモデル{{model}} APIは画像の理解をサポートしていません。画像を送信する必要がある場合は、別のモデルに切り替えてください。",
     "Paste long text as a file": "長文をファイルとして貼り付け",
     "Pasting long text will automatically insert it as a file, keeping chats clean and reducing token usage with prompt caching.": "長文をファイルとして貼り付けると、チャットをクリーンに保ち、プロンプトキャッシュを使用してトークン使用量を削減できます。",
-    "None": "なし"
+    "None": "なし",
+    "The {{model}} API doesn't support document understanding. You can use <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> for cloud-based document analysis, or download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "現在のモデル{{model}} APIはドキュメントの理解をサポートしていません。ドキュメントの分析には、<LinkToAdvancedFileProcessing>Chatbox AIサービス</LinkToAdvancedFileProcessing>を使用するか、<LinkToHomePage>Chatboxデスクトップアプリ</LinkToHomePage>をダウンロードしてローカルで分析してください。",
+    "The {{model}} API doesn't support document understanding. You can download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "現在のモデル{{model}} APIはドキュメントの理解をサポートしていません。ドキュメントの分析には、<LinkToHomePage>Chatboxデスクトップアプリ</LinkToHomePage>をダウンロードしてローカルで分析してください。"
 }
