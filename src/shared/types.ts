@@ -390,7 +390,7 @@ export const shortcutToggleWindowValues = [
     'Alt+`',
     'Alt+Space',
     'Ctrl+Alt+Space',
-    'Command+Space', // 系统快捷键冲突
+    // 'Command+Space', // 系统快捷键冲突
     'Ctrl+Space', // 系统快捷键冲突
     // 'Command+Alt+Space', 系统快捷键冲突
 ]
