@@ -82,22 +82,31 @@ export default class Ollama extends Base {
             },
             { signal }
         )
-        let result = ''
+        let content = ''
+        let reasoningContent: string | undefined
         await this.handleNdjson(res, (message) => {
             const data = JSON.parse(message)
             if (data['done']) {
                 return
             }
-            const word = data['message']?.['content']
-            if (!word) {
+            const contentPart: string | undefined = data['message']?.['content']
+            if (!contentPart) {
                 throw new ApiError(JSON.stringify(data))
             }
-            result += word
+            content += contentPart
+            // 处理 deepseek-r 的 <think>...</think> 标签
+            if (this.options.ollamaModel.includes('deepseek-r')) {
+                if (content.includes('</think>')) {
+                    const index = content.lastIndexOf('</think>')
+                    reasoningContent = content.slice(0, index + 8)
+                    content = content.slice(index + 8)
+                }
+            }
             if (onResultChange) {
-                onResultChange({ content: result })
+                onResultChange({ content: content, reasoningContent })
             }
         })
-        return result
+        return content
     }
 
     async listModels(): Promise<string[]> {
