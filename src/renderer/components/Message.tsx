@@ -492,7 +492,7 @@ function _Message(props: Props) {
                                     </Box>
                                     {!isCollapsedReasoning && (
                                         <Box sx={{ mt: 1 }}>
-                                            <Typography variant="body2" color="text.secondary">
+                                            <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-line' }}>
                                                 {msg.reasoningContent}
                                             </Typography>
                                         </Box>
@@ -521,11 +521,9 @@ function _Message(props: Props) {
                                         {content}
                                     </Markdown>
                                 ) : (
-                                    <div>
-                                        <p>
-                                            {content}
-                                            {needCollapse && isCollapsed && CollapseButton}
-                                        </p>
+                                    <div style={{ whiteSpace: 'pre-line' }}>
+                                        {content}
+                                        {needCollapse && isCollapsed && CollapseButton}
                                     </div>
                                 )}
                             </Box>
