@@ -1,5 +1,5 @@
 const changelog = `
-### v1.9.2 - 2025.01.25
+### v1.9.3 - 2025.01.26
 
 1. 新增本地文件解析功能，現可將 PDF/DOC/PPT/XLSX 等檔案發送至任何模型 API
 2. 新增摺疊 Ollama 部署的 DeepSeek-R1 模型思考過程功能

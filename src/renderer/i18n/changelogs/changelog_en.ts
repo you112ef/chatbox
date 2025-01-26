@@ -1,5 +1,5 @@
 const changelog = `
-### v1.9.2 - 2025.01.25
+### v1.9.3 - 2025.01.26
 
 1.  Added local document analysis. Now you can send files like PDFs, DOCs, PPTs, and XLSXs to any model API.
 2.  Added the option to collapse the thought process for the DeepSeek-R1 model when deployed via Ollama.
