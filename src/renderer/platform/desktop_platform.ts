@@ -6,6 +6,7 @@ import { parseLocale } from '@/i18n/parser'
 import WebExporter from './web_exporter'
 import { v4 as uuidv4 } from 'uuid'
 import { sliceTextByTokenLimit } from '@/packages/token'
+import { parseTextFileLocally } from './web_platform_utils'
 
 export default class DesktopPlatform implements Platform {
     public type: PlatformType = 'desktop'
@@ -119,8 +120,14 @@ export default class DesktopPlatform implements Platform {
     }
 
     async parseFileLocally(file: File, options?: { tokenLimit?: number }): Promise<{ key?: string, isSupported: boolean }> {
-        const resultJSON = await this.ipc.invoke('parseFileLocally', JSON.stringify({ filePath: file.path }))
-        const result: { text: string, isSupported: boolean } = JSON.parse(resultJSON)
+        let result: { text: string, isSupported: boolean }
+        if (!file.path) {
+            // 复制长文本粘贴的文件是没有 path 的
+            result = await parseTextFileLocally(file)
+        } else {
+            const resultJSON = await this.ipc.invoke('parseFileLocally', JSON.stringify({ filePath: file.path }))
+            result = JSON.parse(resultJSON)
+        }
         if (!result.isSupported) {
             return { isSupported: false }
         }
