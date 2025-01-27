@@ -1,4 +1,8 @@
 const changelog = `
+### v1.9.4 - 2025.01.27
+
+1.  Fixed some minor issues.
+
 ### v1.9.3 - 2025.01.26
 
 1.  Added local document analysis. Now you can send files like PDFs, DOCs, PPTs, and XLSXs to any model API.

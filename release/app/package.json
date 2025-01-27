@@ -1,7 +1,7 @@
 {
     "name": "xyz.chatboxapp.app",
     "productName": "xyz.chatboxapp.app",
-    "version": "1.9.3",
+    "version": "1.9.4",
     "description": "A desktop client for multiple cutting-edge AI models",
     "author": {
         "name": "Benn Huang",
