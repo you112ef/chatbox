@@ -155,4 +155,53 @@ describe('fixMessageRoleSequence', () => {
             { id: '', role: 'user', content: '谢谢' }
         ])
     })
+
+    it('应该在第一条 assistant 消息前添加 user 消息', () => {
+        const messages: Message[] = [
+            { role: 'system', content: 'System prompt', id: '1' },
+            { role: 'assistant', content: 'Hello', id: '2' }
+        ]
+        const expected: Message[] = [
+            { role: 'system', content: 'System prompt', id: '1' },
+            { role: 'user', content: 'OK.', id: 'user_before_assistant_id' },
+            { role: 'assistant', content: 'Hello', id: '2' }
+        ]
+        expect(fixMessageRoleSequence(messages)).toEqual(expected)
+    })
+    it('应该在第一条 assistant 消息前添加 user 消息', () => {
+        const messages: Message[] = [
+            { role: 'assistant', content: 'Hello', id: '2' }
+        ]
+        const expected: Message[] = [
+            { role: 'user', content: 'OK.', id: 'user_before_assistant_id' },
+            { role: 'assistant', content: 'Hello', id: '2' }
+        ]
+        expect(fixMessageRoleSequence(messages)).toEqual(expected)
+    })
+
+    it('不应该在已有 user 消息后的 assistant 消息前添加新的 user 消息', () => {
+        const messages: Message[] = [
+            { role: 'user', content: 'Hello', id: '1' },
+            { role: 'assistant', content: 'Hi', id: '2' }
+        ]
+        expect(fixMessageRoleSequence(messages)).toEqual(messages)
+    })
+
+    it('应该正确处理多组对话', () => {
+        const messages: Message[] = [
+            { role: 'system', content: 'System prompt', id: '1' },
+            { role: 'user', content: 'Hello', id: '2' },
+            { role: 'assistant', content: 'Hi', id: '3' },
+            { role: 'assistant', content: 'How are you?', id: '4' },
+            { role: 'user', content: 'Good', id: '5' }
+        ]
+        const expected: Message[] = [
+            { role: 'system', content: 'System prompt', id: '1' },
+            { role: 'user', content: 'Hello', id: '2' },
+            { role: 'assistant', content: 'Hi\n\nHow are you?', id: '3' },
+            { role: 'user', content: 'Good', id: '5' }
+        ]
+        expect(fixMessageRoleSequence(messages)).toEqual(expected)
+    })
+
 })
