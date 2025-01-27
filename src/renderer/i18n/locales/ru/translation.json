@@ -324,5 +324,8 @@
     "Pasting long text will automatically insert it as a file, keeping chats clean and reducing token usage with prompt caching.": "Вставление длинного текста в виде файла поможет сохранить чистоту в чат-списке и уменьшить использование токенов с помощью кэширования промптов.",
     "None": "Нет",
     "The {{model}} API doesn't support document understanding. You can use <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> for cloud-based document analysis, or download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "Текущая модель {{model}} API не поддерживает понимание документов. Вы можете использовать <LinkToAdvancedFileProcessing>Службу Chatbox AI</LinkToAdvancedFileProcessing> для анализа документов в облаке или <LinkToHomePage>настольную версию приложения Chatbox</LinkToHomePage> для локального анализа документов.",
-    "The {{model}} API doesn't support document understanding. You can download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "Текущая модель {{model}} API не поддерживает понимание документов. Вы можете скачать <LinkToHomePage>настольную версию приложения Chatbox</LinkToHomePage> для локального анализа документов."
+    "The {{model}} API doesn't support document understanding. You can download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "Текущая модель {{model}} API не поддерживает понимание документов. Вы можете скачать <LinkToHomePage>настольную версию приложения Chatbox</LinkToHomePage> для локального анализа документов.",
+    "All major AI models in one subscription": "Все основные AI-модели в одной подписке",
+    "or": "или",
+    "Use My Own API Key / Local Model": "Использовать свой API Key / Локальная модель"
 }

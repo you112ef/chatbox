@@ -323,5 +323,8 @@
     "Pasting long text will automatically insert it as a file, keeping chats clean and reducing token usage with prompt caching.": "Klistra in lång text som en fil för att hålla chattlistan ren och minska tokenanvändningen med prompt-cache.",
     "None": "Inget",
     "The {{model}} API doesn't support document understanding. You can use <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> for cloud-based document analysis, or download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "Den aktuella modellen {{model}} API:et stöder inte dokumentförståelse. Du kan använda <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> för dokumentanalys i molnet, eller ladda ner <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> för dokumentanalys lokalt.",
-    "The {{model}} API doesn't support document understanding. You can download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "Den aktuella modellen {{model}} API:et stöder inte dokumentförståelse. Du kan ladda ner <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> för dokumentanalys lokalt."
+    "The {{model}} API doesn't support document understanding. You can download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "Den aktuella modellen {{model}} API:et stöder inte dokumentförståelse. Du kan ladda ner <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> för dokumentanalys lokalt.",
+    "All major AI models in one subscription": "Alla stora AI-modeller i en prenumeration",
+    "or": "eller",
+    "Use My Own API Key / Local Model": "Använd min egen API-nyckel / Lokal modell"
 }

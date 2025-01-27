@@ -324,5 +324,8 @@
     "Pasting long text will automatically insert it as a file, keeping chats clean and reducing token usage with prompt caching.": "長文をファイルとして貼り付けると、チャットをクリーンに保ち、プロンプトキャッシュを使用してトークン使用量を削減できます。",
     "None": "なし",
     "The {{model}} API doesn't support document understanding. You can use <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> for cloud-based document analysis, or download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "現在のモデル{{model}} APIはドキュメントの理解をサポートしていません。ドキュメントの分析には、<LinkToAdvancedFileProcessing>Chatbox AIサービス</LinkToAdvancedFileProcessing>を使用するか、<LinkToHomePage>Chatboxデスクトップアプリ</LinkToHomePage>をダウンロードしてローカルで分析してください。",
-    "The {{model}} API doesn't support document understanding. You can download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "現在のモデル{{model}} APIはドキュメントの理解をサポートしていません。ドキュメントの分析には、<LinkToHomePage>Chatboxデスクトップアプリ</LinkToHomePage>をダウンロードしてローカルで分析してください。"
+    "The {{model}} API doesn't support document understanding. You can download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "現在のモデル{{model}} APIはドキュメントの理解をサポートしていません。ドキュメントの分析には、<LinkToHomePage>Chatboxデスクトップアプリ</LinkToHomePage>をダウンロードしてローカルで分析してください。",
+    "All major AI models in one subscription": "すべての主要なAIモデルを1つのサブスクリプションで使用",
+    "or": "または",
+    "Use My Own API Key / Local Model": "自分のAPIキー/ローカルモデルを使用"
 }

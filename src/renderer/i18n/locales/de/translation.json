@@ -324,5 +324,8 @@
     "Pasting long text will automatically insert it as a file, keeping chats clean and reducing token usage with prompt caching.": "Langen Text als Datei einfügen, um die Chats sauber zu halten und den Token-Verbrauch mit Prompt-Caching zu reduzieren.",
     "None": "Keine",
     "The {{model}} API doesn't support document understanding. You can use <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> for cloud-based document analysis, or download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "Das aktuelle Modell {{model}} API unterstützt keine Dokumentenverständnis. Sie können <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> für cloudbasierte Dokumentenanalyse verwenden oder <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> herunterladen, um lokale Dokumentenanalyse durchzuführen.",
-    "The {{model}} API doesn't support document understanding. You can download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "Das aktuelle Modell {{model}} API unterstützt keine Dokumentenverständnis. Sie können <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> herunterladen, um lokale Dokumentenanalyse durchzuführen."
+    "The {{model}} API doesn't support document understanding. You can download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "Das aktuelle Modell {{model}} API unterstützt keine Dokumentenverständnis. Sie können <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> herunterladen, um lokale Dokumentenanalyse durchzuführen.",
+    "All major AI models in one subscription": "Alle großen AI-Modelle in einem Abonnement",
+    "or": "oder",
+    "Use My Own API Key / Local Model": "Meine eigene API-Schlüssel / Lokales Modell verwenden"
 }
