@@ -242,8 +242,19 @@ function InactivedButtonGroup() {
     return (
         <Box sx={{ marginTop: '10px' }}>
             <Button
-                variant="outlined"
-                sx={{ marginRight: '10px' }}
+                variant="contained"
+                sx={{ 
+                    marginRight: '10px',
+                    fontWeight: 'bold',
+                    padding: '8px 24px',
+                    backgroundColor: '#10b981',
+                    color: 'white',
+                    boxShadow: '0 2px 4px rgba(16,185,129,0.2)',
+                    '&:hover': {
+                        backgroundColor: '#059669',
+                        boxShadow: '0 4px 8px rgba(16,185,129,0.3)',
+                    }
+                }}
                 onClick={() => {
                     platform.openLink('https://chatboxai.app/redirect_app/get_license')
                     trackingEvent('click_get_license_button', { event_category: 'user' })
