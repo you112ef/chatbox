@@ -680,7 +680,7 @@ export async function submitNewUserMessage(params: {
             } else {
                 // 本地方案
                 const newFiles: MessageFile[] = []
-                const tokenLimitPerFile = Math.ceil(3500 / attachments.length) // 一些免费的开源模型支持的大小为 4000 tokens。（2025.01）
+                const tokenLimitPerFile = Math.ceil(40 * 1000 / attachments.length)
                 for (const attachment of attachments) {
                     await new Promise((resolve) => setTimeout(resolve, 3000)) // 等待一段时间，方便显示提示
                     const result = await platform.parseFileLocally(attachment, { tokenLimit: tokenLimitPerFile })
