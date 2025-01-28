@@ -23,16 +23,24 @@ export default function MessageErrTips(props: { msg: Message }) {
     if (msg.error.startsWith('API Error')) {
         tips.push(
             <Trans
-                i18nKey="api error tips"
+                i18nKey="Connection to {{aiProvider}} failed. This typically occurs due to incorrect configuration or {{aiProvider}} account issues. Please <buttonOpenSettings>check your settings</buttonOpenSettings> and verify your {{aiProvider}} account status."
                 values={{
                     aiProvider: msg.aiProvider ? aiProviderNameHash[msg.aiProvider] : 'AI Provider',
                 }}
-                components={[
-                    <a
-                        href={`https://chatboxai.app/redirect_app/faqs/${settingActions.getLanguage()}`}
-                        target="_blank"
-                    ></a>,
-                ]}
+                components={{
+                    buttonOpenSettings: (
+                        <a
+                            className='cursor-pointer underline font-bold hover:text-blue-600 transition-colors'
+                            onClick={() => setOpenSettingDialogAtom('ai')}
+                        />
+                    ),
+                    a: (
+                        <a
+                            href={`https://chatboxai.app/redirect_app/faqs/${settingActions.getLanguage()}`}
+                            target="_blank"
+                        />
+                    ),
+                }}
             />
         )
     } else if (msg.error.startsWith('Network Error')) {

@@ -6,7 +6,7 @@ import Claude from '../models/claude'
 
 export default class ClaudeSettingUtil extends BaseConfig implements ModelSettingUtil {
     async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType) {
-        return settings.claudeModel || 'unknown'
+        return `Claude API (${settings.claudeModel || 'unknown'})`
     }
 
     getCurrentModelOptionValue(settings: Settings): string {

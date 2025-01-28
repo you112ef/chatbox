@@ -5,7 +5,7 @@ import XAI from '../models/xai'
 
 export default class XAISettingUtil extends BaseConfig implements ModelSettingUtil {
     async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
-        return `xAI (${settings.xAIModel})`
+        return `xAI API (${settings.xAIModel})`
     }
 
     getCurrentModelOptionValue(settings: Settings) {

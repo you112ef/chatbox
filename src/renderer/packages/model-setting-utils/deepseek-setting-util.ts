@@ -5,7 +5,7 @@ import DeepSeek, { deepSeekModels } from '../models/deepseek'
 
 export default class DeepSeekSettingUtil extends BaseConfig implements ModelSettingUtil {
     async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
-        return `DeepSeek (${settings.deepseekModel})`
+        return `DeepSeek API (${settings.deepseekModel})`
     }
 
     getCurrentModelOptionValue(settings: Settings) {

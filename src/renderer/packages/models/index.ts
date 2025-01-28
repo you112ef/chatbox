@@ -67,19 +67,19 @@ export function getModel(setting: Settings, config: Config) {
 }
 
 export const aiProviderNameHash: Record<ModelProvider, string> = {
-    [ModelProvider.OpenAI]: 'OpenAI',
-    [ModelProvider.Azure]: 'Azure OpenAI',
-    [ModelProvider.ChatGLM6B]: 'ChatGLM',
+    [ModelProvider.OpenAI]: 'OpenAI API',
+    [ModelProvider.Azure]: 'Azure OpenAI API',
+    [ModelProvider.ChatGLM6B]: 'ChatGLM API',
     [ModelProvider.ChatboxAI]: 'Chatbox AI',
-    [ModelProvider.Claude]: 'Claude',
-    [ModelProvider.Gemini]: 'Google Gemini',
-    [ModelProvider.Ollama]: 'Ollama',
-    [ModelProvider.Groq]: 'Groq',
-    [ModelProvider.DeepSeek]: 'DeepSeek',
-    [ModelProvider.SiliconFlow]: 'SiliconFlow',
-    [ModelProvider.LMStudio]: 'LM Studio',
+    [ModelProvider.Claude]: 'Claude API',
+    [ModelProvider.Gemini]: 'Google Gemini API',
+    [ModelProvider.Ollama]: 'Ollama API',
+    [ModelProvider.Groq]: 'Groq API',
+    [ModelProvider.DeepSeek]: 'DeepSeek API',
+    [ModelProvider.SiliconFlow]: 'SiliconFlow API',
+    [ModelProvider.LMStudio]: 'LM Studio API',
     [ModelProvider.Perplexity]: 'Perplexity API',
-    [ModelProvider.XAI]: 'xAI',
+    [ModelProvider.XAI]: 'xAI API',
     [ModelProvider.Custom]: 'Custom Provider',
 }
 

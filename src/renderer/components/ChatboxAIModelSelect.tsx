@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Select, FormControl, InputLabel } from '@mui/material'
-import { ChatboxAIModel, ModelProvider } from '../../shared/types'
+import { ModelSettings, ModelOptionGroup, ChatboxAIModel, ModelProvider } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import MenuItem from '@mui/material/MenuItem'
 import Divider from '@mui/material/Divider'
@@ -10,7 +10,7 @@ import ListSubheader from '@mui/material/ListSubheader'
 import { useAtomValue } from 'jotai'
 import * as atoms from '@/stores/atoms'
 import { cn } from '@/lib/utils'
-import useModelConfig from '@/hooks/useModelConfig'
+import ChatboxAISettingUtil from '@/packages/model-setting-utils/chatboxai-setting-util'
 
 export const chatboxAIModelLabelHash: Record<ChatboxAIModel, React.ReactNode> = {
     'chatboxai-3.5': (
@@ -63,7 +63,24 @@ export default function ChatboxAIModelSelect(props: Props) {
     const { t } = useTranslation()
     const settings = useAtomValue(atoms.settingsAtom)
 
-    const { optionGroups } = useModelConfig(settings, ModelProvider.ChatboxAI)
+    const [optionGroups, setOptionGroups] = useState<ModelOptionGroup[]>([])
+    useEffect(() => {
+        ;(async () => {
+            // 先获取本地模型选项组
+            const modelConfig = new ChatboxAISettingUtil()
+            const localOptionGroups = modelConfig.getLocalOptionGroups({
+                ...settings,
+                aiProvider: ModelProvider.ChatboxAI,
+            })
+            setOptionGroups(localOptionGroups)
+            // 再获取远程模型选项组
+            const mergedOptionGroups = await modelConfig.getMergeOptionGroups({
+                ...settings,
+                aiProvider: ModelProvider.ChatboxAI,
+            })
+            setOptionGroups(mergedOptionGroups)
+        })()
+    }, [settings.licenseKey])
 
     const [expandedGroups, setExpandedGroups] = useState<string[]>([])
     const onClickGroupName = (groupName: string) => {

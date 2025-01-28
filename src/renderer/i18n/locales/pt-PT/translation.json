@@ -327,5 +327,7 @@
     "The {{model}} API doesn't support document understanding. You can download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.": "A API {{model}} não suporta a compreensão de documentos. Você pode baixar <LinkToHomePage>a aplicação de desktop Chatbox</LinkToHomePage> para análise de documentos local.",
     "All major AI models in one subscription": "Todos os principais modelos de IA em uma subscrição",
     "or": "ou",
-    "Use My Own API Key / Local Model": "Usar minha própria API Key / Modelo Local"
+    "Use My Own API Key / Local Model": "Usar minha própria API Key / Modelo Local",
+    "Your ChatboxAI subscription already includes access to models from various providers. There's no need to switch providers - you can select different models directly within ChatboxAI. Switching from ChatboxAI to other providers will require their respective API keys. <button>Back to ChatboxAI</button>": "Sua subscrição ChatboxAI já inclui acesso a modelos de vários fornecedores. Não é necessário mudar de fornecedor - você pode selecionar diferentes modelos diretamente no ChatboxAI. Mudar de ChatboxAI para outros fornecedores exigirá seus respectivos API keys. <button>Voltar para ChatboxAI</button>",
+    "Connection to {{aiProvider}} failed. This typically occurs due to incorrect configuration or {{aiProvider}} account issues. Please <buttonOpenSettings>check your settings</buttonOpenSettings> and verify your {{aiProvider}} account status.": "A ligação ao {{aiProvider}} falhou. Isso geralmente ocorre devido a uma configuração incorreta ou problemas com a conta do {{aiProvider}}. Por favor, <buttonOpenSettings>verifique as suas configurações</buttonOpenSettings> e verifique o status da sua conta do {{aiProvider}}."
 }

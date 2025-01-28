@@ -5,7 +5,7 @@ import SiliconFlow, { siliconFlowModels } from '../models/siliconflow'
 
 export default class SiliconFlowSettingUtil extends BaseConfig implements ModelSettingUtil {
     async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
-        return `SiliconFlow (${settings.siliconCloudModel})`
+        return `SiliconFlow API (${settings.siliconCloudModel})`
     }
 
     getCurrentModelOptionValue(settings: Settings) {

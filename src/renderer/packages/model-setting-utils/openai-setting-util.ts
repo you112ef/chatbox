@@ -7,16 +7,16 @@ import BaseConfig from './base-config'
 export default class OpenAISettingUtil extends BaseConfig implements ModelSettingUtil {
     async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
         if (sessionType === 'picture') {
-            return `OpenAI (DALL-E-3)`
+            return `OpenAI API (DALL-E-3)`
         } else {
             if (settings.model === 'custom-model') {
                 let name = settings.openaiCustomModel || ''
                 if (name.length >= 10) {
                     name = name.slice(0, 10) + '...'
                 }
-                return `OpenAI Custom Model (${name})`
+                return `OpenAI API Custom Model (${name})`
             }
-            return settings.model || 'unknown'
+            return `OpenAI API (${settings.model || 'unknown'})`
         }
     }
 

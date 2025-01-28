@@ -119,12 +119,10 @@ export default function ChatboxAISetting(props: ModelConfigProps) {
                         )}
                     </ButtonGroup>
                 </Box>
-                {activated && (
-                    <ChatboxAIModelSelect
-                        value={settingsEdit.chatboxAIModel}
-                        onChange={(v) => setSettingsEdit({ ...settingsEdit, chatboxAIModel: v })}
-                    />
-                )}
+                <ChatboxAIModelSelect
+                    value={settingsEdit.chatboxAIModel}
+                    onChange={(v) => setSettingsEdit({ ...settingsEdit, chatboxAIModel: v })}
+                />
                 {CHATBOX_BUILD_TARGET === 'mobile_app' ? (
                     <DetailCardForMobileApp licenseKey={settingsEdit.licenseKey} activated={activated} />
                 ) : (
@@ -243,7 +241,7 @@ function InactivedButtonGroup() {
         <Box sx={{ marginTop: '10px' }}>
             <Button
                 variant="contained"
-                sx={{ 
+                sx={{
                     marginRight: '10px',
                     fontWeight: 'bold',
                     padding: '8px 24px',
@@ -285,8 +283,8 @@ function BorderLinearProgress(props: LinearProgressProps) {
                 props.value !== undefined && props.value <= 10
                     ? 'error'
                     : props.value !== undefined && props.value <= 20
-                    ? 'warning'
-                    : 'inherit'
+                        ? 'warning'
+                        : 'inherit'
             }
         />
     )
@@ -358,9 +356,8 @@ function LicenseDetail(props: { licenseKey?: string }) {
                                 </Box>
                             </Tooltip>
                             <Tooltip
-                                title={`${licenseDetail.image_total_quota - licenseDetail.image_used_count} / ${
-                                    licenseDetail.image_total_quota
-                                }`}
+                                title={`${licenseDetail.image_total_quota - licenseDetail.image_used_count} / ${licenseDetail.image_total_quota
+                                    }`}
                             >
                                 <Box className="mr-4 mb-4">
                                     <Typography>{t('Chatbox AI Image Quota')}</Typography>

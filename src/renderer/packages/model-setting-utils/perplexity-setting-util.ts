@@ -5,7 +5,7 @@ import Perplexity from '../models/perplexity'
 
 export default class PerplexitySettingUtil extends BaseConfig implements ModelSettingUtil {
     async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
-        return `Perplexity (${settings.perplexityModel})`
+        return `Perplexity API (${settings.perplexityModel})`
     }
 
     getCurrentModelOptionValue(settings: Settings) {

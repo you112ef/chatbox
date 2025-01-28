@@ -1,6 +1,6 @@
-import { Chip, MenuItem, useTheme, Typography, Box } from '@mui/material'
+import { Chip, MenuItem, Typography, Box, Alert } from '@mui/material'
 import { CustomProvider, ModelProvider, ModelSettings } from '../../shared/types'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { AIModelProviderMenuOptionList } from '../packages/models'
 import * as React from 'react'
 import Button from '@mui/material/Button'
@@ -118,10 +118,10 @@ export default function AIProviderSelect(props: ModelConfigProps) {
                     <Typography className="text-left" maxWidth={200} noWrap>
                         {aiProvider === ModelProvider.Custom
                             ? globalSettings.customProviders.find(
-                                  (provider) => provider.id === selectedCustomProviderId
-                              )?.name || t('Untitled')
+                                (provider) => provider.id === selectedCustomProviderId
+                            )?.name || t('Untitled')
                             : AIModelProviderMenuOptionList.find((provider) => provider.value === aiProvider)?.label ||
-                              'Unknown'}
+                            'Unknown'}
                     </Typography>
                 </Button>
                 {aiProvider === ModelProvider.Custom && !hideCustomProviderManage && (
@@ -212,6 +212,28 @@ export default function AIProviderSelect(props: ModelConfigProps) {
                     )}
                 </StyledMenu>
             </div>
+            {
+                aiProvider !== ModelProvider.ChatboxAI &&
+                aiProvider !== ModelProvider.Ollama &&
+                aiProvider !== ModelProvider.LMStudio &&
+                globalSettings.licenseKey &&
+                globalSettings.licenseDetail &&
+                (
+                    <Alert severity="warning">
+                        <Trans
+                            i18nKey="Your ChatboxAI subscription already includes access to models from various providers. There's no need to switch providers - you can select different models directly within ChatboxAI. Switching from ChatboxAI to other providers will require their respective API keys. <button>Back to ChatboxAI</button>"
+                            components={{
+                                button: <a className='cursor-pointer underline font-bold hover:text-blue-600 transition-colors'
+                                    onClick={() => {
+                                        onSwitchAIProvider(ModelProvider.ChatboxAI)
+                                        closeMenu()
+                                    }}
+                                />
+                            }}
+                        />
+                    </Alert>
+                )
+            }
         </>
     )
 }

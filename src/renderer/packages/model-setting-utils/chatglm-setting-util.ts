@@ -4,7 +4,7 @@ import BaseConfig from './base-config'
 
 export default class ChatGLMSettingUtil extends BaseConfig implements ModelSettingUtil {
     async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
-        return 'ChatGLM'
+        return 'ChatGLM API'
     }
 
     getCurrentModelOptionValue(settings: Settings) {
