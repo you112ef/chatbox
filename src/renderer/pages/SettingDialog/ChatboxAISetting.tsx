@@ -8,7 +8,7 @@ import { CHATBOX_BUILD_TARGET } from '@/variables'
 import LinearProgress, { LinearProgressProps, linearProgressClasses } from '@mui/material/LinearProgress'
 import { styled } from '@mui/material/styles'
 import { Accordion, AccordionSummary, AccordionDetails } from '../../components/Accordion'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import * as remote from '@/packages/remote'
 import CircularProgress from '@mui/material/CircularProgress'
 import platform from '@/platform'
@@ -84,6 +84,17 @@ export default function ChatboxAISetting(props: ModelConfigProps) {
         }
         setLoading(false)
     }
+
+    // 自动激活
+    useEffect(() => {
+        if (
+            settingsEdit.licenseKey
+            && settingsEdit.licenseKey.length >= 36
+            && !settingsEdit.licenseInstances?.[settingsEdit.licenseKey] // 仅当 license key 还没激活
+        ) {
+            activate()
+        }
+    }, [settingsEdit.licenseKey])
 
     return (
         <Box>
