@@ -140,11 +140,12 @@ export default function InputBox(props: {}) {
         }
         // 发送消息
         if (isPressedHash[shortcuts.inpubBoxSendMessage]) {
-            if (platform.type !== 'mobile') { // 移动端点击回车不会发送消息
-                event.preventDefault()
-                handleSubmit()
+            if (platform.type === 'mobile' && isSmallScreen && shortcuts.inpubBoxSendMessage === 'Enter') { // 移动端点击回车不会发送消息
                 return
             }
+            event.preventDefault()
+            handleSubmit()
+            return
         }
         // 发送消息但不生成回复
         if (isPressedHash[shortcuts.inpubBoxSendMessageWithoutResponse]) {
