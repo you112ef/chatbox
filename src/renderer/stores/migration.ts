@@ -60,8 +60,7 @@ async function migrate_0_to_1() {
     const settings = await storage.getItem(StorageKey.Settings, defaults.settings())
     // 如果历史版本的用户开启了消息的token计数展示，那么也帮他们开启token消耗展示
     if (settings.showTokenCount) {
-        settings.showTokenUsed = true
-        getDefaultStore().set(settingsAtom, { ...settings })
+        getDefaultStore().set(settingsAtom, (settings) => ({ ...settings, showTokenUsed: true }))
     }
 }
 
@@ -72,12 +71,12 @@ async function migrate_1_to_2() {
         if (sessions.find((session) => session.id === imageCreatorSessionForCN.id)) {
             return
         }
-        getDefaultStore().set(sessionsAtom, [...sessions, imageCreatorSessionForCN])
+        getDefaultStore().set(sessionsAtom, (sessions) => [...sessions, imageCreatorSessionForCN])
     } else {
         if (sessions.find((session) => session.id === imageCreatorSessionForEN.id)) {
             return
         }
-        getDefaultStore().set(sessionsAtom, [...sessions, imageCreatorSessionForEN])
+        getDefaultStore().set(sessionsAtom, (sessions) => [...sessions, imageCreatorSessionForEN])
     }
 }
 
@@ -105,7 +104,7 @@ async function migrate_3_to_4() {
     if (sessions.find((session) => session.id === targetSession.id)) {
         return
     }
-    getDefaultStore().set(sessionsAtom, [...sessions, targetSession])
+    getDefaultStore().set(sessionsAtom, (sessions) => [...sessions, targetSession])
 }
 
 async function migrate_4_to_5(): Promise<boolean> {
@@ -134,5 +133,5 @@ async function migrate_5_to_6() {
     if (sessions.find((session) => session.id === targetSession.id)) {
         return
     }
-    getDefaultStore().set(sessionsAtom, [...sessions, targetSession])
+    getDefaultStore().set(sessionsAtom, (sessions) => [...sessions, targetSession])
 }
