@@ -232,7 +232,7 @@ export default function InputBox(props: {}) {
                 await storage.setBlob(key, base64)
                 setPictureKeys((keys) => [...keys, key].slice(-8)) // 最多插入 8 个图片
             } else {
-                setAttachments((attachments) => [...attachments, file].slice(-4)) // 最多插入 4 个附件
+                setAttachments((attachments) => [...attachments, file].slice(-10)) // 最多插入 10 个附件
             }
         }
     }
