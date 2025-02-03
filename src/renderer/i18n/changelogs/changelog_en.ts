@@ -1,5 +1,5 @@
 const changelog = `
-### v1.9.6 - 2025.02.03
+### v1.9.7 - 2025.02.03
 
 1. Improved the chain-of-thought display for the DeepSeek R1 model in SiliconFlow.  
 2. Enhanced the chain-of-thought display for the DeepSeek R1 model in LM Studio.  

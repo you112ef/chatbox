@@ -1,5 +1,5 @@
 const changelog = `
-### v1.9.6 - 2025.02.03
+### v1.9.7 - 2025.02.03
 
 1. 優化 SiliconFlow 的 DeepSeek R1 模型的思考鏈顯示。  
 2. 優化 LM Studio 的 DeepSeek R1 模型的思考鏈顯示。  
