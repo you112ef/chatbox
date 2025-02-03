@@ -1,4 +1,12 @@
 const changelog = `
+### v1.9.6 - 2025.02.03
+
+1. 优化 SiliconFlow 的 DeepSeek R1 模型的思考链显示
+2. 优化 LM Studio 的 DeepSeek R1 模型的思考链显示
+3. 增加消息中可附带的文件数量到 10 个文件
+4. 支持接入 Azure 部署的 o1、o3 系列模型
+5. 新增对 o3-mini 新模型的支持
+
 ### v1.9.5 - 2025.01.28
 
 1. 修复一些小问题

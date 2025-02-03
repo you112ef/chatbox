@@ -1,4 +1,12 @@
 const changelog = `
+### v1.9.6 - 2025.02.03
+
+1. Improved the chain-of-thought display for the DeepSeek R1 model in SiliconFlow.  
+2. Enhanced the chain-of-thought display for the DeepSeek R1 model in LM Studio.  
+3. Increased the maximum number of files attachable in messages to 10.  
+4. Added support for o1 and o3 series models deployed on Azure.  
+5. Introduced support for the new o3-mini model.  
+
 ### v1.9.5 - 2025.01.28
 
 1.  Fixed some minor issues.
