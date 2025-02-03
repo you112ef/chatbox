@@ -86,6 +86,7 @@ export default class StandardOpenAI extends Base {
             },
         )
         let result = ''
+        let reasoningContent: string | undefined = undefined
         await this.handleSSE(response, (message) => {
             if (message === '[DONE]') {
                 return
@@ -98,7 +99,18 @@ export default class StandardOpenAI extends Base {
             if (typeof text === 'string') {
                 result += text
                 if (onResultChange) {
-                    onResultChange({ content: result })
+                    onResultChange({ content: result, reasoningContent })
+                }
+            }
+            // 支持 deepseek r1 的思考链
+            const reasoningContentPart = data.choices[0]?.delta?.reasoning_content
+            if (typeof reasoningContentPart === 'string') {
+                if (!reasoningContent) {
+                    reasoningContent = ''
+                }
+                reasoningContent += reasoningContentPart
+                if (onResultChange) {
+                    onResultChange({ content: result, reasoningContent })
                 }
             }
         })
