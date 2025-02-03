@@ -26,21 +26,42 @@ export function OllamaHostInput(props: {
                 className={props.className}
             />
             <Alert icon={false} severity="info" className="my-4">
-                <Trans
-                    i18nKey="Please ensure that the Remote Ollama Service is able to connect remotely. For more details, refer to <a>this tutorial</a>."
-                    components={{
-                        a: (
-                            <a
-                                className="cursor-pointer font-bold"
-                                onClick={() => {
-                                    platform.openLink(
-                                        `https://chatboxai.app/redirect_app/ollama_guide/${language}`
-                                    )
+                {
+                    platform.type === 'web' && (
+                        <p>
+                            <Trans
+                                i18nKey="Get better connectivity and stability with the Chatbox desktop application. <a>Download now</a>."
+                                components={{
+                                    a: (
+                                        <a
+                                            className="cursor-pointer font-bold"
+                                            onClick={() => {
+                                                platform.openLink(`https://chatboxai.app`)
+                                            }}
+                                        ></a>
+                                    ),
                                 }}
-                            ></a>
-                        ),
-                    }}
-                />
+                            />
+                        </p>
+                    )
+                }
+                <p>
+                    <Trans
+                        i18nKey="Please ensure that the Remote Ollama Service is able to connect remotely. For more details, refer to <a>this tutorial</a>."
+                        components={{
+                            a: (
+                                <a
+                                    className="cursor-pointer font-bold"
+                                    onClick={() => {
+                                        platform.openLink(
+                                            `https://chatboxai.app/redirect_app/ollama_guide/${language}`
+                                        )
+                                    }}
+                                ></a>
+                            ),
+                        }}
+                    />
+                </p>
             </Alert>
         </>
     )

@@ -329,5 +329,6 @@
     "or": "또는",
     "Use My Own API Key / Local Model": "내 자체 API 키 / 로컬 모델 사용",
     "Your ChatboxAI subscription already includes access to models from various providers. There's no need to switch providers - you can select different models directly within ChatboxAI. Switching from ChatboxAI to other providers will require their respective API keys. <button>Back to ChatboxAI</button>": "ChatboxAI 구독에는 이미 다양한 제공업체의 모델에 대한 접근 권한이 포함되어 있습니다. 제공업체를 전환할 필요가 없으며 ChatboxAI 내에서 직접 다른 모델을 선택할 수 있습니다. ChatboxAI에서 다른 제공업체로 전환하려면 해당 API 키가 필요합니다. <button>ChatboxAI로 돌아가기</button>",
-    "Connection to {{aiProvider}} failed. This typically occurs due to incorrect configuration or {{aiProvider}} account issues. Please <buttonOpenSettings>check your settings</buttonOpenSettings> and verify your {{aiProvider}} account status.": "연결 {{aiProvider}} 실패. 이는 일반적으로 잘못된 구성 또는 {{aiProvider}} 계정 문제로 인해 발생합니다. 다시 시도하세요. 이 오류가 지속되면 hi@benn.app로 이메일을 보내주세요."
+    "Connection to {{aiProvider}} failed. This typically occurs due to incorrect configuration or {{aiProvider}} account issues. Please <buttonOpenSettings>check your settings</buttonOpenSettings> and verify your {{aiProvider}} account status.": "연결 {{aiProvider}} 실패. 이는 일반적으로 잘못된 구성 또는 {{aiProvider}} 계정 문제로 인해 발생합니다. 다시 시도하세요. 이 오류가 지속되면 hi@benn.app로 이메일을 보내주세요.",
+    "Get better connectivity and stability with the Chatbox desktop application. <a>Download now</a>.": "Chatbox 데스크톱 앱을 사용하여 더 나은 연결과 안정성을 얻으세요. <a>지금 다운로드</a>."
 }

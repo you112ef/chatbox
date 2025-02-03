@@ -31,13 +31,34 @@ export default function LMStudioSetting(props: ModelConfigProps) {
                 fullWidth
             />
             <Alert icon={false} severity='info' className='my-4'>
-                <Trans i18nKey='Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.'
-                    components={{
-                        a: <a className='cursor-pointer font-bold' onClick={() => {
-                            platform.openLink(`https://chatboxai.app/redirect_app/lm_studio_guide/${language}`)
-                        }}></a>,
-                    }}
-                />
+                {
+                    platform.type === 'web' && (
+                        <p>
+                            <Trans
+                                i18nKey="Get better connectivity and stability with the Chatbox desktop application. <a>Download now</a>."
+                                components={{
+                                    a: (
+                                        <a
+                                            className="cursor-pointer font-bold"
+                                            onClick={() => {
+                                                platform.openLink(`https://chatboxai.app`)
+                                            }}
+                                        ></a>
+                                    ),
+                                }}
+                            />
+                        </p>
+                    )
+                }
+                <p>
+                    <Trans i18nKey='Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.'
+                        components={{
+                            a: <a className='cursor-pointer font-bold' onClick={() => {
+                                platform.openLink(`https://chatboxai.app/redirect_app/lm_studio_guide/${language}`)
+                            }}></a>,
+                        }}
+                    />
+                </p>
             </Alert>
             <LMStudioModelSelect
                 lmStudioModel={settingsEdit.lmStudioModel}

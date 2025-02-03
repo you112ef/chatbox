@@ -329,5 +329,6 @@
     "or": "または",
     "Use My Own API Key / Local Model": "自分のAPIキー/ローカルモデルを使用",
     "Your ChatboxAI subscription already includes access to models from various providers. There's no need to switch providers - you can select different models directly within ChatboxAI. Switching from ChatboxAI to other providers will require their respective API keys. <button>Back to ChatboxAI</button>": "あなたのChatboxAIサブスクリプションには、さまざまなプロバイダーのモデルへのアクセスがすでに含まれています。プロバイダーを切り替える必要はありません。ChatboxAI内で直接異なるモデルを選択できます。ChatboxAIから他のプロバイダーに切り替えると、それぞれのAPIキーが必要になります。<button>ChatboxAIに戻る</button>",
-    "Connection to {{aiProvider}} failed. This typically occurs due to incorrect configuration or {{aiProvider}} account issues. Please <buttonOpenSettings>check your settings</buttonOpenSettings> and verify your {{aiProvider}} account status.": "{{aiProvider}}への接続に失敗しました。これは通常、不正な設定または{{aiProvider}}アカウントの問題によるものです。<buttonOpenSettings>設定を確認</buttonOpenSettings>し、{{aiProvider}}アカウントのステータスを確認してください。"
+    "Connection to {{aiProvider}} failed. This typically occurs due to incorrect configuration or {{aiProvider}} account issues. Please <buttonOpenSettings>check your settings</buttonOpenSettings> and verify your {{aiProvider}} account status.": "{{aiProvider}}への接続に失敗しました。これは通常、不正な設定または{{aiProvider}}アカウントの問題によるものです。<buttonOpenSettings>設定を確認</buttonOpenSettings>し、{{aiProvider}}アカウントのステータスを確認してください。",
+    "Get better connectivity and stability with the Chatbox desktop application. <a>Download now</a>.": "Chatboxデスクトップアプリを使用して、より良い接続と安定性を得てください。<a>今すぐダウンロード</a>。"
 }
