@@ -95,9 +95,9 @@ export default class StandardOpenAI extends Base {
             if (data.error) {
                 throw new ApiError(`Error from ${this.name}: ${JSON.stringify(data)}`)
             }
-            const text = data.choices[0]?.delta?.content
-            if (typeof text === 'string') {
-                result += text
+            const part = data.choices[0]?.delta?.content
+            if (typeof part === 'string') {
+                result += part
                 if (onResultChange) {
                     onResultChange({ content: result, reasoningContent })
                 }
@@ -112,6 +112,19 @@ export default class StandardOpenAI extends Base {
                 if (onResultChange) {
                     onResultChange({ content: result, reasoningContent })
                 }
+            }
+            // 处理一些本地部署或三方的 deepseek-r1 返回中的 <think>...</think> 思考链
+            if (
+                !reasoningContent
+                && this.model.includes('deepseek-r')
+                && result.includes('<think>') && result.includes('</think>')
+            ) {
+                const index = result.lastIndexOf('</think>')
+                reasoningContent = result.slice(0, index + 8)
+                result = result.slice(index + 8)
+            }
+            if (onResultChange) {
+                onResultChange({ content: result, reasoningContent })
             }
         })
         return result
