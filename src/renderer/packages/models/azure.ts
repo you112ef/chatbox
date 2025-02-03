@@ -1,7 +1,7 @@
 import { Message } from 'src/shared/types'
 import Base, { onResultChange } from './base'
 import { ApiError } from './errors'
-import { injectModelSystemPrompt, openaiModelConfigs, populateGPTMessage } from './openai'
+import { injectModelSystemPrompt, openaiModelConfigs, populateGPTMessage, populateOSeriesMessage, isOSeriesModel } from './openai'
 
 interface Options {
     azureEndpoint: string
@@ -42,16 +42,14 @@ export default class AzureOpenAI extends Base {
             rawMessages = injectModelSystemPrompt(this.options.azureDeploymentName, rawMessages)
         }
 
-        let messages = await populateGPTMessage(rawMessages, this.options.azureDeploymentName as any)
-
-        const origin = new URL((this.options.azureEndpoint || '').trim()).origin
-        const apiVersion = this.getApiVersion()
-        const url = `${origin}/openai/deployments/${this.options.azureDeploymentName}/chat/completions?api-version=${apiVersion}`
-        const response = await this.post(
-            url,
-            this.getHeaders(),
-            {
-                messages,
+        const isOSeries = isOSeriesModel((this.options.azureDeploymentName || '').toLowerCase())
+        const params = isOSeries
+            ? {
+                messages: await populateOSeriesMessage(rawMessages),
+                model: this.options.azureDeploymentName,
+            }
+            : {
+                messages: await populateGPTMessage(rawMessages, this.options.azureDeploymentName as any),
                 model: this.options.azureDeploymentName,
                 // vision 模型的默认 max_tokens 极低，基本很难回答完整，因此手动设置为模型最大值
                 max_tokens:
@@ -61,27 +59,47 @@ export default class AzureOpenAI extends Base {
                 temperature: this.options.temperature,
                 top_p: this.options.topP,
                 stream: true,
-            },
+            }
+
+        const origin = new URL((this.options.azureEndpoint || '').trim()).origin
+        const apiVersion = this.getApiVersion()
+        const url = `${origin}/openai/deployments/${this.options.azureDeploymentName}/chat/completions?api-version=${apiVersion}`
+        const response = await this.post(
+            url,
+            this.getHeaders(),
+            params,
             { signal }
         )
-        let result = ''
-        await this.handleSSE(response, (message) => {
-            if (message === '[DONE]') {
-                return
+        if (isOSeries) {
+            const json = await response.json()
+            if (json.error) {
+                throw new ApiError(`Error from Azure OpenAI: ${JSON.stringify(json)}`)
             }
-            const data = JSON.parse(message)
-            if (data.error) {
-                throw new ApiError(`Error from Azure OpenAI: ${JSON.stringify(data)}`)
+            const content: string = json.choices[0].message.content || ''
+            if (onResultChange) {
+                onResultChange({ content })
             }
-            const text = data.choices[0]?.delta?.content
-            if (text !== undefined) {
-                result += text
-                if (onResultChange) {
-                    onResultChange({ content: result })
+            return content
+        } else {
+            let result = ''
+            await this.handleSSE(response, (message) => {
+                if (message === '[DONE]') {
+                    return
                 }
-            }
-        })
-        return result
+                const data = JSON.parse(message)
+                if (data.error) {
+                    throw new ApiError(`Error from Azure OpenAI: ${JSON.stringify(data)}`)
+                }
+                const text = data.choices[0]?.delta?.content
+                if (text !== undefined) {
+                    result += text
+                    if (onResultChange) {
+                        onResultChange({ content: result })
+                    }
+                }
+            })
+            return result
+        }
     }
 
     async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {

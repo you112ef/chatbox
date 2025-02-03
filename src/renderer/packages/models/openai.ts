@@ -337,7 +337,7 @@ export const openaiModelConfigs = {
 export type OpenAIModel = keyof typeof openaiModelConfigs
 export const models = Array.from(Object.keys(openaiModelConfigs)).sort() as OpenAIModel[]
 
-function isOSeriesModel(model: string): boolean {
+export function isOSeriesModel(model: string): boolean {
     return /o\d+/.test(model)
 }
 
