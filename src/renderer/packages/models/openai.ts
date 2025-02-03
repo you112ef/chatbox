@@ -65,8 +65,8 @@ export default class OpenAI extends Base {
         if (this.options.injectDefaultMetadata) {
             rawMessages = injectModelSystemPrompt(model, rawMessages)
         }
-        if (model.startsWith('o1')) {
-            const messages = await populateO1Message(rawMessages)
+        if (isOSeriesModel(model)) {
+            const messages = await populateOSeriesMessage(rawMessages)
             return this.requestChatCompletionsNotStream({ model, messages }, signal, onResultChange)
         }
         const messages = await populateGPTMessage(rawMessages, this.options.model)
@@ -295,12 +295,12 @@ export const openaiModelConfigs = {
     'o1': {
         maxTokens: 32_768,
         maxContextTokens: 128_000,
-        vision: false,
+        vision: true,
     },
     'o1-2024-12-17': {
         maxTokens: 32_768,
         maxContextTokens: 128_000,
-        vision: false,
+        vision: true,
     },
     'o1-preview': {
         maxTokens: 32_768,
@@ -322,9 +322,24 @@ export const openaiModelConfigs = {
         maxContextTokens: 128_000,
         vision: false,
     },
+    'o3-mini': {
+        maxTokens: 100_000,
+        maxContextTokens: 200_000,
+        vision: false,
+    },
+    'o3-mini-2025-01-31': {
+        maxTokens: 100_000,
+        maxContextTokens: 200_000,
+        vision: false,
+    },
 }
+
 export type OpenAIModel = keyof typeof openaiModelConfigs
 export const models = Array.from(Object.keys(openaiModelConfigs)).sort() as OpenAIModel[]
+
+function isOSeriesModel(model: string): boolean {
+    return /o\d+/.test(model)
+}
 
 export function isSupportVision(model: OpenAIModel | 'custom-model' | string): boolean {
     // 因为历史原因，有些用户会在 openai 提供商的设置中使用其他厂商的模型
@@ -345,7 +360,7 @@ export async function populateGPTMessage(
     }
 }
 
-export async function populateO1Message(rawMessages: Message[]): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
+export async function populateOSeriesMessage(rawMessages: Message[]): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
     const messages: OpenAIMessage[] = rawMessages.map((m) => ({
         role: m.role === 'system' ? 'user' : m.role,
         content: m.content,
