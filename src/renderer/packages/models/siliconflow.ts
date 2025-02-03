@@ -29,6 +29,8 @@ export default class SiliconFlow extends StandardOpenAI {
 
 // Ref: https://siliconflow.cn/zh-cn/models
 export const siliconflowModelConfigs = {
+    'deepseek-ai/DeepSeek-R1': { maxTokens: 32768 },
+    'deepseek-ai/DeepSeek-V3': { maxTokens: 32768 },
     'Qwen/Qwen2-72B-Instruct': { maxTokens: 32768 },
     'Qwen/Qwen2-Math-72B-Instruct': { maxTokens: 32768 },
     'Qwen/Qwen2-57B-A14B-Instruct': { maxTokens: 32768 },
