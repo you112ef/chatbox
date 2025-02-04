@@ -45,6 +45,7 @@ import { languageNameMap } from '@/i18n/locales'
 import { isTextFilePath } from 'src/shared/file-extensions'
 import * as localParser from '@/packages/local-parser'
 import { onResultChangeWithCancel } from '@/packages/models/base'
+import * as appleAppStore from '@/packages/apple_app_store'
 
 /**
  * 创建一个新的会话
@@ -922,6 +923,7 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
             default:
                 throw new Error(`Unknown session type: ${session.type}, generate failed`)
         }
+        appleAppStore.tickAfterMessageGenerated()
     } catch (err: any) {
         if (!(err instanceof Error)) {
             err = new Error(`${err}`)

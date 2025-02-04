@@ -255,6 +255,7 @@ export const openCopilotDialogAtom = atom(false) // 是否展示copilot窗口
 export const openClearConversationListDialogAtom = atom(false) // 是否展示会话列表清理窗口
 export const openAttachLinkDialogAtom = atom(false) // 是否展示链接插入窗口
 export const reportContentDialogAtom = atom<{ id: string } | null>(null) // 是否展示举报内容窗口
+export const openAppStoreRatingDialogAtom = atom(false) // 是否展示App Store评分弹窗
 
 export const inputBoxLinksAtom = atom<{ url: string }[]>([])
 export const inputBoxWebBrowsingModeAtom = atom(false)

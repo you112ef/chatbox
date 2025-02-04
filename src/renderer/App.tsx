@@ -35,6 +35,7 @@ import OpenAttachLinkDialog from './pages/OpenAttachLinkDialog'
 import ReportContentDialog from './pages/ReportContentDialog'
 import { getOS } from './packages/navigator'
 import ExitFullscreenButton from './components/ExitFullscreenButton'
+import { AppStoreRatingDialog } from './pages/AppStoreRatingDialog'
 
 function Main() {
     const spellCheck = useAtomValue(atoms.spellCheckAtom)
@@ -94,6 +95,7 @@ function Main() {
             <ArtifactDialog />
             <OpenAttachLinkDialog />
             <ReportContentDialog />
+            <AppStoreRatingDialog />
             <Toasts />
         </Box>
     )

@@ -330,5 +330,10 @@
     "Use My Own API Key / Local Model": "Meine eigene API-Schlüssel / Lokales Modell verwenden",
     "Your ChatboxAI subscription already includes access to models from various providers. There's no need to switch providers - you can select different models directly within ChatboxAI. Switching from ChatboxAI to other providers will require their respective API keys. <button>Back to ChatboxAI</button>": "Ihre ChatboxAI-Abonnement umfasst bereits Zugang zu Modellen von verschiedenen Anbietern. Es ist nicht notwendig, Anbieter zu wechseln - Sie können direkt innerhalb von ChatboxAI unterschiedliche Modelle auswählen. Wechseln von ChatboxAI zu anderen Anbietern erfordert deren jeweilige API-Schlüssel. <button>Zurück zu ChatboxAI</button>",
     "Connection to {{aiProvider}} failed. This typically occurs due to incorrect configuration or {{aiProvider}} account issues. Please <buttonOpenSettings>check your settings</buttonOpenSettings> and verify your {{aiProvider}} account status.": "Verbindung zu {{aiProvider}} fehlgeschlagen. Dies tritt normalerweise aufgrund einer falschen Konfiguration oder Problemen mit Ihrem {{aiProvider}}-Konto auf. Bitte <buttonOpenSettings>prüfen Sie Ihre Einstellungen</buttonOpenSettings> und überprüfen Sie den Status Ihres {{aiProvider}}-Kontos.",
-    "Get better connectivity and stability with the Chatbox desktop application. <a>Download now</a>.": "Erhalten Sie bessere Verbindung und Stabilität mit der Chatbox-Desktop-Anwendung. <a>Jetzt herunterladen</a>."
+    "Get better connectivity and stability with the Chatbox desktop application. <a>Download now</a>.": "Erhalten Sie bessere Verbindung und Stabilität mit der Chatbox-Desktop-Anwendung. <a>Jetzt herunterladen</a>.",
+    "Enjoying Chatbox?": "Genießen Sie Chatbox?",
+    "Your rating on the App Store would help make Chatbox even better!": "Ihre Bewertung in der App Store hilft, Chatbox noch besser zu machen!",
+    "It only takes a few seconds and helps a lot.": "Es dauert nur wenige Sekunden und hilft sehr.",
+    "Maybe Later": "Vielleicht später",
+    "Rate Now": "Jetzt bewerten"
 }
