@@ -29,9 +29,13 @@ export default class Perplexity extends StandardOpenAI {
 
     listLocalModels(): string[] {
         return [
-            'llama-3.1-sonar-small-128k-online',
-            'llama-3.1-sonar-large-128k-online',
-            'llama-3.1-sonar-huge-128k-online'
+            'sonar-reasoning-pro',
+            'sonar-reasoning',
+            'sonar-pro',
+            'sonar',
+            // 'llama-3.1-sonar-small-128k-online',
+            // 'llama-3.1-sonar-large-128k-online',
+            // 'llama-3.1-sonar-huge-128k-online'
         ]
     }
 
@@ -55,7 +59,8 @@ export default class Perplexity extends StandardOpenAI {
                 useProxy: this.useProxy,
             },
         )
-        let result = ''
+        let content = ''
+        let reasoningContent: string | undefined
         await this.handleSSE(response, (message) => {
             if (message === '[DONE]') {
                 return
@@ -67,19 +72,30 @@ export default class Perplexity extends StandardOpenAI {
             const citations: string[] | undefined = data.citations
             const text = data.choices[0]?.delta?.content
             if (typeof text === 'string') {
-                result += text
-                if (onResultChange) {
-                    onResultChange({
-                        content: result, 
-                        webBrowsing: citations ? {
-                            query: [],
-                            links: citations.map(url => ({ title: url, url }))
-                        } : undefined
-                    })
-                }
+                content += text
+            }
+            // 处理返回中的 <think>...</think> 思考链
+            if (
+                !reasoningContent
+                && this.model.includes('reasoning')
+                && content.includes('<think>') && content.includes('</think>')
+            ) {
+                const index = content.lastIndexOf('</think>')
+                reasoningContent = content.slice(0, index + 8)
+                content = content.slice(index + 8)
+            }
+            if (onResultChange) {
+                onResultChange({
+                    content: content,
+                    reasoningContent,
+                    webBrowsing: citations ? {
+                        query: [],
+                        links: citations.map(url => ({ title: url, url }))
+                    } : undefined
+                })
             }
         })
-        return result
+        return content
     }
 }
 
