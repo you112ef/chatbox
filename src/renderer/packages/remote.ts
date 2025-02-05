@@ -21,7 +21,7 @@ import { ChatboxAIMessage } from './models/chatboxai'
 
 // const RELEASE_ORIGIN = 'https://releases.chatboxai.app'
 
-export let API_ORIGIN = 'https://chatboxai.app'
+export let API_ORIGIN = 'https://api.chatboxai.app'
 
 /**
  * 按顺序测试 API 的可用性，只要有一个 API 域名可用，就终止测试并切换所有流量到该域名。
