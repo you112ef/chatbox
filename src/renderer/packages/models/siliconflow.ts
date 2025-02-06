@@ -22,6 +22,13 @@ export default class SiliconFlow extends StandardOpenAI {
     }
 
     isSupportVision(model: string): boolean {
+        const notSupportVisionModels = [
+            'deepseek-ai/DeepSeek-R1',
+            'deepseek-ai/DeepSeek-V3',
+        ]
+        if (notSupportVisionModels.includes(model)) {
+            return false
+        }
         return true // 有些支持，有些不支持。不支持的会报错。
     }
 
