@@ -66,7 +66,7 @@ export default class OpenAI extends Base {
             rawMessages = injectModelSystemPrompt(model, rawMessages)
         }
         if (isOSeriesModel(model)) {
-            const messages = await populateOSeriesMessage(rawMessages)
+            const messages = await populateOSeriesMessage(rawMessages, model)
             return this.requestChatCompletionsNotStream({ model, messages }, signal, onResultChange)
         }
         const messages = await populateGPTMessage(rawMessages, this.options.model)
@@ -385,11 +385,15 @@ export async function populateGPTMessage(
     }
 }
 
-export async function populateOSeriesMessage(rawMessages: Message[]): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
-    const messages: OpenAIMessage[] = rawMessages.map((m) => ({
-        role: m.role === 'system' ? 'user' : m.role,
-        content: m.content,
-    }))
+export async function populateOSeriesMessage(rawMessages: Message[], model: string): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
+    let messages = isSupportVision(model) && rawMessages.some((m) => m.pictures && m.pictures.length > 0)
+        ? await populateOpenAIMessageVision(rawMessages)
+        : await populateOpenAIMessageText(rawMessages)
+    for (const [i, m] of messages.entries()) {
+        if (messages[i].role === 'system') {
+            messages[i].role = 'user'
+        }
+    }
     return messages
 }
 

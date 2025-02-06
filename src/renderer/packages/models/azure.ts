@@ -45,7 +45,7 @@ export default class AzureOpenAI extends Base {
         const isOSeries = isOSeriesModel((this.options.azureDeploymentName || '').toLowerCase())
         const params = isOSeries
             ? {
-                messages: await populateOSeriesMessage(rawMessages),
+                messages: await populateOSeriesMessage(rawMessages, (this.options.azureDeploymentName || '').toLowerCase()),
                 model: this.options.azureDeploymentName,
             }
             : {
