@@ -879,7 +879,9 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
                     ...targetMsg,
                     generating: false,
                     cancel: undefined,
-                    tokensUsed: estimateTokensFromMessages([...promptMsgs, targetMsg]),
+                    tokensUsed: (targetMsg.content || '').trim().length > 0
+                        ? estimateTokensFromMessages([...promptMsgs, targetMsg])
+                        : undefined,
                     status: [],
                 }
                 modifyMessage(sessionId, targetMsg, true)
