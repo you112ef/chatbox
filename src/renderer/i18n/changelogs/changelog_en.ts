@@ -1,4 +1,10 @@
 const changelog = `
+### v1.9.8 - 2025.02.06
+
+1. Fixed image recognition issues in o1
+2. Updated Perplexity model list with chain-of-thought support
+3. Fixed various display issues
+
 ### v1.9.7 - 2025.02.03
 
 1. Improved the chain-of-thought display for the DeepSeek R1 model in SiliconFlow.  
