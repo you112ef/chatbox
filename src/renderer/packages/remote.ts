@@ -2,8 +2,6 @@ import { USE_LOCAL_API } from '@/variables'
 import {
     Config,
     CopilotDetail,
-    SponsorAboutBanner,
-    SponsorAd,
     RemoteConfig,
     ChatboxAILicenseDetail,
     Settings,
