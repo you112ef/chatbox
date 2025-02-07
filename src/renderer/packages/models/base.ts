@@ -123,7 +123,7 @@ export default class Base {
             }
         })
         for await (const chunk of this.iterableStreamAsync(response.body)) {
-            const str = new TextDecoder().decode(chunk)
+            const str = new TextDecoder().decode(chunk, { stream: true })
             parser.feed(str)
         }
     }
