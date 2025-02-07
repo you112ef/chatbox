@@ -15,6 +15,7 @@ export default function WelcomeDialog(props: {}) {
     const setOpenSettingWindow = useSetAtom(atoms.openSettingDialogAtom)
     const [showProviders, setShowProviders] = useState(false)
     const remoteConfig = useAtomValue(atoms.remoteConfigAtom)
+    const language = useAtomValue(atoms.languageAtom)
 
     const onClose = () => {
         setOpen(false)
@@ -61,22 +62,22 @@ export default function WelcomeDialog(props: {}) {
                                 </ListItemButton>
                             </ListItem>
                         ))}
-                            <ListItem key={'custom'} disablePadding>
-                                <ListItemButton
-                                    onClick={() => onSetup(ModelProvider.Custom)}
-                                    sx={{
-                                        borderRadius: '8px',
-                                        mb: 1,
-                                        border: '1px solid',
-                                        borderColor: 'divider',
+                        <ListItem key={'custom'} disablePadding>
+                            <ListItemButton
+                                onClick={() => onSetup(ModelProvider.Custom)}
+                                sx={{
+                                    borderRadius: '8px',
+                                    mb: 1,
+                                    border: '1px solid',
+                                    borderColor: 'divider',
+                                }}
+                            >
+                                <ListItemText
+                                    primary={t('Add Custom Provider')}
+                                    primaryTypographyProps={{
+                                        fontWeight: 600
                                     }}
-                                >
-                                    <ListItemText
-                                        primary={t('Add Custom Provider')}
-                                        primaryTypographyProps={{
-                                            fontWeight: 600
-                                        }}
-                                    />
+                                />
                             </ListItemButton>
                         </ListItem>
                     </List>
@@ -147,6 +148,17 @@ export default function WelcomeDialog(props: {}) {
                                     >
                                         <span className="">{t('Chatbox AI Cloud')}</span>
                                         <span className="text-[10px] opacity-75">{t('All major AI models in one subscription')}</span>
+                                        {
+                                            language.startsWith('zh') && (
+                                                <span className="text-[10px] opacity-75">
+                                                    （包含
+                                                    <span className="font-bold opacity-100 bg-gray-50 px-1 mx-0.5 rounded-md text-blue-500">
+                                                        稳定的DeepSeek R1
+                                                    </span>
+                                                    模型访问）
+                                                </span>
+                                            )
+                                        }
                                     </Button>
                                     <div className="flex justify-center my-0">
                                         <span className="px-2 text-sm text-gray-500 dark:text-gray-400">

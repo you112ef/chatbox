@@ -124,9 +124,29 @@ export default function ChatboxAISetting(props: ModelConfigProps) {
                             </>
                         )}
                         {!activated && (
-                            <Button variant={settingsEdit.licenseKey ? 'outlined' : 'text'} onClick={activate}>
-                                {loading ? t('Activating...') : t('Activate License')}
-                            </Button>
+                            <>
+                                <Button
+                                    variant={settingsEdit.licenseKey ? 'contained' : 'outlined'}
+                                    size="small"
+                                    onClick={activate}>
+                                    {loading ? t('Activating...') : t('Activate License')}
+                                </Button>
+                                {
+                                    platform.type !== 'mobile' && (
+                                        <Button
+                                            variant="outlined"
+                                            size="small"
+                                            color='success'
+                                            onClick={() => {
+                                                platform.openLink('https://chatboxai.app/redirect_app/get_license')
+                                                trackingEvent('click_get_license_button', { event_category: 'user' })
+                                            }}
+                                        >
+                                            {t('Get License')}
+                                        </Button>
+                                    )
+                                }
+                            </>
                         )}
                     </ButtonGroup>
                 </Box>
