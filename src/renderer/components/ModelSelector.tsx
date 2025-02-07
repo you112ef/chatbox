@@ -77,8 +77,8 @@ export function ChatModelSelector(props: {}) {
                     style={{ color: theme.palette.text.primary }}
                     onClick={handleMenuOpen}
                 >
-                    <Sparkles size="20" strokeWidth={1} />
-                    <ChevronsUpDown size="16" strokeWidth={1} className="opacity-50" />
+                    <span className="text-[10px] opacity-70 p-0 m-0">{currentOption.label}</span>
+                    <ChevronsUpDown size="16" strokeWidth={1} className="opacity-50 p-0 m-0" />
                 </MiniButton>
             ) : (
                 <MiniButton
