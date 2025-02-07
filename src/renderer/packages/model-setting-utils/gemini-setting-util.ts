@@ -54,6 +54,6 @@ export default class GeminiSettingUtil extends BaseConfig implements ModelSettin
     }
 
     isCurrentModelSupportWebBrowsing(settings: ModelSettings): boolean {
-        return settings.geminiModel === 'gemini-2.0-flash-exp' && settings.geminiModel.includes('gemini-2.0')
+        return settings.geminiModel === 'gemini-2.0-flash-exp' || settings.geminiModel.includes('gemini-2.0')
     }
 }
