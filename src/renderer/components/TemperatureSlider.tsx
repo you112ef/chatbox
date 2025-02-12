@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Chip, TextField, Slider, Typography, Box } from '@mui/material'
+import { TextField, Slider, Typography, Box } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle'
-import LightbulbCircleIcon from '@mui/icons-material/LightbulbCircle'
 
 export interface Props {
     value: number
@@ -64,30 +62,6 @@ export default function TemperatureSlider(props: Props) {
                         step={0.01}
                         min={0}
                         max={2}
-                        marks={[
-                            {
-                                value: 0.2,
-                                label: (
-                                    <Chip
-                                        size="small"
-                                        icon={<PlaylistAddCheckCircleIcon />}
-                                        label={t('meticulous')}
-                                        className="opacity-50"
-                                    />
-                                ),
-                            },
-                            {
-                                value: 0.8,
-                                label: (
-                                    <Chip
-                                        size="small"
-                                        icon={<LightbulbCircleIcon />}
-                                        label={t('creative')}
-                                        className="opacity-50"
-                                    />
-                                ),
-                            },
-                        ]}
                     />
                 </Box>
                 <TextField
