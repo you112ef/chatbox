@@ -9,6 +9,7 @@ import MobileExporter from './mobile_exporter'
 import { parseTextFileLocally } from './web_platform_utils'
 import { v4 as uuidv4 } from 'uuid'
 import { sliceTextByTokenLimit } from '@/packages/token'
+import { CHATBOX_BUILD_PLATFORM } from '@/variables'
 
 export default class MobilePlatform implements Platform {
     public type: PlatformType = 'mobile'
@@ -21,7 +22,7 @@ export default class MobilePlatform implements Platform {
         return ''
     }
     public async getPlatform(): Promise<string> {
-        return 'web'
+        return CHATBOX_BUILD_PLATFORM
     }
     public async shouldUseDarkColors(): Promise<boolean> {
         return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
