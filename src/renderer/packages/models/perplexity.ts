@@ -97,6 +97,10 @@ export default class Perplexity extends StandardOpenAI {
         })
         return content
     }
+
+    isSupportToolUse(model: string): boolean {
+        return false
+    }
 }
 
 // {

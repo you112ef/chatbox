@@ -1,7 +1,7 @@
 import { ModelSettings, Session, SessionType, Settings } from 'src/shared/types'
 import { ModelSettingUtil } from './interface'
 import BaseConfig from './base-config'
-import SiliconFlow, { siliconFlowModels } from '../models/siliconflow'
+import SiliconFlow, { siliconFlowModels, modelMeta } from '../models/siliconflow'
 
 export default class SiliconFlowSettingUtil extends BaseConfig implements ModelSettingUtil {
     async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
@@ -52,6 +52,10 @@ export default class SiliconFlowSettingUtil extends BaseConfig implements ModelS
     isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
         const siliconFlow = new SiliconFlow(settings)
         return siliconFlow.isSupportVision(settings.siliconCloudModel)
+    }
+
+    isCurrentModelSupportToolUse(settings: ModelSettings): boolean {
+        return modelMeta[settings.siliconCloudModel]?.functionCalling ?? false
     }
 
     isCurrentModelSupportWebBrowsing(settings: ModelSettings): boolean {

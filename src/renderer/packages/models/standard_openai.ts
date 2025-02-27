@@ -1,12 +1,20 @@
-import { Message } from 'src/shared/types'
+import { Message, MessageToolCalls } from 'src/shared/types'
 import { ApiError, ChatboxAIAPIError } from './errors'
-import Base, { onResultChange } from './base'
+import { onResultChange } from './base'
 import * as settingActions from '@/stores/settingActions'
-import { injectModelSystemPrompt, populateOpenAIMessageVision, populateOpenAIMessageText, OpenAIMessage, OpenAIMessageVision } from './openai'
-import { uniq } from 'lodash'
+import {
+    injectModelSystemPrompt,
+    populateOpenAIMessageVision,
+    populateOpenAIMessageText,
+    OpenAIMessage,
+    OpenAIMessageVision,
+} from './openai'
+import { last, uniq } from 'lodash'
 import { fixMessageRoleSequence } from './llm_utils'
+import { webSearchTool } from '../web-search'
+import OpenAIBase from './openai-base'
 
-export default class StandardOpenAI extends Base {
+export default abstract class StandardOpenAI extends OpenAIBase {
     public name = 'OpenAI Compatible'
 
     public secretKey = ''
@@ -23,13 +31,20 @@ export default class StandardOpenAI extends Base {
         super()
     }
 
+    protected get webSearchModel() {
+        return this.model
+    }
+
     async callChatCompletion(
         rawMessages: Message[],
         signal?: AbortSignal,
-        onResultChange?: onResultChange
+        onResultChange?: onResultChange,
+        options?: {
+            webBrowsing?: boolean
+        }
     ): Promise<string> {
         try {
-            return await this._callChatCompletion(rawMessages, signal, onResultChange)
+            return await this._callChatCompletion(rawMessages, signal, onResultChange, options)
         } catch (e) {
             // 如果当前模型不支持图片输入，抛出对应的错误
             if (
@@ -51,25 +66,54 @@ export default class StandardOpenAI extends Base {
     async _callChatCompletion(
         rawMessages: Message[],
         signal?: AbortSignal,
-        onResultChange?: onResultChange
-    ): Promise<string> {
+        onResultChange?: onResultChange,
+        options?: {
+            webBrowsing?: boolean
+        }
+    ): Promise<string> {        
         const model = this.model
         if (this.injectDefaultMetadata) {
             rawMessages = injectModelSystemPrompt(model, rawMessages)
         }
         let messages = await this.populateMessages(fixMessageRoleSequence(rawMessages), model)
-        return this.requestChatCompletionsStream(
-            {
-                messages,
-                model,
-                temperature: this.temperature,
-                top_p: this.topP,
-                stream: true,
-            },
+        const requestBody = {
+            messages,
+            model,
+            temperature: this.temperature,
+            top_p: this.topP,
+            stream: true,
+            tools: options?.webBrowsing ? [webSearchTool] : undefined,
+        }
+        const proceed = () => this.requestChatCompletionsStream(
+            requestBody,
             signal,
             onResultChange
         )
+        
+        if (!options?.webBrowsing || this.isSupportToolUse(model)){
+            return proceed()
+        }
+        
+        // model do not support tool use, construct query then provide results to model
+        requestBody.tools = undefined
+        const { query, searchResults } = await this.doSearch(messages, signal) ?? {}
+        if(!searchResults) {
+            return proceed()
+        }
+        onResultChange?.({ webBrowsing: {
+            query: query!.split(' '),
+            links: searchResults.map(it => {
+                return {
+                    title: it.title,
+                    url: it.link,
+                }
+            })
+        }})
+        requestBody.messages = this.constructInfoForSearchResult(messages, searchResults)
+        return proceed()
     }
+
+    
 
     async requestChatCompletionsStream(
         requestBody: Record<string, any>,
@@ -87,6 +131,7 @@ export default class StandardOpenAI extends Base {
         )
         let result = ''
         let reasoningContent: string | undefined = undefined
+        const finalToolCalls: MessageToolCalls = {}
         await this.handleSSE(response, (message) => {
             if (message === '[DONE]') {
                 return
@@ -95,11 +140,29 @@ export default class StandardOpenAI extends Base {
             if (data.error) {
                 throw new ApiError(`Error from ${this.name}: ${JSON.stringify(data)}`)
             }
+
+            // model decide to use tools
+            if (data.choices[0]?.delta?.tool_calls) {
+                const toolCalls = data.choices[0].delta.tool_calls || []
+                for (const toolCall of toolCalls) {
+                    const { index } = toolCall
+
+                    if (!finalToolCalls[index]) {
+                        finalToolCalls[index] = toolCall
+                    }
+
+                    finalToolCalls[index].function.arguments += toolCall.function.arguments
+                }
+                if (onResultChange) {
+                    onResultChange({ content: result, reasoningContent, toolCalls: finalToolCalls })
+                }
+            }
+
             const part = data.choices[0]?.delta?.content
             if (typeof part === 'string') {
                 result += part
                 if (onResultChange) {
-                    onResultChange({ content: result, reasoningContent })
+                    onResultChange({ content: result, reasoningContent, toolCalls: finalToolCalls })
                 }
             }
             // 支持 deepseek r1 的思考链
@@ -110,7 +173,7 @@ export default class StandardOpenAI extends Base {
                 }
                 reasoningContent += reasoningContentPart
                 if (onResultChange) {
-                    onResultChange({ content: result, reasoningContent })
+                    onResultChange({ content: result, reasoningContent, toolCalls: finalToolCalls })
                 }
             }
             // 处理一些本地部署或三方的 deepseek-r1 返回中的 <think>...</think> 思考链
@@ -124,7 +187,7 @@ export default class StandardOpenAI extends Base {
                 result = result.slice(index + 8)
             }
             if (onResultChange) {
-                onResultChange({ content: result, reasoningContent })
+                onResultChange({ content: result, reasoningContent, toolCalls: finalToolCalls })
             }
         })
         return result

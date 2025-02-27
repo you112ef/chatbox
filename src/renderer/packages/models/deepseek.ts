@@ -58,5 +58,9 @@ export default class DeepSeek extends StandardOpenAI {
     listLocalModels(): string[] {
         return deepSeekModels
     }
- 
+
+    isSupportToolUse(model: string): boolean {
+        return false
+    }
+
 }

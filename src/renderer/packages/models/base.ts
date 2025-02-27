@@ -1,4 +1,4 @@
-import { Message, MessageWebBrowsing } from 'src/shared/types'
+import { Message, MessageToolCalls, MessageWebBrowsing, ModelMeta } from 'src/shared/types'
 import {
     ApiError,
     NetworkError,
@@ -7,13 +7,17 @@ import {
     AIProviderNoImplementedChatError,
 } from './errors'
 import { createParser } from 'eventsource-parser'
-import _ from 'lodash'
+import _, { isEmpty } from 'lodash'
 import platform from '@/platform'
+import { webSearchExecutor } from '../web-search'
 
-export default class Base {
+export default abstract class Base {
     public name = 'Unknown'
+    public modelMeta: ModelMeta = {}
 
     constructor() { }
+
+    abstract isSupportToolUse(model: string): boolean
 
     async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
         throw new AIProviderNoImplementedPaintError(this.name)
@@ -41,6 +45,22 @@ export default class Base {
         return await this._chat(messages, onResultChangeWithCancel, options)
     }
 
+    protected async callTool(name: string, args: any, { abortSignal }: { abortSignal: AbortSignal }, onResultChange?: onResultChange) {
+        if (name === 'web_search') {
+            const result = await webSearchExecutor(args, { abortSignal })
+            onResultChange?.({ webBrowsing: {
+                query: args.query.split(' '),
+                links: result.searchResults.map(it => {
+                    return {
+                        title: it.title,
+                        url: it.link,
+                    }
+                })
+            }})
+            return result
+        }
+    }
+
     protected async _chat(
         messages: Message[],
         onResultChangeWithCancel?: onResultChangeWithCancel,
@@ -56,18 +76,48 @@ export default class Base {
             controller.abort()
         }
         let result = ''
+        let toolCalls: MessageToolCalls | undefined
         try {
             // 支持 onResultUpdated 回调
             let onResultChange: onResultChange | undefined = undefined
             if (onResultChangeWithCancel) {
                 onResultChangeWithCancel({ content: result, cancel }) // 这里先传递 cancel 方法
                 onResultChange = (data) => {
-                    result = data.content
+                    result = data.content ?? result
+                    toolCalls = data.toolCalls
                     onResultChangeWithCancel({ ...data, cancel })
                 }
             }
             // 调用各个模型提供商的底层接口方法
             result = await this.callChatCompletion(messages, controller.signal, onResultChange, options)
+
+            if (!isEmpty(toolCalls)) { 
+                messages.push({
+                    id: '',
+                    role: 'assistant',
+                    content: result,
+                    toolCalls,
+                })            
+                for (const toolCall of Object.values(toolCalls)) {
+                    const name = toolCall.function.name
+                    try {
+                        const args = JSON.parse(toolCall.function.arguments)
+                        const result = await this.callTool(name, args, { abortSignal: controller.signal }, onResultChange)
+                        messages.push({
+                            id: toolCall.id, // store tool_call_id in id field
+                            role: 'tool',                        
+                            content: result ? JSON.stringify(result) : '',
+                        })
+                    } catch (e) {
+                        if (e instanceof SyntaxError) {
+                            continue
+                        }
+                        throw e 
+                    }
+                }
+                // call llm with tool result
+                result = await this.callChatCompletion(messages, controller.signal, onResultChange, options)
+            }
         } catch (error) {
             /// 处理 fetch 被取消的情况
             // if a cancellation is performed
@@ -378,9 +428,10 @@ export default class Base {
 }
 
 export interface ResultChange {
-    content: string
+    content?: string
     webBrowsing?: MessageWebBrowsing
     reasoningContent?: string
+    toolCalls?: MessageToolCalls
 }
 
 export type onResultChangeWithCancel = (data: ResultChange & { cancel?: () => void }) => void

@@ -1,4 +1,9 @@
 const changelog = `
+
+### v1.10.0 - 2025.02.24
+
+1. Web browsing now supports any OpenAI-compatible model! This feature is ready to use without additional API configuration (desktop client only)
+
 ### v1.9.8 - 2025.02.06
 
 1. Fixed image recognition issues in o1

@@ -1,4 +1,4 @@
-import { Message } from 'src/shared/types'
+import { Message, ModelMeta } from 'src/shared/types'
 import Base, { onResultChange } from './base'
 import { ApiError } from './errors'
 import { get } from 'lodash'
@@ -11,10 +11,8 @@ import * as defaults from 'src/shared/defaults'
 // import Anthropic from '@anthropic-ai/sdk'
 // import { MessageParam } from '@anthropic-ai/sdk/resources'
 
-export type ClaudeModel = keyof typeof modelConfig
-
 // https://docs.anthropic.com/claude/docs/models-overview
-export const modelConfig = {
+export const modelConfig: ModelMeta = {
     'claude-3-5-sonnet-latest': {
         contextWindow: 200_000,
         maxOutput: 8192,
@@ -69,12 +67,12 @@ export const modelConfig = {
     },
 }
 
-export const claudeModels: ClaudeModel[] = Object.keys(modelConfig) as ClaudeModel[]
+export const claudeModels = Object.keys(modelConfig)
 
 interface Options {
     claudeApiKey: string
     claudeApiHost: string
-    claudeModel: ClaudeModel
+    claudeModel: string
 }
 
 export default class Claude extends Base {
@@ -102,7 +100,7 @@ export default class Claude extends Base {
                 prompt += msg.content + '\n'
             } else {
                 // 用户消息追加到 messages 中
-                const newMessage: ClaudeMessage = { role: msg.role, content: [] }
+                const newMessage: ClaudeMessage = { role: msg.role === 'tool' ? 'user' : msg.role, content: [] }
                 // 构造图片
                 for (const [i, pic] of Object.entries(msg.pictures || [])) {
                     if (!pic.storageKey) {

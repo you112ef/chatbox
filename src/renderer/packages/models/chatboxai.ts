@@ -34,6 +34,10 @@ export default class ChatboxAI extends Base {
         this.config = config
     }
 
+    isSupportToolUse(model: string): boolean {
+        return true
+    }
+    
     async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
         const res = await this.post(
             `${remote.API_ORIGIN}/api/ai/paint`,

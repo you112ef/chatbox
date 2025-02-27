@@ -60,4 +60,8 @@ export default class BaseConfig {
     isCurrentModelSupportWebBrowsing(settings: Settings): boolean {
         return false
     }
+
+    isCurrentModelSupportToolUse(settings: Settings) {
+        return false
+    }
 }

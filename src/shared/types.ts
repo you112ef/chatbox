@@ -1,7 +1,6 @@
 import pick from 'lodash/pick'
 import { v4 as uuidv4 } from 'uuid'
 import { OpenAIModel } from '../renderer/packages/models/openai'
-import { ClaudeModel } from '../renderer/packages/models/claude'
 import { GeminiModel } from '@/packages/models/gemini'
 import { GroqModel } from '@/packages/models/groq'
 
@@ -37,10 +36,22 @@ export interface MessageWebBrowsing {
     }[]
 }
 
+export type MessageToolCalls = { [key: string]: MessageToolCall }
+
+export type MessageToolCall = { 
+    index: string
+    id: string
+    function: { 
+        name: string
+        arguments: string                    
+    }
+}
+
 export const MessageRoleEnum = {
     System: 'system',
     User: 'user',
     Assistant: 'assistant',
+    Tool: 'tool',
 } as const
 
 export type MessageRole = (typeof MessageRoleEnum)[keyof typeof MessageRoleEnum]
@@ -67,6 +78,7 @@ export interface Message {
     webBrowsing?: MessageWebBrowsing
 
     reasoningContent?: string
+    toolCalls?: MessageToolCalls
 
     errorCode?: number
     error?: string
@@ -259,7 +271,7 @@ export interface ModelSettings {
     // claude
     claudeApiKey: string
     claudeApiHost: string
-    claudeModel: ClaudeModel
+    claudeModel: string
 
     // google gemini
     geminiAPIKey: string
@@ -305,6 +317,16 @@ export interface ModelSettings {
     openaiMaxContextMessageCount: number // 聊天消息上下文的消息数量限制。超过20表示不限制
     // maxContextSize: string 弃用，字段名永远不在使用，避免老版本报错
     // maxTokens: string 弃用，字段名永远不在使用，避免老版本报错
+}
+
+export type ModelMeta = {
+    [key: string]: {
+        contextWindow: number
+        maxOutput?: number
+        functionCalling?: boolean
+        vision?: boolean
+        reasoning?: boolean
+    }
 }
 
 export interface CustomProvider {

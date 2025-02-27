@@ -248,6 +248,10 @@ export default class Gemeni extends Base {
         return isSupportVision(model)
     }
 
+    isSupportToolUse(model: string): boolean {
+        return true
+    }
+
     async listModels(): Promise<string[]> {
         // https://ai.google.dev/api/models#method:-models.list
         type Response = {

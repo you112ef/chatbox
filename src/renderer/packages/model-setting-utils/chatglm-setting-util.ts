@@ -31,4 +31,8 @@ export default class ChatGLMSettingUtil extends BaseConfig implements ModelSetti
     isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
         return false
     }
+
+    isCurrentModelSupportToolUse(settings: ModelSettings): boolean {
+        return false
+    }
 }

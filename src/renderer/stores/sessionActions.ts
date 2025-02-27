@@ -35,12 +35,12 @@ import {
 import platform from '../platform'
 import * as dom from '@/hooks/dom'
 import * as remote from '@/packages/remote'
-import { throttle } from 'lodash'
+import { identity, pickBy, throttle } from 'lodash'
 import * as settingActions from './settingActions'
 import { formatChatAsHtml, formatChatAsMarkdown, formatChatAsTxt } from '@/lib/format-chat'
 import { countWord } from '@/packages/word-count'
 import { estimateTokensFromMessages } from '@/packages/token'
-import { getModelDisplayName, isModelSupportImageInput, isModelSupportWebBrowsing } from '@/packages/model-setting-utils'
+import { getModelDisplayName, isModelSupportImageInput, isModelSupportToolUse, isModelSupportWebBrowsing } from '@/packages/model-setting-utils'
 import { languageNameMap } from '@/i18n/locales'
 import { isTextFilePath } from 'src/shared/file-extensions'
 import * as localParser from '@/packages/local-parser'
@@ -582,7 +582,8 @@ export async function submitNewUserMessage(params: {
     links: { url: string }[]
     webBrowsing?: boolean
 }) {
-    const { currentSessionId, newUserMsg, needGenerating, attachments, links, webBrowsing } = params
+    const { currentSessionId, newUserMsg, needGenerating, attachments, links } = params
+    let { webBrowsing } = params
     // 如果存在附件，现在发送消息中构建空白的文件信息，用于占位，等待上传完成后再修改
     if (attachments && attachments.length > 0) {
         newUserMsg.files = attachments.map((f, ix) => ({
@@ -644,11 +645,13 @@ export async function submitNewUserMessage(params: {
             }
         }
 
+        console.log('sessionAction', settings)
         // 如果本次消息开启了联网问答，需要检查当前模型是否支持
         if (
             webBrowsing
             && !isModelSupportWebBrowsing(settings)
-        ) {
+            && platform.type !== 'desktop'
+        ) {          
             if (remoteConfig.setting_chatboxai_first) {
                 throw ChatboxAIAPIError.fromCodeName(
                     'model_not_support_web_browsing',
@@ -865,10 +868,7 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
                     }
                     targetMsg = {
                         ...targetMsg,
-                        content: updated.content,
-                        reasoningContent: updated.reasoningContent,
-                        cancel: updated.cancel,
-                        webBrowsing: updated.webBrowsing,
+                        ...pickBy(updated, identity),                        
                         status: updated.content ? [] : targetMsg.status,
                         firstTokenLatency,
                     }

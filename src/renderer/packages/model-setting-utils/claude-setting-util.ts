@@ -1,6 +1,6 @@
 import { ModelOptionGroup, ModelSettings, Session, SessionType, Settings } from 'src/shared/types'
 import { ModelSettingUtil } from './interface'
-import { ClaudeModel, claudeModels } from '../models/claude'
+import { claudeModels } from '../models/claude'
 import BaseConfig from './base-config'
 import Claude from '../models/claude'
 
@@ -44,11 +44,15 @@ export default class ClaudeSettingUtil extends BaseConfig implements ModelSettin
     selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {
         return {
             ...settings,
-            claudeModel: selected as ClaudeModel,
+            claudeModel: selected,
         }
     }
 
     isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
         return settings.claudeModel.startsWith('claude-3')
+    }
+
+    isCurrentModelSupportToolUse(settings: ModelSettings): boolean {
+        return true
     }
 }

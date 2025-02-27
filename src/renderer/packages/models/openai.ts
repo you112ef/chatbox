@@ -1,9 +1,12 @@
-import { Message } from 'src/shared/types'
+import { Message, MessageToolCalls } from 'src/shared/types'
 import { ApiError, ChatboxAIAPIError } from './errors'
-import Base, { onResultChange } from './base'
+import  { onResultChange } from './base'
 import storage from '@/storage'
 import * as settingActions from '@/stores/settingActions'
 import { normalizeOpenAIApiHostAndPath } from './llm_utils'
+import { webSearchTool } from '../web-search'
+import OpenAIBase from './openai-base'
+import { last } from 'lodash'
 
 interface Options {
     openaiKey: string
@@ -19,9 +22,9 @@ interface Options {
     openaiUseProxy: boolean
 }
 
-export default class OpenAI extends Base {
+export default class OpenAI extends OpenAIBase {
     public name = 'OpenAI'
-
+    
     public options: Options
     constructor(options: Options) {
         super()
@@ -30,14 +33,21 @@ export default class OpenAI extends Base {
         this.options.apiHost = apiHost
         this.options.apiPath = apiPath
     }
-
+    
+    protected get webSearchModel(): string {
+        return this.options.openaiCustomModel ?? this.options.model
+    }
+    
     async callChatCompletion(
         rawMessages: Message[],
         signal?: AbortSignal,
-        onResultChange?: onResultChange
+        onResultChange?: onResultChange,
+        options?: {
+            webBrowsing?: boolean
+        }
     ): Promise<string> {
         try {
-            return await this._callChatCompletion(rawMessages, signal, onResultChange)
+            return await this._callChatCompletion(rawMessages, signal, onResultChange, options)
         } catch (e) {
             // 如果当前模型不支持图片输入，抛出对应的错误
             if (
@@ -59,7 +69,10 @@ export default class OpenAI extends Base {
     async _callChatCompletion(
         rawMessages: Message[],
         signal?: AbortSignal,
-        onResultChange?: onResultChange
+        onResultChange?: onResultChange,
+        options?: {
+            webBrowsing?: boolean
+        }
     ): Promise<string> {
         const model = this.options.model === 'custom-model' ? this.options.openaiCustomModel || '' : this.options.model
         if (this.options.injectDefaultMetadata) {
@@ -70,22 +83,46 @@ export default class OpenAI extends Base {
             return this.requestChatCompletionsNotStream({ model, messages }, signal, onResultChange)
         }
         const messages = await populateGPTMessage(rawMessages, this.options.model)
-        return this.requestChatCompletionsStream(
-            {
-                messages,
-                model,
-                // vision 模型的默认 max_tokens 极低，基本很难回答完整，因此手动设置为模型最大值
-                max_tokens:
-                    this.options.model === 'gpt-4-vision-preview'
-                        ? openaiModelConfigs['gpt-4-vision-preview'].maxTokens
-                        : undefined,
-                temperature: this.options.temperature,
-                top_p: this.options.topP,
-                stream: true,
-            },
+        const requestBody = {
+            messages,
+            model,
+            // vision 模型的默认 max_tokens 极低，基本很难回答完整，因此手动设置为模型最大值
+            max_tokens:
+                this.options.model === 'gpt-4-vision-preview'
+                    ? openaiModelConfigs['gpt-4-vision-preview'].maxTokens
+                    : undefined,
+            temperature: this.options.temperature,
+            top_p: this.options.topP,
+            stream: true,
+            tools: options?.webBrowsing ? [webSearchTool]: undefined
+        }
+        const proceed = () => this.requestChatCompletionsStream(
+            requestBody,
             signal,
             onResultChange
         )
+
+        if (!options?.webBrowsing || this.isSupportToolUse(this.options.model)){
+            return proceed()
+        }
+        
+        // model do not support tool use, construct query then provide results to model
+        requestBody.tools = undefined
+        const { query, searchResults } = await this.doSearch(messages, signal) ?? {}
+        if(!searchResults) {
+            return proceed()
+        }
+        onResultChange?.({ webBrowsing: {
+            query: query!.split(' '),
+            links: searchResults.map(it => {
+                return {
+                    title: it.title,
+                    url: it.link,
+                }
+            })
+        }})
+        requestBody.messages = this.constructInfoForSearchResult(messages!, searchResults)
+        return proceed()
     }
 
     async requestChatCompletionsStream(
@@ -99,19 +136,38 @@ export default class OpenAI extends Base {
         })
         let result = ''
         let reasoningContent = ''
+        const finalToolCalls: MessageToolCalls = {}
         await this.handleSSE(response, (message) => {
-            if (message === '[DONE]') {
+            if (message === '[DONE]') {                
                 return
             }
            const data = JSON.parse(message)
             if (data.error) {
                 throw new ApiError(`Error from ${this.name}: ${JSON.stringify(data)}`)
             }
+
+            // model decide to use tools
+            if (data.choices[0]?.delta?.tool_calls) {
+                const toolCalls = data.choices[0].delta.tool_calls || []
+                for (const toolCall of toolCalls) {
+                    const { index } = toolCall
+
+                    if (!finalToolCalls[index]) {
+                        finalToolCalls[index] = toolCall
+                    }
+
+                    finalToolCalls[index].function.arguments += toolCall.function.arguments
+                }
+                if (onResultChange) {
+                    onResultChange({ content: result, reasoningContent, toolCalls: finalToolCalls })
+                }
+            }
+
             const part = data.choices[0]?.delta?.content
             if (typeof part === 'string') {
                 result += part
                 if (onResultChange) {
-                    onResultChange({ content: result, reasoningContent })
+                    onResultChange({ content: result, reasoningContent, toolCalls: finalToolCalls  })
                 }
             }
             // 支持 deepseek r1 的思考链
@@ -122,7 +178,7 @@ export default class OpenAI extends Base {
                 }
                 reasoningContent += reasoningContentPart
                 if (onResultChange) {
-                    onResultChange({ content: result, reasoningContent })
+                    onResultChange({ content: result, reasoningContent, toolCalls: finalToolCalls  })
                 }
             }
             // 处理一些本地部署或三方的 deepseek-r1 返回中的 <think>...</think> 思考链
@@ -136,7 +192,7 @@ export default class OpenAI extends Base {
                 result = result.slice(index + 8)
             }
             if (onResultChange) {
-                onResultChange({ content: result, reasoningContent })
+                onResultChange({ content: result, reasoningContent, toolCalls: finalToolCalls  })
             }
         })
         return result
@@ -193,6 +249,10 @@ export default class OpenAI extends Base {
 
     static isSupportVision(model: OpenAIModel | 'custom-model' | string): boolean {
         return isSupportVision(model)
+    }
+
+    isSupportToolUse (model: string) {
+        return this.options.model !== 'custom-model'
     }
 }
 
@@ -399,8 +459,11 @@ export async function populateOSeriesMessage(rawMessages: Message[], model: stri
 
 export async function populateOpenAIMessageText(rawMessages: Message[]): Promise<OpenAIMessage[]> {
     const messages: OpenAIMessage[] = rawMessages.map((m) => ({
+        id: m.id,
+        tool_call_id: m.role === 'tool' ? m.id : undefined,
         role: m.role,
         content: m.content,
+        tool_calls: m.toolCalls && Object.values(m.toolCalls)
     }))
     return messages
 }
@@ -452,15 +515,17 @@ Current date: ${new Date().toISOString()}
 
 // OpenAIMessage OpenAI API 消息类型。（对于业务追加的字段，应该放到 Message 中）
 export interface OpenAIMessage {
-    role: 'system' | 'user' | 'assistant'
+    id: string
+    role: 'system' | 'user' | 'assistant' | 'tool'
     content: string
     name?: string
 }
 
 // vision 版本的 OpenAI 消息类型
 export interface OpenAIMessageVision {
-    role: 'system' | 'user' | 'assistant'
-    content: (
+    id: string
+    role: 'system' | 'user' | 'assistant' | 'tool'
+    content: string | (
         | {
               type: 'text'
               text: string

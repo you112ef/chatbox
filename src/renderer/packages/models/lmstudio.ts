@@ -8,6 +8,7 @@ interface Options {
 }
 
 export default class LMStudio extends StandardOpenAI {
+
     public name = 'LM Studio'
 
     public options: Options
@@ -39,4 +40,7 @@ export default class LMStudio extends StandardOpenAI {
         return model.includes('vision') || model.includes('llava')
     }
 
+    isSupportToolUse(model: string): boolean {
+        return false
+    }
 }

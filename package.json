@@ -157,6 +157,7 @@
         "@dnd-kit/utilities": "^3.2.1",
         "@emotion/react": "^11.10.6",
         "@emotion/styled": "^11.10.6",
+        "@epic-web/cachified": "^5.5.1",
         "@mozilla/readability": "^0.5.0",
         "@mui/icons-material": "^5.11.11",
         "@mui/material": "^5.11.11",
