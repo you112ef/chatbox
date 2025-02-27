@@ -6,7 +6,7 @@ import * as settingActions from '@/stores/settingActions'
 import { normalizeOpenAIApiHostAndPath } from './llm_utils'
 import { webSearchTool } from '../web-search'
 import OpenAIBase from './openai-base'
-import { last } from 'lodash'
+import { isEmpty, last } from 'lodash'
 
 interface Options {
     openaiKey: string
@@ -94,7 +94,7 @@ export default class OpenAI extends OpenAIBase {
             temperature: this.options.temperature,
             top_p: this.options.topP,
             stream: true,
-            tools: options?.webBrowsing ? [webSearchTool]: undefined
+            tools: options?.webBrowsing ? [webSearchTool] : undefined
         }
         const proceed = () => this.requestChatCompletionsStream(
             requestBody,
@@ -463,7 +463,7 @@ export async function populateOpenAIMessageText(rawMessages: Message[]): Promise
         tool_call_id: m.role === 'tool' ? m.id : undefined,
         role: m.role,
         content: m.content,
-        tool_calls: m.toolCalls && Object.values(m.toolCalls)
+        tool_calls: isEmpty(m.toolCalls) ? undefined : Object.values(m.toolCalls)
     }))
     return messages
 }

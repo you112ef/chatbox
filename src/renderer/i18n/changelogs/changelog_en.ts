@@ -1,4 +1,7 @@
 const changelog = `
+### v1.10.1 - 2025.02.28
+
+1. Fix an issue with web browsing
 
 ### v1.10.0 - 2025.02.24
 
