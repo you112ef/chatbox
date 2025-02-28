@@ -1,6 +1,6 @@
 import { Message, MessageToolCalls } from 'src/shared/types'
 import { ApiError, ChatboxAIAPIError } from './errors'
-import { onResultChange } from './base'
+import Base, { onResultChange } from './base'
 import * as settingActions from '@/stores/settingActions'
 import {
     injectModelSystemPrompt,
@@ -12,9 +12,7 @@ import {
 import { last, uniq } from 'lodash'
 import { fixMessageRoleSequence } from './llm_utils'
 import { webSearchTool } from '../web-search'
-import OpenAIBase from './openai-base'
-
-export default abstract class StandardOpenAI extends OpenAIBase {
+export default abstract class StandardOpenAI extends Base {
     public name = 'OpenAI Compatible'
 
     public secretKey = ''
@@ -90,26 +88,11 @@ export default abstract class StandardOpenAI extends OpenAIBase {
             onResultChange
         )
         
-        if (!options?.webBrowsing || this.isSupportToolUse(model)){
+        if (!options?.webBrowsing || this.isSupportToolUse()){
             return proceed()
         }
-        
-        // model do not support tool use, construct query then provide results to model
+        // 正常不应该走到这里，在base里会进入通用搜索
         requestBody.tools = undefined
-        const { query, searchResults } = await this.doSearch(messages, signal) ?? {}
-        if(!searchResults) {
-            return proceed()
-        }
-        onResultChange?.({ webBrowsing: {
-            query: query!.split(' '),
-            links: searchResults.map(it => {
-                return {
-                    title: it.title,
-                    url: it.link,
-                }
-            })
-        }})
-        requestBody.messages = this.constructInfoForSearchResult(messages, searchResults)
         return proceed()
     }
 

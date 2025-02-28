@@ -34,7 +34,7 @@ export default class ChatboxAI extends Base {
         this.config = config
     }
 
-    isSupportToolUse(model: string): boolean {
+    isSupportToolUse(): boolean {
         return true
     }
     

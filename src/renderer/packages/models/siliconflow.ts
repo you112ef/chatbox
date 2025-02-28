@@ -34,8 +34,8 @@ export default class SiliconFlow extends OpenAILike {
         return true // 有些支持，有些不支持。不支持的会报错。
     }
 
-    isSupportToolUse(model: string): boolean {
-        return modelMeta[model]?.functionCalling ?? false
+    isSupportToolUse(): boolean {
+        return modelMeta[this.options.siliconCloudModel]?.functionCalling ?? false
     }
 
     get webSearchModel() {

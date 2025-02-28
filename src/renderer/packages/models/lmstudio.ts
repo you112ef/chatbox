@@ -40,7 +40,7 @@ export default class LMStudio extends StandardOpenAI {
         return model.includes('vision') || model.includes('llava')
     }
 
-    isSupportToolUse(model: string): boolean {
+    isSupportToolUse(): boolean {
         return false
     }
 }

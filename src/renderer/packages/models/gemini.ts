@@ -248,7 +248,7 @@ export default class Gemeni extends Base {
         return isSupportVision(model)
     }
 
-    isSupportToolUse(model: string): boolean {
+    isSupportToolUse(): boolean {
         return true
     }
 

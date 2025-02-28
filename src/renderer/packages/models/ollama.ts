@@ -118,7 +118,7 @@ export default class Ollama extends Base {
         return json['models'].map((m: any) => m['name'])
     }
 
-    isSupportToolUse(model: string): boolean {
+    isSupportToolUse(): boolean {
         return false
     }
 }

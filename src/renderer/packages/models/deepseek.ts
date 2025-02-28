@@ -59,8 +59,11 @@ export default class DeepSeek extends StandardOpenAI {
         return deepSeekModels
     }
 
-    isSupportToolUse(model: string): boolean {
+    isSupportToolUse(): boolean {
         return false
     }
 
+    protected get webSearchModel(): string {
+        return 'deepseek-chat'
+    }
 }

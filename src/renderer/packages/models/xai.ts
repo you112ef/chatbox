@@ -38,7 +38,7 @@ export default class XAI extends StandardOpenAI {
         return [] // 暂时无法得知是否提供接口
     }
 
-    isSupportToolUse(model: string): boolean {
+    isSupportToolUse(): boolean {
         return false
     }
 }
