@@ -1,4 +1,8 @@
 const changelog = `
+### v1.10.2 - 2025.02.28
+
+1. Support web browsing for all provider
+
 ### v1.10.1 - 2025.02.28
 
 1. Fix an issue with web browsing
