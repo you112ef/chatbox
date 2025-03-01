@@ -10,8 +10,8 @@ export class BingSearch extends WebSearch {
 
   private async fetchSerp(query: string, signal?: AbortSignal) {
     const html = await ofetch('https://www.bing.com/search', {
-      method: 'POST',
-      body: new URLSearchParams({ q: query }),
+      method: 'GET',
+      query: { q: query },
       signal,
     })
     return html as string

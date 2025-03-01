@@ -1,5 +1,5 @@
 const changelog = `
-### v1.10.3 - 2025.03.1
+### v1.10.4 - 2025.03.01
 
 1. Update web browsing search engine
 
