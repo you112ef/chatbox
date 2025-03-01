@@ -2,11 +2,11 @@ import { cachified } from '@epic-web/cachified'
 import { truncate } from 'lodash'
 import type { SearchResultItem } from './base'
 import { BingNewsSearch } from './bing-news'
-import { DuckDuckGoSearch } from './duckduckgo'
+import { BingSearch } from './bing'
 
 const MAX_CONTEXT_ITEMS = 10
 
-const providers = [new DuckDuckGoSearch(), new BingNewsSearch()]
+const providers = [new BingSearch(), new BingNewsSearch()]
 
 async function _searchRelatedResults(query: string, signal?: AbortSignal) {
   const results = await Promise.all(

@@ -76,6 +76,9 @@ interface Options {
 }
 
 export default class Claude extends Base {
+    isSupportToolUse(): boolean {
+        return true
+    }
     public name = 'Claude'
 
     public options: Options

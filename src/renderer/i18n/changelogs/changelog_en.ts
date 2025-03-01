@@ -1,4 +1,8 @@
 const changelog = `
+### v1.10.3 - 2025.03.1
+
+1. Update web browsing search engine
+
 ### v1.10.2 - 2025.02.28
 
 1. Support web browsing for all provider
