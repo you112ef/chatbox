@@ -5,7 +5,7 @@
     "description": "A desktop client for multiple cutting-edge AI models",
     "author": {
         "name": "Benn Huang",
-        "email": "hi@benn.app",
+        "email": "hi@chatboxai.com",
         "url": "https://github.com/Bin-Huang"
     },
     "main": "./dist/main/main.js",

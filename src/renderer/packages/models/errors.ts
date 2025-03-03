@@ -117,26 +117,30 @@ export class ChatboxAIAPIError extends BaseError {
             i18nKey: 'The file size exceeds the limit of 50MB. Please reduce the file size and try again.',
         },
         // 当前模型不支持发送文件。目前支持的模型有 Chatbox AI 4
-        'model_not_support_file': {
+        model_not_support_file: {
             name: 'model_not_support_file',
             code: 20011,
-            i18nKey: "The {{model}} API doesn't support document understanding. You can use <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> for cloud-based document analysis, or download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis."
+            i18nKey:
+                "The {{model}} API doesn't support document understanding. You can use <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> for cloud-based document analysis, or download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.",
         },
-        'model_not_support_file_2': {
+        model_not_support_file_2: {
             name: 'model_not_support_file_2',
             code: 20012,
-            i18nKey: "The {{model}} API doesn't support document understanding. You can download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis."
+            i18nKey:
+                "The {{model}} API doesn't support document understanding. You can download <LinkToHomePage>Chatbox Desktop App</LinkToHomePage> for local document analysis.",
         },
         // 当前模型不支持发送图片，推荐模型：Chatbox AI 4
         model_not_support_image: {
             name: 'model_not_support_image',
             code: 20013,
-            i18nKey: 'Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model or use the recommended <OpenMorePlanButton>Chatbox AI Models</OpenMorePlanButton>.',
+            i18nKey:
+                'Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model or use the recommended <OpenMorePlanButton>Chatbox AI Models</OpenMorePlanButton>.',
         },
         model_not_support_image_2: {
             name: 'model_not_support_image_2',
             code: 20014,
-            i18nKey: 'Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.',
+            i18nKey:
+                'Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.',
         },
         // 当前模型不支持发送链接
         // 'model_not_support_link': {
@@ -165,13 +169,13 @@ export class ChatboxAIAPIError extends BaseError {
             name: 'system_error',
             code: 20019,
             i18nKey:
-                'An error occurred while processing your request. Please try again later. If this error continues, please send an email to hi@benn.app for support.',
+                'An error occurred while processing your request. Please try again later. If this error continues, please send an email to hi@chatboxai.com for support.',
         },
         unknown: {
             name: 'unknown',
             code: 20020,
             i18nKey:
-                'An unknown error occurred. Please try again later. If this error continues, please send an email to hi@benn.app for support.',
+                'An unknown error occurred. Please try again later. If this error continues, please send an email to hi@chatboxai.com for support.',
         },
         model_not_support_web_browsing: {
             name: 'model_not_support_web_browsing',
