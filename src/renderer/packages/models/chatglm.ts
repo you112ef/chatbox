@@ -77,4 +77,8 @@ export default class ChatGLM extends Base {
         }
         return str
     }
+
+    isSupportToolUse(): boolean {
+        return false
+    }
 }

@@ -132,4 +132,8 @@ export default class AzureOpenAI extends Base {
         const list = ['gpt-4-vision-preview', 'gpt-4o', 'gpt-4o-mini']
         return list.includes(model) || list.includes(model.toLowerCase())
     }
+
+    isSupportToolUse(): boolean {
+        return false
+    }
 }

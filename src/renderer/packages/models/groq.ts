@@ -58,13 +58,17 @@ interface Options {
     temperature: number
 }
 
-export default class Groq extends Base {
+export default class Groq extends Base {    
     public name = 'Groq'
 
     public options: Options
     constructor(options: Options) {
         super()
         this.options = options
+    }
+    
+    isSupportToolUse(): boolean {
+        return false
     }
 
     async callChatCompletion(
