@@ -21,7 +21,6 @@ export function migrate() {
 
 async function _migrate() {
     let configVersion = await storage.getItem(StorageKey.ConfigVersion, 0)
-    alert('configVersion: ' + configVersion)
     if (configVersion < 1) {
         await migrate_0_to_1()
         configVersion = 1
