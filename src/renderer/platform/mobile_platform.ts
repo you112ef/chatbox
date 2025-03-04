@@ -130,12 +130,12 @@ class SQLiteStorage {
     }
 }
 
-const sqliteStorage = new SQLiteStorage()
-
 export default class MobilePlatform implements Platform {
     public type: PlatformType = 'mobile'
 
     public exporter = new MobileExporter()
+
+    private sqliteStorage = new SQLiteStorage()
 
     constructor() {}
 
@@ -195,17 +195,17 @@ export default class MobilePlatform implements Platform {
     }
 
     public async setStoreValue(key: string, value: any) {
-        await sqliteStorage.setItem(key, JSON.stringify(value))
+        await this.sqliteStorage.setItem(key, JSON.stringify(value))
     }
     public async getStoreValue(key: string) {
-        const json = await sqliteStorage.getItem(key)
+        const json = await this.sqliteStorage.getItem(key)
         return json ? JSON.parse(json) : null
     }
     public async delStoreValue(key: string) {
-        await sqliteStorage.removeItem(key)
+        await this.sqliteStorage.removeItem(key)
     }
     public async getAllStoreValues(): Promise<{ [key: string]: any }> {
-        return await sqliteStorage.getAllItems()
+        return await this.sqliteStorage.getAllItems()
     }
     public async setAllStoreValues(data: { [key: string]: any }): Promise<void> {
         for (const [key, value] of Object.entries(data)) {
