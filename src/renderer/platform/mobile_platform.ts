@@ -1,7 +1,6 @@
 import { Config, Settings, ShortcutSetting } from 'src/shared/types'
 import * as defaults from 'src/shared/defaults'
 import { Platform, PlatformType } from './interfaces'
-import store from 'store'
 import { getOS, getBrowser } from '../packages/navigator'
 import { parseLocale } from '@/i18n/parser'
 import localforage from 'localforage'
@@ -10,6 +9,114 @@ import { parseTextFileLocally } from './web_platform_utils'
 import { v4 as uuidv4 } from 'uuid'
 import { sliceTextByTokenLimit } from '@/packages/token'
 import { CHATBOX_BUILD_PLATFORM } from '@/variables'
+import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@capacitor-community/sqlite'
+
+class SQLiteStorage {
+    private sqlite: SQLiteConnection
+    private database!: SQLiteDBConnection
+
+    constructor() {
+        this.sqlite = new SQLiteConnection(CapacitorSQLite)
+    }
+
+    // 创建并打开数据库
+    async initialize(): Promise<void> {
+        try {
+            this.database = await this.sqlite.createConnection('chatbox.db', false, 'no-encryption', 1, false)
+
+            // 创建表
+            const createTable = `
+          CREATE TABLE IF NOT EXISTS key_value (
+            key TEXT PRIMARY KEY NOT NULL,
+            value TEXT
+          );
+        `
+            await this.database.open()
+            await this.database.execute(createTable)
+            console.log('Table key_value is ready')
+        } catch (error) {
+            console.error('Failed to initialize database', error)
+            throw error
+        }
+    }
+
+    // 插入或更新数据
+    async setItem(key: string, value: string): Promise<void> {
+        try {
+            const query = `
+          INSERT OR REPLACE INTO key_value (key, value)
+          VALUES (?, ?);
+        `
+            await this.database.run(query, [key, value])
+            console.log(`Set key=${key}, value=${value}`)
+        } catch (error) {
+            console.error('Failed to set value', error)
+            throw error
+        }
+    }
+
+    // 获取值
+    async getItem(key: string): Promise<string | null> {
+        try {
+            const query = `
+          SELECT value FROM key_value
+          WHERE key = ?;
+        `
+            const result = await this.database.query(query, [key])
+            return result.values?.[0]?.value || null
+        } catch (error) {
+            console.error('Failed to get value', error)
+            throw error
+        }
+    }
+
+    // 删除值
+    async removeItem(key: string): Promise<void> {
+        try {
+            const query = `
+          DELETE FROM key_value
+          WHERE key = ?;
+        `
+            await this.database.run(query, [key])
+            console.log(`Deleted key=${key}`)
+        } catch (error) {
+            console.error('Failed to delete value', error)
+            throw error
+        }
+    }
+
+    // 获取所有键值对
+    async getAllItems(): Promise<{ [key: string]: any }> {
+        try {
+            const query = `
+            SELECT * FROM key_value;
+          `
+            const result = await this.database.query(query)
+            // 将结果转换为 { [key: string]: value } 格式
+            const keyValueObject: { [key: string]: any } = {}
+            if (result.values && result.values.length > 0) {
+                result.values.forEach((row) => {
+                    keyValueObject[row.key] = row.value
+                })
+            }
+            return keyValueObject
+        } catch (error) {
+            console.error('Failed to get all values', error)
+            throw error
+        }
+    }
+
+    // 关闭数据库
+    async closeDatabase(): Promise<void> {
+        if (this.database) {
+            await this.database.close()
+            console.log('Database closed')
+        }
+    }
+}
+
+const sqliteStorage = new SQLiteStorage()
+sqliteStorage.initialize()
 
 export default class MobilePlatform implements Platform {
     public type: PlatformType = 'mobile'
@@ -57,41 +164,38 @@ export default class MobilePlatform implements Platform {
     }
 
     public async getConfig(): Promise<Config> {
-        let value = store.get('configs')
+        let value = await this.getStoreValue('configs')
         if (value === undefined || value === null) {
             value = defaults.newConfigs()
-            store.set('configs', value)
+            this.setStoreValue('configs', value)
         }
         return value
     }
     public async getSettings(): Promise<Settings> {
-        let value = store.get('settings')
+        let value = await this.getStoreValue('settings')
         if (value === undefined || value === null) {
             value = defaults.settings()
-            store.set('settings', value)
+            this.setStoreValue('settings', value)
         }
         return value
     }
 
     public async setStoreValue(key: string, value: any) {
-        return store.set(key, value)
+        await sqliteStorage.setItem(key, JSON.stringify(value))
     }
     public async getStoreValue(key: string) {
-        return store.get(key)
+        const json = await sqliteStorage.getItem(key)
+        return json ? JSON.parse(json) : null
     }
     public async delStoreValue(key: string) {
-        return store.remove(key)
+        await sqliteStorage.removeItem(key)
     }
     public async getAllStoreValues(): Promise<{ [key: string]: any }> {
-        const ret: { [key: string]: any } = {}
-        store.each((value, key) => {
-            ret[key] = value
-        })
-        return ret
+        return await sqliteStorage.getAllItems()
     }
     public async setAllStoreValues(data: { [key: string]: any }): Promise<void> {
         for (const [key, value] of Object.entries(data)) {
-            store.set(key, value)
+            await this.setStoreValue(key, value)
         }
     }
 
@@ -144,7 +248,10 @@ export default class MobilePlatform implements Platform {
         return
     }
 
-    async parseFileLocally(file: File, options?: { tokenLimit?: number }): Promise<{ key?: string, isSupported: boolean }> {
+    async parseFileLocally(
+        file: File,
+        options?: { tokenLimit?: number }
+    ): Promise<{ key?: string; isSupported: boolean }> {
         const result = await parseTextFileLocally(file)
         if (!result.isSupported) {
             return { isSupported: false }

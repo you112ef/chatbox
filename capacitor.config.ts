@@ -11,7 +11,7 @@ const config: CapacitorConfig = {
 
         // 从 capacitor5 升级到 6 之后，androidScheme 默认为 https。这会导致历史数据无法访问（因为 domain 发生了改变），因此需要手动设置回 http。
         // https://capacitorjs.com/docs/updating/6-0#update-androidscheme
-        androidScheme: "http"
+        androidScheme: 'http',
     },
     ios: {
         scheme: 'Chatbox AI',
@@ -24,6 +24,27 @@ const config: CapacitorConfig = {
     //         enabled: true,
     //     },
     // },
+    plugins: {
+        CapacitorSQLite: {
+            iosDatabaseLocation: 'Library/CapacitorDatabase',
+            iosIsEncryption: true,
+            iosKeychainPrefix: 'angular-sqlite-app-starter',
+            iosBiometric: {
+                biometricAuth: false,
+                biometricTitle: 'Biometric login for capacitor sqlite',
+            },
+            androidIsEncryption: true,
+            androidBiometric: {
+                biometricAuth: false,
+                biometricTitle: 'Biometric login for capacitor sqlite',
+                biometricSubTitle: 'Log in using your biometric',
+            },
+            electronIsEncryption: true,
+            electronWindowsLocation: 'C:\\ProgramData\\CapacitorDatabases',
+            electronMacLocation: '/Volumes/Development_Lacie/Development/Databases',
+            electronLinuxLocation: 'Databases',
+        },
+    },
 }
 
 export default config
