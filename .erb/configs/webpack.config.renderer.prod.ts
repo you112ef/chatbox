@@ -19,7 +19,7 @@ import JavaScriptObfuscator from 'webpack-obfuscator'
 checkNodeEnv('production')
 
 let enableSourceMap = false // 正式发布永远不能开启 sourceMap，否则代码会被轻易反编译。这个设置仅用于本地测试。
-if (! enableSourceMap) {
+if (!enableSourceMap) {
     deleteSourceMaps()
 }
 
@@ -154,8 +154,9 @@ const configuration: webpack.Configuration = {
 
             numbersToExpressions: true,
             // 保护前端代码不被偷到其他地方部署
-            domainLock: ['localhost', ".chatboxai.app", ".chatboxai.com", ".chatboxapp.xyz", "chatbox-pro.pages.dev"],
-            domainLockRedirectUrl: 'https://chatboxai.app',
+            // 迁移过程中，暂时关闭保护
+            // domainLock: ['localhost', ".chatboxai.app", ".chatboxai.com", ".chatboxapp.xyz", "chatbox-pro.pages.dev"],
+            // domainLockRedirectUrl: 'https://chatboxai.app',
             sourceMap: enableSourceMap,
         }),
     ],

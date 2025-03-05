@@ -8,7 +8,7 @@ switch (CHATBOX_BUILD_TARGET) {
         break
     case 'unknown':
         if (platform.type === 'web') {
-            protect()
+            // protect() // 迁移过程中，暂时关闭保护
         }
         break
 }
