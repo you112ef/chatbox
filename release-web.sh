@@ -5,7 +5,7 @@ npm install
 rm -rf release/app/dist/renderer
 npm run build:renderer
 
-_imageName="iftech-registry.cn-hangzhou.cr.aliyuncs.com/iftech/chatbox-webapp"
+_imageName="registry.jellow.site/iftech/chatbox-webapp"
 _version=`git rev-parse --short HEAD`
 _imageTag="$_imageName:$_version"
 
