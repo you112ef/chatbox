@@ -205,7 +205,11 @@ export default class MobilePlatform implements Platform {
         await this.sqliteStorage.removeItem(key)
     }
     public async getAllStoreValues(): Promise<{ [key: string]: any }> {
-        return await this.sqliteStorage.getAllItems()
+        const items = await this.sqliteStorage.getAllItems()
+        for (const key in items) {
+            items[key] = items[key] && typeof items[key] === 'string' ? JSON.parse(items[key]) : items[key]
+        }
+        return items
     }
     public async setAllStoreValues(data: { [key: string]: any }): Promise<void> {
         for (const [key, value] of Object.entries(data)) {
