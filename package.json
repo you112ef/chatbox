@@ -144,6 +144,7 @@
     },
     "dependencies": {
         "@braintree/sanitize-url": "^6.0.4",
+        "@capacitor-community/sqlite": "^6.0.2",
         "@capacitor/android": "^6.1.1",
         "@capacitor/core": "^6.1.1",
         "@capacitor/filesystem": "^6.0.0",

@@ -54,6 +54,14 @@ async function _migrate() {
         configVersion = 6
         await storage.setItemNow(StorageKey.ConfigVersion, configVersion)
     }
+    if (configVersion < 7) {
+        const needRelaunch = await migrate_6_to_7()
+        configVersion = 7
+        await storage.setItemNow(StorageKey.ConfigVersion, configVersion)
+        if (needRelaunch) {
+            await platform.relaunch()
+        }
+    }
 }
 
 async function migrate_0_to_1() {
@@ -134,4 +142,23 @@ async function migrate_5_to_6() {
         return
     }
     getDefaultStore().set(sessionsAtom, (sessions) => [...sessions, targetSession])
+}
+
+async function migrate_6_to_7(): Promise<boolean> {
+    if (platform.type !== 'mobile') {
+        return false
+    }
+    // 针对mobile端，从 store 迁移至 sqllite
+    // 解决容量不够用的问题
+    const keys: string[] = []
+    oldStore.each((value, key) => {
+        keys.push(key)
+    })
+    if (keys.length === 0) {
+        return false
+    }
+    for (const key of keys) {
+        await storage.setItemNow(key, oldStore.get(key))
+    }
+    return true
 }

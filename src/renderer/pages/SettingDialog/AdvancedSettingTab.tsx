@@ -151,13 +151,13 @@ function ExportAndImport(props: { onCancel: () => void }) {
     const onExport = async () => {
         const data = await storage.getAll()
         delete data[StorageKey.Configs] // 不导出 uuid
-            ; (data[StorageKey.Settings] as Settings).licenseDetail = undefined // 不导出license认证数据
-            ; (data[StorageKey.Settings] as Settings).licenseInstances = undefined // 不导出license设备数据，导入数据的新设备也应该计入设备数
+        ;(data[StorageKey.Settings] as Settings).licenseDetail = undefined // 不导出license认证数据
+        ;(data[StorageKey.Settings] as Settings).licenseInstances = undefined // 不导出license设备数据，导入数据的新设备也应该计入设备数
         if (!exportItems.includes(ExportDataItem.Key)) {
             delete (data[StorageKey.Settings] as Settings).licenseKey
-                ; (data[StorageKey.Settings] as Settings).openaiKey = ''
-                ; (data[StorageKey.Settings] as Settings).azureApikey = ''
-                ; (data[StorageKey.Settings] as Settings).claudeApiKey = ''
+            ;(data[StorageKey.Settings] as Settings).openaiKey = ''
+            ;(data[StorageKey.Settings] as Settings).azureApikey = ''
+            ;(data[StorageKey.Settings] as Settings).claudeApiKey = ''
         }
         if (!exportItems.includes(ExportDataItem.Setting)) {
             delete data[StorageKey.Settings]
@@ -182,7 +182,7 @@ function ExportAndImport(props: { onCancel: () => void }) {
         }
         const reader = new FileReader()
         reader.onload = (event) => {
-            ; (async () => {
+            ;(async () => {
                 setImportTips('')
                 try {
                     let result = event.target?.result
@@ -190,10 +190,12 @@ function ExportAndImport(props: { onCancel: () => void }) {
                         throw new Error('FileReader result is not string')
                     }
                     const importData = JSON.parse(result)
+                    // 如果导入数据中包含了老的版本号，会导致重复执行migration，所以这里删除
+                    delete importData.configVersion
                     const previousData = await storage.getAll()
                     // FIXME: 这里缺少了数据校验
                     await storage.setAll({
-                        ...previousData,    // 有时候 importData 在导出时没有包含一些数据，这些数据应该保持原样
+                        ...previousData, // 有时候 importData 在导出时没有包含一些数据，这些数据应该保持原样
                         ...importData,
                     })
                     props.onCancel() // 导出成功后立即关闭设置窗口，防止用户点击保存、导致设置数据被覆盖
