@@ -1,15 +1,14 @@
-import { Button, Alert, TextField, Typography, Box } from '@mui/material'
-import { ModelSettings } from '../../../shared/types'
+import { Stack, TextField, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import * as defaults from '../../../shared/defaults'
-import { Accordion, AccordionSummary, AccordionDetails } from '../../components/Accordion'
+import { ModelSettings } from '../../../shared/types'
+import { Accordion, AccordionDetails, AccordionSummary } from '../../components/Accordion'
+import PasswordTextField from '../../components/PasswordTextField'
 import TemperatureSlider from '../../components/TemperatureSlider'
 import TopPSlider from '../../components/TopPSlider'
-import PasswordTextField from '../../components/PasswordTextField'
 // import TokenConfig from './TokenConfig'
-import { useIsSmallScreen } from '@/hooks/useScreenChange'
-import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
 import CreatableSelect from '@/components/CreatableSelect'
+import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -21,7 +20,7 @@ export default function AzureSetting(props: ModelConfigProps) {
     const { t } = useTranslation()
     const isSmallScreen = useIsSmallScreen()
     return (
-        <Box>
+        <Stack spacing={2}>
             <TextField
                 placeholder="https://<resource_name>.openai.azure.com/"
                 autoFocus={!isSmallScreen}
@@ -52,7 +51,6 @@ export default function AzureSetting(props: ModelConfigProps) {
                 onChangeValue={(v) => setSettingsEdit({ ...settingsEdit, azureDeploymentName: v })}
                 onUpdateOptions={(v) => setSettingsEdit({ ...settingsEdit, azureDeploymentNameOptions: v })}
             />
-
             <TextField
                 margin="dense"
                 label={t('Azure Dall-E Deployment Name')}
@@ -69,9 +67,7 @@ export default function AzureSetting(props: ModelConfigProps) {
             />
             <Accordion>
                 <AccordionSummary aria-controls="panel1a-content">
-                    <Typography>
-                        {t('model')} & {t('token')}{' '}
-                    </Typography>
+                    <Typography>{t('Advanced')}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <MaxContextMessageCountSlider
@@ -88,6 +84,6 @@ export default function AzureSetting(props: ModelConfigProps) {
                     />
                 </AccordionDetails>
             </Accordion>
-        </Box>
+        </Stack>
     )
 }

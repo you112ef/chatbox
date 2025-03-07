@@ -1,4 +1,5 @@
-import { Box, Link, Alert } from '@mui/material'
+import { Box, Link, Alert, Typography, Stack } from '@mui/material'
+import { Accordion, AccordionSummary, AccordionDetails } from '../../components/Accordion'
 import { ModelSettings, ModelProvider } from '../../../shared/types'
 import { useTranslation, Trans } from 'react-i18next'
 import PasswordTextField from '@/components/PasswordTextField'
@@ -20,7 +21,7 @@ export default function GeminiSetting(props: ModelConfigProps) {
     const { t } = useTranslation()
     const remoteConfig = useAtomValue(remoteConfigAtom)
     return (
-        <Box>
+        <Stack spacing={2}>
             <PasswordTextField
                 label={t('api key')}
                 value={settingsEdit.geminiAPIKey}
@@ -79,14 +80,21 @@ export default function GeminiSetting(props: ModelConfigProps) {
                 value={settingsEdit.geminiModel}
                 onChange={(value) => setSettingsEdit({ ...settingsEdit, geminiModel: value })}
             />
-            <MaxContextMessageCountSlider
-                value={settingsEdit.openaiMaxContextMessageCount}
-                onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
-            />
-            <TemperatureSlider
-                value={settingsEdit.temperature}
-                onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
-            />
-        </Box>
+            <Accordion>
+                <AccordionSummary aria-controls="panel1a-content">
+                    <Typography>{t('Advanced')}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <MaxContextMessageCountSlider
+                        value={settingsEdit.openaiMaxContextMessageCount}
+                        onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
+                    />
+                    <TemperatureSlider
+                        value={settingsEdit.temperature}
+                        onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
+                    />
+                </AccordionDetails>
+            </Accordion>
+        </Stack>
     )
 }

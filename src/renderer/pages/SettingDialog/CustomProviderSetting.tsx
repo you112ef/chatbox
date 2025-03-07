@@ -1,25 +1,25 @@
-import {
-    FormControlLabel,
-    Tooltip,
-    Switch,
-    FormGroup,
-    Box,
-    MenuItem,
-    Alert,
-    FormControl,
-    InputLabel,
-    Select,
-    Typography,
-} from '@mui/material'
-import { CustomProvider, ModelProvider, ModelSettings } from '../../../shared/types'
-import { Trans, useTranslation } from 'react-i18next'
+import CreatableSelect from '@/components/CreatableSelect'
+import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
 import PasswordTextField from '@/components/PasswordTextField'
 import TemperatureSlider from '@/components/TemperatureSlider'
-import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
 import TextFieldReset from '@/components/TextFieldReset'
 import TopPSlider from '@/components/TopPSlider'
-import CreatableSelect from '@/components/CreatableSelect'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
+import {
+    Alert,
+    FormControl,
+    FormControlLabel,
+    FormGroup,
+    InputLabel,
+    MenuItem,
+    Select,
+    Stack,
+    Switch,
+    Tooltip,
+    Typography,
+} from '@mui/material'
+import { Trans, useTranslation } from 'react-i18next'
+import { CustomProvider, ModelProvider, ModelSettings } from '../../../shared/types'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -51,7 +51,7 @@ export default function CustomProviderSetting(props: ModelConfigProps) {
         return null
     }
     return (
-        <Box>
+        <Stack spacing={2}>
             <Alert icon={false} severity="info" className="my-4">
                 {t(
                     "Here you can add and manage various custom model providers. As long as the provider's API is compatible with the selected API mode, you can seamlessly connect and use it within Chatbox."
@@ -163,6 +163,6 @@ export default function CustomProviderSetting(props: ModelConfigProps) {
                 onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
             />
             <TopPSlider topP={settingsEdit.topP} setTopP={(v) => setSettingsEdit({ ...settingsEdit, topP: v })} />
-        </Box>
+        </Stack>
     )
 }

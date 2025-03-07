@@ -1,4 +1,4 @@
-import { Box, Typography, Alert } from '@mui/material'
+import { Box, Typography, Alert, Stack } from '@mui/material'
 import { ModelSettings, ModelProvider } from '../../../shared/types'
 import { useTranslation, Trans } from 'react-i18next'
 import TemperatureSlider from '../../components/TemperatureSlider'
@@ -20,7 +20,7 @@ export default function ClaudeSetting(props: ModelConfigProps) {
     const { t } = useTranslation()
     const remoteConfig = useAtomValue(remoteConfigAtom)
     return (
-        <Box>
+        <Stack spacing={2}>
             <PasswordTextField
                 label={t('api key')}
                 value={settingsEdit.claudeApiKey}
@@ -72,9 +72,7 @@ export default function ClaudeSetting(props: ModelConfigProps) {
             />
             <Accordion>
                 <AccordionSummary aria-controls="panel1a-content">
-                    <Typography>
-                        {t('model')} & {t('token')}{' '}
-                    </Typography>
+                    <Typography>{t('Advanced')}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <MaxContextMessageCountSlider
@@ -87,6 +85,6 @@ export default function ClaudeSetting(props: ModelConfigProps) {
                     />
                 </AccordionDetails>
             </Accordion>
-        </Box>
+        </Stack>
     )
 }

@@ -1,10 +1,11 @@
-import { TextField, Box } from '@mui/material'
-import { ModelSettings } from '../../../shared/types'
-import { Trans, useTranslation } from 'react-i18next'
-import platform from '../../platform'
-import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
 import TemperatureSlider from '@/components/TemperatureSlider'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import { Stack, TextField, Typography } from '@mui/material'
+import { Trans, useTranslation } from 'react-i18next'
+import { ModelSettings } from '../../../shared/types'
+import { Accordion, AccordionDetails, AccordionSummary } from '../../components/Accordion'
+import platform from '../../platform'
 
 interface ModelConfigProps {
     settingsEdit: ModelSettings
@@ -16,7 +17,7 @@ export default function ChatGLM6BSetting(props: ModelConfigProps) {
     const { t } = useTranslation()
     const isSmallScreen = useIsSmallScreen()
     return (
-        <Box>
+        <Stack spacing={2}>
             <TextField
                 placeholder="http://localhost:8000"
                 autoFocus={!isSmallScreen}
@@ -53,14 +54,21 @@ export default function ChatGLM6BSetting(props: ModelConfigProps) {
                     </>
                 }
             />
-            <MaxContextMessageCountSlider
-                value={settingsEdit.openaiMaxContextMessageCount}
-                onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
-            />
-            <TemperatureSlider
-                value={settingsEdit.temperature}
-                onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
-            />
-        </Box>
+            <Accordion>
+                <AccordionSummary aria-controls="panel1a-content">
+                    <Typography>{t('Advanced')}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <MaxContextMessageCountSlider
+                        value={settingsEdit.openaiMaxContextMessageCount}
+                        onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
+                    />
+                    <TemperatureSlider
+                        value={settingsEdit.temperature}
+                        onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
+                    />
+                </AccordionDetails>
+            </Accordion>
+        </Stack>
     )
 }
