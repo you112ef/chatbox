@@ -15,7 +15,7 @@ import { scrollToMessage } from '@/stores/scrollActions'
 import icon from '../static/icon.png'
 import { trackingEvent } from '@/packages/event'
 import storage from '@/storage'
-import { FileMiniCard, ImageMiniCard, LinkMiniCard, WebBrowsingActionMiniCard } from './Attachments'
+import { FileMiniCard, ImageMiniCard, LinkMiniCard } from './Attachments'
 import MiniButton from './MiniButton'
 import _ from 'lodash'
 import { ChatModelSelector } from './ModelSelector'
@@ -131,7 +131,7 @@ export default function InputBox(props: {}) {
     const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         const isPressedHash: Record<ShortcutSendValue, boolean> = {
             '': false,
-            'Enter': event.keyCode === 13 && !event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey,
+            Enter: event.keyCode === 13 && !event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey,
             'CommandOrControl+Enter': event.keyCode === 13 && (event.ctrlKey || event.metaKey) && !event.shiftKey,
             'Ctrl+Enter': event.keyCode === 13 && event.ctrlKey && !event.shiftKey,
             'Command+Enter': event.keyCode === 13 && event.metaKey,
@@ -140,7 +140,8 @@ export default function InputBox(props: {}) {
         }
         // 发送消息
         if (isPressedHash[shortcuts.inpubBoxSendMessage]) {
-            if (platform.type === 'mobile' && isSmallScreen && shortcuts.inpubBoxSendMessage === 'Enter') { // 移动端点击回车不会发送消息
+            if (platform.type === 'mobile' && isSmallScreen && shortcuts.inpubBoxSendMessage === 'Enter') {
+                // 移动端点击回车不会发送消息
                 return
             }
             event.preventDefault()
@@ -289,13 +290,11 @@ export default function InputBox(props: {}) {
                             insertLinks(urls)
                         }
                         if (pasteLongTextAsAFile && raw.length > 3000) {
-                            const file = new File(
-                                [text],
-                                `pasted_text_${attachments.length}.txt`,
-                                { type: 'text/plain' },
-                            )
+                            const file = new File([text], `pasted_text_${attachments.length}.txt`, {
+                                type: 'text/plain',
+                            })
                             insertFiles([file])
-                            setMessageInput(messageInput)   // 删除掉默认粘贴进去的长文本
+                            setMessageInput(messageInput) // 删除掉默认粘贴进去的长文本
                         }
                     })
                     continue
@@ -365,7 +364,11 @@ export default function InputBox(props: {}) {
                                     <div className="text-center inline-block">
                                         <span>{t('Refresh Context, Start a New Thread')}</span>
                                         <br />
-                                        <Keys keys={shortcuts.messageListRefreshContext.split('+')} size="small" opacity={0.7} />
+                                        <Keys
+                                            keys={shortcuts.messageListRefreshContext.split('+')}
+                                            size="small"
+                                            opacity={0.7}
+                                        />
                                     </div>
                                 }
                                 tooltipPlacement="top"
@@ -397,7 +400,13 @@ export default function InputBox(props: {}) {
                         >
                             <Image size="22" strokeWidth={1} />
                         </MiniButton>
-                        <input type="file" ref={fileInputRef} className="hidden" onChange={onFileInputChange} multiple />
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            className="hidden"
+                            onChange={onFileInputChange}
+                            multiple
+                        />
                         <MiniButton
                             className={cn('mr-1 sm:mr-2', currentSessionType !== 'picture' ? '' : 'hidden')}
                             style={{ color: theme.palette.text.primary }}
@@ -430,19 +439,27 @@ export default function InputBox(props: {}) {
                             className={cn('mr-1 sm:mr-2', currentSessionType !== 'picture' ? '' : 'hidden')}
                             style={{ color: theme.palette.text.primary }}
                             onClick={() => {
-                                setWebBrowsingMode(true)
+                                setWebBrowsingMode(!webBrowsingMode)
                                 dom.focusMessageInput()
                             }}
                             tooltipTitle={
                                 <div className="text-center inline-block">
                                     <span>{t('Web Browsing')}</span>
                                     <br />
-                                    <Keys keys={shortcuts.inputBoxWebBrowsingMode.split('+')} size="small" opacity={0.7} />
+                                    <Keys
+                                        keys={shortcuts.inputBoxWebBrowsingMode.split('+')}
+                                        size="small"
+                                        opacity={0.7}
+                                    />
                                 </div>
                             }
                             tooltipPlacement="top"
                         >
-                            <Globe size="22" strokeWidth={1} />
+                            <Globe
+                                size="22"
+                                strokeWidth={webBrowsingMode ? 1.5 : 1}
+                                className={cn(webBrowsingMode && 'text-blue-500')}
+                            />
                         </MiniButton>
                         <MiniButton
                             className="mr-1 sm:mr-2"
@@ -509,14 +526,9 @@ export default function InputBox(props: {}) {
                         }}
                         placeholder={t('Type your question here...') || ''}
                         onPaste={onPaste}
-                    // {...{ enterKeyHint: 'send' } as any}
+                        // {...{ enterKeyHint: 'send' } as any}
                     />
                     <div className="flex flex-row items-center" onClick={() => dom.focusMessageInput()}>
-                        {
-                            webBrowsingMode && (
-                                <WebBrowsingActionMiniCard onDelete={() => setWebBrowsingMode(false)} />
-                            )
-                        }
                         {pictureKeys.map((picKey, ix) => (
                             <ImageMiniCard key={ix} storageKey={picKey} onDelete={() => onImageDeleteClick(picKey)} />
                         ))}
