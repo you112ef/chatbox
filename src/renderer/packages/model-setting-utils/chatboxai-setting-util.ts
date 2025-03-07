@@ -5,6 +5,18 @@ import BaseConfig from './base-config'
 import { ModelOptionGroup } from 'src/shared/types'
 
 export default class ChatboxAISettingUtil extends BaseConfig implements ModelSettingUtil {
+    private async getCurrentModelOptionLabel(settings: Settings): Promise<string> {
+        const currentValue = this.getCurrentModelOptionValue(settings)
+        const optionGroups = await this.getMergeOptionGroups(settings)
+        for (const optionGroup of optionGroups) {
+            const option = optionGroup.options.find((option) => option.value === currentValue)
+            if (option) {
+                return option.label
+            }
+        }
+        return currentValue
+    }
+
     async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
         if (sessionType === 'picture') {
             return `Chatbox AI (DALL-E-3)`
@@ -26,7 +38,7 @@ export default class ChatboxAISettingUtil extends BaseConfig implements ModelSet
     getLocalOptionGroups(settings: Settings) {
         let models = chatboxAIModels
         if (settings.language === 'zh-Hans' || settings.language === 'zh-Hant') {
-            models = [ ...chatboxAIModels, 'deepseek-chat', 'deepseek-reasoner' ]
+            models = [...chatboxAIModels, 'deepseek-chat', 'deepseek-reasoner']
         }
         return [
             {
@@ -38,7 +50,7 @@ export default class ChatboxAISettingUtil extends BaseConfig implements ModelSet
         ]
     }
 
-    formatModelLabel(value: string): string {
+    private formatModelLabel(value: string): string {
         if (value === 'deepseek-chat') {
             return 'DeepSeek V3'
         } else if (value === 'deepseek-reasoner') {
@@ -47,8 +59,8 @@ export default class ChatboxAISettingUtil extends BaseConfig implements ModelSet
         return value.replace('chatboxai-', 'Chatbox AI ')
     }
 
-    mergeOptionGroups(localOptionGroups: ModelOptionGroup[], remoteOptionGroups: ModelOptionGroup[]) {
-        const ret = [...remoteOptionGroups, ...localOptionGroups ]
+    protected mergeOptionGroups(localOptionGroups: ModelOptionGroup[], remoteOptionGroups: ModelOptionGroup[]) {
+        const ret = [...remoteOptionGroups, ...localOptionGroups]
         const existedOptionSet = new Set<string>()
         for (const group of ret) {
             group.options = group.options.filter((option) => {

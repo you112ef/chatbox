@@ -3,11 +3,11 @@ import * as Sentry from '@sentry/react'
 import * as remote from '../../packages/remote'
 
 export default class BaseConfig {
-    getLocalOptionGroups(settings: Settings): ModelOptionGroup[] {
+    public getLocalOptionGroups(settings: Settings): ModelOptionGroup[] {
         return []
     }
 
-    async getRemoteOptionGroups(settings: Settings): Promise<ModelOptionGroup[]> {
+    protected async getRemoteOptionGroups(settings: Settings): Promise<ModelOptionGroup[]> {
         const modelConfigs = await remote.getModelConfigsWithCache(settings).catch((e) => {
             Sentry.captureException(e)
             return { option_groups: [] as ModelOptionGroup[] }
@@ -15,7 +15,7 @@ export default class BaseConfig {
         return modelConfigs.option_groups
     }
 
-    async getMergeOptionGroups(settings: Settings): Promise<ModelOptionGroup[]> {
+    public async getMergeOptionGroups(settings: Settings): Promise<ModelOptionGroup[]> {
         const localOptionGroups = this.getLocalOptionGroups(settings)
         const remoteOptionGroups = await this.getRemoteOptionGroups(settings)
         return this.mergeOptionGroups(localOptionGroups, remoteOptionGroups)
@@ -28,7 +28,7 @@ export default class BaseConfig {
      * @param remoteOptionGroups 远程模型选项组
      * @returns
      */
-    mergeOptionGroups(localOptionGroups: ModelOptionGroup[], remoteOptionGroups: ModelOptionGroup[]) {
+    protected mergeOptionGroups(localOptionGroups: ModelOptionGroup[], remoteOptionGroups: ModelOptionGroup[]) {
         const ret = [...localOptionGroups, ...remoteOptionGroups]
         const existedOptionSet = new Set<string>()
         for (const group of ret) {
@@ -43,18 +43,6 @@ export default class BaseConfig {
 
     getCurrentModelOptionValue(settings: Settings) {
         return ''
-    }
-
-    async getCurrentModelOptionLabel(settings: Settings): Promise<string> {
-        const currentValue = this.getCurrentModelOptionValue(settings)
-        const optionGroups = await this.getMergeOptionGroups(settings)
-        for (const optionGroup of optionGroups) {
-            const option = optionGroup.options.find((option) => option.value === currentValue)
-            if (option) {
-                return option.label
-            }
-        }
-        return currentValue
     }
 
     isCurrentModelSupportWebBrowsing(settings: Settings): boolean {

@@ -38,12 +38,12 @@ export interface MessageWebBrowsing {
 
 export type MessageToolCalls = { [key: string]: MessageToolCall }
 
-export type MessageToolCall = { 
+export type MessageToolCall = {
     index: string
     id: string
-    function: { 
+    function: {
         name: string
-        arguments: string                    
+        arguments: string
     }
 }
 
@@ -237,7 +237,7 @@ export enum ModelProvider {
 }
 
 export interface ModelSettings {
-    aiProvider: ModelProvider
+    aiProvider: ModelProvider // 当前应用中使用的provider（虽然可以配很多，但实际同时只能使用一个）
 
     // openai
     openaiKey: string
