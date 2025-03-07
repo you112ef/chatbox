@@ -3,104 +3,102 @@ import { onResultChange } from './base'
 import { ApiError } from './errors'
 
 interface Options {
-    perplexityApiKey: string
-    perplexityModel: string
-    temperature?: number
-    topP?: number
+  perplexityApiKey: string
+  perplexityModel: string
+  temperature?: number
+  topP?: number
 }
 
 export default class Perplexity extends StandardOpenAI {
-    public name = 'Perplexity API'
+  public name = 'Perplexity API'
 
-    public options: Options
-    constructor(options: Options) {
-        super()
-        this.options = options
-        this.secretKey = options.perplexityApiKey
-        this.apiHost = 'https://api.perplexity.ai'
-        this.model = options.perplexityModel
-        this.temperature = options.temperature
-        this.topP = options.topP
-    }
+  public options: Options
+  constructor(options: Options) {
+    super()
+    this.options = options
+    this.secretKey = options.perplexityApiKey
+    this.apiHost = 'https://api.perplexity.ai'
+    this.model = options.perplexityModel
+    this.temperature = options.temperature
+    this.topP = options.topP
+  }
 
-    isSupportVision(model: string): boolean {
-        return false
-    }
+  isSupportVision(model: string): boolean {
+    return false
+  }
 
-    listLocalModels(): string[] {
-        return [
-            'sonar-reasoning-pro',
-            'sonar-reasoning',
-            'sonar-pro',
-            'sonar',
-            // 'llama-3.1-sonar-small-128k-online',
-            // 'llama-3.1-sonar-large-128k-online',
-            // 'llama-3.1-sonar-huge-128k-online'
-        ]
-    }
+  listLocalModels(): string[] {
+    return [
+      'sonar-reasoning-pro',
+      'sonar-reasoning',
+      'sonar-pro',
+      'sonar',
+      // 'llama-3.1-sonar-small-128k-online',
+      // 'llama-3.1-sonar-large-128k-online',
+      // 'llama-3.1-sonar-huge-128k-online'
+    ]
+  }
 
-    async listRemoteModels(): Promise<string[]> {
-        // perplexity api 不提供模型列表接口
-        // https://docs.perplexity.ai/api-reference/chat-completions
-        return []
-    }
+  async listRemoteModels(): Promise<string[]> {
+    // perplexity api 不提供模型列表接口
+    // https://docs.perplexity.ai/api-reference/chat-completions
+    return []
+  }
 
-    async requestChatCompletionsStream(
-        requestBody: Record<string, any>,
-        signal?: AbortSignal,
-        onResultChange?: onResultChange
-    ): Promise<string> {
-        const response = await this.post(
-            `${this.apiHost}/chat/completions`,
-            this.getHeaders(),
-            requestBody,
-            {
-                signal,
-                useProxy: this.useProxy,
-            },
-        )
-        let content = ''
-        let reasoningContent: string | undefined
-        await this.handleSSE(response, (message) => {
-            if (message === '[DONE]') {
-                return
-            }
-            const data = JSON.parse(message)
-            if (data.error) {
-                throw new ApiError(`Error from ${this.name}: ${JSON.stringify(data)}`)
-            }
-            const citations: string[] | undefined = data.citations
-            const text = data.choices[0]?.delta?.content
-            if (typeof text === 'string') {
-                content += text
-            }
-            // 处理返回中的 <think>...</think> 思考链
-            if (
-                !reasoningContent
-                && this.model.includes('reasoning')
-                && content.includes('<think>') && content.includes('</think>')
-            ) {
-                const index = content.lastIndexOf('</think>')
-                reasoningContent = content.slice(0, index + 8)
-                content = content.slice(index + 8)
-            }
-            if (onResultChange) {
-                onResultChange({
-                    content: content,
-                    reasoningContent,
-                    webBrowsing: citations ? {
-                        query: [],
-                        links: citations.map(url => ({ title: url, url }))
-                    } : undefined
-                })
-            }
+  async requestChatCompletionsStream(
+    requestBody: Record<string, any>,
+    signal?: AbortSignal,
+    onResultChange?: onResultChange
+  ): Promise<string> {
+    const response = await this.post(`${this.apiHost}/chat/completions`, this.getHeaders(), requestBody, {
+      signal,
+      useProxy: this.useProxy,
+    })
+    let content = ''
+    let reasoningContent: string | undefined
+    await this.handleSSE(response, (message) => {
+      if (message === '[DONE]') {
+        return
+      }
+      const data = JSON.parse(message)
+      if (data.error) {
+        throw new ApiError(`Error from ${this.name}: ${JSON.stringify(data)}`)
+      }
+      const citations: string[] | undefined = data.citations
+      const text = data.choices[0]?.delta?.content
+      if (typeof text === 'string') {
+        content += text
+      }
+      // 处理返回中的 <think>...</think> 思考链
+      if (
+        !reasoningContent &&
+        this.model.includes('reasoning') &&
+        content.includes('<think>') &&
+        content.includes('</think>')
+      ) {
+        const index = content.lastIndexOf('</think>')
+        reasoningContent = content.slice(0, index + 8)
+        content = content.slice(index + 8)
+      }
+      if (onResultChange) {
+        onResultChange({
+          content: content,
+          reasoningContent,
+          webBrowsing: citations
+            ? {
+                query: [],
+                links: citations.map((url) => ({ title: url, url })),
+              }
+            : undefined,
         })
-        return content
-    }
+      }
+    })
+    return content
+  }
 
-    isSupportToolUse(): boolean {
-        return false
-    }
+  isSupportToolUse(): boolean {
+    return false
+  }
 }
 
 // {

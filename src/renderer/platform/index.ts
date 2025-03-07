@@ -5,13 +5,13 @@ import MobilePlatform from './mobile_platform'
 import { CHATBOX_BUILD_TARGET } from '@/variables'
 
 function initPlatform(): Platform {
-    if (CHATBOX_BUILD_TARGET === 'mobile_app') {
-        return new MobilePlatform()
-    } else if (window.electronAPI) {
-        return new DesktopPlatform(window.electronAPI)
-    } else {
-        return new WebPlatform()
-    }
+  if (CHATBOX_BUILD_TARGET === 'mobile_app') {
+    return new MobilePlatform()
+  } else if (window.electronAPI) {
+    return new DesktopPlatform(window.electronAPI)
+  } else {
+    return new WebPlatform()
+  }
 }
 
 export default initPlatform()

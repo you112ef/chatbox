@@ -1,20 +1,20 @@
 import { getDefaultStore } from 'jotai'
 import {
-    Settings,
-    createMessage,
-    Message,
-    MessageLink,
-    Session,
-    settings2SessionSettings,
-    pickPictureSettings,
-    ModelSettings,
-    MessagePicture,
-    SessionThread,
-    MessageFile,
-    ModelProvider,
-    ExportChatScope,
-    ExportChatFormat,
-    copySession,
+  Settings,
+  createMessage,
+  Message,
+  MessageLink,
+  Session,
+  settings2SessionSettings,
+  pickPictureSettings,
+  ModelSettings,
+  MessagePicture,
+  SessionThread,
+  MessageFile,
+  ModelProvider,
+  ExportChatScope,
+  ExportChatFormat,
+  copySession,
 } from '../../shared/types'
 import * as atoms from './atoms'
 import * as promptFormat from '../packages/prompts'
@@ -26,11 +26,11 @@ import storage from '../storage'
 import i18n from '../i18n'
 import { getModel } from '@/packages/models'
 import {
-    AIProviderNoImplementedPaintError,
-    NetworkError,
-    ApiError,
-    BaseError,
-    ChatboxAIAPIError,
+  AIProviderNoImplementedPaintError,
+  NetworkError,
+  ApiError,
+  BaseError,
+  ChatboxAIAPIError,
 } from '@/packages/models/errors'
 import platform from '../platform'
 import * as dom from '@/hooks/dom'
@@ -40,7 +40,12 @@ import * as settingActions from './settingActions'
 import { formatChatAsHtml, formatChatAsMarkdown, formatChatAsTxt } from '@/lib/format-chat'
 import { countWord } from '@/packages/word-count'
 import { estimateTokensFromMessages } from '@/packages/token'
-import { getModelDisplayName, isModelSupportImageInput, isModelSupportToolUse, isModelSupportWebBrowsing } from '@/packages/model-setting-utils'
+import {
+  getModelDisplayName,
+  isModelSupportImageInput,
+  isModelSupportToolUse,
+  isModelSupportWebBrowsing,
+} from '@/packages/model-setting-utils'
 import { languageNameMap } from '@/i18n/locales'
 import { isTextFilePath } from 'src/shared/file-extensions'
 import * as localParser from '@/packages/local-parser'
@@ -52,68 +57,68 @@ import * as appleAppStore from '@/packages/apple_app_store'
  * @param newSession
  */
 export function create(newSession: Session) {
-    const store = getDefaultStore()
-    store.set(atoms.sessionsAtom, (sessions) => [...sessions, newSession])
-    switchCurrentSession(newSession.id)
+  const store = getDefaultStore()
+  store.set(atoms.sessionsAtom, (sessions) => [...sessions, newSession])
+  switchCurrentSession(newSession.id)
 }
 
 /**
  * 修改会话，根据 id 匹配
  */
 export function modify(update: Session) {
-    const store = getDefaultStore()
-    store.set(atoms.sessionsAtom, (sessions) =>
-        sessions.map((s) => {
-            if (s.id === update.id) {
-                return update
-            }
-            return s
-        })
-    )
+  const store = getDefaultStore()
+  store.set(atoms.sessionsAtom, (sessions) =>
+    sessions.map((s) => {
+      if (s.id === update.id) {
+        return update
+      }
+      return s
+    })
+  )
 }
 
 /**
  * 修改会话名称
  */
 export function modifyNameAndThreadName(sessionId: string, name: string) {
-    const store = getDefaultStore()
-    store.set(atoms.sessionsAtom, (sessions) =>
-        sessions.map((s) => {
-            if (s.id === sessionId) {
-                return { ...s, name, threadName: name }
-            }
-            return s
-        })
-    )
+  const store = getDefaultStore()
+  store.set(atoms.sessionsAtom, (sessions) =>
+    sessions.map((s) => {
+      if (s.id === sessionId) {
+        return { ...s, name, threadName: name }
+      }
+      return s
+    })
+  )
 }
 
 /**
  * 修改会话的当前话题名称
  */
 export function modifyThreadName(sessionId: string, threadName: string) {
-    const store = getDefaultStore()
-    store.set(atoms.sessionsAtom, (sessions) =>
-        sessions.map((s) => {
-            if (s.id === sessionId) {
-                return { ...s, threadName }
-            }
-            return s
-        })
-    )
+  const store = getDefaultStore()
+  store.set(atoms.sessionsAtom, (sessions) =>
+    sessions.map((s) => {
+      if (s.id === sessionId) {
+        return { ...s, threadName }
+      }
+      return s
+    })
+  )
 }
 
 /**
  * 创建一个空的会话
  */
 export function createEmpty(type: 'chat' | 'picture') {
-    switch (type) {
-        case 'chat':
-            return create(initEmptyChatSession())
-        case 'picture':
-            return create(initEmptyPictureSession())
-        default:
-            throw new Error(`Unknown session type: ${type}`)
-    }
+  switch (type) {
+    case 'chat':
+      return create(initEmptyChatSession())
+    case 'picture':
+      return create(initEmptyPictureSession())
+    default:
+      throw new Error(`Unknown session type: ${type}`)
+  }
 }
 
 /**
@@ -122,11 +127,11 @@ export function createEmpty(type: 'chat' | 'picture') {
  * @returns
  */
 export function createLoadingPictures(n: number): MessagePicture[] {
-    const ret: MessagePicture[] = []
-    for (let i = 0; i < n; i++) {
-        ret.push({ loading: true })
-    }
-    return ret
+  const ret: MessagePicture[] = []
+  for (let i = 0; i < n; i++) {
+    ret.push({ loading: true })
+  }
+  return ret
 }
 
 /**
@@ -134,10 +139,10 @@ export function createLoadingPictures(n: number): MessagePicture[] {
  * @param sessionId
  */
 export function switchCurrentSession(sessionId: string) {
-    const store = getDefaultStore()
-    store.set(atoms.currentSessionIdAtom, sessionId)
-    // scrollActions.scrollToBottom() // 切换会话时自动滚动到底部
-    scrollActions.clearAutoScroll() // 切换会话时清除自动滚动
+  const store = getDefaultStore()
+  store.set(atoms.currentSessionIdAtom, sessionId)
+  // scrollActions.scrollToBottom() // 切换会话时自动滚动到底部
+  scrollActions.clearAutoScroll() // 切换会话时清除自动滚动
 }
 
 /**
@@ -146,13 +151,13 @@ export function switchCurrentSession(sessionId: string) {
  * @returns
  */
 export function switchToIndex(index: number) {
-    const store = getDefaultStore()
-    const sessions = store.get(atoms.sortedSessionsAtom)
-    const target = sessions[index]
-    if (!target) {
-        return
-    }
-    switchCurrentSession(target.id)
+  const store = getDefaultStore()
+  const sessions = store.get(atoms.sortedSessionsAtom)
+  const target = sessions[index]
+  if (!target) {
+    return
+  }
+  switchCurrentSession(target.id)
 }
 
 /**
@@ -161,23 +166,23 @@ export function switchToIndex(index: number) {
  * @returns
  */
 export function switchToNext(reversed?: boolean) {
-    const store = getDefaultStore()
-    const sessions = store.get(atoms.sortedSessionsAtom)
-    const currentSessionId = store.get(atoms.currentSessionIdAtom)
-    const currentIndex = sessions.findIndex((s) => s.id === currentSessionId)
-    if (currentIndex < 0) {
-        switchCurrentSession(sessions[0].id)
-        return
-    }
-    let targetIndex = reversed ? currentIndex - 1 : currentIndex + 1
-    if (targetIndex >= sessions.length) {
-        targetIndex = 0
-    }
-    if (targetIndex < 0) {
-        targetIndex = sessions.length - 1
-    }
-    const target = sessions[targetIndex]
-    switchCurrentSession(target.id)
+  const store = getDefaultStore()
+  const sessions = store.get(atoms.sortedSessionsAtom)
+  const currentSessionId = store.get(atoms.currentSessionIdAtom)
+  const currentIndex = sessions.findIndex((s) => s.id === currentSessionId)
+  if (currentIndex < 0) {
+    switchCurrentSession(sessions[0].id)
+    return
+  }
+  let targetIndex = reversed ? currentIndex - 1 : currentIndex + 1
+  if (targetIndex >= sessions.length) {
+    targetIndex = 0
+  }
+  if (targetIndex < 0) {
+    targetIndex = sessions.length - 1
+  }
+  const target = sessions[targetIndex]
+  switchCurrentSession(target.id)
 }
 
 /**
@@ -185,8 +190,8 @@ export function switchToNext(reversed?: boolean) {
  * @param session
  */
 export function remove(session: Session) {
-    const store = getDefaultStore()
-    store.set(atoms.sessionsAtom, (sessions) => sessions.filter((s) => s.id !== session.id))
+  const store = getDefaultStore()
+  store.set(atoms.sessionsAtom, (sessions) => sessions.filter((s) => s.id !== session.id))
 }
 
 /**
@@ -195,22 +200,22 @@ export function remove(session: Session) {
  * @param threadId 历史话题 id
  */
 export function removeThread(sessionId: string, threadId: string) {
-    const store = getDefaultStore()
-    if (sessionId === threadId) {
-        removeCurrentThread(sessionId)
-        return
-    }
-    store.set(atoms.sessionsAtom, (sessions) =>
-        sessions.map((s) => {
-            if (s.id === sessionId && s.threads) {
-                s = {
-                    ...s,
-                    threads: s.threads.filter((t) => t.id !== threadId),
-                }
-            }
-            return s
-        })
-    )
+  const store = getDefaultStore()
+  if (sessionId === threadId) {
+    removeCurrentThread(sessionId)
+    return
+  }
+  store.set(atoms.sessionsAtom, (sessions) =>
+    sessions.map((s) => {
+      if (s.id === sessionId && s.threads) {
+        s = {
+          ...s,
+          threads: s.threads.filter((t) => t.id !== threadId),
+        }
+      }
+      return s
+    })
+  )
 }
 
 /**
@@ -219,19 +224,19 @@ export function removeThread(sessionId: string, threadId: string) {
  * @returns
  */
 export function clear(sessionId: string) {
-    const store = getDefaultStore()
-    const session = getSession(sessionId)
-    if (!session) {
-        return
-    }
-    session.messages.forEach((msg) => {
-        msg?.cancel?.()
-    })
-    modify({
-        ...session,
-        messages: session.messages.filter((m) => m.role === 'system'),
-        threads: undefined,
-    })
+  const store = getDefaultStore()
+  const session = getSession(sessionId)
+  if (!session) {
+    return
+  }
+  session.messages.forEach((msg) => {
+    msg?.cancel?.()
+  })
+  modify({
+    ...session,
+    messages: session.messages.filter((m) => m.role === 'system'),
+    threads: undefined,
+  })
 }
 
 /**
@@ -239,22 +244,22 @@ export function clear(sessionId: string) {
  * @param source
  */
 export async function copy(source: Session) {
-    const newSession = copySession(source)
-    insertSessionAfter(newSession, source.id)
-    switchCurrentSession(newSession.id)
+  const newSession = copySession(source)
+  insertSessionAfter(newSession, source.id)
+  switchCurrentSession(newSession.id)
 }
 
 export function insertSessionAfter(newSession: Session, afterSessionId: string) {
-    const store = getDefaultStore()
-    store.set(atoms.sessionsAtom, (sessions) => {
-        let originIndex = sessions.findIndex((s) => s.id === afterSessionId)
-        if (originIndex < 0) {
-            originIndex = 0
-        }
-        const newSessions = [...sessions]
-        newSessions.splice(originIndex + 1, 0, newSession)
-        return newSessions
-    })
+  const store = getDefaultStore()
+  store.set(atoms.sessionsAtom, (sessions) => {
+    let originIndex = sessions.findIndex((s) => s.id === afterSessionId)
+    if (originIndex < 0) {
+      originIndex = 0
+    }
+    const newSessions = [...sessions]
+    newSessions.splice(originIndex + 1, 0, newSession)
+    return newSessions
+  })
 }
 
 /**
@@ -263,9 +268,9 @@ export function insertSessionAfter(newSession: Session, afterSessionId: string) 
  * @returns
  */
 export function getSession(sessionId: string) {
-    const store = getDefaultStore()
-    const sessions = store.get(atoms.sessionsAtom)
-    return sessions.find((s) => s.id === sessionId)
+  const store = getDefaultStore()
+  const sessions = store.get(atoms.sessionsAtom)
+  return sessions.find((s) => s.id === sessionId)
 }
 
 /**
@@ -273,45 +278,45 @@ export function getSession(sessionId: string) {
  * @param sessionId
  */
 export function refreshContextAndCreateNewThread(sessionId: string) {
-    const store = getDefaultStore()
-    store.set(atoms.sessionsAtom, (sessions) => {
-        return sessions.map((s) => {
-            if (s.id !== sessionId) {
-                return s
-            }
-            for (const m of s.messages) {
-                m?.cancel?.()
-            }
-            const newThread: SessionThread = {
-                id: uuidv4(),
-                name: s.threadName || s.name,
-                messages: s.messages,
-                createdAt: Date.now(),
-            }
-            let systemPrompt = s.messages.find((m) => m.role === 'system')
-            if (systemPrompt) {
-                systemPrompt = createMessage('system', systemPrompt.content)
-            }
-            return {
-                ...s,
-                threads: s.threads ? [...s.threads, newThread] : [newThread],
-                messages: systemPrompt ? [systemPrompt] : [createMessage('system', defaults.getDefaultPrompt())],
-                threadName: '',
-                messageForksHash: undefined,
-            }
-        })
+  const store = getDefaultStore()
+  store.set(atoms.sessionsAtom, (sessions) => {
+    return sessions.map((s) => {
+      if (s.id !== sessionId) {
+        return s
+      }
+      for (const m of s.messages) {
+        m?.cancel?.()
+      }
+      const newThread: SessionThread = {
+        id: uuidv4(),
+        name: s.threadName || s.name,
+        messages: s.messages,
+        createdAt: Date.now(),
+      }
+      let systemPrompt = s.messages.find((m) => m.role === 'system')
+      if (systemPrompt) {
+        systemPrompt = createMessage('system', systemPrompt.content)
+      }
+      return {
+        ...s,
+        threads: s.threads ? [...s.threads, newThread] : [newThread],
+        messages: systemPrompt ? [systemPrompt] : [createMessage('system', defaults.getDefaultPrompt())],
+        threadName: '',
+        messageForksHash: undefined,
+      }
     })
+  })
 }
 
 export function startNewThread() {
-    const store = getDefaultStore()
-    const sessionId = store.get(atoms.currentSessionIdAtom)
-    refreshContextAndCreateNewThread(sessionId)
-    // 自动滚动到底部并自动聚焦到输入框
-    setTimeout(() => {
-        scrollActions.scrollToBottom()
-        dom.focusMessageInput()
-    }, 100)
+  const store = getDefaultStore()
+  const sessionId = store.get(atoms.currentSessionIdAtom)
+  refreshContextAndCreateNewThread(sessionId)
+  // 自动滚动到底部并自动聚焦到输入框
+  setTimeout(() => {
+    scrollActions.scrollToBottom()
+    dom.focusMessageInput()
+  }, 100)
 }
 
 /**
@@ -320,38 +325,38 @@ export function startNewThread() {
  * @param threadId
  */
 export function switchThread(sessionId: string, threadId: string) {
-    const store = getDefaultStore()
-    store.set(atoms.sessionsAtom, (sessions) => {
-        return sessions.map((s) => {
-            if (s.id !== sessionId) {
-                return s
-            }
-            if (!s.threads) {
-                return s
-            }
-            const target = s.threads.find((h) => h.id === threadId)
-            if (!target) {
-                return s
-            }
-            for (const m of s.messages) {
-                m?.cancel?.()
-            }
-            const newThreads = s.threads.filter((h) => h.id !== threadId)
-            newThreads.push({
-                id: uuidv4(),
-                name: s.threadName || s.name,
-                messages: s.messages,
-                createdAt: Date.now(),
-            })
-            return {
-                ...s,
-                threads: newThreads,
-                messages: target.messages,
-                threadName: target.name,
-            }
-        })
+  const store = getDefaultStore()
+  store.set(atoms.sessionsAtom, (sessions) => {
+    return sessions.map((s) => {
+      if (s.id !== sessionId) {
+        return s
+      }
+      if (!s.threads) {
+        return s
+      }
+      const target = s.threads.find((h) => h.id === threadId)
+      if (!target) {
+        return s
+      }
+      for (const m of s.messages) {
+        m?.cancel?.()
+      }
+      const newThreads = s.threads.filter((h) => h.id !== threadId)
+      newThreads.push({
+        id: uuidv4(),
+        name: s.threadName || s.name,
+        messages: s.messages,
+        createdAt: Date.now(),
+      })
+      return {
+        ...s,
+        threads: newThreads,
+        messages: target.messages,
+        threadName: target.name,
+      }
     })
-    setTimeout(() => scrollActions.scrollToBottom('smooth'), 300)
+  })
+  setTimeout(() => scrollActions.scrollToBottom('smooth'), 300)
 }
 
 /**
@@ -359,66 +364,66 @@ export function switchThread(sessionId: string, threadId: string) {
  * @param sessionId
  */
 export function removeCurrentThread(sessionId: string) {
-    const store = getDefaultStore()
-    store.set(atoms.sessionsAtom, (sessions) => {
-        return sessions.map((s) => {
-            if (s.id !== sessionId) {
-                return s
-            }
-            const newSession: Session = {
-                ...s,
-                messages: s.messages.filter((m) => m.role === 'system').slice(0, 1), // 仅保留一条系统提示
-                threadName: undefined,
-            }
-            if (s.threads && s.threads.length > 0) {
-                const last = s.threads[s.threads.length - 1]
-                newSession.messages = last.messages
-                newSession.threadName = last.name
-                newSession.threads = s.threads.slice(0, s.threads.length - 1)
-            }
-            return newSession
-        })
+  const store = getDefaultStore()
+  store.set(atoms.sessionsAtom, (sessions) => {
+    return sessions.map((s) => {
+      if (s.id !== sessionId) {
+        return s
+      }
+      const newSession: Session = {
+        ...s,
+        messages: s.messages.filter((m) => m.role === 'system').slice(0, 1), // 仅保留一条系统提示
+        threadName: undefined,
+      }
+      if (s.threads && s.threads.length > 0) {
+        const last = s.threads[s.threads.length - 1]
+        newSession.messages = last.messages
+        newSession.threadName = last.name
+        newSession.threads = s.threads.slice(0, s.threads.length - 1)
+      }
+      return newSession
     })
+  })
 }
 
 export function moveThreadToConversations(sessionId: string, threadId: string) {
-    if (sessionId === threadId) {
-        moveCurrentThreadToConversations(sessionId)
-        return
-    }
-    const session = getSession(sessionId)
-    if (!session) {
-        return
-    }
-    const targetThread = session.threads?.find((t) => t.id === threadId)
-    if (!targetThread) {
-        return
-    }
-    const newSession = copySession({
-        ...session,
-        messages: targetThread.messages,
-        threads: undefined,
-        threadName: undefined,
-    })
-    insertSessionAfter(newSession, sessionId)
-    removeThread(sessionId, threadId)
-    switchCurrentSession(newSession.id)
+  if (sessionId === threadId) {
+    moveCurrentThreadToConversations(sessionId)
+    return
+  }
+  const session = getSession(sessionId)
+  if (!session) {
+    return
+  }
+  const targetThread = session.threads?.find((t) => t.id === threadId)
+  if (!targetThread) {
+    return
+  }
+  const newSession = copySession({
+    ...session,
+    messages: targetThread.messages,
+    threads: undefined,
+    threadName: undefined,
+  })
+  insertSessionAfter(newSession, sessionId)
+  removeThread(sessionId, threadId)
+  switchCurrentSession(newSession.id)
 }
 
 export function moveCurrentThreadToConversations(sessionId: string) {
-    const session = getSession(sessionId)
-    if (!session) {
-        return
-    }
-    const newSession = copySession({
-        ...session,
-        messages: session.messages,
-        threads: undefined,
-        threadName: undefined,
-    })
-    insertSessionAfter(newSession, sessionId)
-    removeCurrentThread(sessionId)
-    switchCurrentSession(newSession.id)
+  const session = getSession(sessionId)
+  if (!session) {
+    return
+  }
+  const newSession = copySession({
+    ...session,
+    messages: session.messages,
+    threads: undefined,
+    threadName: undefined,
+  })
+  insertSessionAfter(newSession, sessionId)
+  removeCurrentThread(sessionId)
+  switchCurrentSession(newSession.id)
 }
 
 /**
@@ -427,22 +432,22 @@ export function moveCurrentThreadToConversations(sessionId: string) {
  * @param msg
  */
 export function insertMessage(sessionId: string, msg: Message) {
-    const store = getDefaultStore()
-    msg.wordCount = countWord(msg.content)
-    msg.tokenCount = estimateTokensFromMessages([msg])
-    store.set(atoms.sessionsAtom, (sessions) =>
-        sessions.map((s) => {
-            if (s.id === sessionId) {
-                const newMessages = [...s.messages]
-                newMessages.push(msg)
-                return {
-                    ...s,
-                    messages: newMessages,
-                }
-            }
-            return s
-        })
-    )
+  const store = getDefaultStore()
+  msg.wordCount = countWord(msg.content)
+  msg.tokenCount = estimateTokensFromMessages([msg])
+  store.set(atoms.sessionsAtom, (sessions) =>
+    sessions.map((s) => {
+      if (s.id === sessionId) {
+        const newMessages = [...s.messages]
+        newMessages.push(msg)
+        return {
+          ...s,
+          messages: newMessages,
+        }
+      }
+      return s
+    })
+  )
 }
 
 /**
@@ -452,35 +457,35 @@ export function insertMessage(sessionId: string, msg: Message) {
  * @param afterMsgId
  */
 export function insertMessageAfter(sessionId: string, msg: Message, afterMsgId: string) {
-    const store = getDefaultStore()
-    msg.wordCount = countWord(msg.content)
-    msg.tokenCount = estimateTokensFromMessages([msg])
-    let hasHandled = false
-    const handle = (msgs: Message[]) => {
-        const index = msgs.findIndex((m) => m.id === afterMsgId)
-        if (index < 0) {
-            return msgs
-        }
-        hasHandled = true
-        const newMessages = [...msgs]
-        newMessages.splice(index + 1, 0, msg)
-        return newMessages
+  const store = getDefaultStore()
+  msg.wordCount = countWord(msg.content)
+  msg.tokenCount = estimateTokensFromMessages([msg])
+  let hasHandled = false
+  const handle = (msgs: Message[]) => {
+    const index = msgs.findIndex((m) => m.id === afterMsgId)
+    if (index < 0) {
+      return msgs
     }
-    store.set(atoms.sessionsAtom, (sessions) =>
-        sessions.map((s) => {
-            if (s.id !== sessionId) {
-                return s
-            }
-            s.messages = handle(s.messages)
-            if (s.threads && !hasHandled) {
-                s.threads = s.threads.map((h) => {
-                    h.messages = handle(h.messages)
-                    return h
-                })
-            }
-            return { ...s }
+    hasHandled = true
+    const newMessages = [...msgs]
+    newMessages.splice(index + 1, 0, msg)
+    return newMessages
+  }
+  store.set(atoms.sessionsAtom, (sessions) =>
+    sessions.map((s) => {
+      if (s.id !== sessionId) {
+        return s
+      }
+      s.messages = handle(s.messages)
+      if (s.threads && !hasHandled) {
+        s.threads = s.threads.map((h) => {
+          h.messages = handle(h.messages)
+          return h
         })
-    )
+      }
+      return { ...s }
+    })
+  )
 }
 
 /**
@@ -490,40 +495,40 @@ export function insertMessageAfter(sessionId: string, msg: Message, afterMsgId: 
  * @param refreshCounting
  */
 export function modifyMessage(sessionId: string, updated: Message, refreshCounting?: boolean) {
-    const store = getDefaultStore()
-    if (refreshCounting) {
-        updated.wordCount = countWord(updated.content)
-        updated.tokenCount = estimateTokensFromMessages([updated])
-    }
+  const store = getDefaultStore()
+  if (refreshCounting) {
+    updated.wordCount = countWord(updated.content)
+    updated.tokenCount = estimateTokensFromMessages([updated])
+  }
 
-    // 更新消息时间戳
-    updated.timestamp = new Date().getTime()
+  // 更新消息时间戳
+  updated.timestamp = new Date().getTime()
 
-    let hasHandled = false
-    const handle = (msgs: Message[]) => {
-        return msgs.map((m) => {
-            if (m.id === updated.id) {
-                hasHandled = true
-                return { ...updated }
-            }
-            return m
+  let hasHandled = false
+  const handle = (msgs: Message[]) => {
+    return msgs.map((m) => {
+      if (m.id === updated.id) {
+        hasHandled = true
+        return { ...updated }
+      }
+      return m
+    })
+  }
+  store.set(atoms.sessionsAtom, (sessions) =>
+    sessions.map((s) => {
+      if (s.id !== sessionId) {
+        return s
+      }
+      s.messages = handle(s.messages)
+      if (s.threads && !hasHandled) {
+        s.threads = s.threads.map((h) => {
+          h.messages = handle(h.messages)
+          return h
         })
-    }
-    store.set(atoms.sessionsAtom, (sessions) =>
-        sessions.map((s) => {
-            if (s.id !== sessionId) {
-                return s
-            }
-            s.messages = handle(s.messages)
-            if (s.threads && !hasHandled) {
-                s.threads = s.threads.map((h) => {
-                    h.messages = handle(h.messages)
-                    return h
-                })
-            }
-            return { ...s }
-        })
-    )
+      }
+      return { ...s }
+    })
+  )
 }
 
 /**
@@ -532,42 +537,42 @@ export function modifyMessage(sessionId: string, updated: Message, refreshCounti
  * @param messageId
  */
 export function removeMessage(sessionId: string, messageId: string) {
-    const store = getDefaultStore()
-    store.set(atoms.sessionsAtom, (sessions) => {
-        let newSessions = sessions.map((s) => {
-            if (s.id !== sessionId) {
-                return s
-            }
-            s.messages = s.messages.filter((m) => m.id !== messageId)
-            if (s.threads) {
-                s.threads = s.threads.map((h) => ({
-                    ...h,
-                    messages: h.messages.filter((m) => m.id !== messageId),
-                }))
-                s.threads = s.threads.filter((h) => h.messages.length > 0)
-            }
-            // 删除消息的同时，也触发对消息分支的清理
-            if (s.messageForksHash) {
-                // 删除当前消息的分支
-                delete s.messageForksHash[messageId]
-            }
-            return { ...s }
-        })
-        // 如果某个对话的消息为空，尽量使用上一个话题的消息
-        newSessions = newSessions.map((s) => {
-            if (s.messages && s.messages.length > 0) {
-                return s
-            }
-            if (!s.threads || s.threads.length === 0) {
-                return s
-            }
-            const lastThread = s.threads[s.threads.length - 1]
-            s.messages = lastThread.messages
-            s.threads = s.threads.slice(0, s.threads.length - 1)
-            return { ...s }
-        })
-        return newSessions
+  const store = getDefaultStore()
+  store.set(atoms.sessionsAtom, (sessions) => {
+    let newSessions = sessions.map((s) => {
+      if (s.id !== sessionId) {
+        return s
+      }
+      s.messages = s.messages.filter((m) => m.id !== messageId)
+      if (s.threads) {
+        s.threads = s.threads.map((h) => ({
+          ...h,
+          messages: h.messages.filter((m) => m.id !== messageId),
+        }))
+        s.threads = s.threads.filter((h) => h.messages.length > 0)
+      }
+      // 删除消息的同时，也触发对消息分支的清理
+      if (s.messageForksHash) {
+        // 删除当前消息的分支
+        delete s.messageForksHash[messageId]
+      }
+      return { ...s }
     })
+    // 如果某个对话的消息为空，尽量使用上一个话题的消息
+    newSessions = newSessions.map((s) => {
+      if (s.messages && s.messages.length > 0) {
+        return s
+      }
+      if (!s.threads || s.threads.length === 0) {
+        return s
+      }
+      const lastThread = s.threads[s.threads.length - 1]
+      s.messages = lastThread.messages
+      s.threads = s.threads.slice(0, s.threads.length - 1)
+      return { ...s }
+    })
+    return newSessions
+  })
 }
 
 /**
@@ -575,220 +580,198 @@ export function removeMessage(sessionId: string, messageId: string) {
  * @param params
  */
 export async function submitNewUserMessage(params: {
-    currentSessionId: string
-    newUserMsg: Message
-    needGenerating: boolean
-    attachments: File[]
-    links: { url: string }[]
-    webBrowsing?: boolean
+  currentSessionId: string
+  newUserMsg: Message
+  needGenerating: boolean
+  attachments: File[]
+  links: { url: string }[]
+  webBrowsing?: boolean
 }) {
-    const { currentSessionId, newUserMsg, needGenerating, attachments, links } = params
-    let { webBrowsing } = params
-    // 如果存在附件，现在发送消息中构建空白的文件信息，用于占位，等待上传完成后再修改
-    if (attachments && attachments.length > 0) {
-        newUserMsg.files = attachments.map((f, ix) => ({
-            id: ix.toString(),
-            name: f.name,
-            fileType: f.type,
-        }))
-    }
-    // 如果存在链接，现在发送消息中构建空白的链接信息，用于占位，等待解析完成后再修改
-    if (links && links.length > 0) {
-        newUserMsg.links = links.map((l, ix) => ({
-            id: ix.toString(),
-            url: l.url,
-            title: l.url.replace(/^https?:\/\//, ''),
-        }))
-    }
-    // 先在聊天列表中插入发送的用户消息
-    insertMessage(currentSessionId, newUserMsg)
+  const { currentSessionId, newUserMsg, needGenerating, attachments, links } = params
+  let { webBrowsing } = params
+  // 如果存在附件，现在发送消息中构建空白的文件信息，用于占位，等待上传完成后再修改
+  if (attachments && attachments.length > 0) {
+    newUserMsg.files = attachments.map((f, ix) => ({
+      id: ix.toString(),
+      name: f.name,
+      fileType: f.type,
+    }))
+  }
+  // 如果存在链接，现在发送消息中构建空白的链接信息，用于占位，等待解析完成后再修改
+  if (links && links.length > 0) {
+    newUserMsg.links = links.map((l, ix) => ({
+      id: ix.toString(),
+      url: l.url,
+      title: l.url.replace(/^https?:\/\//, ''),
+    }))
+  }
+  // 先在聊天列表中插入发送的用户消息
+  insertMessage(currentSessionId, newUserMsg)
 
-    const settings = getCurrentSessionMergedSettings()
-    const isChatboxAI = settings.aiProvider === ModelProvider.ChatboxAI
-    const remoteConfig = settingActions.getRemoteConfig()
+  const settings = getCurrentSessionMergedSettings()
+  const isChatboxAI = settings.aiProvider === ModelProvider.ChatboxAI
+  const remoteConfig = settingActions.getRemoteConfig()
 
-    // 根据需要，插入空白的回复消息
-    let newAssistantMsg = createMessage('assistant', '')
-    if (attachments && attachments.length > 0) {
-        if (!newAssistantMsg.status) {
-            newAssistantMsg.status = []
-        }
-        newAssistantMsg.status.push({
-            type: 'sending_file',
-            mode: isChatboxAI ? 'advanced' : 'local',
-        })
+  // 根据需要，插入空白的回复消息
+  let newAssistantMsg = createMessage('assistant', '')
+  if (attachments && attachments.length > 0) {
+    if (!newAssistantMsg.status) {
+      newAssistantMsg.status = []
     }
-    if (links && links.length > 0) {
-        if (!newAssistantMsg.status) {
-            newAssistantMsg.status = []
-        }
-        newAssistantMsg.status.push({
-            type: 'loading_webpage',
-            mode: isChatboxAI ? 'advanced' : 'local',
-        })
+    newAssistantMsg.status.push({
+      type: 'sending_file',
+      mode: isChatboxAI ? 'advanced' : 'local',
+    })
+  }
+  if (links && links.length > 0) {
+    if (!newAssistantMsg.status) {
+      newAssistantMsg.status = []
     }
-    if (needGenerating) {
-        newAssistantMsg.generating = true
-        insertMessage(currentSessionId, newAssistantMsg)
-    }
+    newAssistantMsg.status.push({
+      type: 'loading_webpage',
+      mode: isChatboxAI ? 'advanced' : 'local',
+    })
+  }
+  if (needGenerating) {
+    newAssistantMsg.generating = true
+    insertMessage(currentSessionId, newAssistantMsg)
+  }
 
-    try {
-        // 如果本次发送消息携带了图片，检查当前模型是否支持
-        if (newUserMsg.pictures && newUserMsg.pictures.length > 0) {
-            if (!isModelSupportImageInput(settings)) {
-                // 根据当前 IP，判断是否在错误中推荐 Chatbox AI 4
-                if (remoteConfig.setting_chatboxai_first) {
-                    throw ChatboxAIAPIError.fromCodeName('model_not_support_image', 'model_not_support_image')
-                } else {
-                    throw ChatboxAIAPIError.fromCodeName('model_not_support_image', 'model_not_support_image_2')
-                }
-            }
-        }
-
-        console.log('sessionAction', settings)
-        // 如果本次消息开启了联网问答，需要检查当前模型是否支持
-        if (
-            webBrowsing
-            && !isModelSupportWebBrowsing(settings)
-            && platform.type !== 'desktop'
-        ) {          
-            if (remoteConfig.setting_chatboxai_first) {
-                throw ChatboxAIAPIError.fromCodeName(
-                    'model_not_support_web_browsing',
-                    'model_not_support_web_browsing'
-                )
-            } else {
-                throw ChatboxAIAPIError.fromCodeName(
-                    'model_not_support_web_browsing_2',
-                    'model_not_support_web_browsing_2'
-                )
-            }
-        }
-
-        // 如果本次发送消息携带了附件，应该在这次发送中上传文件并构造文件信息(file uuid)
-        if (attachments && attachments.length > 0) {
-            if (settings.aiProvider === ModelProvider.ChatboxAI) {
-                // Chatbox AI 方案
-                const licenseKey = settingActions.getLicenseKey()
-                const newFiles: MessageFile[] = []
-                for (const attachment of attachments || []) {
-                    const fileUUID = await remote.uploadAndCreateUserFile(licenseKey || '', attachment)
-                    newFiles.push({
-                        id: fileUUID,
-                        name: attachment.name,
-                        fileType: attachment.type,
-                        chatboxAIFileUUID: fileUUID,
-                    })
-                }
-                modifyMessage(currentSessionId, { ...newUserMsg, files: newFiles }, false)
-            } else {
-                // 本地方案
-                const newFiles: MessageFile[] = []
-                const tokenLimitPerFile = Math.ceil(40 * 1000 / attachments.length)
-                for (const attachment of attachments) {
-                    await new Promise((resolve) => setTimeout(resolve, 3000)) // 等待一段时间，方便显示提示
-                    const result = await platform.parseFileLocally(attachment, { tokenLimit: tokenLimitPerFile })
-                    if (!result.isSupported || !result.key) {
-                        // 根据当前 IP，判断是否在错误中推荐 Chatbox AI
-                        if (remoteConfig.setting_chatboxai_first) {
-                            throw ChatboxAIAPIError.fromCodeName(
-                                'model_not_support_file',
-                                'model_not_support_file'
-                            )
-                        } else {
-                            throw ChatboxAIAPIError.fromCodeName(
-                                'model_not_support_file_2',
-                                'model_not_support_file_2'
-                            )
-                        }
-                    }
-                    newFiles.push({
-                        id: result.key,
-                        name: attachment.name,
-                        fileType: attachment.type,
-                        storageKey: result.key,
-                    })
-                }
-                modifyMessage(currentSessionId, { ...newUserMsg, files: newFiles }, false)
-            }
-        }
-        // 如果本次发送消息携带了链接，应该在这次发送中解析链接并构造链接信息(link uuid)
-        if (links && links.length > 0) {
-            if (isChatboxAI) {
-                // Chatbox AI 方案
-                const licenseKey = settingActions.getLicenseKey()
-                const newLinks: MessageLink[] = await Promise.all(
-                    links.map(async (l) => {
-                        const parsed = await remote.parseUserLinkPro({ licenseKey: licenseKey || '', url: l.url })
-                        return {
-                            id: parsed.uuid,
-                            url: l.url,
-                            title: parsed.title,
-                            chatboxAILinkUUID: parsed.uuid,
-                        }
-                    })
-                )
-                modifyMessage(currentSessionId, { ...newUserMsg, links: newLinks }, false)
-            } else {
-                // 本地方案
-                const newLinks: MessageLink[] = []
-                for (const link of links) {
-                    const { key, title } = await localParser.parseUrl(link.url)
-                    newLinks.push({
-                        id: key,
-                        url: link.url,
-                        title,
-                        storageKey: key,
-                    })
-                    // 等待一段时间，方便显示提示
-                    if (links.length === 1) {
-                        await new Promise((resolve) => setTimeout(resolve, 5000))
-                    } else {
-                        await new Promise((resolve) => setTimeout(resolve, 2500))
-                    }
-                }
-                modifyMessage(currentSessionId, { ...newUserMsg, links: newLinks }, false)
-            }
-        }
-    } catch (err: any) {
-        // 如果文件上传失败，一定会出现带有错误信息的回复消息
-        if (!(err instanceof Error)) {
-            err = new Error(`${err}`)
-        }
-        if (
-            !(
-                err instanceof ApiError ||
-                err instanceof NetworkError ||
-                err instanceof AIProviderNoImplementedPaintError
-            )
-        ) {
-            Sentry.captureException(err) // unexpected error should be reported
-        }
-        let errorCode: number | undefined = undefined
-        if (err instanceof BaseError) {
-            errorCode = err.code
-        }
-        newAssistantMsg = {
-            ...newAssistantMsg,
-            generating: false,
-            cancel: undefined,
-            model: await getModelDisplayName(settings, 'chat'),
-            content: '',
-            errorCode,
-            error: `${err.message}`, // 这么写是为了避免类型问题
-            status: [],
-        }
-        if (needGenerating) {
-            modifyMessage(currentSessionId, newAssistantMsg)
+  try {
+    // 如果本次发送消息携带了图片，检查当前模型是否支持
+    if (newUserMsg.pictures && newUserMsg.pictures.length > 0) {
+      if (!isModelSupportImageInput(settings)) {
+        // 根据当前 IP，判断是否在错误中推荐 Chatbox AI 4
+        if (remoteConfig.setting_chatboxai_first) {
+          throw ChatboxAIAPIError.fromCodeName('model_not_support_image', 'model_not_support_image')
         } else {
-            insertMessage(currentSessionId, newAssistantMsg)
+          throw ChatboxAIAPIError.fromCodeName('model_not_support_image', 'model_not_support_image_2')
         }
-        return // 文件上传失败，不再继续生成回复
+      }
     }
-    // 根据需要，生成这条回复消息
+
+    console.log('sessionAction', settings)
+    // 如果本次消息开启了联网问答，需要检查当前模型是否支持
+    if (webBrowsing && !isModelSupportWebBrowsing(settings) && platform.type !== 'desktop') {
+      if (remoteConfig.setting_chatboxai_first) {
+        throw ChatboxAIAPIError.fromCodeName('model_not_support_web_browsing', 'model_not_support_web_browsing')
+      } else {
+        throw ChatboxAIAPIError.fromCodeName('model_not_support_web_browsing_2', 'model_not_support_web_browsing_2')
+      }
+    }
+
+    // 如果本次发送消息携带了附件，应该在这次发送中上传文件并构造文件信息(file uuid)
+    if (attachments && attachments.length > 0) {
+      if (settings.aiProvider === ModelProvider.ChatboxAI) {
+        // Chatbox AI 方案
+        const licenseKey = settingActions.getLicenseKey()
+        const newFiles: MessageFile[] = []
+        for (const attachment of attachments || []) {
+          const fileUUID = await remote.uploadAndCreateUserFile(licenseKey || '', attachment)
+          newFiles.push({
+            id: fileUUID,
+            name: attachment.name,
+            fileType: attachment.type,
+            chatboxAIFileUUID: fileUUID,
+          })
+        }
+        modifyMessage(currentSessionId, { ...newUserMsg, files: newFiles }, false)
+      } else {
+        // 本地方案
+        const newFiles: MessageFile[] = []
+        const tokenLimitPerFile = Math.ceil((40 * 1000) / attachments.length)
+        for (const attachment of attachments) {
+          await new Promise((resolve) => setTimeout(resolve, 3000)) // 等待一段时间，方便显示提示
+          const result = await platform.parseFileLocally(attachment, { tokenLimit: tokenLimitPerFile })
+          if (!result.isSupported || !result.key) {
+            // 根据当前 IP，判断是否在错误中推荐 Chatbox AI
+            if (remoteConfig.setting_chatboxai_first) {
+              throw ChatboxAIAPIError.fromCodeName('model_not_support_file', 'model_not_support_file')
+            } else {
+              throw ChatboxAIAPIError.fromCodeName('model_not_support_file_2', 'model_not_support_file_2')
+            }
+          }
+          newFiles.push({
+            id: result.key,
+            name: attachment.name,
+            fileType: attachment.type,
+            storageKey: result.key,
+          })
+        }
+        modifyMessage(currentSessionId, { ...newUserMsg, files: newFiles }, false)
+      }
+    }
+    // 如果本次发送消息携带了链接，应该在这次发送中解析链接并构造链接信息(link uuid)
+    if (links && links.length > 0) {
+      if (isChatboxAI) {
+        // Chatbox AI 方案
+        const licenseKey = settingActions.getLicenseKey()
+        const newLinks: MessageLink[] = await Promise.all(
+          links.map(async (l) => {
+            const parsed = await remote.parseUserLinkPro({ licenseKey: licenseKey || '', url: l.url })
+            return {
+              id: parsed.uuid,
+              url: l.url,
+              title: parsed.title,
+              chatboxAILinkUUID: parsed.uuid,
+            }
+          })
+        )
+        modifyMessage(currentSessionId, { ...newUserMsg, links: newLinks }, false)
+      } else {
+        // 本地方案
+        const newLinks: MessageLink[] = []
+        for (const link of links) {
+          const { key, title } = await localParser.parseUrl(link.url)
+          newLinks.push({
+            id: key,
+            url: link.url,
+            title,
+            storageKey: key,
+          })
+          // 等待一段时间，方便显示提示
+          if (links.length === 1) {
+            await new Promise((resolve) => setTimeout(resolve, 5000))
+          } else {
+            await new Promise((resolve) => setTimeout(resolve, 2500))
+          }
+        }
+        modifyMessage(currentSessionId, { ...newUserMsg, links: newLinks }, false)
+      }
+    }
+  } catch (err: any) {
+    // 如果文件上传失败，一定会出现带有错误信息的回复消息
+    if (!(err instanceof Error)) {
+      err = new Error(`${err}`)
+    }
+    if (!(err instanceof ApiError || err instanceof NetworkError || err instanceof AIProviderNoImplementedPaintError)) {
+      Sentry.captureException(err) // unexpected error should be reported
+    }
+    let errorCode: number | undefined = undefined
+    if (err instanceof BaseError) {
+      errorCode = err.code
+    }
+    newAssistantMsg = {
+      ...newAssistantMsg,
+      generating: false,
+      cancel: undefined,
+      model: await getModelDisplayName(settings, 'chat'),
+      content: '',
+      errorCode,
+      error: `${err.message}`, // 这么写是为了避免类型问题
+      status: [],
+    }
     if (needGenerating) {
-        return generate(currentSessionId, newAssistantMsg, { webBrowsing })
+      modifyMessage(currentSessionId, newAssistantMsg)
+    } else {
+      insertMessage(currentSessionId, newAssistantMsg)
     }
+    return // 文件上传失败，不再继续生成回复
+  }
+  // 根据需要，生成这条回复消息
+  if (needGenerating) {
+    return generate(currentSessionId, newAssistantMsg, { webBrowsing })
+  }
 }
 
 /**
@@ -798,166 +781,161 @@ export async function submitNewUserMessage(params: {
  * @returns
  */
 export async function generate(sessionId: string, targetMsg: Message, options?: { webBrowsing?: boolean }) {
-    // 获得依赖的数据
-    const store = getDefaultStore()
-    const globalSettings = store.get(atoms.settingsAtom)
-    const configs = await platform.getConfig()
-    const session = getSession(sessionId)
-    if (!session) {
-        return
-    }
-    const settings = session.settings ? mergeSettings(globalSettings, session.settings, session.type) : globalSettings
+  // 获得依赖的数据
+  const store = getDefaultStore()
+  const globalSettings = store.get(atoms.settingsAtom)
+  const configs = await platform.getConfig()
+  const session = getSession(sessionId)
+  if (!session) {
+    return
+  }
+  const settings = session.settings ? mergeSettings(globalSettings, session.settings, session.type) : globalSettings
 
-    // 将消息的状态修改成初始状态
-    const placeholder = session.type === 'picture' ? `[${i18n.t('Please wait about 20 seconds')}]` : '...'
-    targetMsg = {
-        ...targetMsg,
-        content: placeholder,
-        pictures: session.type === 'picture' ? createLoadingPictures(settings.imageGenerateNum) : targetMsg.pictures,
-        cancel: undefined,
-        aiProvider: settings.aiProvider,
-        model: await getModelDisplayName(settings, session.type || 'chat'),
-        style: session.type === 'picture' ? settings.dalleStyle : undefined,
-        generating: true,
-        errorCode: undefined,
-        error: undefined,
-        errorExtra: undefined,
-        status: [],
-        firstTokenLatency: undefined,
-    }
-    if (options?.webBrowsing) {
-        targetMsg.status?.push({ type: 'web_browsing' })
-    }
+  // 将消息的状态修改成初始状态
+  const placeholder = session.type === 'picture' ? `[${i18n.t('Please wait about 20 seconds')}]` : '...'
+  targetMsg = {
+    ...targetMsg,
+    content: placeholder,
+    pictures: session.type === 'picture' ? createLoadingPictures(settings.imageGenerateNum) : targetMsg.pictures,
+    cancel: undefined,
+    aiProvider: settings.aiProvider,
+    model: await getModelDisplayName(settings, session.type || 'chat'),
+    style: session.type === 'picture' ? settings.dalleStyle : undefined,
+    generating: true,
+    errorCode: undefined,
+    error: undefined,
+    errorExtra: undefined,
+    status: [],
+    firstTokenLatency: undefined,
+  }
+  if (options?.webBrowsing) {
+    targetMsg.status?.push({ type: 'web_browsing' })
+  }
 
-    modifyMessage(sessionId, targetMsg)
-    setTimeout(() => {
-        scrollActions.scrollToMessage(targetMsg.id, 'end')
-    }, 50) // 等待消息渲染完成后再滚动到底部，否则会出现滚动不到底部的问题
+  modifyMessage(sessionId, targetMsg)
+  setTimeout(() => {
+    scrollActions.scrollToMessage(targetMsg.id, 'end')
+  }, 50) // 等待消息渲染完成后再滚动到底部，否则会出现滚动不到底部的问题
 
-    // 获取目标消息所在的消息列表（可能是历史消息），获取目标消息的索引
-    let messages = session.messages
-    let targetMsgIx = messages.findIndex((m) => m.id === targetMsg.id)
+  // 获取目标消息所在的消息列表（可能是历史消息），获取目标消息的索引
+  let messages = session.messages
+  let targetMsgIx = messages.findIndex((m) => m.id === targetMsg.id)
+  if (targetMsgIx <= 0) {
+    if (!session.threads) {
+      return
+    }
+    for (const t of session.threads) {
+      messages = t.messages
+      targetMsgIx = messages.findIndex((m) => m.id === targetMsg.id)
+      if (targetMsgIx > 0) {
+        break
+      }
+    }
     if (targetMsgIx <= 0) {
-        if (!session.threads) {
-            return
-        }
-        for (const t of session.threads) {
-            messages = t.messages
-            targetMsgIx = messages.findIndex((m) => m.id === targetMsg.id)
-            if (targetMsgIx > 0) {
-                break
-            }
-        }
-        if (targetMsgIx <= 0) {
-            return
-        }
+      return
     }
+  }
 
-    try {
-        const model = getModel(settings, configs)
-        switch (session.type) {
-            // 对话消息生成
-            case 'chat':
-            case undefined:
-                const startTime = Date.now()
-                let firstTokenLatency: number | undefined = undefined
-                const promptMsgs = await genMessageContext(settings, messages.slice(0, targetMsgIx))
-                const throttledModifyMessage = throttle<onResultChangeWithCancel>((updated) => {
-                    if (!firstTokenLatency && updated.content && updated.content.length > 0) {
-                        firstTokenLatency = Date.now() - startTime
-                    }
-                    targetMsg = {
-                        ...targetMsg,
-                        ...pickBy(updated, identity),                        
-                        status: updated.content ? [] : targetMsg.status,
-                        firstTokenLatency,
-                    }
-                    modifyMessage(sessionId, targetMsg)
-                }, 100)
-                await model.chat(promptMsgs, throttledModifyMessage, options)
-                targetMsg = {
-                    ...targetMsg,
-                    generating: false,
-                    cancel: undefined,
-                    tokensUsed: (targetMsg.content || '').trim().length > 0
-                        ? estimateTokensFromMessages([...promptMsgs, targetMsg])
-                        : undefined,
-                    status: [],
-                }
-                modifyMessage(sessionId, targetMsg, true)
-                break
-            // 图片消息生成
-            case 'picture':
-                // 取当前消息之前最近的一条用户消息作为 prompt
-                let prompt = ''
-                for (let i = targetMsgIx; i >= 0; i--) {
-                    if (messages[i].role === 'user') {
-                        prompt = messages[i].content
-                        break
-                    }
-                }
-                await model.paint(prompt, settings.imageGenerateNum, async (picBase64) => {
-                    const storageKey = `picture:${sessionId}:${targetMsg.id}:${uuidv4()}`
-                    // 图片需要存储到 indexedDB，如果直接使用 OpenAI 返回的图片链接，图片链接将随着时间而失效
-                    await storage.setBlob(storageKey, picBase64)
-
-                    const newPictures = targetMsg.pictures ? [...targetMsg.pictures] : []
-                    const loadingIndex = newPictures.findIndex((p) => p.loading)
-                    if (loadingIndex >= 0) {
-                        newPictures[loadingIndex] = { storageKey }
-                    }
-                    targetMsg = {
-                        ...targetMsg,
-                        pictures: newPictures,
-                        status: [],
-                    }
-                    modifyMessage(sessionId, targetMsg, true)
-                })
-                targetMsg = {
-                    ...targetMsg,
-                    content: '',
-                    generating: false,
-                    cancel: undefined,
-                    status: [],
-                }
-                modifyMessage(sessionId, targetMsg, true)
-                break
-            default:
-                throw new Error(`Unknown session type: ${session.type}, generate failed`)
-        }
-        appleAppStore.tickAfterMessageGenerated()
-    } catch (err: any) {
-        if (!(err instanceof Error)) {
-            err = new Error(`${err}`)
-        }
-        if (
-            !(
-                err instanceof ApiError ||
-                err instanceof NetworkError ||
-                err instanceof AIProviderNoImplementedPaintError
-            )
-        ) {
-            Sentry.captureException(err) // unexpected error should be reported
-        }
-        let errorCode: number | undefined = undefined
-        if (err instanceof BaseError) {
-            errorCode = err.code
-        }
-        targetMsg = {
+  try {
+    const model = getModel(settings, configs)
+    switch (session.type) {
+      // 对话消息生成
+      case 'chat':
+      case undefined:
+        const startTime = Date.now()
+        let firstTokenLatency: number | undefined = undefined
+        const promptMsgs = await genMessageContext(settings, messages.slice(0, targetMsgIx))
+        const throttledModifyMessage = throttle<onResultChangeWithCancel>((updated) => {
+          if (!firstTokenLatency && updated.content && updated.content.length > 0) {
+            firstTokenLatency = Date.now() - startTime
+          }
+          targetMsg = {
             ...targetMsg,
-            generating: false,
-            cancel: undefined,
-            content: targetMsg.content === placeholder ? '' : targetMsg.content,
-            errorCode,
-            error: `${err.message}`, // 这么写是为了避免类型问题
-            errorExtra: {
-                aiProvider: settings.aiProvider,
-                host: err['host'],
-            },
-            status: [],
+            ...pickBy(updated, identity),
+            status: updated.content ? [] : targetMsg.status,
+            firstTokenLatency,
+          }
+          modifyMessage(sessionId, targetMsg)
+        }, 100)
+        await model.chat(promptMsgs, throttledModifyMessage, options)
+        targetMsg = {
+          ...targetMsg,
+          generating: false,
+          cancel: undefined,
+          tokensUsed:
+            (targetMsg.content || '').trim().length > 0
+              ? estimateTokensFromMessages([...promptMsgs, targetMsg])
+              : undefined,
+          status: [],
         }
         modifyMessage(sessionId, targetMsg, true)
+        break
+      // 图片消息生成
+      case 'picture':
+        // 取当前消息之前最近的一条用户消息作为 prompt
+        let prompt = ''
+        for (let i = targetMsgIx; i >= 0; i--) {
+          if (messages[i].role === 'user') {
+            prompt = messages[i].content
+            break
+          }
+        }
+        await model.paint(prompt, settings.imageGenerateNum, async (picBase64) => {
+          const storageKey = `picture:${sessionId}:${targetMsg.id}:${uuidv4()}`
+          // 图片需要存储到 indexedDB，如果直接使用 OpenAI 返回的图片链接，图片链接将随着时间而失效
+          await storage.setBlob(storageKey, picBase64)
+
+          const newPictures = targetMsg.pictures ? [...targetMsg.pictures] : []
+          const loadingIndex = newPictures.findIndex((p) => p.loading)
+          if (loadingIndex >= 0) {
+            newPictures[loadingIndex] = { storageKey }
+          }
+          targetMsg = {
+            ...targetMsg,
+            pictures: newPictures,
+            status: [],
+          }
+          modifyMessage(sessionId, targetMsg, true)
+        })
+        targetMsg = {
+          ...targetMsg,
+          content: '',
+          generating: false,
+          cancel: undefined,
+          status: [],
+        }
+        modifyMessage(sessionId, targetMsg, true)
+        break
+      default:
+        throw new Error(`Unknown session type: ${session.type}, generate failed`)
     }
+    appleAppStore.tickAfterMessageGenerated()
+  } catch (err: any) {
+    if (!(err instanceof Error)) {
+      err = new Error(`${err}`)
+    }
+    if (!(err instanceof ApiError || err instanceof NetworkError || err instanceof AIProviderNoImplementedPaintError)) {
+      Sentry.captureException(err) // unexpected error should be reported
+    }
+    let errorCode: number | undefined = undefined
+    if (err instanceof BaseError) {
+      errorCode = err.code
+    }
+    targetMsg = {
+      ...targetMsg,
+      generating: false,
+      cancel: undefined,
+      content: targetMsg.content === placeholder ? '' : targetMsg.content,
+      errorCode,
+      error: `${err.message}`, // 这么写是为了避免类型问题
+      errorExtra: {
+        aiProvider: settings.aiProvider,
+        host: err['host'],
+      },
+      status: [],
+    }
+    modifyMessage(sessionId, targetMsg, true)
+  }
 }
 
 /**
@@ -966,63 +944,63 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
  * @param msgId 消息ID
  */
 export async function generateMore(sessionId: string, msgId: string, options?: { webBrowsing?: boolean }) {
-    const newAssistantMsg = createMessage('assistant', '...')
-    insertMessageAfter(sessionId, newAssistantMsg, msgId)
-    await generate(sessionId, newAssistantMsg, options)
+  const newAssistantMsg = createMessage('assistant', '...')
+  insertMessageAfter(sessionId, newAssistantMsg, msgId)
+  await generate(sessionId, newAssistantMsg, options)
 }
 
 export async function generateMoreInNewFork(sessionId: string, msgId: string) {
-    await createNewFork(msgId)
-    await generateMore(sessionId, msgId)
+  await createNewFork(msgId)
+  await generateMore(sessionId, msgId)
 }
 
 export async function regenerateInNewFork(sessionId: string, msg: Message) {
-    const messageList = getCurrentMessages()
-    const messageIndex = messageList.findIndex((m) => m.id === msg.id)
-    const previousMessageIndex = messageIndex - 1
-    if (previousMessageIndex < 0) {
-        // 如果目标消息是第一条消息，则直接重新生成
-        generate(sessionId, msg)
-        return
-    }
-    const forkMessage = messageList[previousMessageIndex]
-    await createNewFork(forkMessage.id)
-    return generateMore(sessionId, forkMessage.id, { webBrowsing: !!msg.webBrowsing })
+  const messageList = getCurrentMessages()
+  const messageIndex = messageList.findIndex((m) => m.id === msg.id)
+  const previousMessageIndex = messageIndex - 1
+  if (previousMessageIndex < 0) {
+    // 如果目标消息是第一条消息，则直接重新生成
+    generate(sessionId, msg)
+    return
+  }
+  const forkMessage = messageList[previousMessageIndex]
+  await createNewFork(forkMessage.id)
+  return generateMore(sessionId, forkMessage.id, { webBrowsing: !!msg.webBrowsing })
 }
 
 async function _generateName(sessionId: string, modifyName: (sessionId: string, name: string) => void) {
-    const store = getDefaultStore()
-    const globalSettings = store.get(atoms.settingsAtom)
-    const session = getSession(sessionId)
-    if (!session) {
-        return
+  const store = getDefaultStore()
+  const globalSettings = store.get(atoms.settingsAtom)
+  const session = getSession(sessionId)
+  if (!session) {
+    return
+  }
+  const settings = session.settings ? mergeSettings(globalSettings, session.settings, session.type) : globalSettings
+  const configs = await platform.getConfig()
+  try {
+    const model = getModel(settings, configs)
+    let name = await model.chat(
+      promptFormat.nameConversation(
+        session.messages.filter((m) => m.role !== 'system').slice(0, 4),
+        languageNameMap[settings.language]
+      )
+    )
+    name = name.replace(/['"“”]/g, '')
+    // name = name.slice(0, 10)    // 限制名字长度
+    modifyName(session.id, name)
+  } catch (e: any) {
+    if (!(e instanceof ApiError || e instanceof NetworkError)) {
+      Sentry.captureException(e) // unexpected error should be reported
     }
-    const settings = session.settings ? mergeSettings(globalSettings, session.settings, session.type) : globalSettings
-    const configs = await platform.getConfig()
-    try {
-        const model = getModel(settings, configs)
-        let name = await model.chat(
-            promptFormat.nameConversation(
-                session.messages.filter((m) => m.role !== 'system').slice(0, 4),
-                languageNameMap[settings.language]
-            )
-        )
-        name = name.replace(/['"“”]/g, '')
-        // name = name.slice(0, 10)    // 限制名字长度
-        modifyName(session.id, name)
-    } catch (e: any) {
-        if (!(e instanceof ApiError || e instanceof NetworkError)) {
-            Sentry.captureException(e) // unexpected error should be reported
-        }
-    }
+  }
 }
 
 export async function generateNameAndThreadName(sessionId: string) {
-    return _generateName(sessionId, modifyNameAndThreadName)
+  return _generateName(sessionId, modifyNameAndThreadName)
 }
 
 export async function generateThreadName(sessionId: string) {
-    return _generateName(sessionId, modifyThreadName)
+  return _generateName(sessionId, modifyThreadName)
 }
 
 /**
@@ -1030,150 +1008,150 @@ export async function generateThreadName(sessionId: string) {
  * @param keepNum 保留的会话数量（顶部顺序）
  */
 export function clearConversationList(keepNum: number) {
-    const store = getDefaultStore()
-    const keepSessionIds = store
-        .get(atoms.sortedSessionsAtom)
-        .slice(0, keepNum)
-        .map((s) => s.id) // 这里必须用 id，因为使用写入 sorted 版本会改变顺序
-    store.set(atoms.sessionsAtom, (sessions) => sessions.filter((s) => keepSessionIds.includes(s.id)))
+  const store = getDefaultStore()
+  const keepSessionIds = store
+    .get(atoms.sortedSessionsAtom)
+    .slice(0, keepNum)
+    .map((s) => s.id) // 这里必须用 id，因为使用写入 sorted 版本会改变顺序
+  store.set(atoms.sessionsAtom, (sessions) => sessions.filter((s) => keepSessionIds.includes(s.id)))
 }
 
 /**
  * 从历史消息中生成 prompt 上下文
  */
 async function genMessageContext(settings: Settings, msgs: Message[]) {
-    const {
-        // openaiMaxContextTokens,
-        openaiMaxContextMessageCount,
-    } = settings
-    if (msgs.length === 0) {
-        throw new Error('No messages to replay')
+  const {
+    // openaiMaxContextTokens,
+    openaiMaxContextMessageCount,
+  } = settings
+  if (msgs.length === 0) {
+    throw new Error('No messages to replay')
+  }
+  const head = msgs[0].role === 'system' ? msgs[0] : undefined
+  if (head) {
+    msgs = msgs.slice(1)
+  }
+  let totalLen = head ? estimateTokensFromMessages([head]) : 0
+  let prompts: Message[] = []
+  for (let i = msgs.length - 1; i >= 0; i--) {
+    let msg = msgs[i]
+    // 跳过错误消息
+    if (msg.error || msg.errorCode) {
+      continue
     }
-    const head = msgs[0].role === 'system' ? msgs[0] : undefined
-    if (head) {
-        msgs = msgs.slice(1)
+    const size = estimateTokensFromMessages([msg]) + 20 // 20 作为预估的误差补偿
+    // 只有 OpenAI 才支持上下文 tokens 数量限制
+    if (settings.aiProvider === 'openai') {
+      // if (size + totalLen > openaiMaxContextTokens) {
+      //     break
+      // }
     }
-    let totalLen = head ? estimateTokensFromMessages([head]) : 0
-    let prompts: Message[] = []
-    for (let i = msgs.length - 1; i >= 0; i--) {
-        let msg = msgs[i]
-        // 跳过错误消息
-        if (msg.error || msg.errorCode) {
-            continue
-        }
-        const size = estimateTokensFromMessages([msg]) + 20 // 20 作为预估的误差补偿
-        // 只有 OpenAI 才支持上下文 tokens 数量限制
-        if (settings.aiProvider === 'openai') {
-            // if (size + totalLen > openaiMaxContextTokens) {
-            //     break
-            // }
-        }
-        if (
-            openaiMaxContextMessageCount <= 20 && // 超过20表示不再限制
-            prompts.length >= openaiMaxContextMessageCount + 1 // +1是为了保留用户最后一条输入消息
-        ) {
-            break
-        }
+    if (
+      openaiMaxContextMessageCount <= 20 && // 超过20表示不再限制
+      prompts.length >= openaiMaxContextMessageCount + 1 // +1是为了保留用户最后一条输入消息
+    ) {
+      break
+    }
 
-        // 如果消息中包含本地文件（消息中携带有本地文件的storageKey），则将文件内容也作为 prompt 的一部分
-        if (msg.files && msg.files.length > 0) {
-            for (const [fileIndex, file] of msg.files.entries()) {
-                if (file.storageKey) {
-                    msg = { ...msg } // 复制一份消息，避免修改原始消息
-                    const content = await storage.getBlob(file.storageKey).catch(() => '')
-                    if (content) {
-                        msg.content += `\n\n<ATTACHMENT_FILE>\n`
-                        msg.content += `<FILE_INDEX>File ${fileIndex + 1}</FILE_INDEX>\n`
-                        msg.content += `<FILE_NAME>${file.name}</FILE_NAME>\n`
-                        msg.content += '<FILE_CONTENT>\n'
-                        msg.content += content + '\n'
-                        msg.content += '</FILE_CONTENT>\n'
-                        msg.content += `</ATTACHMENT_FILE>\n`
-                    }
-                }
-            }
+    // 如果消息中包含本地文件（消息中携带有本地文件的storageKey），则将文件内容也作为 prompt 的一部分
+    if (msg.files && msg.files.length > 0) {
+      for (const [fileIndex, file] of msg.files.entries()) {
+        if (file.storageKey) {
+          msg = { ...msg } // 复制一份消息，避免修改原始消息
+          const content = await storage.getBlob(file.storageKey).catch(() => '')
+          if (content) {
+            msg.content += `\n\n<ATTACHMENT_FILE>\n`
+            msg.content += `<FILE_INDEX>File ${fileIndex + 1}</FILE_INDEX>\n`
+            msg.content += `<FILE_NAME>${file.name}</FILE_NAME>\n`
+            msg.content += '<FILE_CONTENT>\n'
+            msg.content += content + '\n'
+            msg.content += '</FILE_CONTENT>\n'
+            msg.content += `</ATTACHMENT_FILE>\n`
+          }
         }
-        // 如果消息中包含本地链接（消息中携带有本地链接的storageKey），则将链接内容也作为 prompt 的一部分
-        if (msg.links && msg.links.length > 0) {
-            for (const [linkIndex, link] of msg.links.entries()) {
-                if (link.storageKey) {
-                    msg = { ...msg }
-                    const content = await storage.getBlob(link.storageKey).catch(() => '')
-                    if (content) {
-                        msg.content += `\n\n<ATTACHMENT_LINK>\n`
-                        msg.content += `<LINK_INDEX>${linkIndex + 1}</LINK_INDEX>\n`
-                        msg.content += `<LINK_URL>${link.url}</LINK_URL>\n`
-                        msg.content += `<LINK_CONTENT>\n`
-                        msg.content += content + '\n'
-                        msg.content += '</LINK_CONTENT>\n'
-                        msg.content += `</ATTACHMENT_LINK>\n`
-                    }
-                }
-            }
+      }
+    }
+    // 如果消息中包含本地链接（消息中携带有本地链接的storageKey），则将链接内容也作为 prompt 的一部分
+    if (msg.links && msg.links.length > 0) {
+      for (const [linkIndex, link] of msg.links.entries()) {
+        if (link.storageKey) {
+          msg = { ...msg }
+          const content = await storage.getBlob(link.storageKey).catch(() => '')
+          if (content) {
+            msg.content += `\n\n<ATTACHMENT_LINK>\n`
+            msg.content += `<LINK_INDEX>${linkIndex + 1}</LINK_INDEX>\n`
+            msg.content += `<LINK_URL>${link.url}</LINK_URL>\n`
+            msg.content += `<LINK_CONTENT>\n`
+            msg.content += content + '\n'
+            msg.content += '</LINK_CONTENT>\n'
+            msg.content += `</ATTACHMENT_LINK>\n`
+          }
         }
+      }
+    }
 
-        prompts = [msg, ...prompts]
-        totalLen += size
-    }
-    if (head) {
-        prompts = [head, ...prompts]
-    }
-    return prompts
+    prompts = [msg, ...prompts]
+    totalLen += size
+  }
+  if (head) {
+    prompts = [head, ...prompts]
+  }
+  return prompts
 }
 
 export function initEmptyChatSession(): Session {
-    const store = getDefaultStore()
-    const settings = store.get(atoms.settingsAtom)
-    const newSession: Session = {
-        id: uuidv4(),
-        name: 'Untitled',
-        type: 'chat',
-        messages: [],
-    }
-    if (settings.defaultPrompt) {
-        newSession.messages.push({
-            id: uuidv4(),
-            role: 'system',
-            content: settings.defaultPrompt || defaults.getDefaultPrompt(),
-            timestamp: Date.now(),
-        })
-    }
-    return newSession
+  const store = getDefaultStore()
+  const settings = store.get(atoms.settingsAtom)
+  const newSession: Session = {
+    id: uuidv4(),
+    name: 'Untitled',
+    type: 'chat',
+    messages: [],
+  }
+  if (settings.defaultPrompt) {
+    newSession.messages.push({
+      id: uuidv4(),
+      role: 'system',
+      content: settings.defaultPrompt || defaults.getDefaultPrompt(),
+      timestamp: Date.now(),
+    })
+  }
+  return newSession
 }
 
 export function initEmptyPictureSession(): Session {
-    return {
+  return {
+    id: uuidv4(),
+    name: 'Untitled',
+    type: 'picture',
+    messages: [
+      {
         id: uuidv4(),
-        name: 'Untitled',
-        type: 'picture',
-        messages: [
-            {
-                id: uuidv4(),
-                role: 'system',
-                content: i18n.t('Image Creator Intro'),
-            },
-        ],
-    }
+        role: 'system',
+        content: i18n.t('Image Creator Intro'),
+      },
+    ],
+  }
 }
 
 export function getSessions() {
-    const store = getDefaultStore()
-    return store.get(atoms.sessionsAtom)
+  const store = getDefaultStore()
+  return store.get(atoms.sessionsAtom)
 }
 
 export function getSortedSessions() {
-    const store = getDefaultStore()
-    return store.get(atoms.sortedSessionsAtom)
+  const store = getDefaultStore()
+  return store.get(atoms.sortedSessionsAtom)
 }
 
 export function getCurrentSession() {
-    const store = getDefaultStore()
-    return store.get(atoms.currentSessionAtom)
+  const store = getDefaultStore()
+  return store.get(atoms.currentSessionAtom)
 }
 
 export function getCurrentMessages() {
-    const store = getDefaultStore()
-    return store.get(atoms.currentMessageListAtom)
+  const store = getDefaultStore()
+  return store.get(atoms.currentMessageListAtom)
 }
 
 /**
@@ -1183,235 +1161,235 @@ export function getCurrentMessages() {
  * @returns 消息所在的话题消息列表
  */
 export function getMessageThreadContext(sessionId: string, messageId: string): Message[] {
-    const session = getSession(sessionId)
-    if (!session) {
-        return []
-    }
-    if (session.messages.find((m) => m.id === messageId)) {
-        return session.messages
-    }
-    if (!session.threads) {
-        return []
-    }
-    for (const t of session.threads) {
-        if (t.messages.find((m) => m.id === messageId)) {
-            return t.messages
-        }
-    }
+  const session = getSession(sessionId)
+  if (!session) {
     return []
+  }
+  if (session.messages.find((m) => m.id === messageId)) {
+    return session.messages
+  }
+  if (!session.threads) {
+    return []
+  }
+  for (const t of session.threads) {
+    if (t.messages.find((m) => m.id === messageId)) {
+      return t.messages
+    }
+  }
+  return []
 }
 
 export function mergeSettings(
-    globalSettings: Settings,
-    sessionSetting: Partial<ModelSettings>,
-    sessionType?: 'picture' | 'chat'
+  globalSettings: Settings,
+  sessionSetting: Partial<ModelSettings>,
+  sessionType?: 'picture' | 'chat'
 ): Settings {
-    let specialSettings = sessionSetting
-    // 过滤掉会话专属设置中不应该存在的设置项，为了兼容旧版本数据和防止疏漏
-    switch (sessionType) {
-        case 'picture':
-            specialSettings = pickPictureSettings(specialSettings as Settings)
-            break
-        case undefined:
-        case 'chat':
-        default:
-            specialSettings = settings2SessionSettings(specialSettings as Settings)
-            break
-    }
-    specialSettings = omit(specialSettings) // 需要 omit 来去除 undefined，否则会覆盖掉全局配置
-    const ret = {
-        ...globalSettings,
-        ...specialSettings, // 会话配置优先级高于全局配置
-    }
-    // 对于自定义模型提供方，只有模型 model 可以被会话配置覆盖
-    if (ret.customProviders) {
-        ret.customProviders = globalSettings.customProviders.map((provider) => {
-            if (specialSettings.customProviders) {
-                const specialProvider = specialSettings.customProviders.find((p) => p.id === provider.id)
-                if (specialProvider) {
-                    return {
-                        ...provider,
-                        model: specialProvider.model, // model 字段的会话配置优先级高于全局配置
-                    }
-                }
-            }
-            return provider
-        })
-    }
-    return ret
+  let specialSettings = sessionSetting
+  // 过滤掉会话专属设置中不应该存在的设置项，为了兼容旧版本数据和防止疏漏
+  switch (sessionType) {
+    case 'picture':
+      specialSettings = pickPictureSettings(specialSettings as Settings)
+      break
+    case undefined:
+    case 'chat':
+    default:
+      specialSettings = settings2SessionSettings(specialSettings as Settings)
+      break
+  }
+  specialSettings = omit(specialSettings) // 需要 omit 来去除 undefined，否则会覆盖掉全局配置
+  const ret = {
+    ...globalSettings,
+    ...specialSettings, // 会话配置优先级高于全局配置
+  }
+  // 对于自定义模型提供方，只有模型 model 可以被会话配置覆盖
+  if (ret.customProviders) {
+    ret.customProviders = globalSettings.customProviders.map((provider) => {
+      if (specialSettings.customProviders) {
+        const specialProvider = specialSettings.customProviders.find((p) => p.id === provider.id)
+        if (specialProvider) {
+          return {
+            ...provider,
+            model: specialProvider.model, // model 字段的会话配置优先级高于全局配置
+          }
+        }
+      }
+      return provider
+    })
+  }
+  return ret
 }
 
 function omit(obj: any) {
-    const ret = { ...obj }
-    for (const key of Object.keys(ret)) {
-        if (ret[key] === undefined) {
-            delete ret[key]
-        }
+  const ret = { ...obj }
+  for (const key of Object.keys(ret)) {
+    if (ret[key] === undefined) {
+      delete ret[key]
     }
-    return ret
+  }
+  return ret
 }
 
 export function getCurrentSessionMergedSettings() {
-    const store = getDefaultStore()
-    const globalSettings = store.get(atoms.settingsAtom)
-    const session = store.get(atoms.currentSessionAtom)
-    if (!session.settings) {
-        return globalSettings
-    }
-    return mergeSettings(globalSettings, session.settings, session.type)
+  const store = getDefaultStore()
+  const globalSettings = store.get(atoms.settingsAtom)
+  const session = store.get(atoms.currentSessionAtom)
+  if (!session.settings) {
+    return globalSettings
+  }
+  return mergeSettings(globalSettings, session.settings, session.type)
 }
 
 export async function exportChat(session: Session, scope: ExportChatScope, format: ExportChatFormat) {
-    const threads: SessionThread[] = scope == 'all_threads' ? session.threads || [] : []
-    threads.push({
-        id: session.id,
-        name: session.threadName || session.name,
-        messages: session.messages,
-        createdAt: Date.now(),
-    })
+  const threads: SessionThread[] = scope == 'all_threads' ? session.threads || [] : []
+  threads.push({
+    id: session.id,
+    name: session.threadName || session.name,
+    messages: session.messages,
+    createdAt: Date.now(),
+  })
 
-    if (format == 'Markdown') {
-        const content = formatChatAsMarkdown(session.name, threads)
-        platform.exporter.exportTextFile(`${session.name}.md`, content)
-    } else if (format == 'TXT') {
-        const content = formatChatAsTxt(session.name, threads)
-        platform.exporter.exportTextFile(`${session.name}.txt`, content)
-    } else if (format == 'HTML') {
-        const content = await formatChatAsHtml(session.name, threads)
-        platform.exporter.exportTextFile(`${session.name}.html`, content)
-    }
+  if (format == 'Markdown') {
+    const content = formatChatAsMarkdown(session.name, threads)
+    platform.exporter.exportTextFile(`${session.name}.md`, content)
+  } else if (format == 'TXT') {
+    const content = formatChatAsTxt(session.name, threads)
+    platform.exporter.exportTextFile(`${session.name}.txt`, content)
+  } else if (format == 'HTML') {
+    const content = await formatChatAsHtml(session.name, threads)
+    platform.exporter.exportTextFile(`${session.name}.html`, content)
+  }
 }
 
 export async function exportCurrentSessionChat(content: ExportChatScope, format: ExportChatFormat) {
-    const store = getDefaultStore()
-    const currentSession = store.get(atoms.currentSessionAtom)
-    await exportChat(currentSession, content, format)
+  const store = getDefaultStore()
+  const currentSession = store.get(atoms.currentSessionAtom)
+  await exportChat(currentSession, content, format)
 }
 
 export async function createNewFork(forkMessageId: string) {
-    const store = getDefaultStore()
-    const currentSession = store.get(atoms.currentSessionAtom)
-    const messageForksHash = currentSession.messageForksHash || {}
+  const store = getDefaultStore()
+  const currentSession = store.get(atoms.currentSessionAtom)
+  const messageForksHash = currentSession.messageForksHash || {}
 
-    const updateFn = (data: Message[]): { data: Message[]; updated: boolean } => {
-        const forkMessageIndex = data.findIndex((m) => m.id === forkMessageId)
-        if (forkMessageIndex < 0) {
-            return { data, updated: false }
-        }
-        const forks = messageForksHash[forkMessageId] || {
-            position: 0,
-            lists: [
-                {
-                    id: `fork_list_${uuidv4()}`,
-                    messages: [],
-                },
-            ],
-            createdAt: Date.now(),
-        }
-        // 下方消息存储到当前游标位置
-        const backupMessages = data.slice(forkMessageIndex + 1)
-        if (backupMessages.length === 0) {
-            return { data, updated: false }
-        }
-        forks.lists[forks.position] = {
-            id: `fork_list_${uuidv4()}`,
-            messages: backupMessages,
-        }
-        // 创建另一个新分支，作为新的游标位置
-        forks.lists.push({
-            id: `fork_list_${uuidv4()}`,
-            messages: [],
-        })
-        forks.position = forks.lists.length - 1
+  const updateFn = (data: Message[]): { data: Message[]; updated: boolean } => {
+    const forkMessageIndex = data.findIndex((m) => m.id === forkMessageId)
+    if (forkMessageIndex < 0) {
+      return { data, updated: false }
+    }
+    const forks = messageForksHash[forkMessageId] || {
+      position: 0,
+      lists: [
+        {
+          id: `fork_list_${uuidv4()}`,
+          messages: [],
+        },
+      ],
+      createdAt: Date.now(),
+    }
+    // 下方消息存储到当前游标位置
+    const backupMessages = data.slice(forkMessageIndex + 1)
+    if (backupMessages.length === 0) {
+      return { data, updated: false }
+    }
+    forks.lists[forks.position] = {
+      id: `fork_list_${uuidv4()}`,
+      messages: backupMessages,
+    }
+    // 创建另一个新分支，作为新的游标位置
+    forks.lists.push({
+      id: `fork_list_${uuidv4()}`,
+      messages: [],
+    })
+    forks.position = forks.lists.length - 1
 
-        messageForksHash[forkMessageId] = forks
-        data = data.slice(0, forkMessageIndex + 1)
+    messageForksHash[forkMessageId] = forks
+    data = data.slice(0, forkMessageIndex + 1)
 
-        // 限制分叉数量，超过20个则清理掉最旧
-        const keys = Object.keys(messageForksHash)
-        if (keys.length > 20) {
-            keys.sort((a, b) => messageForksHash[a].createdAt - messageForksHash[b].createdAt)
-            keys.slice(0, keys.length - 20).forEach((k) => {
-                delete messageForksHash[k]
-            })
-        }
-
-        return { data, updated: true }
+    // 限制分叉数量，超过20个则清理掉最旧
+    const keys = Object.keys(messageForksHash)
+    if (keys.length > 20) {
+      keys.sort((a, b) => messageForksHash[a].createdAt - messageForksHash[b].createdAt)
+      keys.slice(0, keys.length - 20).forEach((k) => {
+        delete messageForksHash[k]
+      })
     }
 
-    let { data, updated } = updateFn(currentSession.messages)
+    return { data, updated: true }
+  }
+
+  let { data, updated } = updateFn(currentSession.messages)
+  if (updated) {
+    modify({ ...currentSession, messages: data, messageForksHash })
+    // scrollActions.scrollToMessage(forkMessageId, 'start')
+    return
+  }
+  for (let i = (currentSession.threads || []).length - 1; i >= 0; i--) {
+    const thread = (currentSession.threads || [])[i]
+    const { data, updated } = updateFn(thread.messages)
     if (updated) {
-        modify({ ...currentSession, messages: data, messageForksHash })
-        // scrollActions.scrollToMessage(forkMessageId, 'start')
-        return
+      modify({
+        ...currentSession,
+        threads: currentSession.threads?.map((t) => (t.id === thread.id ? { ...t, messages: data } : t)),
+        messageForksHash,
+      })
+      // scrollActions.scrollToMessage(forkMessageId, 'start')
+      return
     }
-    for (let i = (currentSession.threads || []).length - 1; i >= 0; i--) {
-        const thread = (currentSession.threads || [])[i]
-        const { data, updated } = updateFn(thread.messages)
-        if (updated) {
-            modify({
-                ...currentSession,
-                threads: currentSession.threads?.map((t) => (t.id === thread.id ? { ...t, messages: data } : t)),
-                messageForksHash,
-            })
-            // scrollActions.scrollToMessage(forkMessageId, 'start')
-            return
-        }
-    }
+  }
 }
 
 export async function switchFork(forkMessageId: string, direction: 'next' | 'prev') {
-    const store = getDefaultStore()
-    const currentSession = store.get(atoms.currentSessionAtom)
-    if (!currentSession.messageForksHash) {
-        return
-    }
-    const messageForksHash = currentSession.messageForksHash
+  const store = getDefaultStore()
+  const currentSession = store.get(atoms.currentSessionAtom)
+  if (!currentSession.messageForksHash) {
+    return
+  }
+  const messageForksHash = currentSession.messageForksHash
 
-    const updateFn = (data: Message[]): { data: Message[]; updated: boolean } => {
-        const forks = messageForksHash[forkMessageId]
-        if (forks.lists.length === 0) {
-            return { data, updated: false }
-        }
-        const forkMessageIndex = data.findIndex((m) => m.id === forkMessageId)
-        if (forkMessageIndex < 0) {
-            return { data, updated: false }
-        }
-        const newPosition =
-            direction === 'next'
-                ? (forks.position + 1) % forks.lists.length
-                : (forks.position - 1 + forks.lists.length) % forks.lists.length
-        // 当前被分叉的消息存储在当前的游标位置
-        forks.lists[forks.position].messages = data.slice(forkMessageIndex + 1)
-        // 当前消息列表中移除被分叉的消息，并且添加新的游标位置的消息
-        data = data.slice(0, forkMessageIndex + 1).concat(forks.lists[newPosition].messages)
-        // 更新游标位置
-        forks.position = newPosition
-        // 清空新的游标位置的消息（因为已经在主分支了，所以清理以节省空间）
-        forks.lists[newPosition].messages = []
-        messageForksHash[forkMessageId] = forks
-        return { data, updated: true }
+  const updateFn = (data: Message[]): { data: Message[]; updated: boolean } => {
+    const forks = messageForksHash[forkMessageId]
+    if (forks.lists.length === 0) {
+      return { data, updated: false }
     }
+    const forkMessageIndex = data.findIndex((m) => m.id === forkMessageId)
+    if (forkMessageIndex < 0) {
+      return { data, updated: false }
+    }
+    const newPosition =
+      direction === 'next'
+        ? (forks.position + 1) % forks.lists.length
+        : (forks.position - 1 + forks.lists.length) % forks.lists.length
+    // 当前被分叉的消息存储在当前的游标位置
+    forks.lists[forks.position].messages = data.slice(forkMessageIndex + 1)
+    // 当前消息列表中移除被分叉的消息，并且添加新的游标位置的消息
+    data = data.slice(0, forkMessageIndex + 1).concat(forks.lists[newPosition].messages)
+    // 更新游标位置
+    forks.position = newPosition
+    // 清空新的游标位置的消息（因为已经在主分支了，所以清理以节省空间）
+    forks.lists[newPosition].messages = []
+    messageForksHash[forkMessageId] = forks
+    return { data, updated: true }
+  }
 
-    let { data, updated } = updateFn(currentSession.messages)
+  let { data, updated } = updateFn(currentSession.messages)
+  if (updated) {
+    modify({ ...currentSession, messages: data, messageForksHash })
+    // scrollActions.scrollToMessage(forkMessageId, 'start')
+    return
+  }
+  for (let i = (currentSession.threads || []).length - 1; i >= 0; i--) {
+    const thread = (currentSession.threads || [])[i]
+    const { data, updated } = updateFn(thread.messages)
     if (updated) {
-        modify({ ...currentSession, messages: data, messageForksHash })
-        // scrollActions.scrollToMessage(forkMessageId, 'start')
-        return
+      modify({
+        ...currentSession,
+        threads: currentSession.threads?.map((t) => (t.id === thread.id ? { ...t, messages: data } : t)),
+        messageForksHash,
+      })
+      // scrollActions.scrollToMessage(forkMessageId, 'start')
+      return
     }
-    for (let i = (currentSession.threads || []).length - 1; i >= 0; i--) {
-        const thread = (currentSession.threads || [])[i]
-        const { data, updated } = updateFn(thread.messages)
-        if (updated) {
-            modify({
-                ...currentSession,
-                threads: currentSession.threads?.map((t) => (t.id === thread.id ? { ...t, messages: data } : t)),
-                messageForksHash,
-            })
-            // scrollActions.scrollToMessage(forkMessageId, 'start')
-            return
-        }
-    }
+  }
 }
 
 /**
@@ -1419,57 +1397,57 @@ export async function switchFork(forkMessageId: string, direction: 'next' | 'pre
  * @param forkMessageId 消息ID
  */
 export async function deleteFork(forkMessageId: string) {
-    const store = getDefaultStore()
-    const currentSession = store.get(atoms.currentSessionAtom)
-    if (!currentSession.messageForksHash) {
-        return
-    }
-    const messageForksHash = currentSession.messageForksHash
+  const store = getDefaultStore()
+  const currentSession = store.get(atoms.currentSessionAtom)
+  if (!currentSession.messageForksHash) {
+    return
+  }
+  const messageForksHash = currentSession.messageForksHash
 
-    const updateFn = (data: Message[]): { data: Message[]; updated: boolean } => {
-        const forkMessageIndex = data.findIndex((m) => m.id === forkMessageId)
-        if (forkMessageIndex < 0) {
-            return { data, updated: false } // 只有找不到消息才返回 false
-        }
-        const forks = messageForksHash[forkMessageId]
-        if (!forks) {
-            return { data, updated: true }
-        }
-        // 删除消息列表中当前分叉的消息
-        data = data.slice(0, forkMessageIndex + 1)
-        // 清理当前分叉
-        forks.lists = [...forks.lists.slice(0, forks.position), ...forks.lists.slice(forks.position + 1)]
-        forks.position = Math.min(forks.position, forks.lists.length - 1)
-        // 如果当前消息已经没有分支，则删除整个消息分叉信息
-        if (forks.lists.length === 0) {
-            delete messageForksHash[forkMessageId]
-            return { data, updated: true }
-        }
-        // 将当前游标位置的消息添加到主消息列表中
-        data = data.concat(forks.lists[forks.position].messages)
-        forks.lists[forks.position].messages = []
-        messageForksHash[forkMessageId] = forks
-        return { data, updated: true }
+  const updateFn = (data: Message[]): { data: Message[]; updated: boolean } => {
+    const forkMessageIndex = data.findIndex((m) => m.id === forkMessageId)
+    if (forkMessageIndex < 0) {
+      return { data, updated: false } // 只有找不到消息才返回 false
     }
+    const forks = messageForksHash[forkMessageId]
+    if (!forks) {
+      return { data, updated: true }
+    }
+    // 删除消息列表中当前分叉的消息
+    data = data.slice(0, forkMessageIndex + 1)
+    // 清理当前分叉
+    forks.lists = [...forks.lists.slice(0, forks.position), ...forks.lists.slice(forks.position + 1)]
+    forks.position = Math.min(forks.position, forks.lists.length - 1)
+    // 如果当前消息已经没有分支，则删除整个消息分叉信息
+    if (forks.lists.length === 0) {
+      delete messageForksHash[forkMessageId]
+      return { data, updated: true }
+    }
+    // 将当前游标位置的消息添加到主消息列表中
+    data = data.concat(forks.lists[forks.position].messages)
+    forks.lists[forks.position].messages = []
+    messageForksHash[forkMessageId] = forks
+    return { data, updated: true }
+  }
 
-    // 更新当前消息列表，如果没有找到消息则自动更新线程消息列表
-    let { data, updated } = updateFn(currentSession.messages)
+  // 更新当前消息列表，如果没有找到消息则自动更新线程消息列表
+  let { data, updated } = updateFn(currentSession.messages)
+  if (updated) {
+    modify({ ...currentSession, messages: data, messageForksHash })
+    return
+  }
+  for (let i = (currentSession.threads || []).length - 1; i >= 0; i--) {
+    const thread = (currentSession.threads || [])[i]
+    const { data, updated } = updateFn(thread.messages)
     if (updated) {
-        modify({ ...currentSession, messages: data, messageForksHash })
-        return
+      modify({
+        ...currentSession,
+        threads: currentSession.threads?.map((t) => (t.id === thread.id ? { ...t, messages: data } : t)),
+        messageForksHash,
+      })
+      return
     }
-    for (let i = (currentSession.threads || []).length - 1; i >= 0; i--) {
-        const thread = (currentSession.threads || [])[i]
-        const { data, updated } = updateFn(thread.messages)
-        if (updated) {
-            modify({
-                ...currentSession,
-                threads: currentSession.threads?.map((t) => (t.id === thread.id ? { ...t, messages: data } : t)),
-                messageForksHash,
-            })
-            return
-        }
-    }
+  }
 }
 
 /**
@@ -1477,47 +1455,47 @@ export async function deleteFork(forkMessageId: string) {
  * @param forkMessageId 消息ID
  */
 export async function expandFork(forkMessageId: string) {
-    const store = getDefaultStore()
-    const currentSession = store.get(atoms.currentSessionAtom)
-    if (!currentSession.messageForksHash) {
-        return
-    }
-    const messageForksHash = currentSession.messageForksHash
+  const store = getDefaultStore()
+  const currentSession = store.get(atoms.currentSessionAtom)
+  if (!currentSession.messageForksHash) {
+    return
+  }
+  const messageForksHash = currentSession.messageForksHash
 
-    const updateFn = (data: Message[]): { data: Message[]; updated: boolean } => {
-        const forkMessageIndex = data.findIndex((m) => m.id === forkMessageId)
-        if (forkMessageIndex < 0) {
-            return { data, updated: false } // 只有找不到消息才返回 false
-        }
-        const forks = messageForksHash[forkMessageId]
-        if (!forks) {
-            return { data, updated: true }
-        }
-        // 将当前消息的所有分叉消息添加到主消息列表中
-        for (const list of forks.lists) {
-            data = data.concat(list.messages)
-        }
-        // 删除当前消息的所有分叉
-        delete messageForksHash[forkMessageId]
-        return { data, updated: true }
+  const updateFn = (data: Message[]): { data: Message[]; updated: boolean } => {
+    const forkMessageIndex = data.findIndex((m) => m.id === forkMessageId)
+    if (forkMessageIndex < 0) {
+      return { data, updated: false } // 只有找不到消息才返回 false
     }
+    const forks = messageForksHash[forkMessageId]
+    if (!forks) {
+      return { data, updated: true }
+    }
+    // 将当前消息的所有分叉消息添加到主消息列表中
+    for (const list of forks.lists) {
+      data = data.concat(list.messages)
+    }
+    // 删除当前消息的所有分叉
+    delete messageForksHash[forkMessageId]
+    return { data, updated: true }
+  }
 
-    // 更新当前消息列表，如果没有找到消息则自动更新线程消息列表
-    let { data, updated } = updateFn(currentSession.messages)
+  // 更新当前消息列表，如果没有找到消息则自动更新线程消息列表
+  let { data, updated } = updateFn(currentSession.messages)
+  if (updated) {
+    modify({ ...currentSession, messages: data, messageForksHash })
+    return
+  }
+  for (let i = (currentSession.threads || []).length - 1; i >= 0; i--) {
+    const thread = (currentSession.threads || [])[i]
+    const { data, updated } = updateFn(thread.messages)
     if (updated) {
-        modify({ ...currentSession, messages: data, messageForksHash })
-        return
+      modify({
+        ...currentSession,
+        threads: currentSession.threads?.map((t) => (t.id === thread.id ? { ...t, messages: data } : t)),
+        messageForksHash,
+      })
+      return
     }
-    for (let i = (currentSession.threads || []).length - 1; i >= 0; i--) {
-        const thread = (currentSession.threads || [])[i]
-        const { data, updated } = updateFn(thread.messages)
-        if (updated) {
-            modify({
-                ...currentSession,
-                threads: currentSession.threads?.map((t) => (t.id === thread.id ? { ...t, messages: data } : t)),
-                messageForksHash,
-            })
-            return
-        }
-    }
+  }
 }

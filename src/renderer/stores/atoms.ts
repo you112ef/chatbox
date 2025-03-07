@@ -1,14 +1,14 @@
 import { RefObject } from 'react'
 import { atom, SetStateAction } from 'jotai'
 import {
-    Session,
-    Toast,
-    Settings,
-    CopilotDetail,
-    MessagePicture,
-    Message,
-    SessionThreadBrief,
-    SettingWindowTab,
+  Session,
+  Toast,
+  Settings,
+  CopilotDetail,
+  MessagePicture,
+  Message,
+  SessionThreadBrief,
+  SettingWindowTab,
 } from '../../shared/types'
 import { selectAtom, atomWithStorage } from 'jotai/utils'
 import { focusAtom } from 'jotai-optics'
@@ -22,34 +22,34 @@ import { mergeSettings } from './sessionActions'
 
 const _settingsAtom = atomWithStorage<Settings>(StorageKey.Settings, defaults.settings(), storage)
 export const settingsAtom = atom(
-    (get) => {
-        const _settings = get(_settingsAtom)
-        // 兼容早期版本
-        const settings = Object.assign({}, defaults.settings(), _settings)
-        settings.shortcuts = Object.assign({}, defaults.settings().shortcuts, _settings.shortcuts)
-        return settings
-    },
-    (get, set, update: SetStateAction<Settings>) => {
-        const settings = get(_settingsAtom)
-        let newSettings = typeof update === 'function' ? update(settings) : update
-        // 考虑关键配置的缺省情况
-        if (!newSettings.apiHost) {
-            newSettings.apiHost = defaults.settings().apiHost
-        }
-        // 如果快捷键配置发生变化，需要重新注册快捷键
-        if (newSettings.shortcuts !== settings.shortcuts) {
-            platform.ensureShortcutConfig(newSettings.shortcuts)
-        }
-        // 如果代理配置发生变化，需要重新注册代理
-        if (newSettings.proxy !== settings.proxy) {
-            platform.ensureProxyConfig({ proxy: newSettings.proxy })
-        }
-        // 如果开机自启动配置发生变化，需要重新设置开机自启动
-        if (Boolean(newSettings.autoLaunch) !== Boolean(settings.autoLaunch)) {
-            platform.ensureAutoLaunch(newSettings.autoLaunch)
-        }
-        set(_settingsAtom, newSettings)
+  (get) => {
+    const _settings = get(_settingsAtom)
+    // 兼容早期版本
+    const settings = Object.assign({}, defaults.settings(), _settings)
+    settings.shortcuts = Object.assign({}, defaults.settings().shortcuts, _settings.shortcuts)
+    return settings
+  },
+  (get, set, update: SetStateAction<Settings>) => {
+    const settings = get(_settingsAtom)
+    let newSettings = typeof update === 'function' ? update(settings) : update
+    // 考虑关键配置的缺省情况
+    if (!newSettings.apiHost) {
+      newSettings.apiHost = defaults.settings().apiHost
     }
+    // 如果快捷键配置发生变化，需要重新注册快捷键
+    if (newSettings.shortcuts !== settings.shortcuts) {
+      platform.ensureShortcutConfig(newSettings.shortcuts)
+    }
+    // 如果代理配置发生变化，需要重新注册代理
+    if (newSettings.proxy !== settings.proxy) {
+      platform.ensureProxyConfig({ proxy: newSettings.proxy })
+    }
+    // 如果开机自启动配置发生变化，需要重新设置开机自启动
+    if (Boolean(newSettings.autoLaunch) !== Boolean(settings.autoLaunch)) {
+      platform.ensureAutoLaunch(newSettings.autoLaunch)
+    }
+    set(_settingsAtom, newSettings)
+  }
 )
 
 export const languageAtom = focusAtom(settingsAtom, (optic) => optic.prop('language'))
@@ -86,37 +86,37 @@ export const myCopilotsAtom = atomWithStorage<CopilotDetail[]>(StorageKey.MyCopi
 const _sessionsAtom = atomWithStorage<Session[]>(StorageKey.ChatSessions, [], storage)
 // sessionsAtom 会话列表，保证至少有一个会话
 export const sessionsAtom = atom(
-    (get) => {
-        let sessions = get(_sessionsAtom)
-        if (sessions.length === 0) {
-            sessions = defaults.sessions()
-        }
-        return sessions
-    },
-    (get, set, update: SetStateAction<Session[]>) => {
-        const sessions = get(_sessionsAtom)
-        let newSessions = typeof update === 'function' ? update(sessions) : update
-        if (newSessions.length === 0) {
-            newSessions = defaults.sessions()
-        }
-        set(_sessionsAtom, newSessions)
+  (get) => {
+    let sessions = get(_sessionsAtom)
+    if (sessions.length === 0) {
+      sessions = defaults.sessions()
     }
+    return sessions
+  },
+  (get, set, update: SetStateAction<Session[]>) => {
+    const sessions = get(_sessionsAtom)
+    let newSessions = typeof update === 'function' ? update(sessions) : update
+    if (newSessions.length === 0) {
+      newSessions = defaults.sessions()
+    }
+    set(_sessionsAtom, newSessions)
+  }
 )
 export const sortedSessionsAtom = atom((get) => {
-    return sortSessions(get(sessionsAtom))
+  return sortSessions(get(sessionsAtom))
 })
 
 export function sortSessions(sessions: Session[]): Session[] {
-    let reversed: Session[] = []
-    let pinned: Session[] = []
-    for (const sess of sessions) {
-        if (sess.starred) {
-            pinned.push(sess)
-            continue
-        }
-        reversed.unshift(sess)
+  let reversed: Session[] = []
+  let pinned: Session[] = []
+  for (const sess of sessions) {
+    if (sess.starred) {
+      pinned.push(sess)
+      continue
     }
-    return pinned.concat(reversed)
+    reversed.unshift(sess)
+  }
+  return pinned.concat(reversed)
 }
 
 // current session and messages
@@ -124,27 +124,27 @@ export function sortSessions(sessions: Session[]): Session[] {
 // 缓存在 localStorage，不对外暴露，属于内部状态
 const _currentSessionIdCachedAtom = atomWithStorage<string | null>('_currentSessionIdCachedAtom', null)
 export const currentSessionIdAtom = atom(
-    (get) => {
-        const idCached = get(_currentSessionIdCachedAtom)
-        const sessions = get(sortedSessionsAtom)
-        if (idCached && sessions.some((session) => session.id === idCached)) {
-            return idCached
-        }
-        return sessions[0].id // 当前会话不存在时，返回列表中第一个会话
-    },
-    (_get, set, update: string) => {
-        set(_currentSessionIdCachedAtom, update)
+  (get) => {
+    const idCached = get(_currentSessionIdCachedAtom)
+    const sessions = get(sortedSessionsAtom)
+    if (idCached && sessions.some((session) => session.id === idCached)) {
+      return idCached
     }
+    return sessions[0].id // 当前会话不存在时，返回列表中第一个会话
+  },
+  (_get, set, update: string) => {
+    set(_currentSessionIdCachedAtom, update)
+  }
 )
 
 export const currentSessionAtom = atom((get) => {
-    const id = get(currentSessionIdAtom)
-    const sessions = get(sessionsAtom)
-    let current = sessions.find((session) => session.id === id)
-    if (!current) {
-        return sessions[sessions.length - 1] // 当前会话不存在时，返回最后一个会话
-    }
-    return current
+  const id = get(currentSessionIdAtom)
+  const sessions = get(sessionsAtom)
+  let current = sessions.find((session) => session.id === id)
+  if (!current) {
+    return sessions[sessions.length - 1] // 当前会话不存在时，返回最后一个会话
+  }
+  return current
 })
 
 export const currentSessionNameAtom = selectAtom(currentSessionAtom, (s) => s.name)
@@ -154,58 +154,58 @@ export const currentSessionAssistantAvatarKeyAtom = selectAtom(currentSessionAto
 // 当前消息列表（包含历史主题下的消息）
 
 export const currentMessageListAtom = selectAtom(currentSessionAtom, (s) => {
-    let messageContext: Message[] = []
-    if (s.threads) {
-        for (const thread of s.threads) {
-            messageContext = messageContext.concat(thread.messages)
-        }
+  let messageContext: Message[] = []
+  if (s.threads) {
+    for (const thread of s.threads) {
+      messageContext = messageContext.concat(thread.messages)
     }
-    // const lastThreadMessageIndex = messageContext.length - 1
-    if (s.messages) {
-        messageContext = messageContext.concat(s.messages)
-    }
-    return messageContext
+  }
+  // const lastThreadMessageIndex = messageContext.length - 1
+  if (s.messages) {
+    messageContext = messageContext.concat(s.messages)
+  }
+  return messageContext
 })
 
 export const currentThreadHistoryHashAtom = selectAtom(currentSessionAtom, (s) => {
-    const ret: { [firstMessageId: string]: SessionThreadBrief } = {}
-    if (s.threads) {
-        for (const thread of s.threads) {
-            if (!thread.messages || thread.messages.length === 0) {
-                continue
-            }
-            ret[thread.messages[0].id] = {
-                id: thread.id,
-                name: thread.name,
-                createdAt: thread.createdAt,
-                createdAtLabel: new Date(thread.createdAt).toLocaleString(),
-                firstMessageId: thread.messages[0].id,
-                messageCount: thread.messages.length,
-            }
-        }
-        if (s.messages && s.messages.length > 0) {
-            ret[s.messages[0].id] = {
-                id: s.id,
-                name: s.threadName || '',
-                firstMessageId: s.messages[0].id,
-                messageCount: s.messages.length,
-            }
-        }
+  const ret: { [firstMessageId: string]: SessionThreadBrief } = {}
+  if (s.threads) {
+    for (const thread of s.threads) {
+      if (!thread.messages || thread.messages.length === 0) {
+        continue
+      }
+      ret[thread.messages[0].id] = {
+        id: thread.id,
+        name: thread.name,
+        createdAt: thread.createdAt,
+        createdAtLabel: new Date(thread.createdAt).toLocaleString(),
+        firstMessageId: thread.messages[0].id,
+        messageCount: thread.messages.length,
+      }
     }
-    return ret
+    if (s.messages && s.messages.length > 0) {
+      ret[s.messages[0].id] = {
+        id: s.id,
+        name: s.threadName || '',
+        firstMessageId: s.messages[0].id,
+        messageCount: s.messages.length,
+      }
+    }
+  }
+  return ret
 })
 
 export const currentSessionSettingsAtom = selectAtom(currentSessionAtom, (session) => session.settings)
 export const currentSessionTypeAtom = selectAtom(currentSessionAtom, (session) => session.type || 'chat') // 老版本 chat 可能是 undefined
 
 export const currentMergedSettingsAtom = atom((get) => {
-    const sessionSettings = get(currentSessionSettingsAtom)
-    const globalSettings = get(settingsAtom)
-    if (!sessionSettings) {
-        return globalSettings
-    }
-    const sessionType = get(currentSessionTypeAtom)
-    return mergeSettings(globalSettings, sessionSettings, sessionType)
+  const sessionSettings = get(currentSessionSettingsAtom)
+  const globalSettings = get(settingsAtom)
+  if (!sessionSettings) {
+    return globalSettings
+  }
+  const sessionType = get(currentSessionTypeAtom)
+  return mergeSettings(globalSettings, sessionSettings, sessionType)
 })
 
 // toasts
@@ -225,9 +225,9 @@ export const realThemeAtom = atom<'light' | 'dark'>('light')
 
 // 远程配置
 export const remoteConfigAtom = atomWithStorage<{ setting_chatboxai_first?: boolean }>(
-    StorageKey.RemoteConfig,
-    {},
-    storage
+  StorageKey.RemoteConfig,
+  {},
+  storage
 )
 
 // message scrolling
@@ -264,12 +264,12 @@ export const artifactDialogHtmlCodeAtom = atom('') // artifact 预览弹窗（�
 
 // 图片展示窗口的图片
 export const pictureShowAtom = atom<{
-    picture: MessagePicture
-    extraButtons?: {
-        onClick: () => void
-        icon: React.ReactNode
-    }[]
-    onSave?: () => void
+  picture: MessagePicture
+  extraButtons?: {
+    onClick: () => void
+    icon: React.ReactNode
+  }[]
+  onSave?: () => void
 } | null>(null)
 
 // 会话编辑窗口

@@ -4,61 +4,61 @@ import BaseConfig from './base-config'
 import SiliconFlow, { siliconFlowModels, modelMeta } from '../models/siliconflow'
 
 export default class SiliconFlowSettingUtil extends BaseConfig implements ModelSettingUtil {
-    async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
-        return `SiliconFlow API (${settings.siliconCloudModel})`
-    }
+  async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
+    return `SiliconFlow API (${settings.siliconCloudModel})`
+  }
 
-    getCurrentModelOptionValue(settings: Settings) {
-        return settings.siliconCloudModel
-    }
+  getCurrentModelOptionValue(settings: Settings) {
+    return settings.siliconCloudModel
+  }
 
-    getLocalOptionGroups(settings: Settings) {
-        return [
-            {
-                options: siliconFlowModels.map((value) => {
-                    return {
-                        label: value,
-                        value: value,
-                    }
-                }),
-            },
-        ]
-    }
+  getLocalOptionGroups(settings: Settings) {
+    return [
+      {
+        options: siliconFlowModels.map((value) => {
+          return {
+            label: value,
+            value: value,
+          }
+        }),
+      },
+    ]
+  }
 
-    async getRemoteOptionGroups(settings: Settings) {
-        const remoteModels = await super.getRemoteOptionGroups(settings).catch(() => [])
-        const siliconFlow = new SiliconFlow(settings)
-        const siliconFlowAPIModels = await siliconFlow.listRemoteModels().catch(() => [])
-        return [
-            ...remoteModels,
-            {
-                options: siliconFlowAPIModels.map((model) => {
-                    return {
-                        label: model,
-                        value: model,
-                    }
-                }),
-            },
-        ]
-    }
+  async getRemoteOptionGroups(settings: Settings) {
+    const remoteModels = await super.getRemoteOptionGroups(settings).catch(() => [])
+    const siliconFlow = new SiliconFlow(settings)
+    const siliconFlowAPIModels = await siliconFlow.listRemoteModels().catch(() => [])
+    return [
+      ...remoteModels,
+      {
+        options: siliconFlowAPIModels.map((model) => {
+          return {
+            label: model,
+            value: model,
+          }
+        }),
+      },
+    ]
+  }
 
-    selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {
-        return {
-            ...settings,
-            siliconCloudModel: selected,
-        }
+  selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {
+    return {
+      ...settings,
+      siliconCloudModel: selected,
     }
+  }
 
-    isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
-        const siliconFlow = new SiliconFlow(settings)
-        return siliconFlow.isSupportVision(settings.siliconCloudModel)
-    }
+  isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
+    const siliconFlow = new SiliconFlow(settings)
+    return siliconFlow.isSupportVision(settings.siliconCloudModel)
+  }
 
-    isCurrentModelSupportToolUse(settings: ModelSettings): boolean {
-        return modelMeta[settings.siliconCloudModel]?.functionCalling ?? false
-    }
+  isCurrentModelSupportToolUse(settings: ModelSettings): boolean {
+    return modelMeta[settings.siliconCloudModel]?.functionCalling ?? false
+  }
 
-    isCurrentModelSupportWebBrowsing(settings: ModelSettings): boolean {
-        return false
-    }
+  isCurrentModelSupportWebBrowsing(settings: ModelSettings): boolean {
+    return false
+  }
 }

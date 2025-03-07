@@ -8,49 +8,49 @@ import { ModelSettings } from '../../../shared/types'
 import { Accordion, AccordionDetails, AccordionSummary } from '../../components/Accordion'
 
 interface ModelConfigProps {
-    settingsEdit: ModelSettings
-    setSettingsEdit: (settings: ModelSettings) => void
+  settingsEdit: ModelSettings
+  setSettingsEdit: (settings: ModelSettings) => void
 }
 
 export default function DeepSeekSetting(props: ModelConfigProps) {
-    const { settingsEdit, setSettingsEdit } = props
-    const { t } = useTranslation()
-    return (
-        <Stack spacing={2}>
-            <PasswordTextField
-                label={t('api key')}
-                value={settingsEdit.deepseekAPIKey}
-                setValue={(value) => {
-                    setSettingsEdit({ ...settingsEdit, deepseekAPIKey: value })
-                }}
-                // helperText={
-                //     <Link
-                //         className="cursor-pointer"
-                //         onClick={() => platform.openLink('https://platform.deepseek.com/api_keys')}
-                //     >
-                //         {t('Get API Key')}
-                //     </Link>
-                // }
-            />
-            <DeepSeekModelSelect
-                value={settingsEdit.deepseekModel}
-                onChange={(value) => setSettingsEdit({ ...settingsEdit, deepseekModel: value })}
-            />
-            <Accordion>
-                <AccordionSummary aria-controls="panel1a-content">
-                    <Typography>{t('Advanced')}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <MaxContextMessageCountSlider
-                        value={settingsEdit.openaiMaxContextMessageCount}
-                        onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
-                    />
-                    <TemperatureSlider
-                        value={settingsEdit.temperature}
-                        onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
-                    />
-                </AccordionDetails>
-            </Accordion>
-        </Stack>
-    )
+  const { settingsEdit, setSettingsEdit } = props
+  const { t } = useTranslation()
+  return (
+    <Stack spacing={2}>
+      <PasswordTextField
+        label={t('api key')}
+        value={settingsEdit.deepseekAPIKey}
+        setValue={(value) => {
+          setSettingsEdit({ ...settingsEdit, deepseekAPIKey: value })
+        }}
+        // helperText={
+        //     <Link
+        //         className="cursor-pointer"
+        //         onClick={() => platform.openLink('https://platform.deepseek.com/api_keys')}
+        //     >
+        //         {t('Get API Key')}
+        //     </Link>
+        // }
+      />
+      <DeepSeekModelSelect
+        value={settingsEdit.deepseekModel}
+        onChange={(value) => setSettingsEdit({ ...settingsEdit, deepseekModel: value })}
+      />
+      <Accordion>
+        <AccordionSummary aria-controls="panel1a-content">
+          <Typography>{t('Advanced')}</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <MaxContextMessageCountSlider
+            value={settingsEdit.openaiMaxContextMessageCount}
+            onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
+          />
+          <TemperatureSlider
+            value={settingsEdit.temperature}
+            onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
+          />
+        </AccordionDetails>
+      </Accordion>
+    </Stack>
+  )
 }

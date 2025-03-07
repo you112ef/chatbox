@@ -5,78 +5,78 @@ import storage from '@/storage'
 import * as base64 from '@/packages/base64'
 
 export function formatChatAsMarkdown(sessionName: string, threads: SessionThread[]) {
-    let content = `# ${sessionName}\n\n`
-    for (let i = 0; i < threads.length; i++) {
-        let thread = threads[i]
-        content += `## ${i + 1}. ${thread.name}\n\n`
-        for (const msg of thread.messages) {
-            content += `**${msg.role}**: \n\n`
-            content += '```\n' + msg.content.replaceAll(/```\w*/g, '') + '\n```\n\n'
-        }
-        content += '\n\n'
+  let content = `# ${sessionName}\n\n`
+  for (let i = 0; i < threads.length; i++) {
+    let thread = threads[i]
+    content += `## ${i + 1}. ${thread.name}\n\n`
+    for (const msg of thread.messages) {
+      content += `**${msg.role}**: \n\n`
+      content += '```\n' + msg.content.replaceAll(/```\w*/g, '') + '\n```\n\n'
     }
-    content += '--------------------\n\n'
-    content += `
+    content += '\n\n'
+  }
+  content += '--------------------\n\n'
+  content += `
 <a href="https://chatboxai.app" style="display: flex; align-items: center;">
 <img src='https://chatboxai.app/icon.png' style='width: 40px; height: 40px; padding-right: 6px'>
 <b style='font-size:30px'>Chatbox AI</b>
 </a>
 `
-    return content
+  return content
 }
 
 export function formatChatAsTxt(sessionName: string, threads: SessionThread[]) {
-    let content = `==================================== [[${sessionName}]] ====================================`
-    for (let i = 0; i < threads.length; i++) {
-        let thread = threads[i]
-        content += `\n\n------------------------------ [${i + 1}. ${thread.name}] ------------------------------\n\n`
-        for (const msg of thread.messages) {
-            content += `▶ ${msg.role.toUpperCase()}: \n\n`
-            content += msg.content + '\n\n\n'
-        }
-        content += '\n\n\n\n'
+  let content = `==================================== [[${sessionName}]] ====================================`
+  for (let i = 0; i < threads.length; i++) {
+    let thread = threads[i]
+    content += `\n\n------------------------------ [${i + 1}. ${thread.name}] ------------------------------\n\n`
+    for (const msg of thread.messages) {
+      content += `▶ ${msg.role.toUpperCase()}: \n\n`
+      content += msg.content + '\n\n\n'
     }
-    content += `========================================================================\n\n`
-    content += `Chatbox AI (https://chatboxai.app)`
-    return content
+    content += '\n\n\n\n'
+  }
+  content += `========================================================================\n\n`
+  content += `Chatbox AI (https://chatboxai.app)`
+  return content
 }
 
 export async function formatChatAsHtml(sessionName: string, threads: SessionThread[]) {
-    let content = '<div class="prose-sm">\n'
-    for (let i = 0; i < threads.length; i++) {
-        let thread = threads[i]
-        content += `<h2>${i + 1}. ${thread.name}</h2>\n`
-        for (const msg of thread.messages) {
-            content += '<div class="mb-4">\n'
-            if (msg.role !== 'assistant') {
-                content += `<p class="text-green-500 text-lg"><b>${msg.role.toUpperCase()}: </b></p>\n`
-            } else {
-                content += `<p class="text-blue-500 text-lg"><b>${msg.role.toUpperCase()}: </b></p>\n`
+  let content = '<div class="prose-sm">\n'
+  for (let i = 0; i < threads.length; i++) {
+    let thread = threads[i]
+    content += `<h2>${i + 1}. ${thread.name}</h2>\n`
+    for (const msg of thread.messages) {
+      content += '<div class="mb-4">\n'
+      if (msg.role !== 'assistant') {
+        content += `<p class="text-green-500 text-lg"><b>${msg.role.toUpperCase()}: </b></p>\n`
+      } else {
+        content += `<p class="text-blue-500 text-lg"><b>${msg.role.toUpperCase()}: </b></p>\n`
+      }
+      content += ReactDOMServer.renderToStaticMarkup(<Markdown hiddenCodeCopyButton>{msg.content}</Markdown>)
+      for (const pic of msg.pictures || []) {
+        let url = pic.url
+        if (pic.storageKey) {
+          const b64 = await storage.getBlob(pic.storageKey)
+          if (b64) {
+            let { type, data } = base64.parseImage(b64)
+            if (type === '') {
+              type = 'image/png'
+              data = b64
             }
-            content += ReactDOMServer.renderToStaticMarkup(<Markdown hiddenCodeCopyButton>{msg.content}</Markdown>)
-            for (const pic of msg.pictures || []) {
-                let url = pic.url
-                if (pic.storageKey) {
-                    const b64 = await storage.getBlob(pic.storageKey)
-                    if (b64) {
-                        let { type, data } = base64.parseImage(b64)
-                        if (type === '') {
-                            type = 'image/png'
-                            data = b64
-                        }
-                        url = `data:${type};base64,${data}`
-                    }
-                }
-                if (url) {
-                    content += `<img src="${url}" class="my-2" />\n`
-                }
-            }
-            content += '</div>\n'
+            url = `data:${type};base64,${data}`
+          }
         }
-        content += '<hr />\n'
+        if (url) {
+          content += `<img src="${url}" class="my-2" />\n`
+        }
+      }
+      content += '</div>\n'
     }
-    content += '</div>\n'
-    return `
+    content += '<hr />\n'
+  }
+  content += '</div>\n'
+  return `
 <!DOCTYPE html>
 <html>
 <head>

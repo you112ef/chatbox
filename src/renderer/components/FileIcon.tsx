@@ -24,60 +24,60 @@ import shellIcon from '../static/icons/icons8-shell-48.png'
 import xmlIcon from '../static/icons/icons8-xml-48.png'
 
 export default function FileIcon(props: { filename: string; className?: string }) {
-    const { filename, className } = props
-    const ext = filename.split('.').pop() || ''
-    // txt, md, html, doc, docx, pdf, excel, pptx, csv, and all text-based files, including code files.
-    const extIconHash: { [ext: string]: string } = {
-        md: mdIcon,
-        htm: htmlIcon,
-        htmx: htmlIcon,
-        html: htmlIcon,
-        doc: docxIcon,
-        docx: docxIcon,
-        pdf: pdfIcon,
-        xls: xlsxIcon,
-        xlsx: xlsxIcon,
-        pptx: pptIcon,
-        csv: csvIcon,
+  const { filename, className } = props
+  const ext = filename.split('.').pop() || ''
+  // txt, md, html, doc, docx, pdf, excel, pptx, csv, and all text-based files, including code files.
+  const extIconHash: { [ext: string]: string } = {
+    md: mdIcon,
+    htm: htmlIcon,
+    htmx: htmlIcon,
+    html: htmlIcon,
+    doc: docxIcon,
+    docx: docxIcon,
+    pdf: pdfIcon,
+    xls: xlsxIcon,
+    xlsx: xlsxIcon,
+    pptx: pptIcon,
+    csv: csvIcon,
 
-        ts: tsIcon,
-        tsx: tsIcon,
-        js: jsIcon,
-        jsx: jsIcon,
-        json: jsonIcon,
-        css: cssIcon,
-        sass: cssIcon,
-        less: cssIcon,
-        scss: cssIcon,
-        styl: cssIcon,
-        stylus: cssIcon,
-        py: pythonIcon,
-        java: javaIcon,
-        c: cIcon,
-        h: cIcon,
-        cpp: cppIcon,
-        cxx: cppIcon,
-        cc: cppIcon,
-        hh: cppIcon,
-        hpp: cppIcon,
-        hxx: cppIcon,
-        php: phpIcon,
-        go: goIcon,
-        swift: swiftIcon,
-        rb: rubyIcon,
-        cs: cSharpIcon,
-        rs: rustIcon,
-        sh: shellIcon,
-        cmd: shellIcon,
-        bat: shellIcon,
-        ps1: shellIcon,
-        bash: shellIcon,
-        xml: xmlIcon,
-    }
-    const src = extIconHash[ext]
-    if (src) {
-        return <img src={src} className={className} />
-    } else {
-        return <FileText className={className} strokeWidth={1} />
-    }
+    ts: tsIcon,
+    tsx: tsIcon,
+    js: jsIcon,
+    jsx: jsIcon,
+    json: jsonIcon,
+    css: cssIcon,
+    sass: cssIcon,
+    less: cssIcon,
+    scss: cssIcon,
+    styl: cssIcon,
+    stylus: cssIcon,
+    py: pythonIcon,
+    java: javaIcon,
+    c: cIcon,
+    h: cIcon,
+    cpp: cppIcon,
+    cxx: cppIcon,
+    cc: cppIcon,
+    hh: cppIcon,
+    hpp: cppIcon,
+    hxx: cppIcon,
+    php: phpIcon,
+    go: goIcon,
+    swift: swiftIcon,
+    rb: rubyIcon,
+    cs: cSharpIcon,
+    rs: rustIcon,
+    sh: shellIcon,
+    cmd: shellIcon,
+    bat: shellIcon,
+    ps1: shellIcon,
+    bash: shellIcon,
+    xml: xmlIcon,
+  }
+  const src = extIconHash[ext]
+  if (src) {
+    return <img src={src} className={className} />
+  } else {
+    return <FileText className={className} strokeWidth={1} />
+  }
 }

@@ -19,7 +19,7 @@ async function _searchRelatedResults(query: string, signal?: AbortSignal) {
         console.error(err)
         return { items: [] }
       }
-    }),
+    })
   )
 
   const items: SearchResultItem[] = []
@@ -57,21 +57,24 @@ export const webSearchTool = {
   function: {
     name: 'web_search',
     description:
-    'a search engine. useful for when you need to answer questions about current events. input should be a search query. prefer English query. query should be short and concise',
+      'a search engine. useful for when you need to answer questions about current events. input should be a search query. prefer English query. query should be short and concise',
     parameters: {
       type: 'object',
       properties: {
         query: {
           type: 'string',
-          description: 'the search query'
-        }
+          description: 'the search query',
+        },
       },
-      required: ['query']
-    }    
-  }
+      required: ['query'],
+    },
+  },
 }
 
-export const webSearchExecutor = async ({ query }: {query: string}, { abortSignal }: {abortSignal?: AbortSignal}) => {
+export const webSearchExecutor = async (
+  { query }: { query: string },
+  { abortSignal }: { abortSignal?: AbortSignal }
+) => {
   const searchResults = await cachified({
     cache,
     key: `search-context:${query}`,

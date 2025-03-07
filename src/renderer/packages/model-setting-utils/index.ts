@@ -16,42 +16,42 @@ import SiliconFlowSettingUtil from './siliconflow-setting-util'
 import XAISettingUtil from './xai-setting-util'
 
 export function getModelSettingUtil(aiProvider: ModelProvider): ModelSettingUtil {
-    const hash: Record<ModelProvider, new () => ModelSettingUtil> = {
-        [ModelProvider.Azure]: AzureSettingUtil,
-        [ModelProvider.ChatboxAI]: ChatboxAISettingUtil,
-        [ModelProvider.ChatGLM6B]: ChatGLMSettingUtil,
-        [ModelProvider.Claude]: ClaudeSettingUtil,
-        [ModelProvider.Gemini]: GeminiSettingUtil,
-        [ModelProvider.Groq]: GroqSettingUtil,
-        [ModelProvider.Ollama]: OllamaSettingUtil,
-        [ModelProvider.OpenAI]: OpenAISettingUtil,
-        [ModelProvider.DeepSeek]: DeepSeekSettingUtil,
-        [ModelProvider.SiliconFlow]: SiliconFlowSettingUtil,
-        [ModelProvider.LMStudio]: LMStudioSettingUtil,
-        [ModelProvider.Perplexity]: PerplexitySettingUtil,
-        [ModelProvider.XAI]: XAISettingUtil,
-        [ModelProvider.Custom]: CustomModelSettingUtil,
-    }
-    const Class = hash[aiProvider]
-    return new Class()
+  const hash: Record<ModelProvider, new () => ModelSettingUtil> = {
+    [ModelProvider.Azure]: AzureSettingUtil,
+    [ModelProvider.ChatboxAI]: ChatboxAISettingUtil,
+    [ModelProvider.ChatGLM6B]: ChatGLMSettingUtil,
+    [ModelProvider.Claude]: ClaudeSettingUtil,
+    [ModelProvider.Gemini]: GeminiSettingUtil,
+    [ModelProvider.Groq]: GroqSettingUtil,
+    [ModelProvider.Ollama]: OllamaSettingUtil,
+    [ModelProvider.OpenAI]: OpenAISettingUtil,
+    [ModelProvider.DeepSeek]: DeepSeekSettingUtil,
+    [ModelProvider.SiliconFlow]: SiliconFlowSettingUtil,
+    [ModelProvider.LMStudio]: LMStudioSettingUtil,
+    [ModelProvider.Perplexity]: PerplexitySettingUtil,
+    [ModelProvider.XAI]: XAISettingUtil,
+    [ModelProvider.Custom]: CustomModelSettingUtil,
+  }
+  const Class = hash[aiProvider]
+  return new Class()
 }
 
 export async function getModelDisplayName(settings: Settings, sessionType: SessionType) {
-    const util = getModelSettingUtil(settings.aiProvider)
-    return await util.getCurrentModelDisplayName(settings, sessionType)
+  const util = getModelSettingUtil(settings.aiProvider)
+  return await util.getCurrentModelDisplayName(settings, sessionType)
 }
 
 export function isModelSupportImageInput(settings: ModelSettings): boolean {
-    const util = getModelSettingUtil(settings.aiProvider)
-    return util.isCurrentModelSupportImageInput(settings)
+  const util = getModelSettingUtil(settings.aiProvider)
+  return util.isCurrentModelSupportImageInput(settings)
 }
 
 export function isModelSupportToolUse(settings: ModelSettings): boolean {
-    const util = getModelSettingUtil(settings.aiProvider)
-    return util.isCurrentModelSupportToolUse(settings)
+  const util = getModelSettingUtil(settings.aiProvider)
+  return util.isCurrentModelSupportToolUse(settings)
 }
 
 export function isModelSupportWebBrowsing(settings: ModelSettings): boolean {
-    const util = getModelSettingUtil(settings.aiProvider)
-    return util.isCurrentModelSupportWebBrowsing(settings)
+  const util = getModelSettingUtil(settings.aiProvider)
+  return util.isCurrentModelSupportWebBrowsing(settings)
 }

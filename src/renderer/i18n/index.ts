@@ -21,72 +21,72 @@ import changelogZhHant from './changelogs/changelog_zh_Hant'
 import changelogEn from './changelogs/changelog_en'
 
 i18n.use(initReactI18next).init({
-    resources: {
-        'zh-Hans': {
-            translation: zhHans,
-        },
-        'zh-Hant': {
-            translation: zhHant,
-        },
-        en: {
-            translation: en,
-        },
-        ja: {
-            translation: ja,
-        },
-        ko: {
-            translation: ko,
-        },
-        ru: {
-            translation: ru,
-        },
-        de: {
-            translation: de,
-        },
-        fr: {
-            translation: fr,
-        },
-        'pt-PT': {
-            translation: ptPT,
-        },
-        es: {
-            translation: es,
-        },
-        ar: {
-            translation: ar,
-        },
-        'it-IT': {
-            translation: itIT,
-        },
-        sv: {
-            translation: sv,
-        },
-        'nb-NO': {
-            translation: nbNO,
-        },
+  resources: {
+    'zh-Hans': {
+      translation: zhHans,
     },
-    fallbackLng: 'en',
+    'zh-Hant': {
+      translation: zhHant,
+    },
+    en: {
+      translation: en,
+    },
+    ja: {
+      translation: ja,
+    },
+    ko: {
+      translation: ko,
+    },
+    ru: {
+      translation: ru,
+    },
+    de: {
+      translation: de,
+    },
+    fr: {
+      translation: fr,
+    },
+    'pt-PT': {
+      translation: ptPT,
+    },
+    es: {
+      translation: es,
+    },
+    ar: {
+      translation: ar,
+    },
+    'it-IT': {
+      translation: itIT,
+    },
+    sv: {
+      translation: sv,
+    },
+    'nb-NO': {
+      translation: nbNO,
+    },
+  },
+  fallbackLng: 'en',
 
-    interpolation: {
-        escapeValue: false,
-    },
+  interpolation: {
+    escapeValue: false,
+  },
 
-    detection: {
-        caches: [],
-    },
+  detection: {
+    caches: [],
+  },
 })
 
 export default i18n
 
 export function changelog() {
-    switch (i18n.language) {
-        case 'zh-Hans':
-            return changelogZhHans
-        case 'zh-Hant':
-            return changelogZhHant
-        case 'en':
-            return changelogEn
-        default:
-            return changelogEn
-    }
+  switch (i18n.language) {
+    case 'zh-Hans':
+      return changelogZhHans
+    case 'zh-Hant':
+      return changelogZhHant
+    case 'en':
+      return changelogEn
+    default:
+      return changelogEn
+  }
 }

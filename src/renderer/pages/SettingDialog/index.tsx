@@ -18,158 +18,158 @@ import { trackingEvent } from '@/packages/event'
 import * as atoms from '@/stores/atoms'
 
 export default function SettingWindow(props: {}) {
-    const { t } = useTranslation()
-    const [settings, setSettings] = useAtom(settingsAtom)
+  const { t } = useTranslation()
+  const [settings, setSettings] = useAtom(settingsAtom)
 
-    const [targetTab, setTargetTab] = useAtom(atoms.openSettingDialogAtom)
-    const handleClose = () => {
-        setTargetTab(null)
+  const [targetTab, setTargetTab] = useAtom(atoms.openSettingDialogAtom)
+  const handleClose = () => {
+    setTargetTab(null)
+  }
+
+  // 标签页控制
+  const [currentTab, setCurrentTab] = React.useState<SettingWindowTab>('ai')
+  useEffect(() => {
+    if (targetTab) {
+      setCurrentTab(targetTab)
     }
-
-    // 标签页控制
-    const [currentTab, setCurrentTab] = React.useState<SettingWindowTab>('ai')
-    useEffect(() => {
-        if (targetTab) {
-            setCurrentTab(targetTab)
-        }
-    }, [targetTab])
-    useEffect(() => {
-        if (targetTab) {
-            trackingEvent('setting_window', { event_category: 'screen_view' })
-        }
-    }, [targetTab])
-
-    const [settingsEdit, _setSettingsEdit] = React.useState<Settings>(settings)
-    const setSettingsEdit = (updated: Settings) => {
-        // 切换模型提供方或模型版本时，需重设 token 配置为默认值
-        // if (settingsEdit?.aiProvider !== updated.aiProvider || settingsEdit?.model !== updated.model) {
-        // updated = { ...updated, ...resetTokenConfig(updated) }
-        // }
-        _setSettingsEdit(updated)
+  }, [targetTab])
+  useEffect(() => {
+    if (targetTab) {
+      trackingEvent('setting_window', { event_category: 'screen_view' })
     }
+  }, [targetTab])
 
-    useEffect(() => {
-        // 仅更新数据，不触发 token 重置
-        _setSettingsEdit(settings)
-    }, [settings])
+  const [settingsEdit, _setSettingsEdit] = React.useState<Settings>(settings)
+  const setSettingsEdit = (updated: Settings) => {
+    // 切换模型提供方或模型版本时，需重设 token 配置为默认值
+    // if (settingsEdit?.aiProvider !== updated.aiProvider || settingsEdit?.model !== updated.model) {
+    // updated = { ...updated, ...resetTokenConfig(updated) }
+    // }
+    _setSettingsEdit(updated)
+  }
 
-    const onSave = () => {
-        setSettings(settingsEdit)
-        handleClose()
-    }
+  useEffect(() => {
+    // 仅更新数据，不触发 token 重置
+    _setSettingsEdit(settings)
+  }, [settings])
 
-    const onCancel = () => {
-        handleClose()
-        setSettingsEdit(settings)
-        // need to restore the previous theme
-        switchTheme(settings.theme ?? Theme.System)
-    }
+  const onSave = () => {
+    setSettings(settingsEdit)
+    handleClose()
+  }
 
-    const changeThemeWithPreview = (newMode: Theme) => {
-        setSettingsEdit({ ...settingsEdit, theme: newMode })
-        switchTheme(newMode)
-    }
+  const onCancel = () => {
+    handleClose()
+    setSettingsEdit(settings)
+    // need to restore the previous theme
+    switchTheme(settings.theme ?? Theme.System)
+  }
 
-    return (
-        <Dialog open={!!targetTab} onClose={onCancel} fullWidth>
-            <DialogTitle>{t('settings')}</DialogTitle>
-            <DialogContent>
-                <Box
-                    sx={{
-                        borderBottom: 1,
-                        borderColor: 'divider',
-                        marginBottom: '20px',
-                    }}
-                >
-                    <Tabs
-                        value={currentTab}
-                        onChange={(_, value) => setCurrentTab(value)}
-                        variant="scrollable"
-                        scrollButtons
-                        allowScrollButtonsMobile
-                    >
-                        <Tab
-                            value="ai"
-                            label={
-                                <span className="inline-flex justify-center items-center">
-                                    <SmartToyOutlinedIcon fontSize="small" style={{ marginRight: 5 }} />
-                                    <span>{t('model')}</span>
-                                </span>
-                            }
-                        />
-                        <Tab
-                            value="display"
-                            label={
-                                <span className="inline-flex justify-center items-center">
-                                    <SettingsBrightnessIcon fontSize="small" style={{ marginRight: 5 }} />
-                                    <span>{t('display')}</span>
-                                </span>
-                            }
-                        />
-                        <Tab
-                            value="chat"
-                            label={
-                                <span className="inline-flex justify-center items-center">
-                                    <ChatOutlinedIcon fontSize="small" style={{ marginRight: 5 }} />
-                                    <span>{t('chat')}</span>
-                                </span>
-                            }
-                        />
-                        <Tab
-                            value="advanced"
-                            label={
-                                <span className="inline-flex justify-center items-center">
-                                    <SettingsIcon fontSize="small" style={{ marginRight: 5 }} />
-                                    <span>{t('advanced')}</span>
-                                </span>
-                            }
-                        />
-                        {/* <Tab label={t('premium')} value='premium' /> */}
-                    </Tabs>
-                </Box>
+  const changeThemeWithPreview = (newMode: Theme) => {
+    setSettingsEdit({ ...settingsEdit, theme: newMode })
+    switchTheme(newMode)
+  }
 
-                {currentTab === 'ai' && (
-                    <ModelSettingTab
-                        settingsEdit={settingsEdit}
-                        setSettingsEdit={(updated) => {
-                            setSettingsEdit({ ...settingsEdit, ...updated })
-                        }}
-                    />
-                )}
+  return (
+    <Dialog open={!!targetTab} onClose={onCancel} fullWidth>
+      <DialogTitle>{t('settings')}</DialogTitle>
+      <DialogContent>
+        <Box
+          sx={{
+            borderBottom: 1,
+            borderColor: 'divider',
+            marginBottom: '20px',
+          }}
+        >
+          <Tabs
+            value={currentTab}
+            onChange={(_, value) => setCurrentTab(value)}
+            variant="scrollable"
+            scrollButtons
+            allowScrollButtonsMobile
+          >
+            <Tab
+              value="ai"
+              label={
+                <span className="inline-flex justify-center items-center">
+                  <SmartToyOutlinedIcon fontSize="small" style={{ marginRight: 5 }} />
+                  <span>{t('model')}</span>
+                </span>
+              }
+            />
+            <Tab
+              value="display"
+              label={
+                <span className="inline-flex justify-center items-center">
+                  <SettingsBrightnessIcon fontSize="small" style={{ marginRight: 5 }} />
+                  <span>{t('display')}</span>
+                </span>
+              }
+            />
+            <Tab
+              value="chat"
+              label={
+                <span className="inline-flex justify-center items-center">
+                  <ChatOutlinedIcon fontSize="small" style={{ marginRight: 5 }} />
+                  <span>{t('chat')}</span>
+                </span>
+              }
+            />
+            <Tab
+              value="advanced"
+              label={
+                <span className="inline-flex justify-center items-center">
+                  <SettingsIcon fontSize="small" style={{ marginRight: 5 }} />
+                  <span>{t('advanced')}</span>
+                </span>
+              }
+            />
+            {/* <Tab label={t('premium')} value='premium' /> */}
+          </Tabs>
+        </Box>
 
-                {currentTab === 'display' && (
-                    <DisplaySettingTab
-                        settingsEdit={settingsEdit}
-                        setSettingsEdit={(updated) => {
-                            setSettingsEdit({ ...settingsEdit, ...updated })
-                        }}
-                        changeModeWithPreview={changeThemeWithPreview}
-                    />
-                )}
+        {currentTab === 'ai' && (
+          <ModelSettingTab
+            settingsEdit={settingsEdit}
+            setSettingsEdit={(updated) => {
+              setSettingsEdit({ ...settingsEdit, ...updated })
+            }}
+          />
+        )}
 
-                {currentTab === 'chat' && (
-                    <ChatSettingTab
-                        settingsEdit={settingsEdit}
-                        setSettingsEdit={(updated) => {
-                            setSettingsEdit({ ...settingsEdit, ...updated })
-                        }}
-                    />
-                )}
+        {currentTab === 'display' && (
+          <DisplaySettingTab
+            settingsEdit={settingsEdit}
+            setSettingsEdit={(updated) => {
+              setSettingsEdit({ ...settingsEdit, ...updated })
+            }}
+            changeModeWithPreview={changeThemeWithPreview}
+          />
+        )}
 
-                {currentTab === 'advanced' && (
-                    <AdvancedSettingTab
-                        settingsEdit={settingsEdit}
-                        setSettingsEdit={(updated) => {
-                            setSettingsEdit({ ...settingsEdit, ...updated })
-                        }}
-                        onCancel={onCancel}
-                    />
-                )}
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={onCancel}>{t('cancel')}</Button>
-                <Button onClick={onSave}>{t('save')}</Button>
-            </DialogActions>
-        </Dialog>
-    )
+        {currentTab === 'chat' && (
+          <ChatSettingTab
+            settingsEdit={settingsEdit}
+            setSettingsEdit={(updated) => {
+              setSettingsEdit({ ...settingsEdit, ...updated })
+            }}
+          />
+        )}
+
+        {currentTab === 'advanced' && (
+          <AdvancedSettingTab
+            settingsEdit={settingsEdit}
+            setSettingsEdit={(updated) => {
+              setSettingsEdit({ ...settingsEdit, ...updated })
+            }}
+            onCancel={onCancel}
+          />
+        )}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onCancel}>{t('cancel')}</Button>
+        <Button onClick={onSave}>{t('save')}</Button>
+      </DialogActions>
+    </Dialog>
+  )
 }

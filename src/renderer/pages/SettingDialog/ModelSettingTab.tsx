@@ -17,69 +17,69 @@ import SiliconflowSetting from './SiliconflowSetting'
 import XAISetting from './XAISetting'
 
 interface ModelConfigProps {
-    settingsEdit: ModelSettings
-    setSettingsEdit: (settings: ModelSettings) => void
+  settingsEdit: ModelSettings
+  setSettingsEdit: (settings: ModelSettings) => void
 }
 
 export default function ModelSettingTab(props: ModelConfigProps) {
-    const { settingsEdit, setSettingsEdit } = props
-    return (
-        <Box>
-            <AIProviderSelect
-                aiProvider={settingsEdit.aiProvider}
-                onSwitchAIProvider={(v) => setSettingsEdit({ ...settingsEdit, aiProvider: v })}
-                selectedCustomProviderId={settingsEdit.selectedCustomProviderId}
-                onSwitchCustomProvider={(v) =>
-                    setSettingsEdit({
-                        ...settingsEdit,
-                        aiProvider: ModelProvider.Custom,
-                        selectedCustomProviderId: v,
-                    })
-                }
-            />
-            <Divider sx={{ marginTop: '10px', marginBottom: '24px' }} />
-            {settingsEdit.aiProvider === ModelProvider.OpenAI && (
-                <OpenAISetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-            )}
-            {settingsEdit.aiProvider === ModelProvider.Azure && (
-                <AzureSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-            )}
-            {settingsEdit.aiProvider === ModelProvider.ChatGLM6B && (
-                <ChatGLM6BSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-            )}
-            {settingsEdit.aiProvider === ModelProvider.ChatboxAI && (
-                <ChatboxAISetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-            )}
-            {settingsEdit.aiProvider === ModelProvider.Claude && (
-                <ClaudeSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-            )}
-            {settingsEdit.aiProvider === ModelProvider.Gemini && (
-                <GeminiSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-            )}
-            {settingsEdit.aiProvider === ModelProvider.Groq && (
-                <GroqSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-            )}
-            {settingsEdit.aiProvider === ModelProvider.Ollama && (
-                <OllamaSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-            )}
-            {settingsEdit.aiProvider === ModelProvider.DeepSeek && (
-                <DeepSeekSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-            )}
-            {settingsEdit.aiProvider === ModelProvider.Custom && (
-                <CustomProviderSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-            )}
-            {settingsEdit.aiProvider === ModelProvider.SiliconFlow && (
-                <SiliconflowSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-            )}
-            {settingsEdit.aiProvider === ModelProvider.LMStudio && (
-                <LMStudioSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-            )}
-            {settingsEdit.aiProvider === ModelProvider.Perplexity && (
-                <PerplexitySetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-            )}
-            {settingsEdit.aiProvider === ModelProvider.XAI && (
-                <XAISetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
-            )}
-        </Box>
-    )
+  const { settingsEdit, setSettingsEdit } = props
+  return (
+    <Box>
+      <AIProviderSelect
+        aiProvider={settingsEdit.aiProvider}
+        onSwitchAIProvider={(v) => setSettingsEdit({ ...settingsEdit, aiProvider: v })}
+        selectedCustomProviderId={settingsEdit.selectedCustomProviderId}
+        onSwitchCustomProvider={(v) =>
+          setSettingsEdit({
+            ...settingsEdit,
+            aiProvider: ModelProvider.Custom,
+            selectedCustomProviderId: v,
+          })
+        }
+      />
+      <Divider sx={{ marginTop: '10px', marginBottom: '24px' }} />
+      {settingsEdit.aiProvider === ModelProvider.OpenAI && (
+        <OpenAISetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+      )}
+      {settingsEdit.aiProvider === ModelProvider.Azure && (
+        <AzureSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+      )}
+      {settingsEdit.aiProvider === ModelProvider.ChatGLM6B && (
+        <ChatGLM6BSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+      )}
+      {settingsEdit.aiProvider === ModelProvider.ChatboxAI && (
+        <ChatboxAISetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+      )}
+      {settingsEdit.aiProvider === ModelProvider.Claude && (
+        <ClaudeSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+      )}
+      {settingsEdit.aiProvider === ModelProvider.Gemini && (
+        <GeminiSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+      )}
+      {settingsEdit.aiProvider === ModelProvider.Groq && (
+        <GroqSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+      )}
+      {settingsEdit.aiProvider === ModelProvider.Ollama && (
+        <OllamaSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+      )}
+      {settingsEdit.aiProvider === ModelProvider.DeepSeek && (
+        <DeepSeekSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+      )}
+      {settingsEdit.aiProvider === ModelProvider.Custom && (
+        <CustomProviderSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+      )}
+      {settingsEdit.aiProvider === ModelProvider.SiliconFlow && (
+        <SiliconflowSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+      )}
+      {settingsEdit.aiProvider === ModelProvider.LMStudio && (
+        <LMStudioSetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+      )}
+      {settingsEdit.aiProvider === ModelProvider.Perplexity && (
+        <PerplexitySetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+      )}
+      {settingsEdit.aiProvider === ModelProvider.XAI && (
+        <XAISetting settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
+      )}
+    </Box>
+  )
 }

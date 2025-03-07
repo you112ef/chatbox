@@ -7,33 +7,33 @@ import { debounce } from 'lodash'
  * @returns
  */
 export default function ExitFullscreenButton() {
-    const [isFullscreen, setIsFullscreen] = useState(false)
-    useEffect(() => {
-        const checkFullscreen = async () => {
-            const isFullscreen = await platform.isFullscreen()
-            setIsFullscreen(isFullscreen)
-        }
-        // 初始检查
-        checkFullscreen()
-        // 监听窗口变化事件
-        const handleResize = debounce(() => {
-            checkFullscreen()
-        }, 1 * 1000)
-        window.addEventListener('resize', handleResize)
-        return () => {
-            window.removeEventListener('resize', handleResize)
-        }
-    }, [])
-    const onClick = () => {
-        platform.setFullscreen(false)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  useEffect(() => {
+    const checkFullscreen = async () => {
+      const isFullscreen = await platform.isFullscreen()
+      setIsFullscreen(isFullscreen)
     }
-    if (!isFullscreen) {
-        return null
+    // 初始检查
+    checkFullscreen()
+    // 监听窗口变化事件
+    const handleResize = debounce(() => {
+      checkFullscreen()
+    }, 1 * 1000)
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
     }
-    return (
-        <div
-            className="fixed top-0 left-1/2 -translate-x-1/2 w-full h-3 cursor-move hover:bg-gray-400/20"
-            onClick={onClick}
-        ></div>
-    )
+  }, [])
+  const onClick = () => {
+    platform.setFullscreen(false)
+  }
+  if (!isFullscreen) {
+    return null
+  }
+  return (
+    <div
+      className="fixed top-0 left-1/2 -translate-x-1/2 w-full h-3 cursor-move hover:bg-gray-400/20"
+      onClick={onClick}
+    ></div>
+  )
 }

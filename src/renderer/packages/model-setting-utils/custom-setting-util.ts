@@ -4,70 +4,70 @@ import * as settingActions from '../../stores/settingActions'
 import BaseConfig from './base-config'
 
 export default class CustomModelSettingUtil extends BaseConfig implements ModelSettingUtil {
-    async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
-        const customProvider = settings.customProviders?.find(
-            (provider) => provider.id === settings.selectedCustomProviderId
-        )
-        if (!customProvider) {
-            return 'unknown'
-        }
-        return `${customProvider.name}(${customProvider.model})`
+  async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
+    const customProvider = settings.customProviders?.find(
+      (provider) => provider.id === settings.selectedCustomProviderId
+    )
+    if (!customProvider) {
+      return 'unknown'
     }
+    return `${customProvider.name}(${customProvider.model})`
+  }
 
-    getCurrentModelOptionValue(settings: Settings) {
-        const customProvider = settings.customProviders?.find(
-            (provider) => provider.id === settings.selectedCustomProviderId
-        )
-        if (!customProvider) {
-            return 'unknown'
-        }
-        return customProvider.model
+  getCurrentModelOptionValue(settings: Settings) {
+    const customProvider = settings.customProviders?.find(
+      (provider) => provider.id === settings.selectedCustomProviderId
+    )
+    if (!customProvider) {
+      return 'unknown'
     }
+    return customProvider.model
+  }
 
-    getLocalOptionGroups(settings: Settings) {
-        const customProvider = settings.customProviders?.find(
-            (provider) => provider.id === settings.selectedCustomProviderId
-        )
-        if (!customProvider) {
-            return []
-        }
-        const models = customProvider.modelOptions || []
-        if (!models.includes(customProvider.model)) {
-            models.push(customProvider.model)
-        }
-        return [
-            {
-                options: models.map((model) => ({
-                    label: model,
-                    value: model,
-                })),
-            },
-        ]
+  getLocalOptionGroups(settings: Settings) {
+    const customProvider = settings.customProviders?.find(
+      (provider) => provider.id === settings.selectedCustomProviderId
+    )
+    if (!customProvider) {
+      return []
     }
+    const models = customProvider.modelOptions || []
+    if (!models.includes(customProvider.model)) {
+      models.push(customProvider.model)
+    }
+    return [
+      {
+        options: models.map((model) => ({
+          label: model,
+          value: model,
+        })),
+      },
+    ]
+  }
 
-    async getRemoteOptionGroups(settings: Settings) {
-        return []
-    }
+  async getRemoteOptionGroups(settings: Settings) {
+    return []
+  }
 
-    selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {
-        const globalSettings = settingActions.getSettings()
-        const selectedCustomProviderId = settings?.selectedCustomProviderId || globalSettings.selectedCustomProviderId
-        const customProviders = globalSettings.customProviders.map((provider) => {
-            if (provider.id === selectedCustomProviderId) {
-                return { ...provider, model: selected }
-            }
-            return provider
-        })
-        return {
-            ...settings,
-            customProviders,
-        }
+  selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {
+    const globalSettings = settingActions.getSettings()
+    const selectedCustomProviderId = settings?.selectedCustomProviderId || globalSettings.selectedCustomProviderId
+    const customProviders = globalSettings.customProviders.map((provider) => {
+      if (provider.id === selectedCustomProviderId) {
+        return { ...provider, model: selected }
+      }
+      return provider
+    })
+    return {
+      ...settings,
+      customProviders,
     }
+  }
 
-    isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
-        return true
-    }
-    isCurrentModelSupportToolUse(settings: Settings): boolean {
-        return false
-    }
+  isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
+    return true
+  }
+  isCurrentModelSupportToolUse(settings: Settings): boolean {
+    return false
+  }
 }

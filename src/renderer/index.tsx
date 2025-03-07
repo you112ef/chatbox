@@ -24,7 +24,7 @@ import './setup/protect'
 
 // 引入移动端安全区域代码，主要为了解决异形屏幕的问题
 if (CHATBOX_BUILD_TARGET === 'mobile_app' && CHATBOX_BUILD_PLATFORM === 'ios') {
-    import('./setup/mobile_safe_area')
+  import('./setup/mobile_safe_area')
 }
 
 // 解决移动端浏览器地址栏导致高度计算问题
@@ -40,9 +40,9 @@ import './setup/storage_clear'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
 )
 
 // If you want to start measuring performance in your app, pass a function

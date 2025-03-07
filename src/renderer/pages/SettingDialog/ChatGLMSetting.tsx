@@ -8,67 +8,64 @@ import { Accordion, AccordionDetails, AccordionSummary } from '../../components/
 import platform from '../../platform'
 
 interface ModelConfigProps {
-    settingsEdit: ModelSettings
-    setSettingsEdit: (settings: ModelSettings) => void
+  settingsEdit: ModelSettings
+  setSettingsEdit: (settings: ModelSettings) => void
 }
 
 export default function ChatGLM6BSetting(props: ModelConfigProps) {
-    const { settingsEdit, setSettingsEdit } = props
-    const { t } = useTranslation()
-    const isSmallScreen = useIsSmallScreen()
-    return (
-        <Stack spacing={2}>
-            <TextField
-                placeholder="http://localhost:8000"
-                autoFocus={!isSmallScreen}
-                margin="dense"
-                label={t('ChatGLM-6B URL')}
-                type="text"
-                fullWidth
-                variant="outlined"
-                value={settingsEdit.chatglm6bUrl}
-                onChange={(e) =>
-                    setSettingsEdit({
-                        ...settingsEdit,
-                        chatglm6bUrl: e.target.value.trim(),
-                    })
-                }
-                helperText={
-                    <>
-                        <Trans
-                            i18nKey="ChatGLM-6B URL Helper"
-                            components={[
-                                <a
-                                    href={'https://github.com/THUDM/ChatGLM-6B#api%E9%83%A8%E7%BD%B2'}
-                                    target="_blank"
-                                ></a>,
-                                <a href={'https://github.com/THUDM/ChatGLM-6B'} target="_blank"></a>,
-                            ]}
-                        />
-                        {platform.type === 'web' && (
-                            <>
-                                <br />
-                                <Trans i18nKey="ChatGLM-6B Warnning for Chatbox-Web" />
-                            </>
-                        )}
-                    </>
-                }
+  const { settingsEdit, setSettingsEdit } = props
+  const { t } = useTranslation()
+  const isSmallScreen = useIsSmallScreen()
+  return (
+    <Stack spacing={2}>
+      <TextField
+        placeholder="http://localhost:8000"
+        autoFocus={!isSmallScreen}
+        margin="dense"
+        label={t('ChatGLM-6B URL')}
+        type="text"
+        fullWidth
+        variant="outlined"
+        value={settingsEdit.chatglm6bUrl}
+        onChange={(e) =>
+          setSettingsEdit({
+            ...settingsEdit,
+            chatglm6bUrl: e.target.value.trim(),
+          })
+        }
+        helperText={
+          <>
+            <Trans
+              i18nKey="ChatGLM-6B URL Helper"
+              components={[
+                <a href={'https://github.com/THUDM/ChatGLM-6B#api%E9%83%A8%E7%BD%B2'} target="_blank"></a>,
+                <a href={'https://github.com/THUDM/ChatGLM-6B'} target="_blank"></a>,
+              ]}
             />
-            <Accordion>
-                <AccordionSummary aria-controls="panel1a-content">
-                    <Typography>{t('Advanced')}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <MaxContextMessageCountSlider
-                        value={settingsEdit.openaiMaxContextMessageCount}
-                        onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
-                    />
-                    <TemperatureSlider
-                        value={settingsEdit.temperature}
-                        onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
-                    />
-                </AccordionDetails>
-            </Accordion>
-        </Stack>
-    )
+            {platform.type === 'web' && (
+              <>
+                <br />
+                <Trans i18nKey="ChatGLM-6B Warnning for Chatbox-Web" />
+              </>
+            )}
+          </>
+        }
+      />
+      <Accordion>
+        <AccordionSummary aria-controls="panel1a-content">
+          <Typography>{t('Advanced')}</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <MaxContextMessageCountSlider
+            value={settingsEdit.openaiMaxContextMessageCount}
+            onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
+          />
+          <TemperatureSlider
+            value={settingsEdit.temperature}
+            onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
+          />
+        </AccordionDetails>
+      </Accordion>
+    </Stack>
+  )
 }
