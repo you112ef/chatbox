@@ -1,6 +1,14 @@
 import { Message } from 'src/shared/types'
 import Base from './base'
 
+class MockModel extends Base {
+    public name = 'MockModel'
+
+    isSupportToolUse() {
+        return false
+    }
+}
+
 // Define your tests
 describe('SequenceMessages', () => {
     // Each test case
@@ -175,8 +183,8 @@ L3
     ]
     cases.forEach(({ name, input, expected }) => {
         test(name, () => {
-            const base = new Base()
-            const got = base.sequenceMessages(input)
+            const model = new MockModel()
+            const got = model.sequenceMessages(input)
 
             expect(got.length).toBe(expected.length)
 

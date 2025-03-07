@@ -333,11 +333,9 @@ function _Message(props: Props) {
                 'msg-block',
                 'px-2 py-1.5',
                 msg.generating ? 'rendering' : 'render-done',
-                {
-                    user: 'user-msg',
-                    system: 'system-msg',
-                    assistant: 'assistant-msg',
-                }[msg?.role || 'user'],
+                { user: 'user-msg', system: 'system-msg', assistant: 'assistant-msg', tool: 'tool-msg' }[
+                    msg.role || 'user'
+                ],
                 className,
                 widthFull ? 'w-full' : 'max-w-4xl mx-auto'
             )}
@@ -460,6 +458,7 @@ function _Message(props: Props) {
                                             <SettingsIcon fontSize="small" />
                                         </Avatar>
                                     ),
+                                tool: null,
                             }[msg.role]
                         }
                     </Box>
@@ -492,7 +491,11 @@ function _Message(props: Props) {
                                     </Box>
                                     {!isCollapsedReasoning && (
                                         <Box sx={{ mt: 1 }}>
-                                            <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-line' }}>
+                                            <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                                sx={{ whiteSpace: 'pre-line' }}
+                                            >
                                                 {msg.reasoningContent}
                                             </Typography>
                                         </Box>
@@ -544,11 +547,11 @@ function _Message(props: Props) {
                                                     extraButtons:
                                                         msg.role === 'assistant' && platform.type === 'mobile'
                                                             ? [
-                                                                {
-                                                                    onClick: onReport,
-                                                                    icon: <ReportIcon />,
-                                                                },
-                                                            ]
+                                                                  {
+                                                                      onClick: onReport,
+                                                                      icon: <ReportIcon />,
+                                                                  },
+                                                              ]
                                                             : undefined,
                                                 })
                                             }}
@@ -588,9 +591,7 @@ function _Message(props: Props) {
                                     setPreview={setPreviewArtifact}
                                 />
                             )}
-                            {msg.webBrowsing && (
-                                <MessageWebBrowsing webBrowsing={msg.webBrowsing} />
-                            )}
+                            {msg.webBrowsing && <MessageWebBrowsing webBrowsing={msg.webBrowsing} />}
                             {tips.length > 0 && (
                                 <Typography variant="body2" sx={{ opacity: 0.5 }} className="pb-1">
                                     {tips.join(', ')}
@@ -613,11 +614,11 @@ function _Message(props: Props) {
                                             opacity: 1,
                                             ...(fixedButtonGroup
                                                 ? {
-                                                    position: 'fixed',
-                                                    bottom: dom.getInputBoxHeight() + 4 + 'px',
-                                                    zIndex: 100,
-                                                    marginBottom: 'var(--mobile-safe-area-inset-bottom, 0px)',
-                                                }
+                                                      position: 'fixed',
+                                                      bottom: dom.getInputBoxHeight() + 4 + 'px',
+                                                      zIndex: 100,
+                                                      marginBottom: 'var(--mobile-safe-area-inset-bottom, 0px)',
+                                                  }
                                                 : {}),
                                             backgroundColor:
                                                 theme.palette.mode === 'dark'
@@ -665,22 +666,22 @@ function _Message(props: Props) {
                                         {
                                             // Chatbox-AI 模型不支持编辑消息
                                             !msg.model?.startsWith('Chatbox-AI') &&
-                                            // 图片会话中，助手消息无需编辑
-                                            !(msg.role === 'assistant' && props.sessionType === 'picture') && (
-                                                <Tooltip title={t('edit')} placement="top">
-                                                    <IconButton
-                                                        aria-label="edit"
-                                                        color={
-                                                            props.sessionType === 'picture'
-                                                                ? 'secondary'
-                                                                : 'primary'
-                                                        }
-                                                        onClick={onEditClick}
-                                                    >
-                                                        <EditIcon fontSize="small" />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            )
+                                                // 图片会话中，助手消息无需编辑
+                                                !(msg.role === 'assistant' && props.sessionType === 'picture') && (
+                                                    <Tooltip title={t('edit')} placement="top">
+                                                        <IconButton
+                                                            aria-label="edit"
+                                                            color={
+                                                                props.sessionType === 'picture'
+                                                                    ? 'secondary'
+                                                                    : 'primary'
+                                                            }
+                                                            onClick={onEditClick}
+                                                        >
+                                                            <EditIcon fontSize="small" />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                )
                                         }
                                         {!(props.sessionType === 'picture' && msg.role === 'assistant') && (
                                             <Tooltip title={t('copy')} placement="top">
@@ -740,9 +741,7 @@ function _Message(props: Props) {
                                                     {t('report')}
                                                 </MenuItem>
                                             )}
-                                            <ConfirmDeleteMenuItem
-                                                onDelete={onDelMsg}
-                                            />
+                                            <ConfirmDeleteMenuItem onDelete={onDelMsg} />
                                         </StyledMenu>
                                     </ButtonGroup>
                                 </span>
