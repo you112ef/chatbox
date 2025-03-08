@@ -34,7 +34,6 @@ export default function useModelConfig(settings: Settings, aiProvider?: ModelPro
 
   return {
     optionGroups,
-    currentModelOptionValue,
     currentOption: {
       label: currentModelOptionLabel,
       value: currentModelOptionValue,

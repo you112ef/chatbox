@@ -21,8 +21,7 @@ export function ChatModelSelector(props: {}) {
   const theme = useTheme()
   const currentSessionId = useAtomValue(atoms.currentSessionIdAtom)
 
-  const { optionGroups, currentModelOptionValue, currentOption, refreshWithRemoteOptionGroups } =
-    useModelConfig(currentMergedSettings)
+  const { optionGroups, currentOption, refreshWithRemoteOptionGroups } = useModelConfig(currentMergedSettings)
 
   const modelSettingUtil = getModelSettingUtil(currentMergedSettings.aiProvider)
 
@@ -147,7 +146,7 @@ export function ChatModelSelector(props: {}) {
                 ...group.options.map((option) => (
                   <MenuItem
                     key={`group-${index}-option-${option.value}`}
-                    selected={option.value === currentModelOptionValue}
+                    selected={option.value === currentOption.value}
                     onClick={() => handleMenuItemSelect(option.value)}
                     dense
                   >
