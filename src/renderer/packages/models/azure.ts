@@ -8,6 +8,8 @@ import {
   populateOSeriesMessage,
   isOSeriesModel,
 } from './openai'
+import * as settingActions from '@/stores/settingActions'
+
 
 interface Options {
   azureEndpoint: string
@@ -35,7 +37,7 @@ export default class AzureOpenAI extends Base {
   }
 
   getApiVersion() {
-    const apiVersion = '2023-12-01-preview'
+    const apiVersion = settingActions.getSettings().azureApiVersion
     return apiVersion
   }
 

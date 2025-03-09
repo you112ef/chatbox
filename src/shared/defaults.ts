@@ -15,6 +15,7 @@ export function settings(): Settings {
     azureDeploymentNameOptions: [],
     azureDalleDeploymentName: 'dall-e-3',
     azureEndpoint: '',
+    azureApiVersion: '2024-05-01-preview',
     chatglm6bUrl: '',
     model: 'gpt-4o',
     openaiCustomModelOptions: [],

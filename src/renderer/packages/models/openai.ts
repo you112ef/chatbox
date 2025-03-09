@@ -445,7 +445,6 @@ export async function populateOSeriesMessage(
 
 export async function populateOpenAIMessageText(rawMessages: Message[]): Promise<OpenAIMessage[]> {
   const messages: OpenAIMessage[] = rawMessages.map((m) => ({
-    id: m.id,
     tool_call_id: m.role === 'tool' ? m.id : undefined,
     role: m.role,
     content: m.content,
@@ -501,7 +500,6 @@ Current date: ${new Date().toISOString()}
 
 // OpenAIMessage OpenAI API 消息类型。（对于业务追加的字段，应该放到 Message 中）
 export interface OpenAIMessage {
-  id: string
   role: 'system' | 'user' | 'assistant' | 'tool'
   content: string
   name?: string
@@ -509,7 +507,6 @@ export interface OpenAIMessage {
 
 // vision 版本的 OpenAI 消息类型
 export interface OpenAIMessageVision {
-  id: string
   role: 'system' | 'user' | 'assistant' | 'tool'
   content:
     | string

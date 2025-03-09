@@ -256,6 +256,7 @@ export interface ModelSettings {
   azureDeploymentNameOptions: string[]
   azureDalleDeploymentName: string // dall-e-3 的部署名称
   azureApikey: string
+  azureApiVersion: string
 
   // chatglm-6b
   chatglm6bUrl: string

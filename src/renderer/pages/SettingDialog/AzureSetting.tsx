@@ -37,6 +37,21 @@ export default function AzureSetting(props: ModelConfigProps) {
           })
         }
       />
+      <TextField
+        placeholder="2024-05-01-preview"
+        margin="dense"
+        label={t('Azure API Version')}
+        type="text"
+        fullWidth
+        variant="outlined"
+        value={settingsEdit.azureApiVersion}
+        onChange={(e) =>
+          setSettingsEdit({
+            ...settingsEdit,
+            azureApiVersion: e.target.value.trim(),
+          })
+        }
+      />
       <PasswordTextField
         label={t('Azure API Key')}
         value={settingsEdit.azureApikey}

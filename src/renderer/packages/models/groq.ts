@@ -77,7 +77,7 @@ export default class Groq extends Base {
     signal?: AbortSignal,
     onResultChange?: onResultChange
   ): Promise<string> {
-    const messages = (await populateOpenAIMessageText(rawMessages)).map((m) => omit(m, 'id'))
+    const messages = await populateOpenAIMessageText(rawMessages)
     const temperature =
       this.options.temperature === 0
         ? 0.1 // Groq 不支持 temperature 为 0, https://console.groq.com/docs/openai

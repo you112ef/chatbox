@@ -64,7 +64,7 @@
   "Coming soon": "請耐心等待喔",
   "Azure API Key": "密鑰",
   "Azure Deployment Name": "模型部署名稱",
-  "Azure Endpoint": "終端節點",
+  "Azure Endpoint": "Azure API 端點",
   "Font Size": "字型大小",
   "AI Model Provider": "AI 模型提供者",
   "ChatGLM-6B URL Helper": "支援開源模型 <1>ChatGLM-6B</1> 的 <0>API 介面</0>",
