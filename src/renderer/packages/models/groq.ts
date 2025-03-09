@@ -2,6 +2,7 @@ import { Message } from 'src/shared/types'
 import Base, { onResultChange } from './base'
 import { ApiError } from './errors'
 import { populateOpenAIMessageText } from './openai'
+import { omit } from 'lodash'
 
 // https://console.groq.com/docs/models
 export const modelConfig = {
@@ -76,7 +77,7 @@ export default class Groq extends Base {
     signal?: AbortSignal,
     onResultChange?: onResultChange
   ): Promise<string> {
-    const messages = await populateOpenAIMessageText(rawMessages)
+    const messages = (await populateOpenAIMessageText(rawMessages)).map((m) => omit(m, 'id'))
     const temperature =
       this.options.temperature === 0
         ? 0.1 // Groq 不支持 temperature 为 0, https://console.groq.com/docs/openai
