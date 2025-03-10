@@ -1,4 +1,11 @@
 const changelog = `
+### v1.10.5 - 2025.03.10
+
+1. Improved model setting UI
+2. Added api version setting for azure openai
+3. Fixed message formatting issue for some providers
+4. Improved web search icon
+
 ### v1.10.4 - 2025.03.01
 
 1. Update web browsing search engine
