@@ -104,6 +104,11 @@ export function setModelProvider(provider: ModelProvider) {
   }))
 }
 
+export function getExtensionSettings() {
+  const store = getDefaultStore()
+  return store.get(atoms.settingsAtom).extension
+}
+
 export function createCustomProvider() {
   const newCustomProvider: CustomProvider = {
     id: `custom-provider-${Date.now()}`,

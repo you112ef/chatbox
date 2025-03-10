@@ -335,5 +335,10 @@
   "It only takes a few seconds and helps a lot.": "It only takes a few seconds and helps a lot.",
   "Maybe Later": "Maybe Later",
   "Rate Now": "Rate Now",
-  "Advanced": "Advanced"
+  "Advanced": "Advanced",
+  "extension": "Extensions",
+  "Web Search": "Web Search",
+  "Search Provider": "Search Provider",
+  "Tavily API Key": "Tavily API Key",
+  "Get API Key": "Get API Key"
 }

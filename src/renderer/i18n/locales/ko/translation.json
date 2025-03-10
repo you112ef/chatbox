@@ -336,5 +336,10 @@
   "It only takes a few seconds and helps a lot.": "이 작업은 단 몇 초 만에 도움이 됩니다.",
   "Maybe Later": "나중에 하기",
   "Rate Now": "지금 평점 주기",
-  "Advanced": "고급"
+  "Advanced": "고급",
+  "extension": "확장",
+  "Web Search": "인터넷 검색",
+  "Search Provider": "검색 제공자",
+  "Tavily API Key": "Tavily API 키",
+  "Get API Key": "API 키 가져오기"
 }

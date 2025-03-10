@@ -336,5 +336,10 @@
   "It only takes a few seconds and helps a lot.": "これはたった数秒で、大きな助けになります。",
   "Maybe Later": "後でやる",
   "Rate Now": "今すぐ評価する",
-  "Advanced": "高度"
+  "Advanced": "高度",
+  "extension": "拡張機能",
+  "Web Search": "インターネット検索",
+  "Search Provider": "検索プロバイダー",
+  "Tavily API Key": "Tavily API キー",
+  "Get API Key": "API キーを取得"
 }

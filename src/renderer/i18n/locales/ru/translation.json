@@ -336,5 +336,10 @@
   "It only takes a few seconds and helps a lot.": "Это займет всего несколько секунд и очень поможет.",
   "Maybe Later": "Может позже",
   "Rate Now": "Оценить сейчас",
-  "Advanced": "Расширенный"
+  "Advanced": "Расширенный",
+  "extension": "Расширения",
+  "Web Search": "Поиск в Интернете",
+  "Search Provider": "Поисковый сервис",
+  "Tavily API Key": "Ключ API Tavily",
+  "Get API Key": "Получить API ключ"
 }

@@ -335,5 +335,9 @@
   "It only takes a few seconds and helps a lot.": "يستغرق هذا بضع ثوانٍ فقط ويساعد كثيرًا.",
   "Maybe Later": "ربما لاحقًا",
   "Rate Now": "تقييم الآن",
-  "Advanced": "متقدم"
+  "Advanced": "متقدم",
+  "extension": "الإضافات",
+  "Web Search": "البحث في الإنترنت",
+  "Search Provider": "مزود البحث",
+  "Tavily API Key": "مفتاح API Tavily"
 }

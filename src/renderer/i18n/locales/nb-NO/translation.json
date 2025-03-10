@@ -335,5 +335,10 @@
   "It only takes a few seconds and helps a lot.": "Det tar bare noen sekunder og hjelper mye.",
   "Maybe Later": "Kanskje senere",
   "Rate Now": "Betyg nå",
-  "Advanced": "Avansert"
+  "Advanced": "Avansert",
+  "extension": "Utvidelser",
+  "Web Search": "Internett-søk",
+  "Search Provider": "Søkeleverandør",
+  "Tavily API Key": "Tavily API-nøkkel",
+  "Get API Key": "Få API-nøkkel"
 }

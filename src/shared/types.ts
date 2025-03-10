@@ -106,7 +106,7 @@ export interface Message {
   firstTokenLatency?: number // AI 回答首字耗时(毫秒) - 从发送请求到接收到第一个字的时间间隔
 }
 
-export type SettingWindowTab = 'ai' | 'display' | 'chat' | 'advanced'
+export type SettingWindowTab = 'ai' | 'display' | 'chat' | 'advanced' | 'extension'
 
 export type ExportChatScope = 'all_threads' | 'current_thread'
 
@@ -342,6 +342,13 @@ export interface CustomProvider {
   useProxy?: boolean
 }
 
+export interface ExtensionSettings {
+  webSearch: {
+    provider: 'bing' | 'tavily' // 搜索提供方
+    tavilyApiKey?: string // Tavily API 密钥
+  }
+}
+
 export interface Settings extends ModelSettings {
   showWordCount?: boolean
   showTokenCount?: boolean
@@ -381,6 +388,8 @@ export interface Settings extends ModelSettings {
   autoUpdate: boolean // 是否自动检查更新
 
   shortcuts: ShortcutSetting
+
+  extension: ExtensionSettings
 }
 
 export interface ShortcutSetting {

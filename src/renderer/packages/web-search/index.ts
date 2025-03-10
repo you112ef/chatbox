@@ -3,12 +3,42 @@ import { truncate } from 'lodash'
 import type { SearchResultItem } from './base'
 import { BingNewsSearch } from './bing-news'
 import { BingSearch } from './bing'
+import { TavilySearch } from './tavily'
+import { getExtensionSettings, getLanguage } from '@/stores/settingActions'
+import WebSearch from './base'
 
 const MAX_CONTEXT_ITEMS = 10
 
-const providers = [new BingSearch(), new BingNewsSearch()]
+// 根据配置的搜索提供方来选择搜索服务
+function getSearchProviders() {
+  const settings = getExtensionSettings()
+
+  const selectedProviders: WebSearch[] = []
+  const provider = settings.webSearch.provider
+  const language = getLanguage()
+  
+  switch (provider) {
+    case 'bing':
+      selectedProviders.push(new BingSearch())
+      if (language !== 'zh-Hans') {
+        selectedProviders.push(new BingNewsSearch()) // 国内无法使用
+      }
+      break
+    case 'tavily':
+      if (!settings.webSearch.tavilyApiKey) {
+        throw new Error('Tavily API key is required')
+      }
+      selectedProviders.push(new TavilySearch(settings.webSearch.tavilyApiKey))
+      break
+    default:
+      throw new Error(`Unsupported search provider: ${provider}`)
+  }
+
+  return selectedProviders
+}
 
 async function _searchRelatedResults(query: string, signal?: AbortSignal) {
+  const providers = getSearchProviders()
   const results = await Promise.all(
     providers.map(async (provider) => {
       try {

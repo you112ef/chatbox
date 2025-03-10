@@ -12,10 +12,12 @@ import ChatSettingTab from './ChatSettingTab'
 import DisplaySettingTab from './DisplaySettingTab'
 import ModelSettingTab from './ModelSettingTab'
 import AdvancedSettingTab from './AdvancedSettingTab'
-// import { resetTokenConfig } from '../../packages/token_config'
+import ExtensionSettingTab from './ExtensionSettingTab'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { trackingEvent } from '@/packages/event'
 import * as atoms from '@/stores/atoms'
+import ExtensionIcon from '@mui/icons-material/Extension'
+// import { resetTokenConfig } from '../../packages/token_config'
 
 export default function SettingWindow(props: {}) {
   const { t } = useTranslation()
@@ -124,6 +126,15 @@ export default function SettingWindow(props: {}) {
                 </span>
               }
             />
+            <Tab
+              value="extension"
+              label={
+                <span className="inline-flex justify-center items-center">
+                  <ExtensionIcon fontSize="small" style={{ marginRight: 5 }} />
+                  <span>{t('extension')}</span>
+                </span>
+              }
+            />
             {/* <Tab label={t('premium')} value='premium' /> */}
           </Tabs>
         </Box>
@@ -163,6 +174,15 @@ export default function SettingWindow(props: {}) {
               setSettingsEdit({ ...settingsEdit, ...updated })
             }}
             onCancel={onCancel}
+          />
+        )}
+
+        {currentTab === 'extension' && (
+          <ExtensionSettingTab
+            settingsEdit={settingsEdit}
+            setSettingsEdit={(updated) => {
+              setSettingsEdit({ ...settingsEdit, ...updated })
+            }}
           />
         )}
       </DialogContent>

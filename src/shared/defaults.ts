@@ -105,6 +105,12 @@ export function settings(): Settings {
       optionNavDown: 'down', // 选项导航的快捷键
       optionSelect: 'enter', // 选项导航的快捷键
     },
+    extension: {
+      webSearch: {
+        provider: 'bing',
+        tavilyApiKey: '',
+      },
+    },
   }
 }
 

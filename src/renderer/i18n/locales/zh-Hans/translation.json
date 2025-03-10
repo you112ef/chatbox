@@ -336,5 +336,11 @@
   "It only takes a few seconds and helps a lot.": "只需几秒钟，并且非常有帮助。",
   "Maybe Later": "稍后再说",
   "Rate Now": "立即评分",
-  "Advanced": "高级"
+  "Advanced": "高级",
+  "extension": "扩展",
+  "Web Search": "联网搜索",
+  "Search Providers": "搜索服务商",
+  "Search Provider": "搜索提供方",
+  "Tavily API Key": "Tavily API 密钥",
+  "Get API Key": "获取 API 密钥"
 }

@@ -10,6 +10,8 @@ import { createParser } from 'eventsource-parser'
 import _, { isEmpty, last } from 'lodash'
 import platform from '@/platform'
 import { webSearchExecutor } from '../web-search'
+import * as settingActions from '@/stores/settingActions'
+
 
 export default abstract class Base {
   public name = 'Unknown'
@@ -58,7 +60,7 @@ Content: ${it.snippet}
         role: 'system' as const,
         content: prompt,
       },
-      ...messages,
+      ...messages.slice(0, -1), // 最新一条用户消息和搜索结果放在一起了
       {
         id: '',
         role: 'user' as const,
@@ -68,19 +70,19 @@ Content: ${it.snippet}
   }
 
   async doSearch(messages: Message[], signal?: AbortSignal) {
-    const content = last(messages)!.content
+    const language = settingActions.getLanguage()
     const systemPrompt = `As a professional web researcher who can access latest data, your primary objective is to fully comprehend the user's query, conduct thorough web searches to gather the necessary information, and provide an appropriate response. Keep in mind today's date: ${new Date().toLocaleDateString()}
         
-To achieve this, you must first analyze the user's latest input and determine the optimal course of action. You have three options at your disposal:
+To achieve this, you must first analyze the user's latest input and determine the optimal course of action. You have Two options at your disposal:
 
 1. "proceed": If the provided information is sufficient to address the query effectively, choose this option to proceed with the research and formulate a response. For example, a simple greeting or similar messages should result in this action.
 2. "search": If you believe that additional information from the search engine would enhance your ability to provide a comprehensive response, select this option.
 
 
 JSON schema:
-{"type":"object","properties":{"action":{"type":"string","enum":["search","proceed"]},"query":{"type":"string","description":"The search queries to look up on the web, at least one, up to 10, choose wisely based on the user's question"}},"required":["action"],"additionalProperties":true,"$schema":"http://json-schema.org/draft-07/schema#"}
+{"type":"object","properties":{"action":{"type":"string","enum":["search","proceed"]},"query":{"type":"string","description":"The search queries to look up on the web, at least one, up to 10, choose wisely based on the user's question in ${language}"}},"required":["action"],"additionalProperties":true,"$schema":"http://json-schema.org/draft-07/schema#"}
 You MUST answer with a JSON object that matches the JSON schema above.`
-    // TODO: use web search model
+
     const queryResponse = await this.callChatCompletion(
       this.sequenceMessages([
         {
@@ -89,11 +91,6 @@ You MUST answer with a JSON object that matches the JSON schema above.`
           content: systemPrompt,
         },
         ...messages,
-        {
-          id: '',
-          role: 'user',
-          content,
-        },
       ]),
       signal
     )
