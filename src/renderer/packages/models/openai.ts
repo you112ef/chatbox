@@ -152,7 +152,7 @@ export default class OpenAI extends Base {
         }
       }
       // 支持 deepseek r1 的思考链
-      const reasoningContentPart = data.choices[0]?.delta?.reasoning_content
+      const reasoningContentPart = data.choices[0]?.delta?.reasoning_content || data.choices[0]?.delta?.reasoning
       if (typeof reasoningContentPart === 'string') {
         if (!reasoningContent) {
           reasoningContent = ''
