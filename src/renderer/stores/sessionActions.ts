@@ -43,7 +43,6 @@ import { estimateTokensFromMessages } from '@/packages/token'
 import {
   getModelDisplayName,
   isModelSupportImageInput,
-  isModelSupportToolUse,
   isModelSupportWebBrowsing,
 } from '@/packages/model-setting-utils'
 import { languageNameMap } from '@/i18n/locales'
@@ -652,7 +651,8 @@ export async function submitNewUserMessage(params: {
 
     console.log('sessionAction', settings)
     // 如果本次消息开启了联网问答，需要检查当前模型是否支持
-    if (webBrowsing && !isModelSupportWebBrowsing(settings) && platform.type !== 'desktop') {
+    // 桌面版总是支持联网问答，不再需要检查模型是否支持
+    if (webBrowsing && platform.type !== 'desktop' && !isModelSupportWebBrowsing(settings)) {
       if (remoteConfig.setting_chatboxai_first) {
         throw ChatboxAIAPIError.fromCodeName('model_not_support_web_browsing', 'model_not_support_web_browsing')
       } else {

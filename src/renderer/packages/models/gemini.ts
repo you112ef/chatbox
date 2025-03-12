@@ -4,6 +4,8 @@ import { ApiError } from './errors'
 import storage from '@/storage'
 import * as base64 from '@/packages/base64'
 import { compact } from 'lodash'
+import { apiRequest } from '@/utils/request'
+import { handleSSE } from '@/utils/stream'
 
 export type GeminiModel = keyof typeof modelConfig
 
@@ -79,7 +81,7 @@ export default class Gemeni extends Base {
       this.options.geminiModel,
       options?.webBrowsing
     )
-    const res = await this.post(
+    const res = await apiRequest.post(
       `${this.options.geminiAPIHost}/v1beta/models/${this.options.geminiModel}:streamGenerateContent?alt=sse&key=${this.options.geminiAPIKey}`,
       {
         'Content-Type': 'application/json',
@@ -131,7 +133,7 @@ export default class Gemeni extends Base {
       { signal }
     )
     let result = ''
-    await this.handleSSE(res, (message) => {
+    await handleSSE(res, (message) => {
       const data = JSON.parse(message)
       if (data.error) {
         throw new ApiError(`Error from Gemini: ${JSON.stringify(data)}`)
@@ -271,7 +273,7 @@ export default class Gemeni extends Base {
         topK: number
       }[]
     }
-    const res = await this.get(`${this.options.geminiAPIHost}/v1beta/models?key=${this.options.geminiAPIKey}`, {})
+    const res = await apiRequest.get(`${this.options.geminiAPIHost}/v1beta/models?key=${this.options.geminiAPIKey}`, {})
     const json: Response = await res.json()
     if (!json['models']) {
       throw new ApiError(JSON.stringify(json))

@@ -51,8 +51,4 @@ export default class ClaudeSettingUtil extends BaseConfig implements ModelSettin
   isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
     return settings.claudeModel.startsWith('claude-3')
   }
-
-  isCurrentModelSupportToolUse(settings: ModelSettings): boolean {
-    return true
-  }
 }

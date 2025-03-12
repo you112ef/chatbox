@@ -4,6 +4,8 @@ import * as remote from '../remote'
 import { BaseError, ApiError, NetworkError, ChatboxAIAPIError } from './errors'
 import storage from '@/storage'
 import { parseJsonOrEmpty } from '@/lib/utils'
+import { apiRequest } from '@/utils/request'
+import { handleSSE } from '@/utils/stream'
 
 export const chatboxAIModels: ChatboxAIModel[] = ['chatboxai-3.5', 'chatboxai-4']
 
@@ -39,7 +41,7 @@ export default class ChatboxAI extends Base {
   }
 
   async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
-    const res = await this.post(
+    const res = await apiRequest.post(
       `${remote.API_ORIGIN}/api/ai/paint`,
       this.getHeaders(),
       {
@@ -98,7 +100,7 @@ export default class ChatboxAI extends Base {
     )
     let result = ''
     let reasoningContent: string | undefined = undefined
-    await this.handleSSE(response, (message) => {
+    await handleSSE(response, (message) => {
       if (message === '[DONE]') {
         return
       }

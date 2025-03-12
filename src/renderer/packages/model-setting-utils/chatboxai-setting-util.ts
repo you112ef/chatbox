@@ -83,10 +83,6 @@ export default class ChatboxAISettingUtil extends BaseConfig implements ModelSet
     return true
   }
 
-  isCurrentModelSupportToolUse(settings: ModelSettings): boolean {
-    return true
-  }
-
   isCurrentModelSupportWebBrowsing(settings: ModelSettings): boolean {
     return true
   }

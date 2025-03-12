@@ -3,6 +3,8 @@ import Base, { onResultChange } from './base'
 import { ApiError } from './errors'
 import { populateOpenAIMessageText } from './openai'
 import { omit } from 'lodash'
+import { apiRequest } from '@/utils/request'
+import { handleSSE } from '@/utils/stream'
 
 // https://console.groq.com/docs/models
 export const modelConfig = {
@@ -82,7 +84,7 @@ export default class Groq extends Base {
       this.options.temperature === 0
         ? 0.1 // Groq 不支持 temperature 为 0, https://console.groq.com/docs/openai
         : this.options.temperature
-    const response = await this.post(
+    const response = await apiRequest.post(
       `https://api.groq.com/openai/v1/chat/completions`,
       this.getHeaders(),
       {
@@ -94,7 +96,7 @@ export default class Groq extends Base {
       { signal }
     )
     let result = ''
-    await this.handleSSE(response, (message) => {
+    await handleSSE(response, (message) => {
       if (message === '[DONE]') {
         return
       }
@@ -133,7 +135,7 @@ export default class Groq extends Base {
         context_window: number
       }[]
     }
-    const res = await this.get(`https://api.groq.com/openai/v1/models`, this.getHeaders())
+    const res = await apiRequest.get(`https://api.groq.com/openai/v1/models`, this.getHeaders())
     const json: Response = await res.json()
     if (!json['data']) {
       throw new ApiError(JSON.stringify(json))

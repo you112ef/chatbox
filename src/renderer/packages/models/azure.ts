@@ -9,7 +9,8 @@ import {
   isOSeriesModel,
 } from './openai'
 import * as settingActions from '@/stores/settingActions'
-
+import { apiRequest } from '@/utils/request'
+import { handleSSE } from '@/utils/stream'
 
 interface Options {
   azureEndpoint: string
@@ -72,7 +73,7 @@ export default class AzureOpenAI extends Base {
     const origin = new URL((this.options.azureEndpoint || '').trim()).origin
     const apiVersion = this.getApiVersion()
     const url = `${origin}/openai/deployments/${this.options.azureDeploymentName}/chat/completions?api-version=${apiVersion}`
-    const response = await this.post(url, this.getHeaders(), params, { signal })
+    const response = await apiRequest.post(url, this.getHeaders(), params, { signal })
     if (isOSeries) {
       const json = await response.json()
       if (json.error) {
@@ -85,7 +86,7 @@ export default class AzureOpenAI extends Base {
       return content
     } else {
       let result = ''
-      await this.handleSSE(response, (message) => {
+      await handleSSE(response, (message) => {
         if (message === '[DONE]') {
           return
         }
@@ -109,7 +110,7 @@ export default class AzureOpenAI extends Base {
     const origin = new URL((this.options.azureEndpoint || '').trim()).origin
     const apiVersion = this.getApiVersion()
     const url = `${origin}/openai/deployments/${this.options.azureDalleDeploymentName}/images/generations?api-version=${apiVersion}`
-    const res = await this.post(
+    const res = await apiRequest.post(
       url,
       this.getHeaders(),
       {

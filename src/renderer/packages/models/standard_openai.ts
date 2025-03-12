@@ -12,6 +12,9 @@ import {
 import { last, uniq } from 'lodash'
 import { fixMessageRoleSequence } from './llm_utils'
 import { webSearchTool } from '../web-search'
+import { apiRequest } from '@/utils/request'
+import { handleSSE } from '@/utils/stream'
+
 export default abstract class StandardOpenAI extends Base {
   public name = 'OpenAI Compatible'
 
@@ -97,14 +100,14 @@ export default abstract class StandardOpenAI extends Base {
     signal?: AbortSignal,
     onResultChange?: onResultChange
   ): Promise<string> {
-    const response = await this.post(`${this.apiHost}/chat/completions`, this.getHeaders(), requestBody, {
+    const response = await apiRequest.post(`${this.apiHost}/chat/completions`, this.getHeaders(), requestBody, {
       signal,
       useProxy: this.useProxy,
     })
     let result = ''
     let reasoningContent: string | undefined = undefined
     const finalToolCalls: MessageToolCalls = {}
-    await this.handleSSE(response, (message) => {
+    await handleSSE(response, (message) => {
       if (message === '[DONE]') {
         return
       }
@@ -171,7 +174,7 @@ export default abstract class StandardOpenAI extends Base {
     signal?: AbortSignal,
     onResultChange?: onResultChange
   ): Promise<string> {
-    const response = await this.post(`${this.apiHost}/chat/completions`, this.getHeaders(), requestBody, {
+    const response = await apiRequest.post(`${this.apiHost}/chat/completions`, this.getHeaders(), requestBody, {
       signal,
       useProxy: this.useProxy,
     })
@@ -212,7 +215,7 @@ export default abstract class StandardOpenAI extends Base {
   }
 
   async listRemoteModels(): Promise<string[]> {
-    const response = await this.get(`${this.apiHost}/models`, this.getHeaders(), {
+    const response = await apiRequest.get(`${this.apiHost}/models`, this.getHeaders(), {
       useProxy: this.useProxy,
     })
     const json: ListModelsResponse = await response.json()

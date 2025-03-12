@@ -3,6 +3,8 @@ import Base, { onResultChange } from './base'
 import { ApiError } from './errors'
 import storage from '@/storage'
 import * as base64 from '@/packages/base64'
+import { apiRequest } from '@/utils/request'
+import { handleNdjson } from '@/utils/stream'
 
 // 也可以考虑官方库
 // import ollama from 'ollama/browser'
@@ -69,7 +71,7 @@ export default class Ollama extends Base {
         return ret
       })
     )
-    const res = await this.post(
+    const res = await apiRequest.post(
       `${this.getHost()}/api/chat`,
       { 'Content-Type': 'application/json' },
       {
@@ -84,7 +86,7 @@ export default class Ollama extends Base {
     )
     let content = ''
     let reasoningContent: string | undefined
-    await this.handleNdjson(res, (message) => {
+    await handleNdjson(res, (message) => {
       const data = JSON.parse(message)
       if (data['done']) {
         return
@@ -110,7 +112,7 @@ export default class Ollama extends Base {
   }
 
   async listModels(): Promise<string[]> {
-    const res = await this.get(`${this.getHost()}/api/tags`, {})
+    const res = await apiRequest.get(`${this.getHost()}/api/tags`, {})
     const json = await res.json()
     if (!json['models']) {
       throw new ApiError(JSON.stringify(json))

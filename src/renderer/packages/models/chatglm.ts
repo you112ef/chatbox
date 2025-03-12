@@ -1,6 +1,7 @@
 import { Message } from 'src/shared/types'
 import Base, { onResultChange } from './base'
 import { ApiError } from './errors'
+import { apiRequest } from '@/utils/request'
 
 interface Options {
   chatglm6bUrl: string
@@ -55,7 +56,7 @@ export default class ChatGLM extends Base {
     if (assistantTmp) {
       history.push([userTmp, assistantTmp])
     }
-    const res = await this.post(
+    const res = await apiRequest.post(
       this.options.chatglm6bUrl,
       {
         'Content-Type': 'application/json',

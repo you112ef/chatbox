@@ -54,10 +54,6 @@ export default class SiliconFlowSettingUtil extends BaseConfig implements ModelS
     return siliconFlow.isSupportVision(settings.siliconCloudModel)
   }
 
-  isCurrentModelSupportToolUse(settings: ModelSettings): boolean {
-    return modelMeta[settings.siliconCloudModel]?.functionCalling ?? false
-  }
-
   isCurrentModelSupportWebBrowsing(settings: ModelSettings): boolean {
     return false
   }

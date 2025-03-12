@@ -1,6 +1,8 @@
 import StandardOpenAI from './standard_openai'
 import { onResultChange } from './base'
 import { ApiError } from './errors'
+import { apiRequest } from '@/utils/request'
+import { handleSSE } from '@/utils/stream'
 
 interface Options {
   perplexityApiKey: string
@@ -50,13 +52,13 @@ export default class Perplexity extends StandardOpenAI {
     signal?: AbortSignal,
     onResultChange?: onResultChange
   ): Promise<string> {
-    const response = await this.post(`${this.apiHost}/chat/completions`, this.getHeaders(), requestBody, {
+    const response = await apiRequest.post(`${this.apiHost}/chat/completions`, this.getHeaders(), requestBody, {
       signal,
       useProxy: this.useProxy,
     })
     let content = ''
     let reasoningContent: string | undefined
-    await this.handleSSE(response, (message) => {
+    await handleSSE(response, (message) => {
       if (message === '[DONE]') {
         return
       }

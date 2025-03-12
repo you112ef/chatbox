@@ -1,5 +1,6 @@
 import { Message } from 'src/shared/types'
 import Base from './base'
+import { sequenceMessages } from '@/utils/message'
 
 class MockModel extends Base {
   public name = 'MockModel'
@@ -184,7 +185,7 @@ L3
   cases.forEach(({ name, input, expected }) => {
     test(name, () => {
       const model = new MockModel()
-      const got = model.sequenceMessages(input)
+      const got = sequenceMessages(input)
 
       expect(got.length).toBe(expected.length)
 

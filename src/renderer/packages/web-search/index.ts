@@ -113,3 +113,5 @@ export const webSearchExecutor = async (
   })
   return { searchResults }
 }
+
+export type { SearchResultItem }

@@ -6,6 +6,8 @@ import * as settingActions from '@/stores/settingActions'
 import { normalizeOpenAIApiHostAndPath } from './llm_utils'
 import { webSearchTool } from '../web-search'
 import { isEmpty, last } from 'lodash'
+import { apiRequest } from '@/utils/request'
+import { handleSSE } from '@/utils/stream'
 
 interface Options {
   openaiKey: string
@@ -111,14 +113,19 @@ export default class OpenAI extends Base {
     signal?: AbortSignal,
     onResultChange?: onResultChange
   ): Promise<string> {
-    const response = await this.post(`${this.options.apiHost}${this.options.apiPath}`, this.getHeaders(), requestBody, {
-      signal,
-      useProxy: this.options.openaiUseProxy,
-    })
+    const response = await apiRequest.post(
+      `${this.options.apiHost}${this.options.apiPath}`,
+      this.getHeaders(),
+      requestBody,
+      {
+        signal,
+        useProxy: this.options.openaiUseProxy,
+      }
+    )
     let result = ''
     let reasoningContent = ''
     const finalToolCalls: MessageToolCalls = {}
-    await this.handleSSE(response, (message) => {
+    await handleSSE(response, (message) => {
       if (message === '[DONE]') {
         return
       }
@@ -185,10 +192,15 @@ export default class OpenAI extends Base {
     signal?: AbortSignal,
     onResultChange?: onResultChange
   ): Promise<string> {
-    const response = await this.post(`${this.options.apiHost}${this.options.apiPath}`, this.getHeaders(), requestBody, {
-      signal,
-      useProxy: this.options.openaiUseProxy,
-    })
+    const response = await apiRequest.post(
+      `${this.options.apiHost}${this.options.apiPath}`,
+      this.getHeaders(),
+      requestBody,
+      {
+        signal,
+        useProxy: this.options.openaiUseProxy,
+      }
+    )
     const json = await response.json()
     if (json.error) {
       throw new ApiError(`Error from OpenAI: ${JSON.stringify(json)}`)
@@ -201,7 +213,7 @@ export default class OpenAI extends Base {
   }
 
   async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
-    const res = await this.post(
+    const res = await apiRequest.post(
       `${this.options.apiHost}/images/generations`,
       this.getHeaders(),
       {

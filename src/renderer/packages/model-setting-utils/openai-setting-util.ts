@@ -64,8 +64,4 @@ export default class OpenAISettingUtil extends BaseConfig implements ModelSettin
   isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
     return OpenAI.isSupportVision(settings.model)
   }
-
-  isCurrentModelSupportToolUse(settings: Settings): boolean {
-    return true
-  }
 }

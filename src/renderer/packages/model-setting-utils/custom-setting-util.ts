@@ -67,7 +67,4 @@ export default class CustomModelSettingUtil extends BaseConfig implements ModelS
   isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
     return true
   }
-  isCurrentModelSupportToolUse(settings: Settings): boolean {
-    return false
-  }
 }

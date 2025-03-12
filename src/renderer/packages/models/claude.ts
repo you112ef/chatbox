@@ -6,6 +6,9 @@ import storage from '@/storage'
 import platform from '@/platform'
 import * as base64 from '@/packages/base64'
 import * as defaults from 'src/shared/defaults'
+import { sequenceMessages } from '@/utils/message'
+import { apiRequest } from '@/utils/request'
+import { handleSSE } from '@/utils/stream'
 
 // 官方 SDK 明确声明用于 Node.js，在浏览器中会导致页面白屏。
 // import Anthropic from '@anthropic-ai/sdk'
@@ -93,7 +96,7 @@ export default class Claude extends Base {
     onResultChange?: onResultChange
   ): Promise<string> {
     // 经过测试，Bedrock Claude 3 的消息必须以 user 角色开始，并且 user 和 assistant 角色必须交替出现，否则都会出现回答异常
-    rawMessages = this.sequenceMessages(rawMessages)
+    rawMessages = sequenceMessages(rawMessages)
 
     let prompt = ''
     const messages: ClaudeMessage[] = []
@@ -143,7 +146,7 @@ export default class Claude extends Base {
 
     let url = `${this.options.claudeApiHost}/v1/messages`
 
-    const response = await this.post(
+    const response = await apiRequest.post(
       url,
       this.getHeaders(),
       {
@@ -161,7 +164,7 @@ export default class Claude extends Base {
       }
     )
     let result = ''
-    await this.handleSSE(response, (message) => {
+    await handleSSE(response, (message) => {
       const data = JSON.parse(message)
       if (data.error) {
         throw new ApiError(`Error from Claude: ${JSON.stringify(data)}`)
@@ -195,7 +198,7 @@ export default class Claude extends Base {
       }[]
     }
     const url = `${this.options.claudeApiHost}/v1/models?limit=990`
-    const res = await this.get(url, this.getHeaders(), {
+    const res = await apiRequest.get(url, this.getHeaders(), {
       useProxy: platform.type !== 'desktop' && this.options.claudeApiHost === defaults.settings().claudeApiHost,
     })
     const json: Response = await res.json()
