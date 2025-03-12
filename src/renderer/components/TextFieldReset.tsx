@@ -10,15 +10,16 @@ export default function TextFieldReset(
   } & Omit<React.ComponentProps<typeof TextField>, 'defaultValue' | 'value' | 'onChange'>
 ) {
   const { t } = useTranslation()
-  const defaultValue = props.defaultValue || ''
-  const handleReset = () => props.onValueChange(defaultValue)
+  const { onValueChange, defaultValue = '', value, ...rest } = props
+  const handleReset = () => onValueChange(defaultValue)
   const handleMouseDown = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
   }
   return (
     <TextField
-      {...props}
-      onChange={(e) => props.onValueChange(e.target.value)}
+      {...rest}
+      value={value}
+      onChange={(e) => onValueChange(e.target.value)}
       InputProps={
         defaultValue === props.value
           ? {}
