@@ -3,7 +3,7 @@ set -e
 npm install
 
 rm -rf release/app/dist/renderer
-npm run build:renderer
+npm run build:web
 
 _imageName="registry.jellow.site/iftech/chatbox-webapp"
 _version=`git rev-parse --short HEAD`
