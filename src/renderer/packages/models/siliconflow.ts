@@ -1,6 +1,6 @@
-import { ModelMeta } from 'src/shared/types'
-import OpenAILike from './standard_openai'
 import { ContextWindowSize } from 'src/shared/constants'
+import { ModelMeta } from 'src/shared/types'
+import OpenAICompatible from './openai-compatible'
 
 interface Options {
   siliconCloudKey: string
@@ -9,7 +9,7 @@ interface Options {
   topP?: number
 }
 
-export default class SiliconFlow extends OpenAILike {
+export default class SiliconFlow extends OpenAICompatible {
   public name = 'SiliconFlow'
 
   public options: Options

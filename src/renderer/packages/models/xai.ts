@@ -1,5 +1,5 @@
 import platform from '@/platform'
-import StandardOpenAI from './standard_openai'
+import OpenAICompatible from './openai-compatible'
 
 interface Options {
   xAIKey: string
@@ -8,7 +8,7 @@ interface Options {
   topP?: number
 }
 
-export default class XAI extends StandardOpenAI {
+export default class XAI extends OpenAICompatible {
   public name = 'xAI'
 
   public useProxy = platform.type !== 'desktop'

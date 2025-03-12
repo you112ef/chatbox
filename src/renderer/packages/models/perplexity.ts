@@ -1,8 +1,8 @@
-import StandardOpenAI from './standard_openai'
-import { onResultChange } from './base'
-import { ApiError } from './errors'
 import { apiRequest } from '@/utils/request'
 import { handleSSE } from '@/utils/stream'
+import { onResultChange } from './base'
+import { ApiError } from './errors'
+import OpenAICompatible from './openai-compatible'
 
 interface Options {
   perplexityApiKey: string
@@ -11,7 +11,7 @@ interface Options {
   topP?: number
 }
 
-export default class Perplexity extends StandardOpenAI {
+export default class Perplexity extends OpenAICompatible {
   public name = 'Perplexity API'
 
   public options: Options

@@ -1,7 +1,5 @@
 import platform from '@/platform'
-import StandardOpenAI from './standard_openai'
-import { ApiError } from './errors'
-import { onResultChange } from './base'
+import OpenAICompatible from './openai-compatible'
 
 // https://api-docs.deepseek.com/zh-cn/quick_start/pricing
 export const modelConfig = {
@@ -31,7 +29,7 @@ interface Options {
   topP?: number
 }
 
-export default class DeepSeek extends StandardOpenAI {
+export default class DeepSeek extends OpenAICompatible {
   public name = 'DeepSeek'
 
   public useProxy = platform.type !== 'desktop'

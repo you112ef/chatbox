@@ -1,4 +1,4 @@
-import StandardOpenAI from './standard_openai'
+import OpenAICompatible from './openai-compatible'
 
 interface Options {
   lmStudioHost: string
@@ -7,7 +7,7 @@ interface Options {
   topP?: number
 }
 
-export default class LMStudio extends StandardOpenAI {
+export default class LMStudio extends OpenAICompatible {
   public name = 'LM Studio'
 
   public options: Options

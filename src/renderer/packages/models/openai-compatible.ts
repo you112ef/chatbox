@@ -1,21 +1,21 @@
-import { Message, MessageToolCalls } from 'src/shared/types'
-import { ApiError, ChatboxAIAPIError } from './errors'
-import Base, { onResultChange } from './base'
 import * as settingActions from '@/stores/settingActions'
-import {
-  injectModelSystemPrompt,
-  populateOpenAIMessageVision,
-  populateOpenAIMessageText,
-  OpenAIMessage,
-  OpenAIMessageVision,
-} from './openai'
-import { last, uniq } from 'lodash'
-import { fixMessageRoleSequence } from './llm_utils'
-import { webSearchTool } from '../web-search'
 import { apiRequest } from '@/utils/request'
 import { handleSSE } from '@/utils/stream'
+import { uniq } from 'lodash'
+import { Message, MessageToolCalls } from 'src/shared/types'
+import { webSearchTool } from '../web-search'
+import Base, { onResultChange } from './base'
+import { ApiError, ChatboxAIAPIError } from './errors'
+import { fixMessageRoleSequence } from './llm_utils'
+import {
+  injectModelSystemPrompt,
+  OpenAIMessage,
+  OpenAIMessageVision,
+  populateOpenAIMessageText,
+  populateOpenAIMessageVision,
+} from './openai'
 
-export default abstract class StandardOpenAI extends Base {
+export default abstract class OpenAICompatible extends Base {
   public name = 'OpenAI Compatible'
 
   public secretKey = ''
@@ -141,7 +141,7 @@ export default abstract class StandardOpenAI extends Base {
         }
       }
       // 支持 deepseek r1 的思考链
-      const reasoningContentPart = data.choices[0]?.delta?.reasoning_content|| data.choices[0]?.delta?.reasoning
+      const reasoningContentPart = data.choices[0]?.delta?.reasoning_content || data.choices[0]?.delta?.reasoning
       if (typeof reasoningContentPart === 'string') {
         if (!reasoningContent) {
           reasoningContent = ''
@@ -214,7 +214,7 @@ export default abstract class StandardOpenAI extends Base {
     return headers
   }
 
-  async listRemoteModels(): Promise<string[]> {
+  protected async listRemoteModels(): Promise<string[]> {
     const response = await apiRequest.get(`${this.apiHost}/models`, this.getHeaders(), {
       useProxy: this.useProxy,
     })
@@ -225,7 +225,7 @@ export default abstract class StandardOpenAI extends Base {
     return json.data.map((item) => item.id)
   }
 
-  listLocalModels(): string[] {
+  protected listLocalModels(): string[] {
     return []
   }
 
