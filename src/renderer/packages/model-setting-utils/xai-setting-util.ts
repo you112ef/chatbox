@@ -12,25 +12,13 @@ export default class XAISettingUtil extends BaseConfig implements ModelSettingUt
     return settings.xAIModel
   }
 
-  getLocalOptionGroups(settings: Settings) {
+  public getLocalOptionGroups(settings: ModelSettings) {
     return []
   }
 
-  async getRemoteOptionGroups(settings: Settings) {
-    const remoteModels = await super.getRemoteOptionGroups(settings).catch(() => [])
+  protected async listProviderModels(settings: ModelSettings) {
     const xai = new XAI(settings)
-    const xaiAPIModels = await xai.listModels().catch(() => [])
-    return [
-      ...remoteModels,
-      {
-        options: xaiAPIModels.map((model) => {
-          return {
-            label: model,
-            value: model,
-          }
-        }),
-      },
-    ]
+    return xai.listModels()
   }
 
   selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {

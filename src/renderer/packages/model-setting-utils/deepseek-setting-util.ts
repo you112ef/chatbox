@@ -12,7 +12,7 @@ export default class DeepSeekSettingUtil extends BaseConfig implements ModelSett
     return settings.deepseekModel
   }
 
-  getLocalOptionGroups(settings: Settings) {
+  public getLocalOptionGroups(settings: ModelSettings) {
     return [
       {
         options: deepSeekModels.map((value) => {
@@ -25,21 +25,9 @@ export default class DeepSeekSettingUtil extends BaseConfig implements ModelSett
     ]
   }
 
-  async getRemoteOptionGroups(settings: Settings) {
-    const remoteModels = await super.getRemoteOptionGroups(settings).catch(() => [])
+  protected async listProviderModels(settings: ModelSettings) {
     const deepSeek = new DeepSeek(settings)
-    const deepSeekAPIModels = await deepSeek.listModels().catch(() => [])
-    return [
-      ...remoteModels,
-      {
-        options: deepSeekAPIModels.map((model) => {
-          return {
-            label: model,
-            value: model,
-          }
-        }),
-      },
-    ]
+    return deepSeek.listModels()
   }
 
   selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {

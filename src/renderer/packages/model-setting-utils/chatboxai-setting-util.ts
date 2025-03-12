@@ -4,6 +4,15 @@ import { chatboxAIModels } from '../models/chatboxai'
 import BaseConfig from './base-config'
 import { ModelOptionGroup } from 'src/shared/types'
 
+function formatModelLabel(value: string): string {
+  if (value === 'deepseek-chat') {
+    return 'DeepSeek V3'
+  } else if (value === 'deepseek-reasoner') {
+    return 'DeepSeek R1'
+  }
+  return value.replace('chatboxai-', 'Chatbox AI ')
+}
+
 export default class ChatboxAISettingUtil extends BaseConfig implements ModelSettingUtil {
   private async getCurrentModelOptionLabel(settings: Settings): Promise<string> {
     const currentValue = this.getCurrentModelOptionValue(settings)
@@ -35,28 +44,19 @@ export default class ChatboxAISettingUtil extends BaseConfig implements ModelSet
     return settings.chatboxAIModel || 'chatboxai-3.5'
   }
 
-  getLocalOptionGroups(settings: Settings) {
-    let models = chatboxAIModels
-    if (settings.language === 'zh-Hans' || settings.language === 'zh-Hant') {
-      models = [...chatboxAIModels, 'deepseek-chat', 'deepseek-reasoner']
-    }
+  public getLocalOptionGroups(settings: ModelSettings) {
     return [
       {
-        options: models.map((value) => ({
-          label: this.formatModelLabel(value),
+        options: chatboxAIModels.map((value) => ({
+          label: formatModelLabel(value),
           value: value,
         })),
       },
     ]
   }
 
-  private formatModelLabel(value: string): string {
-    if (value === 'deepseek-chat') {
-      return 'DeepSeek V3'
-    } else if (value === 'deepseek-reasoner') {
-      return 'DeepSeek R1'
-    }
-    return value.replace('chatboxai-', 'Chatbox AI ')
+  protected async listProviderModels(settings: ModelSettings) {
+    return []
   }
 
   protected mergeOptionGroups(localOptionGroups: ModelOptionGroup[], remoteOptionGroups: ModelOptionGroup[]) {

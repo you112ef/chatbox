@@ -11,17 +11,12 @@ export default class ChatGLMSettingUtil extends BaseConfig implements ModelSetti
     return 'ChatGLM'
   }
 
-  getLocalOptionGroups(settings: Settings) {
-    return [
-      {
-        options: [
-          {
-            label: 'ChatGLM',
-            value: 'ChatGLM',
-          },
-        ],
-      },
-    ]
+  public getLocalOptionGroups(settings: ModelSettings) {
+    return [{ options: [{ label: 'ChatGLM', value: 'ChatGLM' }] }]
+  }
+
+  protected async listProviderModels(settings: ModelSettings) {
+    return []
   }
 
   selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {

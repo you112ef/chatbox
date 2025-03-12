@@ -1,10 +1,8 @@
 import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
+import { PerplexityModelSelect } from '@/components/model-select/PerplexityModelSelect'
 import PasswordTextField from '@/components/PasswordTextField'
-import SimpleSelect from '@/components/SimpleSelect'
 import TemperatureSlider from '@/components/TemperatureSlider'
-import Perplexity from '@/packages/models/perplexity'
 import { Stack, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ModelSettings } from '../../../shared/types'
 import { Accordion, AccordionDetails, AccordionSummary } from '../../components/Accordion'
@@ -26,11 +24,7 @@ export default function PerplexitySetting(props: ModelConfigProps) {
           setSettingsEdit({ ...settingsEdit, perplexityApiKey: value })
         }}
       />
-      <PerplexityModelSelect
-        perplexityModel={settingsEdit.perplexityModel}
-        setPerplexityModel={(value) => setSettingsEdit({ ...settingsEdit, perplexityModel: value })}
-        perplexityApiKey={settingsEdit.perplexityApiKey}
-      />
+      <PerplexityModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
       <Accordion>
         <AccordionSummary aria-controls="panel1a-content">
           <Typography>{t('Advanced')}</Typography>
@@ -47,37 +41,5 @@ export default function PerplexitySetting(props: ModelConfigProps) {
         </AccordionDetails>
       </Accordion>
     </Stack>
-  )
-}
-
-export function PerplexityModelSelect(props: {
-  perplexityModel: ModelSettings['perplexityModel']
-  setPerplexityModel: (model: ModelSettings['perplexityModel']) => void
-  perplexityApiKey: string
-  className?: string
-}) {
-  const { t } = useTranslation()
-  const [models, setModels] = useState<string[]>([])
-  useEffect(() => {
-    ;(async () => {
-      const model = new Perplexity({
-        perplexityApiKey: props.perplexityApiKey,
-        perplexityModel: props.perplexityModel,
-      })
-      const models = await model.listModels()
-      setModels(models)
-      if (props.perplexityModel && models.length > 0 && !models.includes(props.perplexityModel)) {
-        props.setPerplexityModel(models[0])
-      }
-    })()
-  }, [props.perplexityApiKey])
-  return (
-    <SimpleSelect
-      label={t('model')}
-      value={props.perplexityModel}
-      options={models.map((model) => ({ value: model, label: model }))}
-      onChange={(value) => props.setPerplexityModel(value as ModelSettings['perplexityModel'])}
-      className={props.className}
-    />
   )
 }

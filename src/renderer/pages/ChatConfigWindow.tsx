@@ -1,54 +1,55 @@
-import React, { useEffect, useRef } from 'react'
+import CreatableSelect from '@/components/CreatableSelect'
+import EditableAvatar from '@/components/EditableAvatar'
+import { ImageInStorage, handleImageInputAndSave } from '@/components/Image'
+import ImageCountSlider from '@/components/ImageCountSlider'
+import ImageStyleSelect from '@/components/ImageStyleSelect'
+import DeepSeekModelSelect from '@/components/model-select/DeepSeekModelSelect'
+import GeminiModelSelect from '@/components/model-select/GeminiModelSelect'
+import GropModelSelect from '@/components/model-select/GroqModelSelect'
+import LMStudioModelSelect from '@/components/model-select/LMStudioModelSelect'
+import { OllamaModelSelect } from '@/components/model-select/OllamaModelSelect'
+import { PerplexityModelSelect } from '@/components/model-select/PerplexityModelSelect'
+import { SiliconflowModelSelect } from '@/components/model-select/SiliconflowModelSelect'
+import { XAIModelSelect } from '@/components/model-select/XAIModelSelect'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import { trackingEvent } from '@/packages/event'
+import ImageIcon from '@mui/icons-material/Image'
+import SmartToyIcon from '@mui/icons-material/SmartToy'
 import {
-  Divider,
   Button,
   Dialog,
-  DialogContent,
   DialogActions,
-  DialogTitle,
+  DialogContent,
   DialogContentText,
+  DialogTitle,
+  Divider,
   TextField,
   Typography,
   useTheme,
 } from '@mui/material'
+import { useAtom, useAtomValue } from 'jotai'
+import React, { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { v4 as uuidv4 } from 'uuid'
 import {
-  Session,
   ModelProvider,
+  ModelSettings,
+  Session,
+  createMessage,
   isChatSession,
   isPictureSession,
-  createMessage,
-  ModelSettings,
 } from '../../shared/types'
-import { useTranslation } from 'react-i18next'
-import * as sessionActions from '../stores/sessionActions'
+import { Accordion, AccordionDetails, AccordionSummary } from '../components/Accordion'
+import AIProviderSelect from '../components/AIProviderSelect'
+import MaxContextMessageCountSlider from '../components/MaxContextMessageCountSlider'
+import ChatboxAIModelSelect from '../components/model-select/ChatboxAIModelSelect'
+import ClaudeModelSelect from '../components/model-select/ClaudeModelSelect'
+import OpenAIModelSelect from '../components/model-select/OpenAIModelSelect'
 import TemperatureSlider from '../components/TemperatureSlider'
 import TopPSlider from '../components/TopPSlider'
-import MaxContextMessageCountSlider from '../components/MaxContextMessageCountSlider'
 import * as atoms from '../stores/atoms'
-import { useAtomValue, useAtom } from 'jotai'
-import { Accordion, AccordionSummary, AccordionDetails } from '../components/Accordion'
-import ClaudeModelSelect from '../components/ClaudeModelSelect'
-import ChatboxAIModelSelect from '../components/ChatboxAIModelSelect'
-import AIProviderSelect from '../components/AIProviderSelect'
-import OpenAIModelSelect from '../components/OpenAIModelSelect'
-import ImageCountSlider from '@/components/ImageCountSlider'
-import ImageStyleSelect from '@/components/ImageStyleSelect'
-import DeepSeekModelSelect from '@/components/DeepSeekModelSelect'
-import { useIsSmallScreen } from '@/hooks/useScreenChange'
-import { trackingEvent } from '@/packages/event'
-import GeminiModelSelect from '@/components/GeminiModelSelect'
-import GropModelSelect from '@/components/GroqModelSelect'
-import { OllamaHostInput, OllamaModelSelect } from './SettingDialog/OllamaSetting'
-import SmartToyIcon from '@mui/icons-material/SmartToy'
-import EditableAvatar from '@/components/EditableAvatar'
-import { v4 as uuidv4 } from 'uuid'
-import { ImageInStorage, handleImageInputAndSave } from '@/components/Image'
-import ImageIcon from '@mui/icons-material/Image'
-import CreatableSelect from '@/components/CreatableSelect'
-import { SiliconflowModelSelect } from './SettingDialog/SiliconflowSetting'
-import { LMStudioModelSelect } from './SettingDialog/LMStudioSetting'
-import { PerplexityModelSelect } from './SettingDialog/PerplexitySetting'
-import { XAIModelSelect } from './SettingDialog/XAISetting'
+import * as sessionActions from '../stores/sessionActions'
+import { OllamaHostInput } from './SettingDialog/OllamaSetting'
 
 export default function ChatConfigWindow(props: {}) {
   const { t } = useTranslation()
@@ -276,8 +277,8 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
         <>
           {licenseDetail && (
             <ChatboxAIModelSelect
-              value={mergedSettings.chatboxAIModel}
-              onChange={(v) => updateSettingsEdit({ chatboxAIModel: v })}
+              settingsEdit={mergedSettings}
+              setSettingsEdit={updateSettingsEdit}
               className={specificSettings.chatboxAIModel === undefined ? 'opacity-50' : ''}
             />
           )}
@@ -286,18 +287,8 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
       {mergedSettings.aiProvider === ModelProvider.OpenAI && (
         <>
           <OpenAIModelSelect
-            model={mergedSettings.model}
-            openaiCustomModel={mergedSettings.openaiCustomModel}
-            onUpdateModel={(updated) => updateSettingsEdit({ model: updated })}
-            onUpdateOpenaiCustomModel={(updated) => updateSettingsEdit({ openaiCustomModel: updated })}
-            // 选项直接读取和修改全局设置，这样用户体验会更好
-            openaiCustomModelOptions={globalSettings.openaiCustomModelOptions}
-            onUpdateOpenaiCustomModelOptions={(updated) => {
-              setGlobalSettings((globalSettings) => ({
-                ...globalSettings,
-                openaiCustomModelOptions: updated,
-              }))
-            }}
+            settingsEdit={mergedSettings}
+            setSettingsEdit={updateSettingsEdit}
             className={specificSettings.model === undefined ? 'opacity-50' : ''}
           />
         </>
@@ -324,8 +315,8 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
       {mergedSettings.aiProvider === ModelProvider.Claude && (
         <>
           <ClaudeModelSelect
-            value={mergedSettings.claudeModel}
-            onChange={(v) => updateSettingsEdit({ claudeModel: v })}
+            settingsEdit={mergedSettings}
+            setSettingsEdit={updateSettingsEdit}
             className={specificSettings.claudeModel === undefined ? 'opacity-50' : ''}
           />
         </>
@@ -338,9 +329,8 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
             className={specificSettings.ollamaHost === undefined ? 'opacity-50' : ''}
           />
           <OllamaModelSelect
-            ollamaHost={mergedSettings.ollamaHost}
-            ollamaModel={mergedSettings.ollamaModel}
-            setOlamaModel={(v) => updateSettingsEdit({ ollamaModel: v })}
+            settingsEdit={mergedSettings}
+            setSettingsEdit={updateSettingsEdit}
             className={specificSettings.ollamaModel === undefined ? 'opacity-50' : ''}
           />
         </>
@@ -348,8 +338,8 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
       {mergedSettings.aiProvider === ModelProvider.Gemini && (
         <>
           <GeminiModelSelect
-            value={mergedSettings.geminiModel}
-            onChange={(v) => updateSettingsEdit({ geminiModel: v })}
+            settingsEdit={mergedSettings}
+            setSettingsEdit={updateSettingsEdit}
             className={specificSettings.geminiModel === undefined ? 'opacity-50' : ''}
           />
         </>
@@ -357,8 +347,8 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
       {mergedSettings.aiProvider === ModelProvider.Groq && (
         <>
           <GropModelSelect
-            value={mergedSettings.groqModel}
-            onChange={(v) => updateSettingsEdit({ groqModel: v })}
+            settingsEdit={mergedSettings}
+            setSettingsEdit={updateSettingsEdit}
             className={specificSettings.groqModel === undefined ? 'opacity-50' : ''}
           />
         </>
@@ -366,8 +356,8 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
       {mergedSettings.aiProvider === ModelProvider.DeepSeek && (
         <>
           <DeepSeekModelSelect
-            value={mergedSettings.deepseekModel}
-            onChange={(v) => updateSettingsEdit({ deepseekModel: v })}
+            settingsEdit={mergedSettings}
+            setSettingsEdit={updateSettingsEdit}
             className={specificSettings.deepseekModel === undefined ? 'opacity-50' : ''}
           />
         </>
@@ -375,9 +365,8 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
       {mergedSettings.aiProvider === ModelProvider.SiliconFlow && (
         <>
           <SiliconflowModelSelect
-            siliconCloudModel={mergedSettings.siliconCloudModel}
-            setSiliconCloudModel={(v) => updateSettingsEdit({ siliconCloudModel: v })}
-            siliconCloudKey={mergedSettings.siliconCloudKey}
+            settingsEdit={mergedSettings}
+            setSettingsEdit={updateSettingsEdit}
             className={specificSettings.siliconCloudModel === undefined ? 'opacity-50' : ''}
           />
         </>
@@ -385,9 +374,8 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
       {mergedSettings.aiProvider === ModelProvider.LMStudio && (
         <>
           <LMStudioModelSelect
-            lmStudioModel={mergedSettings.lmStudioModel}
-            setLmStudioModel={(v) => updateSettingsEdit({ lmStudioModel: v })}
-            lmStudioHost={mergedSettings.lmStudioHost}
+            settingsEdit={mergedSettings}
+            setSettingsEdit={updateSettingsEdit}
             className={specificSettings.lmStudioModel === undefined ? 'opacity-50' : ''}
           />
         </>
@@ -395,9 +383,8 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
       {mergedSettings.aiProvider === ModelProvider.Perplexity && (
         <>
           <PerplexityModelSelect
-            perplexityModel={mergedSettings.perplexityModel}
-            setPerplexityModel={(v) => updateSettingsEdit({ perplexityModel: v })}
-            perplexityApiKey={mergedSettings.perplexityApiKey}
+            settingsEdit={mergedSettings}
+            setSettingsEdit={updateSettingsEdit}
             className={specificSettings.perplexityModel === undefined ? 'opacity-50' : ''}
           />
         </>
@@ -405,9 +392,8 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
       {mergedSettings.aiProvider === ModelProvider.XAI && (
         <>
           <XAIModelSelect
-            xAIModel={mergedSettings.xAIModel}
-            setXAIModel={(v) => updateSettingsEdit({ xAIModel: v })}
-            xAIKey={mergedSettings.xAIKey}
+            settingsEdit={mergedSettings}
+            setSettingsEdit={updateSettingsEdit}
             className={specificSettings.xAIModel === undefined ? 'opacity-50' : ''}
           />
         </>

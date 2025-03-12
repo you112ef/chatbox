@@ -28,7 +28,7 @@ export default class OpenAISettingUtil extends BaseConfig implements ModelSettin
     return current
   }
 
-  getLocalOptionGroups(settings: Settings) {
+  public getLocalOptionGroups(settings: ModelSettings) {
     let models = Array.from(Object.keys(openaiModelConfigs)).sort()
     if (settings.openaiCustomModel) {
       models.push(settings.openaiCustomModel)
@@ -43,6 +43,10 @@ export default class OpenAISettingUtil extends BaseConfig implements ModelSettin
         })),
       },
     ]
+  }
+
+  protected async listProviderModels(settings: ModelSettings) {
+    return []
   }
 
   selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {

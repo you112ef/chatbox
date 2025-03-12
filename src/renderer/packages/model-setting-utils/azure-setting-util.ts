@@ -16,7 +16,7 @@ export default class AzureSettingUtil extends BaseConfig implements ModelSetting
     return settings.azureDeploymentName
   }
 
-  getLocalOptionGroups(settings: Settings) {
+  public getLocalOptionGroups(settings: ModelSettings) {
     const options = settings.azureDeploymentNameOptions.map((option) => ({
       label: option,
       value: option,
@@ -32,6 +32,10 @@ export default class AzureSettingUtil extends BaseConfig implements ModelSetting
         options,
       },
     ]
+  }
+
+  protected async listProviderModels(settings: ModelSettings) {
+    return []
   }
 
   selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {

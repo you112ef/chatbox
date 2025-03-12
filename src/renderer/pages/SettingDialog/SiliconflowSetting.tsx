@@ -1,10 +1,8 @@
 import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
+import { SiliconflowModelSelect } from '@/components/model-select/SiliconflowModelSelect'
 import PasswordTextField from '@/components/PasswordTextField'
-import SimpleSelect from '@/components/SimpleSelect'
 import TemperatureSlider from '@/components/TemperatureSlider'
-import SiliconFlow from '@/packages/models/siliconflow'
 import { Stack, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ModelSettings } from '../../../shared/types'
 import { Accordion, AccordionDetails, AccordionSummary } from '../../components/Accordion'
@@ -26,11 +24,7 @@ export default function SiliconflowSetting(props: ModelConfigProps) {
           setSettingsEdit({ ...settingsEdit, siliconCloudKey: value })
         }}
       />
-      <SiliconflowModelSelect
-        siliconCloudModel={settingsEdit.siliconCloudModel}
-        setSiliconCloudModel={(value) => setSettingsEdit({ ...settingsEdit, siliconCloudModel: value })}
-        siliconCloudKey={settingsEdit.siliconCloudKey}
-      />
+      <SiliconflowModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
       <Accordion>
         <AccordionSummary aria-controls="panel1a-content">
           <Typography>{t('Advanced')}</Typography>
@@ -47,37 +41,5 @@ export default function SiliconflowSetting(props: ModelConfigProps) {
         </AccordionDetails>
       </Accordion>
     </Stack>
-  )
-}
-
-export function SiliconflowModelSelect(props: {
-  siliconCloudModel: ModelSettings['siliconCloudModel']
-  setSiliconCloudModel: (model: ModelSettings['siliconCloudModel']) => void
-  siliconCloudKey: string
-  className?: string
-}) {
-  const { t } = useTranslation()
-  const [models, setModels] = useState<string[]>([])
-  useEffect(() => {
-    ;(async () => {
-      const model = new SiliconFlow({
-        siliconCloudKey: props.siliconCloudKey,
-        siliconCloudModel: props.siliconCloudModel,
-      })
-      const models = await model.listModels()
-      setModels(models)
-      if (props.siliconCloudModel && models.length > 0 && !models.includes(props.siliconCloudModel)) {
-        props.setSiliconCloudModel(models[0])
-      }
-    })()
-  }, [props.siliconCloudKey])
-  return (
-    <SimpleSelect
-      label={t('model')}
-      value={props.siliconCloudModel}
-      options={models.map((model) => ({ value: model, label: model }))}
-      onChange={(value) => props.setSiliconCloudModel(value as ModelSettings['siliconCloudModel'])}
-      className={props.className}
-    />
   )
 }

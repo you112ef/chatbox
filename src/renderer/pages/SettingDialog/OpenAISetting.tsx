@@ -6,7 +6,7 @@ import TemperatureSlider from '../../components/TemperatureSlider'
 import TopPSlider from '../../components/TopPSlider'
 import PasswordTextField from '../../components/PasswordTextField'
 import MaxContextMessageCountSlider from '../../components/MaxContextMessageCountSlider'
-import OpenAIModelSelect from '../../components/OpenAIModelSelect'
+import OpenAIModelSelect from '../../components/model-select/OpenAIModelSelect'
 // import TokenConfig from './TokenConfig'
 import TextFieldReset from '@/components/TextFieldReset'
 import { remoteConfigAtom } from '@/stores/atoms'
@@ -69,16 +69,7 @@ export default function OpenAISetting(props: ModelConfigProps) {
           />
         </Alert>
       )}
-      <OpenAIModelSelect
-        model={settingsEdit.model}
-        openaiCustomModel={settingsEdit.openaiCustomModel}
-        openaiCustomModelOptions={settingsEdit.openaiCustomModelOptions}
-        onUpdateModel={(updated) => setSettingsEdit({ ...settingsEdit, model: updated })}
-        onUpdateOpenaiCustomModel={(updated) => setSettingsEdit({ ...settingsEdit, openaiCustomModel: updated })}
-        onUpdateOpenaiCustomModelOptions={(updated) =>
-          setSettingsEdit({ ...settingsEdit, openaiCustomModelOptions: updated })
-        }
-      />
+      <OpenAIModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
       {/* <FormGroup>
                 <FormControlLabel
                     className='px-2 mb-2'

@@ -1,4 +1,4 @@
-import DeepSeekModelSelect from '@/components/DeepSeekModelSelect'
+import DeepSeekModelSelect from '@/components/model-select/DeepSeekModelSelect'
 import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
 import PasswordTextField from '@/components/PasswordTextField'
 import TemperatureSlider from '@/components/TemperatureSlider'
@@ -32,10 +32,7 @@ export default function DeepSeekSetting(props: ModelConfigProps) {
         //     </Link>
         // }
       />
-      <DeepSeekModelSelect
-        value={settingsEdit.deepseekModel}
-        onChange={(value) => setSettingsEdit({ ...settingsEdit, deepseekModel: value })}
-      />
+      <DeepSeekModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
       <Accordion>
         <AccordionSummary aria-controls="panel1a-content">
           <Typography>{t('Advanced')}</Typography>

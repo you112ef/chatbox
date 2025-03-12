@@ -24,7 +24,7 @@ export default class CustomModelSettingUtil extends BaseConfig implements ModelS
     return customProvider.model
   }
 
-  getLocalOptionGroups(settings: Settings) {
+  public getLocalOptionGroups(settings: ModelSettings) {
     const customProvider = settings.customProviders?.find(
       (provider) => provider.id === settings.selectedCustomProviderId
     )
@@ -45,7 +45,7 @@ export default class CustomModelSettingUtil extends BaseConfig implements ModelS
     ]
   }
 
-  async getRemoteOptionGroups(settings: Settings) {
+  protected async listProviderModels(settings: ModelSettings) {
     return []
   }
 

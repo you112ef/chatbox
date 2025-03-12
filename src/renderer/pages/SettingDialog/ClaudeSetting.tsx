@@ -4,7 +4,7 @@ import { useTranslation, Trans } from 'react-i18next'
 import TemperatureSlider from '../../components/TemperatureSlider'
 import PasswordTextField from '../../components/PasswordTextField'
 import MaxContextMessageCountSlider from '../../components/MaxContextMessageCountSlider'
-import ClaudeModelSelect from '../../components/ClaudeModelSelect'
+import ClaudeModelSelect from '../../components/model-select/ClaudeModelSelect'
 import TextFieldReset from '@/components/TextFieldReset'
 import { Accordion, AccordionSummary, AccordionDetails } from '../../components/Accordion'
 import { remoteConfigAtom } from '@/stores/atoms'
@@ -66,10 +66,7 @@ export default function ClaudeSetting(props: ModelConfigProps) {
           />
         </Alert>
       )}
-      <ClaudeModelSelect
-        value={settingsEdit.claudeModel}
-        onChange={(value) => setSettingsEdit({ ...settingsEdit, claudeModel: value })}
-      />
+      <ClaudeModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
       <Accordion>
         <AccordionSummary aria-controls="panel1a-content">
           <Typography>{t('Advanced')}</Typography>

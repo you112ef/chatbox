@@ -8,9 +8,9 @@ export interface ModelSettingUtil {
   // 更改选中的模型
   selectSessionModel(settings: Session['settings'], selectedModel: string): Session['settings']
   // 获取该provider在代码里写死的模型组
-  getLocalOptionGroups(settings: Settings): ModelOptionGroup[]
+  getLocalOptionGroups(settings: ModelSettings): ModelOptionGroup[]
   // 获取该provider远程的模型组
-  getMergeOptionGroups(settings: Settings): Promise<ModelOptionGroup[]>
+  getMergeOptionGroups(settings: ModelSettings): Promise<ModelOptionGroup[]>
   // 判断模型对feature的支持
   isCurrentModelSupportImageInput(settings: ModelSettings): boolean
   isCurrentModelSupportWebBrowsing(settings: ModelSettings): boolean

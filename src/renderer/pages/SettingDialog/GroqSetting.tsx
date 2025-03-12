@@ -1,4 +1,4 @@
-import GropModelSelect from '@/components/GroqModelSelect'
+import GropModelSelect from '@/components/model-select/GroqModelSelect'
 import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
 import PasswordTextField from '@/components/PasswordTextField'
 import TemperatureSlider from '@/components/TemperatureSlider'
@@ -24,10 +24,7 @@ export default function GroqSetting(props: ModelConfigProps) {
           setSettingsEdit({ ...settingsEdit, groqAPIKey: value })
         }}
       />
-      <GropModelSelect
-        value={settingsEdit.groqModel}
-        onChange={(value) => setSettingsEdit({ ...settingsEdit, groqModel: value })}
-      />
+      <GropModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
       <Accordion>
         <AccordionSummary aria-controls="panel1a-content">
           <Typography>{t('Advanced')}</Typography>

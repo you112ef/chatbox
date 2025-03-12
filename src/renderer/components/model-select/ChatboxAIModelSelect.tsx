@@ -1,16 +1,15 @@
-import { useEffect, useState } from 'react'
-import { Select, FormControl, InputLabel } from '@mui/material'
-import { ModelSettings, ModelOptionGroup, ChatboxAIModel, ModelProvider } from '../../shared/types'
-import { useTranslation } from 'react-i18next'
-import MenuItem from '@mui/material/MenuItem'
-import Divider from '@mui/material/Divider'
+import { useModelOptionGroups } from '@/hooks/use-model-option-groups'
+import { cn } from '@/lib/utils'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { FormControl, InputLabel, Select } from '@mui/material'
+import Divider from '@mui/material/Divider'
 import ListSubheader from '@mui/material/ListSubheader'
-import { useAtomValue } from 'jotai'
-import * as atoms from '@/stores/atoms'
-import { cn } from '@/lib/utils'
-import ChatboxAISettingUtil from '@/packages/model-setting-utils/chatboxai-setting-util'
+import MenuItem from '@mui/material/MenuItem'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { ChatboxAIModel, ModelSettings } from '../../../shared/types'
+import { ModelSelectProps } from './types'
 
 export const chatboxAIModelLabelHash: Record<ChatboxAIModel, React.ReactNode> = {
   'chatboxai-3.5': (
@@ -53,36 +52,11 @@ export const chatboxAIModelLabelHash: Record<ChatboxAIModel, React.ReactNode> = 
   ),
 }
 
-export interface Props {
-  value?: ChatboxAIModel
-  onChange(value?: ChatboxAIModel): void
-  className?: string
-}
-
-export default function ChatboxAIModelSelect(props: Props) {
+export default function ChatboxAIModelSelect({ settingsEdit, ...props }: ModelSelectProps) {
   const { t } = useTranslation()
-  const settings = useAtomValue(atoms.settingsAtom)
-
-  const [optionGroups, setOptionGroups] = useState<ModelOptionGroup[]>([])
-  useEffect(() => {
-    ;(async () => {
-      // 先获取本地模型选项组
-      const modelConfig = new ChatboxAISettingUtil()
-      const localOptionGroups = modelConfig.getLocalOptionGroups({
-        ...settings,
-        aiProvider: ModelProvider.ChatboxAI,
-      })
-      setOptionGroups(localOptionGroups)
-      // 再获取远程模型选项组
-      const mergedOptionGroups = await modelConfig.getMergeOptionGroups({
-        ...settings,
-        aiProvider: ModelProvider.ChatboxAI,
-      })
-      setOptionGroups(mergedOptionGroups)
-    })()
-  }, [settings.licenseKey])
-
   const [expandedGroups, setExpandedGroups] = useState<string[]>([])
+  const { optionGroups } = useModelOptionGroups(settingsEdit, [settingsEdit.licenseKey])
+
   const onClickGroupName = (groupName: string) => {
     if (expandedGroups.includes(groupName)) {
       setExpandedGroups((prev) => prev.filter((name) => name !== groupName))
@@ -98,7 +72,7 @@ export default function ChatboxAIModelSelect(props: Props) {
       <InputLabel>{t('model')}</InputLabel>
       <Select
         label={t('model')}
-        value={props.value || 'chatboxai-3.5'}
+        value={settingsEdit.chatboxAIModel || 'chatboxai-3.5'}
         MenuProps={
           horizontal
             ? {
@@ -157,8 +131,13 @@ export default function ChatboxAIModelSelect(props: Props) {
                 <MenuItem
                   value={option.value}
                   key={`group-${index}-option-${option.value}`}
-                  selected={option.value === props.value}
-                  onClick={() => props.onChange(option.value as ChatboxAIModel)}
+                  selected={option.value === settingsEdit.chatboxAIModel}
+                  onClick={() =>
+                    props.setSettingsEdit({
+                      ...settingsEdit,
+                      chatboxAIModel: option.value as ModelSettings['chatboxAIModel'],
+                    })
+                  }
                   dense
                   sx={{
                     display:

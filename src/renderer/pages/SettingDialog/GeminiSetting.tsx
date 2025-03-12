@@ -6,7 +6,7 @@ import PasswordTextField from '@/components/PasswordTextField'
 import TemperatureSlider from '@/components/TemperatureSlider'
 import platform from '@/platform'
 import TextFieldReset from '@/components/TextFieldReset'
-import GeminiModelSelect from '@/components/GeminiModelSelect'
+import GeminiModelSelect from '@/components/model-select/GeminiModelSelect'
 import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
 import { remoteConfigAtom } from '@/stores/atoms'
 import { useAtomValue } from 'jotai'
@@ -73,10 +73,7 @@ export default function GeminiSetting(props: ModelConfigProps) {
             />
           </Alert>
         )}
-      <GeminiModelSelect
-        value={settingsEdit.geminiModel}
-        onChange={(value) => setSettingsEdit({ ...settingsEdit, geminiModel: value })}
-      />
+      <GeminiModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
       <Accordion>
         <AccordionSummary aria-controls="panel1a-content">
           <Typography>{t('Advanced')}</Typography>

@@ -12,7 +12,7 @@ export default class SiliconFlowSettingUtil extends BaseConfig implements ModelS
     return settings.siliconCloudModel
   }
 
-  getLocalOptionGroups(settings: Settings) {
+  public getLocalOptionGroups(settings: ModelSettings) {
     return [
       {
         options: siliconFlowModels.map((value) => {
@@ -25,21 +25,9 @@ export default class SiliconFlowSettingUtil extends BaseConfig implements ModelS
     ]
   }
 
-  async getRemoteOptionGroups(settings: Settings) {
-    const remoteModels = await super.getRemoteOptionGroups(settings).catch(() => [])
+  protected async listProviderModels(settings: ModelSettings) {
     const siliconFlow = new SiliconFlow(settings)
-    const siliconFlowAPIModels = await siliconFlow.listRemoteModels().catch(() => [])
-    return [
-      ...remoteModels,
-      {
-        options: siliconFlowAPIModels.map((model) => {
-          return {
-            label: model,
-            value: model,
-          }
-        }),
-      },
-    ]
+    return siliconFlow.listModels()
   }
 
   selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {

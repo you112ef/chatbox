@@ -12,19 +12,13 @@ export default class OllamaSettingUtil extends BaseConfig implements ModelSettin
     return settings.ollamaModel
   }
 
-  async getRemoteOptionGroups(settings: Settings) {
+  public getLocalOptionGroups(settings: ModelSettings) {
+    return []
+  }
+
+  protected async listProviderModels(settings: ModelSettings) {
     const ollama = new Ollama(settings)
-    const models = await ollama.listModels()
-    return [
-      {
-        options: models.map((model) => {
-          return {
-            label: model,
-            value: model,
-          }
-        }),
-      },
-    ]
+    return ollama.listModels()
   }
 
   selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {

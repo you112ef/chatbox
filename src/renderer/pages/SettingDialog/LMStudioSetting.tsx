@@ -1,13 +1,11 @@
 import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
-import SimpleSelect from '@/components/SimpleSelect'
+import LMStudioModelSelect from '@/components/model-select/LMStudioModelSelect'
 import TemperatureSlider from '@/components/TemperatureSlider'
 import TextFieldReset from '@/components/TextFieldReset'
-import LMStudio from '@/packages/models/lmstudio'
 import platform from '@/platform'
 import { languageAtom } from '@/stores/atoms'
 import { Alert, Stack, Typography } from '@mui/material'
 import { useAtomValue } from 'jotai'
-import { useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { ModelSettings } from '../../../shared/types'
 import { Accordion, AccordionDetails, AccordionSummary } from '../../components/Accordion'
@@ -64,11 +62,7 @@ export default function LMStudioSetting(props: ModelConfigProps) {
           />
         </p>
       </Alert>
-      <LMStudioModelSelect
-        lmStudioModel={settingsEdit.lmStudioModel}
-        setLmStudioModel={(value) => setSettingsEdit({ ...settingsEdit, lmStudioModel: value })}
-        lmStudioHost={settingsEdit.lmStudioHost}
-      />
+      <LMStudioModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
       <Accordion>
         <AccordionSummary aria-controls="panel1a-content">
           <Typography>{t('Advanced')}</Typography>
@@ -85,37 +79,5 @@ export default function LMStudioSetting(props: ModelConfigProps) {
         </AccordionDetails>
       </Accordion>
     </Stack>
-  )
-}
-
-export function LMStudioModelSelect(props: {
-  lmStudioModel: ModelSettings['lmStudioModel']
-  setLmStudioModel: (model: ModelSettings['lmStudioModel']) => void
-  lmStudioHost: string
-  className?: string
-}) {
-  const { t } = useTranslation()
-  const [models, setModels] = useState<string[]>([])
-  useEffect(() => {
-    ;(async () => {
-      const model = new LMStudio({
-        lmStudioHost: props.lmStudioHost,
-        lmStudioModel: props.lmStudioModel,
-      })
-      const models = await model.listModels()
-      setModels(models)
-      if (props.lmStudioModel && models.length > 0 && !models.includes(props.lmStudioModel)) {
-        props.setLmStudioModel(models[0])
-      }
-    })()
-  }, [props.lmStudioHost])
-  return (
-    <SimpleSelect
-      label={t('model')}
-      value={props.lmStudioModel}
-      options={models.map((model) => ({ value: model, label: model }))}
-      onChange={(value) => props.setLmStudioModel(value as ModelSettings['lmStudioModel'])}
-      className={props.className}
-    />
   )
 }

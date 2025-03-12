@@ -12,25 +12,13 @@ export default class PerplexitySettingUtil extends BaseConfig implements ModelSe
     return settings.perplexityModel
   }
 
-  getLocalOptionGroups(settings: Settings) {
+  public getLocalOptionGroups(settings: ModelSettings) {
     return []
   }
 
-  async getRemoteOptionGroups(settings: Settings) {
-    const remoteModels = await super.getRemoteOptionGroups(settings).catch(() => [])
+  protected async listProviderModels(settings: ModelSettings) {
     const perplexity = new Perplexity(settings)
-    const perplexityAPIModels = await perplexity.listModels().catch(() => [])
-    return [
-      ...remoteModels,
-      {
-        options: perplexityAPIModels.map((model) => {
-          return {
-            label: model,
-            value: model,
-          }
-        }),
-      },
-    ]
+    return perplexity.listModels()
   }
 
   selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {

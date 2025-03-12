@@ -1,23 +1,28 @@
-import { ModelOptionGroup, Settings } from '../../../shared/types'
+import { ModelOptionGroup, ModelSettings, Settings } from '../../../shared/types'
 import * as Sentry from '@sentry/react'
 import * as remote from '../../packages/remote'
 
-export default class BaseConfig {
-  public getLocalOptionGroups(settings: Settings): ModelOptionGroup[] {
-    return []
-  }
+export default abstract class BaseConfig {
+  public abstract getLocalOptionGroups(settings: ModelSettings): ModelOptionGroup[]
+  protected abstract listProviderModels(settings: ModelSettings): Promise<string[]>
 
-  protected async getRemoteOptionGroups(settings: Settings): Promise<ModelOptionGroup[]> {
-    const modelConfigs = await remote.getModelConfigsWithCache(settings).catch((e) => {
-      Sentry.captureException(e)
-      return { option_groups: [] as ModelOptionGroup[] }
-    })
-    return modelConfigs.option_groups
-  }
-
-  public async getMergeOptionGroups(settings: Settings): Promise<ModelOptionGroup[]> {
+  // 有三个来源：本地写死、后端配置、服务商模型列表
+  public async getMergeOptionGroups(settings: ModelSettings): Promise<ModelOptionGroup[]> {
     const localOptionGroups = this.getLocalOptionGroups(settings)
-    const remoteOptionGroups = await this.getRemoteOptionGroups(settings)
+    const [modelConfigs, models] = await Promise.all([
+      remote.getModelConfigsWithCache(settings).catch((e) => {
+        Sentry.captureException(e)
+        return { option_groups: [] as ModelOptionGroup[] }
+      }),
+      this.listProviderModels(settings).catch((e) => {
+        Sentry.captureException(e)
+        return []
+      }),
+    ])
+    const remoteOptionGroups = [
+      ...modelConfigs.option_groups,
+      ...models.map((model) => ({ options: [{ label: model, value: model }] })),
+    ]
     return this.mergeOptionGroups(localOptionGroups, remoteOptionGroups)
   }
 

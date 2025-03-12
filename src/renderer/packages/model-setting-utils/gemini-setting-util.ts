@@ -12,7 +12,7 @@ export default class GeminiSettingUtil extends BaseConfig implements ModelSettin
     return settings.geminiModel
   }
 
-  getLocalOptionGroups(settings: Settings) {
+  public getLocalOptionGroups(settings: ModelSettings) {
     return [
       {
         options: geminiModels.map((value) => {
@@ -25,21 +25,9 @@ export default class GeminiSettingUtil extends BaseConfig implements ModelSettin
     ]
   }
 
-  async getRemoteOptionGroups(settings: Settings) {
-    const remoteModels = await super.getRemoteOptionGroups(settings).catch(() => [])
+  protected async listProviderModels(settings: ModelSettings) {
     const gemini = new Gemini(settings)
-    const geminiAPIModels = await gemini.listModels().catch(() => [])
-    return [
-      ...remoteModels,
-      {
-        options: geminiAPIModels.map((model) => {
-          return {
-            label: model,
-            value: model,
-          }
-        }),
-      },
-    ]
+    return gemini.listModels()
   }
 
   selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {

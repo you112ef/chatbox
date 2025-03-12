@@ -12,25 +12,13 @@ export default class LMStudioSettingUtil extends BaseConfig implements ModelSett
     return settings.lmStudioModel
   }
 
-  getLocalOptionGroups(settings: Settings) {
+  public getLocalOptionGroups(settings: ModelSettings) {
     return []
   }
 
-  async getRemoteOptionGroups(settings: Settings) {
-    const remoteModels = await super.getRemoteOptionGroups(settings).catch(() => [])
+  protected async listProviderModels(settings: ModelSettings) {
     const lmStudio = new LMStudio(settings)
-    const lmStudioAPIModels = await lmStudio.listRemoteModels().catch(() => [])
-    return [
-      ...remoteModels,
-      {
-        options: lmStudioAPIModels.map((model) => {
-          return {
-            label: model,
-            value: model,
-          }
-        }),
-      },
-    ]
+    return lmStudio.listModels()
   }
 
   selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {

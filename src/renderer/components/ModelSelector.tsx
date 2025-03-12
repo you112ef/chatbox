@@ -12,7 +12,7 @@ import { getModelSettingUtil } from '@/packages/model-setting-utils'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import Divider from '@mui/material/Divider'
 import useModelConfig from '@/hooks/useModelConfig'
-import { chatboxAIModelLabelHash } from './ChatboxAIModelSelect'
+import { chatboxAIModelLabelHash } from './model-select/ChatboxAIModelSelect'
 import { ModelProvider } from '../../shared/types'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 

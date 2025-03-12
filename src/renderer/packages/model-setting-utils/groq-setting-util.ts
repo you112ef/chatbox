@@ -13,7 +13,7 @@ export default class GroqSettingUtil extends BaseConfig implements ModelSettingU
     return settings.groqModel
   }
 
-  getLocalOptionGroups(settings: Settings) {
+  public getLocalOptionGroups(settings: ModelSettings) {
     return [
       {
         options: [...groqModels].sort().map((value) => {
@@ -26,21 +26,9 @@ export default class GroqSettingUtil extends BaseConfig implements ModelSettingU
     ]
   }
 
-  async getRemoteOptionGroups(settings: Settings) {
-    const remoteModels = await super.getRemoteOptionGroups(settings).catch(() => [])
+  protected async listProviderModels(settings: ModelSettings) {
     const groq = new Groq(settings)
-    const groqAPIModels = await groq.listModels().catch(() => [])
-    return [
-      ...remoteModels,
-      {
-        options: groqAPIModels.map((model) => {
-          return {
-            label: model,
-            value: model,
-          }
-        }),
-      },
-    ]
+    return groq.listModels()
   }
 
   selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {

@@ -3,7 +3,7 @@ import { ChatboxAILicenseDetail, ModelSettings } from '../../../shared/types'
 import { Trans, useTranslation } from 'react-i18next'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import PasswordTextField from '../../components/PasswordTextField'
-import ChatboxAIModelSelect from '../../components/ChatboxAIModelSelect'
+import ChatboxAIModelSelect from '../../components/model-select/ChatboxAIModelSelect'
 import { CHATBOX_BUILD_TARGET } from '@/variables'
 import LinearProgress, { LinearProgressProps, linearProgressClasses } from '@mui/material/LinearProgress'
 import { styled } from '@mui/material/styles'
@@ -126,10 +126,7 @@ export default function ChatboxAISetting(props: ModelConfigProps) {
             )}
           </ButtonGroup>
         </Box>
-        <ChatboxAIModelSelect
-          value={settingsEdit.chatboxAIModel}
-          onChange={(v) => setSettingsEdit({ ...settingsEdit, chatboxAIModel: v })}
-        />
+        <ChatboxAIModelSelect settingsEdit={settingsEdit} setSettingsEdit={setSettingsEdit} />
         {CHATBOX_BUILD_TARGET === 'mobile_app' ? (
           <DetailCardForMobileApp licenseKey={settingsEdit.licenseKey} activated={activated} />
         ) : (
