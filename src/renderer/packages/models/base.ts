@@ -1,10 +1,10 @@
+import * as promptFormat from '@/packages/prompts'
+import * as settingActions from '@/stores/settingActions'
 import { sequenceMessages } from '@/utils/message'
-import { PROMPT_ANSWER_WITH_SEARCH_RESULTS, PROMPT_CONSTRUCT_SEARCH_ACTION } from '@/utils/prompts'
 import { isEmpty, last } from 'lodash'
 import { Message, MessageToolCalls, MessageWebBrowsing, ModelMeta } from 'src/shared/types'
 import { webSearchExecutor } from '../web-search'
-import { AIProviderNoImplementedChatError, AIProviderNoImplementedPaintError } from './errors'
-import * as settingActions from '@/stores/settingActions'
+import { AIProviderNoImplementedPaintError } from './errors'
 
 export interface ModelHelpers {
   isModelSupportVision(model: string): boolean
@@ -188,8 +188,7 @@ export default abstract class Base implements ModelInterface {
 
   private async doSearch(messages: Message[], signal?: AbortSignal) {
     const language = settingActions.getLanguage()
-    // prettier-ignore
-    const systemPrompt = PROMPT_CONSTRUCT_SEARCH_ACTION.replace('{{current_date}}', new Date().toLocaleDateString()).replace('{{language}}', language)
+    const systemPrompt = promptFormat.contructSearchAction(language)
     const queryResponse = await this.callChatCompletion(
       sequenceMessages([
         {
@@ -236,7 +235,7 @@ function constructMessagesWithSearchResults(
   messages: Message[],
   searchResults: { title: string; snippet: string; link: string }[]
 ) {
-  const systemPrompt = PROMPT_ANSWER_WITH_SEARCH_RESULTS.replace('{{current_date}}', new Date().toLocaleDateString())
+  const systemPrompt = promptFormat.answerWithSearchResults()
   const formattedSearchResults = searchResults
     .map((it, i) => {
       return `[webpage ${i + 1} begin]
