@@ -35,7 +35,7 @@ const configuration: webpack.Configuration = {
   output: {
     path: webpackPaths.distRendererPath,
     publicPath: './',
-    filename: 'renderer.js',
+    filename: 'renderer.[contenthash].js',
     library: {
       type: 'umd',
     },
@@ -117,7 +117,7 @@ const configuration: webpack.Configuration = {
     }),
 
     new MiniCssExtractPlugin({
-      filename: 'style.css',
+      filename: 'style.[contenthash].css',
     }),
 
     new BundleAnalyzerPlugin({
