@@ -11,7 +11,18 @@ export interface ModelHelpers {
   isModelSupportToolUse(model: string): boolean
 }
 
-export default abstract class Base {
+export interface ModelInterface {
+  name: string
+  modelMeta: ModelMeta
+  chat: (
+    messages: Message[],
+    onResultChangeWithCancel?: onResultChangeWithCancel,
+    options?: { webBrowsing?: boolean }
+  ) => Promise<string>
+  paint: (prompt: string, num: number, callback?: (picBase64: string) => any, signal?: AbortSignal) => Promise<string[]>
+}
+
+export default abstract class Base implements ModelInterface {
   public name = 'Unknown'
   public modelMeta: ModelMeta = {}
   public static helpers: ModelHelpers

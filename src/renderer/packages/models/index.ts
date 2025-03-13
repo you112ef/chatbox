@@ -12,8 +12,9 @@ import DeepSeek from './deepseek'
 import SiliconFlow from './siliconflow'
 import Perplexity from './perplexity'
 import XAI from './xai'
+import type { ModelInterface } from './base'
 
-export function getModel(setting: Settings, config: Config) {
+export function getModel(setting: Settings, config: Config): ModelInterface {
   switch (setting.aiProvider) {
     case ModelProvider.ChatboxAI:
       return new ChatboxAI(setting, config)
