@@ -22,23 +22,19 @@ export interface ModelInterface {
   paint: (prompt: string, num: number, callback?: (picBase64: string) => any, signal?: AbortSignal) => Promise<string[]>
 }
 
+export interface CallChatCompletionOptions {
+  signal?: AbortSignal
+  onResultChange?: onResultChange
+  webBrowsing?: boolean
+}
+
 export default abstract class Base implements ModelInterface {
   public name = 'Unknown'
   public modelMeta: ModelMeta = {}
   public static helpers: ModelHelpers
 
   protected abstract isSupportToolUse(): boolean
-
-  protected async callChatCompletion(
-    messages: Message[],
-    signal?: AbortSignal,
-    onResultChange?: onResultChange,
-    options?: {
-      webBrowsing?: boolean
-    }
-  ): Promise<string> {
-    throw new AIProviderNoImplementedChatError(this.name)
-  }
+  protected abstract callChatCompletion(messages: Message[], options: CallChatCompletionOptions): Promise<string>
 
   protected async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
     throw new AIProviderNoImplementedPaintError(this.name)
@@ -67,7 +63,7 @@ export default abstract class Base implements ModelInterface {
     }
   }
 
-  private async _chat(
+  public async chat(
     messages: Message[],
     onResultChangeWithCancel?: onResultChangeWithCancel,
     options?: {
@@ -96,7 +92,11 @@ export default abstract class Base implements ModelInterface {
       }
 
       const proceed = async (messages: Message[]) =>
-        await this.callChatCompletion(messages, controller.signal, onResultChange, options)
+        await this.callChatCompletion(messages, {
+          signal: controller.signal,
+          onResultChange,
+          webBrowsing: options?.webBrowsing,
+        })
 
       if (options?.webBrowsing && !this.isSupportToolUse()) {
         // model do not support tool use, construct query then provide results to model
@@ -146,7 +146,11 @@ export default abstract class Base implements ModelInterface {
           }
         }
         // call llm with tool result
-        result = await this.callChatCompletion(messages, controller.signal, onResultChange, options)
+        result = await this.callChatCompletion(messages, {
+          signal: controller.signal,
+          onResultChange,
+          webBrowsing: options?.webBrowsing,
+        })
       }
     } catch (error) {
       /// 处理 fetch 被取消的情况
@@ -160,16 +164,6 @@ export default abstract class Base implements ModelInterface {
       throw error
     }
     return result
-  }
-
-  public async chat(
-    messages: Message[],
-    onResultChangeWithCancel?: onResultChangeWithCancel,
-    options?: {
-      webBrowsing?: boolean
-    }
-  ): Promise<string> {
-    return await this._chat(messages, onResultChangeWithCancel, options)
   }
 
   public async paint(
@@ -205,7 +199,7 @@ export default abstract class Base implements ModelInterface {
         },
         ...messages,
       ]),
-      signal
+      { signal }
     )
     // extract json from response
     const regex = /{(?:[^{}]|{(?:[^{}]|{[^{}]*})*})*}/

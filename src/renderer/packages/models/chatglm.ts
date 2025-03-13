@@ -1,7 +1,7 @@
-import { Message } from 'src/shared/types'
-import Base, { ModelHelpers, onResultChange } from './base'
-import { ApiError } from './errors'
 import { apiRequest } from '@/utils/request'
+import { Message } from 'src/shared/types'
+import Base, { CallChatCompletionOptions, ModelHelpers } from './base'
+import { ApiError } from './errors'
 
 const helpers: ModelHelpers = {
   isModelSupportVision: (model: string) => {
@@ -28,11 +28,7 @@ export default class ChatGLM extends Base {
     return false
   }
 
-  async callChatCompletion(
-    messages: Message[],
-    signal?: AbortSignal,
-    onResultChange?: onResultChange
-  ): Promise<string> {
+  protected async callChatCompletion(messages: Message[], options: CallChatCompletionOptions): Promise<string> {
     let prompt = ''
     const history: [string, string][] = []
     let userTmp = ''
@@ -78,16 +74,14 @@ export default class ChatGLM extends Base {
         history,
         // temperature,
       },
-      { signal }
+      { signal: options.signal }
     )
     const json = await res.json()
     if (json.status !== 200) {
       throw new ApiError(JSON.stringify(json))
     }
     const str: string = typeof json.response === 'string' ? json.response : JSON.stringify(json.response)
-    if (onResultChange) {
-      onResultChange({ content: str })
-    }
+    options.onResultChange?.({ content: str })
     return str
   }
 }

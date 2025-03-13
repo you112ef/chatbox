@@ -4,7 +4,7 @@ import { handleSSE } from '@/utils/stream'
 import { uniq } from 'lodash'
 import { Message, MessageToolCalls } from 'src/shared/types'
 import { webSearchTool } from '../web-search'
-import Base, { onResultChange } from './base'
+import Base, { CallChatCompletionOptions, onResultChange } from './base'
 import { ApiError, ChatboxAIAPIError } from './errors'
 import { fixMessageRoleSequence } from './llm_utils'
 import {
@@ -36,16 +36,9 @@ export default abstract class OpenAICompatible extends Base {
     return this.model
   }
 
-  async callChatCompletion(
-    rawMessages: Message[],
-    signal?: AbortSignal,
-    onResultChange?: onResultChange,
-    options?: {
-      webBrowsing?: boolean
-    }
-  ): Promise<string> {
+  async callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<string> {
     try {
-      return await this._callChatCompletion(rawMessages, signal, onResultChange, options)
+      return await this._callChatCompletion(rawMessages, options)
     } catch (e) {
       // 如果当前模型不支持图片输入，抛出对应的错误
       if (
@@ -64,14 +57,7 @@ export default abstract class OpenAICompatible extends Base {
     }
   }
 
-  async _callChatCompletion(
-    rawMessages: Message[],
-    signal?: AbortSignal,
-    onResultChange?: onResultChange,
-    options?: {
-      webBrowsing?: boolean
-    }
-  ): Promise<string> {
+  async _callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<string> {
     const model = this.model
     if (this.injectDefaultMetadata) {
       rawMessages = injectModelSystemPrompt(model, rawMessages)
@@ -85,7 +71,7 @@ export default abstract class OpenAICompatible extends Base {
       stream: true,
       tools: options?.webBrowsing ? [webSearchTool] : undefined,
     }
-    const proceed = () => this.requestChatCompletionsStream(requestBody, signal, onResultChange)
+    const proceed = () => this.requestChatCompletionsStream(requestBody, options.signal, options.onResultChange)
 
     if (!options?.webBrowsing || this.isSupportToolUse()) {
       return proceed()

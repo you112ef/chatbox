@@ -1,11 +1,11 @@
-import { ChatboxAILicenseDetail, ChatboxAIModel, Message, MessageRole } from 'src/shared/types'
-import Base, { ModelHelpers, onResultChange } from './base'
-import * as remote from '../remote'
-import { BaseError, ApiError, NetworkError, ChatboxAIAPIError } from './errors'
-import storage from '@/storage'
 import { parseJsonOrEmpty } from '@/lib/utils'
+import storage from '@/storage'
 import { apiRequest } from '@/utils/request'
 import { handleSSE } from '@/utils/stream'
+import { ChatboxAILicenseDetail, ChatboxAIModel, Message, MessageRole } from 'src/shared/types'
+import * as remote from '../remote'
+import Base, { CallChatCompletionOptions, ModelHelpers } from './base'
+import { ApiError, BaseError, ChatboxAIAPIError, NetworkError } from './errors'
 
 export const chatboxAIModels: ChatboxAIModel[] = ['chatboxai-3.5', 'chatboxai-4']
 
@@ -63,14 +63,7 @@ export default class ChatboxAI extends Base {
     return json['data'][0]['b64_json']
   }
 
-  async callChatCompletion(
-    rawMessages: Message[],
-    signal?: AbortSignal,
-    onResultChange?: onResultChange,
-    options?: {
-      webBrowsing?: boolean
-    }
-  ): Promise<string> {
+  protected async callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<string> {
     const messages = await populateChatboxAIMessage(rawMessages)
 
     let webBrowsingResult: Awaited<ReturnType<typeof remote.webBrowsing>> | undefined = undefined
@@ -102,7 +95,7 @@ export default class ChatboxAI extends Base {
         language: this.options.language,
         stream: true,
       },
-      { signal }
+      { signal: options.signal }
     )
     let result = ''
     let reasoningContent: string | undefined = undefined
@@ -121,31 +114,25 @@ export default class ChatboxAI extends Base {
           reasoningContent = ''
         }
         reasoningContent += reasoningContentPart
-        if (onResultChange) {
-          onResultChange({ content: result, reasoningContent })
-        }
+        options.onResultChange?.({ content: result, reasoningContent })
       }
       if (word !== undefined) {
         result += word
-        if (onResultChange) {
-          onResultChange({ content: result, reasoningContent })
-        }
+        options.onResultChange?.({ content: result, reasoningContent })
       }
     })
 
     // 如果开启了 webBrowsing，则将 webBrowsing 的结果添加到生成的助手消息中
     // 后续聊天中，服务端会根据 uuid 填充搜索结果
     if (webBrowsingResult) {
-      if (onResultChange) {
-        onResultChange({
-          content: result,
-          webBrowsing: {
-            chatboxAIWebBrowsingUUID: webBrowsingResult.uuid,
-            query: webBrowsingResult.query,
-            links: webBrowsingResult.links,
-          },
-        })
-      }
+      options.onResultChange?.({
+        content: result,
+        webBrowsing: {
+          chatboxAIWebBrowsingUUID: webBrowsingResult.uuid,
+          query: webBrowsingResult.query,
+          links: webBrowsingResult.links,
+        },
+      })
     }
 
     return result

@@ -1,11 +1,11 @@
-import { Message } from 'src/shared/types'
-import Base, { ModelHelpers, onResultChange } from './base'
-import { ApiError } from './errors'
-import storage from '@/storage'
 import * as base64 from '@/packages/base64'
-import { compact } from 'lodash'
+import storage from '@/storage'
 import { apiRequest } from '@/utils/request'
 import { handleSSE } from '@/utils/stream'
+import { compact } from 'lodash'
+import { Message } from 'src/shared/types'
+import Base, { CallChatCompletionOptions, ModelHelpers } from './base'
+import { ApiError } from './errors'
 
 export type GeminiModel = keyof typeof modelConfig
 
@@ -76,18 +76,11 @@ export default class Gemeni extends Base {
     return helpers.isModelSupportToolUse(this.options.geminiModel)
   }
 
-  async callChatCompletion(
-    messages: Message[],
-    signal?: AbortSignal,
-    onResultChange?: onResultChange,
-    options?: {
-      webBrowsing?: boolean
-    }
-  ): Promise<string> {
+  async callChatCompletion(messages: Message[], options: CallChatCompletionOptions): Promise<string> {
     const { contents, systemInstruction } = await populateGeminiMessages(
       messages,
       this.options.geminiModel,
-      options?.webBrowsing
+      options.webBrowsing
     )
     const res = await apiRequest.post(
       `${this.options.geminiAPIHost}/v1beta/models/${this.options.geminiModel}:streamGenerateContent?alt=sse&key=${this.options.geminiAPIKey}`,
@@ -103,7 +96,7 @@ export default class Gemeni extends Base {
               },
             }
           : {}),
-        ...(options?.webBrowsing
+        ...(options.webBrowsing
           ? {
               tools: [
                 {
@@ -121,10 +114,6 @@ export default class Gemeni extends Base {
         // },
         // "safetySettings": [
         //     {
-        //         "category": "HARM_CATEGORY_HARASSMENT",
-        //         "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-        //     },
-        //     {
         //         "category": "HARM_CATEGORY_HATE_SPEECH",
         //         "threshold": "BLOCK_MEDIUM_AND_ABOVE"
         //     },
@@ -138,7 +127,7 @@ export default class Gemeni extends Base {
         //     }
         // ]
       },
-      { signal }
+      { signal: options.signal }
     )
     let result = ''
     await handleSSE(res, (message) => {
@@ -149,9 +138,7 @@ export default class Gemeni extends Base {
       const text = data.candidates[0]?.content?.parts[0]?.text
       if (text !== undefined) {
         result += text
-        if (onResultChange) {
-          onResultChange({ content: result })
-        }
+        options.onResultChange?.({ content: result })
       }
       const groundingMetadata = data.candidates[0]?.groundingMetadata as
         | {
@@ -233,25 +220,23 @@ export default class Gemeni extends Base {
       //     ]
       // }
       if (groundingMetadata) {
-        if (onResultChange) {
-          onResultChange({
-            content: result,
-            webBrowsing: {
-              query: groundingMetadata.webSearchQueries || [],
-              links: compact(
-                (groundingMetadata.groundingChunks || []).map((chunk) => {
-                  if (chunk.web) {
-                    return {
-                      title: chunk.web?.title,
-                      url: chunk.web?.uri,
-                    }
+        options.onResultChange?.({
+          content: result,
+          webBrowsing: {
+            query: groundingMetadata.webSearchQueries || [],
+            links: compact(
+              (groundingMetadata.groundingChunks || []).map((chunk) => {
+                if (chunk.web) {
+                  return {
+                    title: chunk.web?.title,
+                    url: chunk.web?.uri,
                   }
-                  return null
-                })
-              ),
-            },
-          })
-        }
+                }
+                return null
+              })
+            ),
+          },
+        })
       }
     })
     return result

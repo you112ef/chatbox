@@ -1,13 +1,13 @@
-import { Message, MessageToolCalls } from 'src/shared/types'
-import { ApiError, ChatboxAIAPIError } from './errors'
-import Base, { ModelHelpers, onResultChange } from './base'
 import storage from '@/storage'
 import * as settingActions from '@/stores/settingActions'
-import { normalizeOpenAIApiHostAndPath } from './llm_utils'
-import { webSearchTool } from '../web-search'
-import { isEmpty, last } from 'lodash'
 import { apiRequest } from '@/utils/request'
 import { handleSSE } from '@/utils/stream'
+import { isEmpty } from 'lodash'
+import { Message, MessageToolCalls } from 'src/shared/types'
+import { webSearchTool } from '../web-search'
+import Base, { CallChatCompletionOptions, ModelHelpers, onResultChange } from './base'
+import { ApiError, ChatboxAIAPIError } from './errors'
+import { normalizeOpenAIApiHostAndPath } from './llm_utils'
 
 const helpers: ModelHelpers = {
   isModelSupportVision: (model: string) => {
@@ -51,16 +51,9 @@ export default class OpenAI extends Base {
     return this.options.openaiCustomModel ?? this.options.model
   }
 
-  async callChatCompletion(
-    rawMessages: Message[],
-    signal?: AbortSignal,
-    onResultChange?: onResultChange,
-    options?: {
-      webBrowsing?: boolean
-    }
-  ): Promise<string> {
+  async callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<string> {
     try {
-      return await this._callChatCompletion(rawMessages, signal, onResultChange, options)
+      return await this._callChatCompletion(rawMessages, options)
     } catch (e) {
       // 如果当前模型不支持图片输入，抛出对应的错误
       if (
@@ -79,21 +72,14 @@ export default class OpenAI extends Base {
     }
   }
 
-  async _callChatCompletion(
-    rawMessages: Message[],
-    signal?: AbortSignal,
-    onResultChange?: onResultChange,
-    options?: {
-      webBrowsing?: boolean
-    }
-  ): Promise<string> {
+  async _callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<string> {
     const model = this.options.model === 'custom-model' ? this.options.openaiCustomModel || '' : this.options.model
     if (this.options.injectDefaultMetadata) {
       rawMessages = injectModelSystemPrompt(model, rawMessages)
     }
     if (isOSeriesModel(model)) {
       const messages = await populateOSeriesMessage(rawMessages, model)
-      return this.requestChatCompletionsNotStream({ model, messages }, signal, onResultChange)
+      return this.requestChatCompletionsNotStream({ model, messages }, options.signal, options.onResultChange)
     }
     const messages = await populateGPTMessage(rawMessages, this.options.model)
     const requestBody = {
@@ -109,7 +95,7 @@ export default class OpenAI extends Base {
       stream: true,
       tools: options?.webBrowsing ? [webSearchTool] : undefined,
     }
-    const proceed = () => this.requestChatCompletionsStream(requestBody, signal, onResultChange)
+    const proceed = () => this.requestChatCompletionsStream(requestBody, options.signal, options.onResultChange)
 
     if (!options?.webBrowsing || this.isSupportToolUse()) {
       return proceed()

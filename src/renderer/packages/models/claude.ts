@@ -1,14 +1,14 @@
-import { Message, ModelMeta } from 'src/shared/types'
-import Base, { ModelHelpers, onResultChange } from './base'
-import { ApiError } from './errors'
-import { get } from 'lodash'
-import storage from '@/storage'
-import platform from '@/platform'
 import * as base64 from '@/packages/base64'
-import * as defaults from 'src/shared/defaults'
+import platform from '@/platform'
+import storage from '@/storage'
 import { sequenceMessages } from '@/utils/message'
 import { apiRequest } from '@/utils/request'
 import { handleSSE } from '@/utils/stream'
+import { get } from 'lodash'
+import * as defaults from 'src/shared/defaults'
+import { Message, ModelMeta } from 'src/shared/types'
+import Base, { CallChatCompletionOptions, ModelHelpers } from './base'
+import { ApiError } from './errors'
 
 // 官方 SDK 明确声明用于 Node.js，在浏览器中会导致页面白屏。
 // import Anthropic from '@anthropic-ai/sdk'
@@ -99,11 +99,7 @@ export default class Claude extends Base {
     return helpers.isModelSupportToolUse(this.options.claudeModel)
   }
 
-  async callChatCompletion(
-    rawMessages: Message[],
-    signal?: AbortSignal,
-    onResultChange?: onResultChange
-  ): Promise<string> {
+  async callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<string> {
     // 经过测试，Bedrock Claude 3 的消息必须以 user 角色开始，并且 user 和 assistant 角色必须交替出现，否则都会出现回答异常
     rawMessages = sequenceMessages(rawMessages)
 
@@ -168,7 +164,7 @@ export default class Claude extends Base {
         stream: true,
       },
       {
-        signal: signal,
+        signal: options.signal,
         useProxy: platform.type !== 'desktop' && this.options.claudeApiHost === defaults.settings().claudeApiHost,
       }
     )
@@ -181,9 +177,7 @@ export default class Claude extends Base {
       const word: string = get(data, 'delta.text', '')
       if (word) {
         result += word
-        if (onResultChange) {
-          onResultChange({ content: result })
-        }
+        options.onResultChange?.({ content: result })
       }
     })
     return result

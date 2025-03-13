@@ -1,16 +1,16 @@
-import { Message } from 'src/shared/types'
-import Base, { onResultChange, ModelHelpers } from './base'
-import { ApiError } from './errors'
-import {
-  injectModelSystemPrompt,
-  openaiModelConfigs,
-  populateGPTMessage,
-  populateOSeriesMessage,
-  isOSeriesModel,
-} from './openai'
 import * as settingActions from '@/stores/settingActions'
 import { apiRequest } from '@/utils/request'
 import { handleSSE } from '@/utils/stream'
+import { Message } from 'src/shared/types'
+import Base, { CallChatCompletionOptions, ModelHelpers } from './base'
+import { ApiError } from './errors'
+import {
+  injectModelSystemPrompt,
+  isOSeriesModel,
+  openaiModelConfigs,
+  populateGPTMessage,
+  populateOSeriesMessage,
+} from './openai'
 
 const helpers: ModelHelpers = {
   isModelSupportVision: (model: string) => {
@@ -50,11 +50,7 @@ export default class AzureOpenAI extends Base {
     return settingActions.getSettings().azureApiVersion
   }
 
-  async callChatCompletion(
-    rawMessages: Message[],
-    signal?: AbortSignal,
-    onResultChange?: onResultChange
-  ): Promise<string> {
+  protected async callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<string> {
     if (this.options.injectDefaultMetadata) {
       rawMessages = injectModelSystemPrompt(this.options.azureDeploymentName, rawMessages)
     }
@@ -81,16 +77,14 @@ export default class AzureOpenAI extends Base {
     const origin = new URL((this.options.azureEndpoint || '').trim()).origin
     const apiVersion = this.getApiVersion()
     const url = `${origin}/openai/deployments/${this.options.azureDeploymentName}/chat/completions?api-version=${apiVersion}`
-    const response = await apiRequest.post(url, this.getHeaders(), params, { signal })
+    const response = await apiRequest.post(url, this.getHeaders(), params, { signal: options.signal })
     if (isOSeries) {
       const json = await response.json()
       if (json.error) {
         throw new ApiError(`Error from Azure OpenAI: ${JSON.stringify(json)}`)
       }
       const content: string = json.choices[0].message.content || ''
-      if (onResultChange) {
-        onResultChange({ content })
-      }
+      options.onResultChange?.({ content })
       return content
     } else {
       let result = ''
@@ -105,9 +99,7 @@ export default class AzureOpenAI extends Base {
         const text = data.choices[0]?.delta?.content
         if (text !== undefined) {
           result += text
-          if (onResultChange) {
-            onResultChange({ content: result })
-          }
+          options.onResultChange?.({ content: result })
         }
       })
       return result

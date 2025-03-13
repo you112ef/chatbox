@@ -1,7 +1,7 @@
 import { ContextWindowSize } from 'src/shared/constants'
 import { ModelMeta } from 'src/shared/types'
-import OpenAICompatible from './openai-compatible'
 import { ModelHelpers } from './base'
+import OpenAICompatible from './openai-compatible'
 
 const helpers: ModelHelpers = {
   isModelSupportVision: (model: string) => {

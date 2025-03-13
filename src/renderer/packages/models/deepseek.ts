@@ -1,6 +1,6 @@
 import platform from '@/platform'
-import OpenAICompatible from './openai-compatible'
 import { ModelHelpers } from './base'
+import OpenAICompatible from './openai-compatible'
 
 // https://api-docs.deepseek.com/zh-cn/quick_start/pricing
 export const modelConfig = {

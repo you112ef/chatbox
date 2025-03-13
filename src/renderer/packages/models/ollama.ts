@@ -1,10 +1,10 @@
-import { Message } from 'src/shared/types'
-import Base, { ModelHelpers, onResultChange } from './base'
-import { ApiError } from './errors'
-import storage from '@/storage'
 import * as base64 from '@/packages/base64'
+import storage from '@/storage'
 import { apiRequest } from '@/utils/request'
 import { handleNdjson } from '@/utils/stream'
+import { Message } from 'src/shared/types'
+import Base, { CallChatCompletionOptions, ModelHelpers } from './base'
+import { ApiError } from './errors'
 
 // 也可以考虑官方库
 // import ollama from 'ollama/browser'
@@ -50,11 +50,7 @@ export default class Ollama extends Base {
     return host
   }
 
-  async callChatCompletion(
-    rawMessages: Message[],
-    signal?: AbortSignal,
-    onResultChange?: onResultChange
-  ): Promise<string> {
+  async callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<string> {
     // https://github.com/ollama/ollama/blob/main/docs/api.md#chat-request-with-images
     const messages = await Promise.all(
       rawMessages.map(async (m) => {
@@ -94,7 +90,7 @@ export default class Ollama extends Base {
           temperature: this.options.temperature,
         },
       },
-      { signal }
+      { signal: options.signal }
     )
     let content = ''
     let reasoningContent: string | undefined
@@ -116,9 +112,7 @@ export default class Ollama extends Base {
           content = content.slice(index + 8)
         }
       }
-      if (onResultChange) {
-        onResultChange({ content: content, reasoningContent })
-      }
+      options.onResultChange?.({ content, reasoningContent })
     })
     return content
   }
