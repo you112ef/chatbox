@@ -3,6 +3,7 @@ import { ModelSettingUtil } from './interface'
 import { chatboxAIModels } from '../models/chatboxai'
 import BaseConfig from './base-config'
 import { ModelOptionGroup } from 'src/shared/types'
+import ChatboxAI from '../models/chatboxai'
 
 function formatModelLabel(value: string): string {
   if (value === 'deepseek-chat') {
@@ -79,11 +80,11 @@ export default class ChatboxAISettingUtil extends BaseConfig implements ModelSet
     }
   }
 
-  isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
-    return true
+  public isCurrentModelSupportImageInput(settings: ModelSettings) {
+    return ChatboxAI.helpers.isModelSupportVision(settings.chatboxAIModel || chatboxAIModels[0])
   }
 
-  isCurrentModelSupportWebBrowsing(settings: ModelSettings): boolean {
-    return true
+  public isCurrentModelSupportToolUse(settings: ModelSettings) {
+    return ChatboxAI.helpers.isModelSupportToolUse(settings.chatboxAIModel || chatboxAIModels[0])
   }
 }

@@ -1,5 +1,5 @@
 import { Message, ModelMeta } from 'src/shared/types'
-import Base, { onResultChange } from './base'
+import Base, { ModelHelpers, onResultChange } from './base'
 import { ApiError } from './errors'
 import { get } from 'lodash'
 import storage from '@/storage'
@@ -72,6 +72,15 @@ export const modelConfig: ModelMeta = {
 
 export const claudeModels = Object.keys(modelConfig)
 
+const helpers: ModelHelpers = {
+  isModelSupportVision: (model: string) => {
+    return model.startsWith('claude-3')
+  },
+  isModelSupportToolUse: (model: string) => {
+    return true
+  },
+}
+
 interface Options {
   claudeApiKey: string
   claudeApiHost: string
@@ -79,15 +88,15 @@ interface Options {
 }
 
 export default class Claude extends Base {
-  isSupportToolUse(): boolean {
-    return true
-  }
   public name = 'Claude'
+  public static helpers = helpers
 
-  public options: Options
-  constructor(options: Options) {
+  constructor(public options: Options) {
     super()
-    this.options = options
+  }
+
+  isSupportToolUse() {
+    return helpers.isModelSupportToolUse(this.options.claudeModel)
   }
 
   async callChatCompletion(

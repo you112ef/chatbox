@@ -29,6 +29,10 @@ export default class OllamaSettingUtil extends BaseConfig implements ModelSettin
   }
 
   isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
-    return true
+    return Ollama.helpers.isModelSupportVision(settings.ollamaModel)
+  }
+
+  isCurrentModelSupportToolUse(settings: ModelSettings): boolean {
+    return Ollama.helpers.isModelSupportToolUse(settings.ollamaModel)
   }
 }

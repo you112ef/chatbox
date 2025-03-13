@@ -29,11 +29,10 @@ export default class XAISettingUtil extends BaseConfig implements ModelSettingUt
   }
 
   isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
-    const xai = new XAI(settings)
-    return xai.isSupportVision(settings.xAIModel)
+    return XAI.helpers.isModelSupportVision(settings.xAIModel)
   }
 
-  isCurrentModelSupportWebBrowsing(settings: ModelSettings): boolean {
-    return false
+  isCurrentModelSupportToolUse(settings: ModelSettings): boolean {
+    return XAI.helpers.isModelSupportToolUse(settings.xAIModel)
   }
 }

@@ -37,12 +37,11 @@ export default class DeepSeekSettingUtil extends BaseConfig implements ModelSett
     }
   }
 
-  isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
-    const deepSeek = new DeepSeek(settings)
-    return deepSeek.isSupportVision(settings.deepseekModel)
+  public isCurrentModelSupportImageInput(settings: ModelSettings) {
+    return DeepSeek.helpers.isModelSupportVision(settings.deepseekModel)
   }
 
-  isCurrentModelSupportWebBrowsing(settings: ModelSettings): boolean {
-    return false
+  public isCurrentModelSupportToolUse(settings: ModelSettings) {
+    return DeepSeek.helpers.isModelSupportToolUse(settings.deepseekModel)
   }
 }

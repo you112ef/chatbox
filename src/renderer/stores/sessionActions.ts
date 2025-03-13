@@ -40,11 +40,7 @@ import * as settingActions from './settingActions'
 import { formatChatAsHtml, formatChatAsMarkdown, formatChatAsTxt } from '@/lib/format-chat'
 import { countWord } from '@/packages/word-count'
 import { estimateTokensFromMessages } from '@/packages/token'
-import {
-  getModelDisplayName,
-  isModelSupportImageInput,
-  isModelSupportWebBrowsing,
-} from '@/packages/model-setting-utils'
+import { getModelDisplayName, isModelSupportImageInput, isModelSupportToolUse } from '@/packages/model-setting-utils'
 import { languageNameMap } from '@/i18n/locales'
 import { isTextFilePath } from 'src/shared/file-extensions'
 import * as localParser from '@/packages/local-parser'
@@ -652,7 +648,7 @@ export async function submitNewUserMessage(params: {
     console.log('sessionAction', settings)
     // 如果本次消息开启了联网问答，需要检查当前模型是否支持
     // 桌面版总是支持联网问答，不再需要检查模型是否支持
-    if (webBrowsing && platform.type !== 'desktop' && !isModelSupportWebBrowsing(settings)) {
+    if (webBrowsing && platform.type !== 'desktop' && !isModelSupportToolUse(settings)) {
       if (remoteConfig.setting_chatboxai_first) {
         throw ChatboxAIAPIError.fromCodeName('model_not_support_web_browsing', 'model_not_support_web_browsing')
       } else {

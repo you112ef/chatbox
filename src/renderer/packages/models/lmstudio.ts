@@ -1,4 +1,15 @@
+import { ModelHelpers } from './base'
 import OpenAICompatible from './openai-compatible'
+
+const helpers: ModelHelpers = {
+  isModelSupportVision: (model: string) => {
+    model = model.toLowerCase()
+    return model.includes('vision') || model.includes('llava')
+  },
+  isModelSupportToolUse: (model: string) => {
+    return false
+  },
+}
 
 interface Options {
   lmStudioHost: string
@@ -9,12 +20,10 @@ interface Options {
 
 export default class LMStudio extends OpenAICompatible {
   public name = 'LM Studio'
+  public static helpers = helpers
 
-  public options: Options
-  constructor(options: Options) {
+  constructor(public options: Options) {
     super()
-    this.options = options
-
     this.apiHost = options.lmStudioHost
     if (this.apiHost) {
       this.apiHost = this.apiHost.trim()
@@ -34,12 +43,7 @@ export default class LMStudio extends OpenAICompatible {
     this.topP = options.topP
   }
 
-  isSupportVision(model: string): boolean {
-    model = model.toLowerCase()
-    return model.includes('vision') || model.includes('llava')
-  }
-
-  isSupportToolUse(): boolean {
-    return false
+  isSupportToolUse() {
+    return helpers.isModelSupportToolUse(this.options.lmStudioModel)
   }
 }

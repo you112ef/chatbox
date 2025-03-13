@@ -37,11 +37,11 @@ export default class GeminiSettingUtil extends BaseConfig implements ModelSettin
     }
   }
 
-  isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
-    return true
+  public isCurrentModelSupportImageInput(settings: ModelSettings) {
+    return Gemini.helpers.isModelSupportVision(settings.geminiModel)
   }
 
-  isCurrentModelSupportWebBrowsing(settings: ModelSettings): boolean {
-    return settings.geminiModel === 'gemini-2.0-flash-exp' || settings.geminiModel.includes('gemini-2.0')
+  public isCurrentModelSupportToolUse(settings: ModelSettings) {
+    return Gemini.helpers.isModelSupportToolUse(settings.geminiModel)
   }
 }

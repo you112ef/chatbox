@@ -1,8 +1,17 @@
 import { apiRequest } from '@/utils/request'
 import { handleSSE } from '@/utils/stream'
-import { onResultChange } from './base'
+import { ModelHelpers, onResultChange } from './base'
 import { ApiError } from './errors'
 import OpenAICompatible from './openai-compatible'
+
+const helpers: ModelHelpers = {
+  isModelSupportVision: (model: string) => {
+    return false
+  },
+  isModelSupportToolUse: (model: string) => {
+    return false
+  },
+}
 
 interface Options {
   perplexityApiKey: string
@@ -13,11 +22,10 @@ interface Options {
 
 export default class Perplexity extends OpenAICompatible {
   public name = 'Perplexity API'
+  public static helpers = helpers
 
-  public options: Options
-  constructor(options: Options) {
+  constructor(public options: Options) {
     super()
-    this.options = options
     this.secretKey = options.perplexityApiKey
     this.apiHost = 'https://api.perplexity.ai'
     this.model = options.perplexityModel
@@ -25,8 +33,8 @@ export default class Perplexity extends OpenAICompatible {
     this.topP = options.topP
   }
 
-  isSupportVision(model: string): boolean {
-    return false
+  isSupportToolUse() {
+    return helpers.isModelSupportToolUse(this.options.perplexityModel)
   }
 
   listLocalModels(): string[] {
@@ -96,10 +104,6 @@ export default class Perplexity extends OpenAICompatible {
       }
     })
     return content
-  }
-
-  isSupportToolUse(): boolean {
-    return false
   }
 }
 

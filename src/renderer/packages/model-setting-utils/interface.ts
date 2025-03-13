@@ -13,5 +13,5 @@ export interface ModelSettingUtil {
   getMergeOptionGroups(settings: ModelSettings): Promise<ModelOptionGroup[]>
   // 判断模型对feature的支持
   isCurrentModelSupportImageInput(settings: ModelSettings): boolean
-  isCurrentModelSupportWebBrowsing(settings: ModelSettings): boolean
+  isCurrentModelSupportToolUse(settings: ModelSettings): boolean
 }

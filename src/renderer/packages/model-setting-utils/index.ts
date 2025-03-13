@@ -46,7 +46,7 @@ export function isModelSupportImageInput(settings: ModelSettings): boolean {
   return util.isCurrentModelSupportImageInput(settings)
 }
 
-export function isModelSupportWebBrowsing(settings: ModelSettings): boolean {
+export function isModelSupportToolUse(settings: ModelSettings): boolean {
   const util = getModelSettingUtil(settings.aiProvider)
-  return util.isCurrentModelSupportWebBrowsing(settings)
+  return util.isCurrentModelSupportToolUse(settings)
 }

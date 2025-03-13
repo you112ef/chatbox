@@ -1,5 +1,6 @@
 import platform from '@/platform'
 import OpenAICompatible from './openai-compatible'
+import { ModelHelpers } from './base'
 
 // https://api-docs.deepseek.com/zh-cn/quick_start/pricing
 export const modelConfig = {
@@ -22,6 +23,15 @@ export const modelConfig = {
 
 export const deepSeekModels = Object.keys(modelConfig)
 
+const helpers: ModelHelpers = {
+  isModelSupportVision: (model: string) => {
+    return false
+  },
+  isModelSupportToolUse: (model: string) => {
+    return false
+  },
+}
+
 interface Options {
   deepseekAPIKey: string
   deepseekModel: string
@@ -31,13 +41,11 @@ interface Options {
 
 export default class DeepSeek extends OpenAICompatible {
   public name = 'DeepSeek'
-
   public useProxy = platform.type !== 'desktop'
+  public static helpers = helpers
 
-  public options: Options
-  constructor(options: Options) {
+  constructor(public options: Options) {
     super()
-    this.options = options
     this.secretKey = options.deepseekAPIKey
     this.apiHost = 'https://api.deepseek.com/v1'
     this.model = options.deepseekModel
@@ -49,16 +57,12 @@ export default class DeepSeek extends OpenAICompatible {
     }
   }
 
-  isSupportVision(model: string): boolean {
-    return false // 看样子 deepseek 虽然不支持图片输入，但是自动兼容了图片输入接口
-  }
-
   listLocalModels(): string[] {
     return deepSeekModels
   }
 
-  isSupportToolUse(): boolean {
-    return false
+  isSupportToolUse() {
+    return helpers.isModelSupportToolUse(this.options.deepseekModel)
   }
 
   protected get webSearchModel(): string {

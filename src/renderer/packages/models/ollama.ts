@@ -1,5 +1,5 @@
 import { Message } from 'src/shared/types'
-import Base, { onResultChange } from './base'
+import Base, { ModelHelpers, onResultChange } from './base'
 import { ApiError } from './errors'
 import storage from '@/storage'
 import * as base64 from '@/packages/base64'
@@ -9,6 +9,15 @@ import { handleNdjson } from '@/utils/stream'
 // 也可以考虑官方库
 // import ollama from 'ollama/browser'
 
+const helpers: ModelHelpers = {
+  isModelSupportVision: (model: string) => {
+    return false
+  },
+  isModelSupportToolUse: (model: string) => {
+    return false
+  },
+}
+
 interface Options {
   ollamaHost: string
   ollamaModel: string
@@ -17,11 +26,14 @@ interface Options {
 
 export default class Ollama extends Base {
   public name = 'Ollama'
+  public static helpers = helpers
 
-  public options: Options
-  constructor(options: Options) {
+  constructor(public options: Options) {
     super()
-    this.options = options
+  }
+
+  isSupportToolUse(): boolean {
+    return helpers.isModelSupportToolUse(this.options.ollamaModel)
   }
 
   getHost(): string {
@@ -118,9 +130,5 @@ export default class Ollama extends Base {
       throw new ApiError(JSON.stringify(json))
     }
     return json['models'].map((m: any) => m['name'])
-  }
-
-  isSupportToolUse(): boolean {
-    return false
   }
 }

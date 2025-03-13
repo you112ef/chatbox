@@ -1,5 +1,5 @@
 import { ChatboxAILicenseDetail, ChatboxAIModel, Message, MessageRole } from 'src/shared/types'
-import Base, { onResultChange } from './base'
+import Base, { ModelHelpers, onResultChange } from './base'
 import * as remote from '../remote'
 import { BaseError, ApiError, NetworkError, ChatboxAIAPIError } from './errors'
 import storage from '@/storage'
@@ -8,6 +8,15 @@ import { apiRequest } from '@/utils/request'
 import { handleSSE } from '@/utils/stream'
 
 export const chatboxAIModels: ChatboxAIModel[] = ['chatboxai-3.5', 'chatboxai-4']
+
+const helpers: ModelHelpers = {
+  isModelSupportVision: (model: string) => {
+    return true
+  },
+  isModelSupportToolUse: (model: string) => {
+    return true
+  },
+}
 
 interface Options {
   licenseKey?: string
@@ -27,17 +36,14 @@ interface Config {
 
 export default class ChatboxAI extends Base {
   public name = 'ChatboxAI'
+  public static helpers = helpers
 
-  public options: Options
-  public config: Config
-  constructor(options: Options, config: Config) {
+  constructor(public options: Options, public config: Config) {
     super()
-    this.options = options
-    this.config = config
   }
 
-  isSupportToolUse(): boolean {
-    return true
+  isSupportToolUse() {
+    return helpers.isModelSupportToolUse(this.options.chatboxAIModel || chatboxAIModels[0])
   }
 
   async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {

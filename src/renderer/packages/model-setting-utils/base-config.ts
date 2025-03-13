@@ -5,6 +5,8 @@ import * as remote from '../../packages/remote'
 export default abstract class BaseConfig {
   public abstract getLocalOptionGroups(settings: ModelSettings): ModelOptionGroup[]
   protected abstract listProviderModels(settings: ModelSettings): Promise<string[]>
+  public abstract isCurrentModelSupportImageInput(settings: ModelSettings): boolean
+  public abstract isCurrentModelSupportToolUse(settings: ModelSettings): boolean
 
   // 有三个来源：本地写死、后端配置、服务商模型列表
   public async getMergeOptionGroups(settings: ModelSettings): Promise<ModelOptionGroup[]> {
@@ -48,9 +50,5 @@ export default abstract class BaseConfig {
 
   getCurrentModelOptionValue(settings: Settings) {
     return ''
-  }
-
-  isCurrentModelSupportWebBrowsing(settings: Settings): boolean {
-    return false
   }
 }

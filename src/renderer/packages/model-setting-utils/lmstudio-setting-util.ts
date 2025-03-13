@@ -29,11 +29,10 @@ export default class LMStudioSettingUtil extends BaseConfig implements ModelSett
   }
 
   isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
-    const lmStudio = new LMStudio(settings)
-    return lmStudio.isSupportVision(settings.lmStudioModel)
+    return LMStudio.helpers.isModelSupportVision(settings.lmStudioModel)
   }
 
-  isCurrentModelSupportWebBrowsing(settings: ModelSettings): boolean {
-    return false
+  isCurrentModelSupportToolUse(settings: ModelSettings): boolean {
+    return LMStudio.helpers.isModelSupportToolUse(settings.lmStudioModel)
   }
 }

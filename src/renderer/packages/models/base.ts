@@ -6,11 +6,17 @@ import { webSearchExecutor } from '../web-search'
 import { AIProviderNoImplementedChatError, AIProviderNoImplementedPaintError } from './errors'
 import * as settingActions from '@/stores/settingActions'
 
+export interface ModelHelpers {
+  isModelSupportVision(model: string): boolean
+  isModelSupportToolUse(model: string): boolean
+}
+
 export default abstract class Base {
   public name = 'Unknown'
   public modelMeta: ModelMeta = {}
+  public static helpers: ModelHelpers
 
-  abstract isSupportToolUse(): boolean
+  protected abstract isSupportToolUse(): boolean
 
   protected async callChatCompletion(
     messages: Message[],

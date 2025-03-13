@@ -45,7 +45,11 @@ export default class AzureSettingUtil extends BaseConfig implements ModelSetting
     }
   }
 
-  isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
-    return AzureOpenAI.isSupportVision(settings.azureDeploymentName)
+  public isCurrentModelSupportImageInput(settings: ModelSettings) {
+    return AzureOpenAI.helpers.isModelSupportVision(settings.azureDeploymentName)
+  }
+
+  public isCurrentModelSupportToolUse(settings: ModelSettings) {
+    return AzureOpenAI.helpers.isModelSupportToolUse(settings.azureDeploymentName)
   }
 }

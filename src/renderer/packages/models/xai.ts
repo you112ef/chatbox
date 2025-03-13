@@ -1,5 +1,15 @@
 import platform from '@/platform'
 import OpenAICompatible from './openai-compatible'
+import { ModelHelpers } from './base'
+
+const helpers: ModelHelpers = {
+  isModelSupportVision: (model: string) => {
+    return false
+  },
+  isModelSupportToolUse: (model: string) => {
+    return false
+  },
+}
 
 interface Options {
   xAIKey: string
@@ -10,13 +20,11 @@ interface Options {
 
 export default class XAI extends OpenAICompatible {
   public name = 'xAI'
-
   public useProxy = platform.type !== 'desktop'
+  public static helpers = helpers
 
-  public options: Options
-  constructor(options: Options) {
+  constructor(public options: Options) {
     super()
-    this.options = options
     this.secretKey = options.xAIKey
     this.apiHost = 'https://api.x.ai/v1'
     this.model = options.xAIModel
@@ -24,8 +32,8 @@ export default class XAI extends OpenAICompatible {
     this.topP = options.topP
   }
 
-  isSupportVision(model: string): boolean {
-    return true
+  isSupportToolUse() {
+    return helpers.isModelSupportToolUse(this.options.xAIModel)
   }
 
   listLocalModels(): string[] {
@@ -34,9 +42,5 @@ export default class XAI extends OpenAICompatible {
 
   async listRemoteModels(): Promise<string[]> {
     return [] // 暂时无法得知是否提供接口
-  }
-
-  isSupportToolUse(): boolean {
-    return false
   }
 }

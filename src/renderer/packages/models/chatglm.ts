@@ -1,7 +1,16 @@
 import { Message } from 'src/shared/types'
-import Base, { onResultChange } from './base'
+import Base, { ModelHelpers, onResultChange } from './base'
 import { ApiError } from './errors'
 import { apiRequest } from '@/utils/request'
+
+const helpers: ModelHelpers = {
+  isModelSupportVision: (model: string) => {
+    return false
+  },
+  isModelSupportToolUse: (model: string) => {
+    return false
+  },
+}
 
 interface Options {
   chatglm6bUrl: string
@@ -9,11 +18,14 @@ interface Options {
 
 export default class ChatGLM extends Base {
   public name = 'ChatGLM'
+  public static helpers = helpers
 
-  public options: Options
-  constructor(options: Options) {
+  constructor(public options: Options) {
     super()
-    this.options = options
+  }
+
+  isSupportToolUse() {
+    return false
   }
 
   async callChatCompletion(
@@ -77,9 +89,5 @@ export default class ChatGLM extends Base {
       onResultChange({ content: str })
     }
     return str
-  }
-
-  isSupportToolUse(): boolean {
-    return false
   }
 }

@@ -1,6 +1,7 @@
 import { ModelSettings, Session, SessionType, Settings } from 'src/shared/types'
 import { ModelSettingUtil } from './interface'
 import BaseConfig from './base-config'
+import ChatGLM from '../models/chatglm'
 
 export default class ChatGLMSettingUtil extends BaseConfig implements ModelSettingUtil {
   async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
@@ -23,7 +24,11 @@ export default class ChatGLMSettingUtil extends BaseConfig implements ModelSetti
     return settings
   }
 
-  isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
-    return false
+  public isCurrentModelSupportImageInput(settings: ModelSettings) {
+    return ChatGLM.helpers.isModelSupportVision('ChatGLM')
+  }
+
+  public isCurrentModelSupportToolUse(settings: ModelSettings) {
+    return ChatGLM.helpers.isModelSupportToolUse('ChatGLM')
   }
 }

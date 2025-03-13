@@ -1,5 +1,5 @@
 import { Message } from 'src/shared/types'
-import Base, { onResultChange } from './base'
+import Base, { ModelHelpers, onResultChange } from './base'
 import { ApiError } from './errors'
 import storage from '@/storage'
 import * as base64 from '@/packages/base64'
@@ -42,6 +42,21 @@ export const modelConfig = {
 
 export const geminiModels: GeminiModel[] = Object.keys(modelConfig) as GeminiModel[]
 
+const helpers: ModelHelpers = {
+  isModelSupportVision: (model: string) => {
+    if (model.startsWith('gemini-pro') && !model.includes('vision')) {
+      return false
+    }
+    if (model.startsWith('gemini-1.0')) {
+      return false
+    }
+    return true
+  },
+  isModelSupportToolUse: (model: string) => {
+    return true
+  },
+}
+
 interface Options {
   geminiAPIKey: string
   geminiAPIHost: string
@@ -49,23 +64,16 @@ interface Options {
   temperature: number
 }
 
-export function isSupportVision(model: GeminiModel): boolean {
-  if (model.startsWith('gemini-pro') && !model.includes('vision')) {
-    return false
-  }
-  if (model.startsWith('gemini-1.0')) {
-    return false
-  }
-  return true
-}
-
 export default class Gemeni extends Base {
   public name = 'Google Gemini'
+  public static helpers = helpers
 
-  public options: Options
-  constructor(options: Options) {
+  constructor(public options: Options) {
     super()
-    this.options = options
+  }
+
+  isSupportToolUse() {
+    return helpers.isModelSupportToolUse(this.options.geminiModel)
   }
 
   async callChatCompletion(
@@ -249,14 +257,6 @@ export default class Gemeni extends Base {
     return result
   }
 
-  static isSupportVision(model: GeminiModel): boolean {
-    return isSupportVision(model)
-  }
-
-  isSupportToolUse(): boolean {
-    return true
-  }
-
   async listModels(): Promise<string[]> {
     // https://ai.google.dev/api/models#method:-models.list
     type Response = {
@@ -329,7 +329,7 @@ export async function populateGeminiMessages(
           // 若上条消息是用户消息，那么将本条用户消息合并到上条用户消息中
           previousContent.parts.push({ text: msg.content })
         }
-        if (isSupportVision(model) && previousContent && msg.pictures && msg.pictures.length > 0) {
+        if (helpers.isModelSupportVision(model) && previousContent && msg.pictures && msg.pictures.length > 0) {
           for (const pic of msg.pictures) {
             if (!pic.storageKey) {
               continue

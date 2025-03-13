@@ -38,7 +38,11 @@ export default class GroqSettingUtil extends BaseConfig implements ModelSettingU
     }
   }
 
-  isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
-    return true
+  public isCurrentModelSupportImageInput(settings: ModelSettings) {
+    return Groq.helpers.isModelSupportVision(settings.groqModel)
+  }
+
+  public isCurrentModelSupportToolUse(settings: ModelSettings) {
+    return Groq.helpers.isModelSupportToolUse(settings.groqModel)
   }
 }

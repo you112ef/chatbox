@@ -1,6 +1,17 @@
 import { ContextWindowSize } from 'src/shared/constants'
 import { ModelMeta } from 'src/shared/types'
 import OpenAICompatible from './openai-compatible'
+import { ModelHelpers } from './base'
+
+const helpers: ModelHelpers = {
+  isModelSupportVision: (model: string) => {
+    const notSupportVisionModels = ['deepseek-ai/DeepSeek-R1', 'deepseek-ai/DeepSeek-V3']
+    return !notSupportVisionModels.includes(model)
+  },
+  isModelSupportToolUse: (model: string) => {
+    return modelMeta[model]?.functionCalling ?? false
+  },
+}
 
 interface Options {
   siliconCloudKey: string
@@ -11,11 +22,10 @@ interface Options {
 
 export default class SiliconFlow extends OpenAICompatible {
   public name = 'SiliconFlow'
+  public static helpers = helpers
 
-  public options: Options
-  constructor(options: Options) {
+  constructor(public options: Options) {
     super()
-    this.options = options
     this.secretKey = options.siliconCloudKey
     this.apiHost = 'https://api.siliconflow.cn/v1'
     this.model = options.siliconCloudModel
@@ -23,16 +33,8 @@ export default class SiliconFlow extends OpenAICompatible {
     this.topP = options.topP
   }
 
-  isSupportVision(model: string): boolean {
-    const notSupportVisionModels = ['deepseek-ai/DeepSeek-R1', 'deepseek-ai/DeepSeek-V3']
-    if (notSupportVisionModels.includes(model)) {
-      return false
-    }
-    return true // 有些支持，有些不支持。不支持的会报错。
-  }
-
-  isSupportToolUse(): boolean {
-    return modelMeta[this.options.siliconCloudModel]?.functionCalling ?? false
+  isSupportToolUse() {
+    return helpers.isModelSupportToolUse(this.options.siliconCloudModel)
   }
 
   get webSearchModel() {

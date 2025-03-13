@@ -1,5 +1,5 @@
 import { Message } from 'src/shared/types'
-import Base, { onResultChange } from './base'
+import Base, { ModelHelpers, onResultChange } from './base'
 import { ApiError } from './errors'
 import { populateOpenAIMessageText } from './openai'
 import { omit } from 'lodash'
@@ -55,6 +55,15 @@ export type GroqModel = keyof typeof modelConfig
 
 export const groqModels: GroqModel[] = Object.keys(modelConfig) as GroqModel[]
 
+const helpers: ModelHelpers = {
+  isModelSupportVision: (model: string) => {
+    return false
+  },
+  isModelSupportToolUse: (model: string) => {
+    return false
+  },
+}
+
 interface Options {
   groqAPIKey: string
   groqModel: GroqModel
@@ -63,15 +72,14 @@ interface Options {
 
 export default class Groq extends Base {
   public name = 'Groq'
+  public static helpers = helpers
 
-  public options: Options
-  constructor(options: Options) {
+  constructor(public options: Options) {
     super()
-    this.options = options
   }
 
-  isSupportToolUse(): boolean {
-    return false
+  isSupportToolUse() {
+    return helpers.isModelSupportToolUse(this.options.groqModel)
   }
 
   async callChatCompletion(

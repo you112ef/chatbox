@@ -1,6 +1,6 @@
 import { Message, MessageToolCalls } from 'src/shared/types'
 import { ApiError, ChatboxAIAPIError } from './errors'
-import Base, { onResultChange } from './base'
+import Base, { ModelHelpers, onResultChange } from './base'
 import storage from '@/storage'
 import * as settingActions from '@/stores/settingActions'
 import { normalizeOpenAIApiHostAndPath } from './llm_utils'
@@ -8,6 +8,15 @@ import { webSearchTool } from '../web-search'
 import { isEmpty, last } from 'lodash'
 import { apiRequest } from '@/utils/request'
 import { handleSSE } from '@/utils/stream'
+
+const helpers: ModelHelpers = {
+  isModelSupportVision: (model: string) => {
+    return isSupportVision(model)
+  },
+  isModelSupportToolUse: (model: string) => {
+    return model !== 'custom-model'
+  },
+}
 
 interface Options {
   openaiKey: string
@@ -25,14 +34,17 @@ interface Options {
 
 export default class OpenAI extends Base {
   public name = 'OpenAI'
+  public static helpers = helpers
 
-  public options: Options
-  constructor(options: Options) {
+  constructor(public options: Options) {
     super()
-    this.options = options
     const { apiHost, apiPath } = normalizeOpenAIApiHostAndPath(this.options)
     this.options.apiHost = apiHost
     this.options.apiPath = apiPath
+  }
+
+  isSupportToolUse() {
+    return helpers.isModelSupportToolUse(this.options.openaiCustomModel ?? this.options.model)
   }
 
   protected get webSearchModel(): string {
@@ -240,14 +252,6 @@ export default class OpenAI extends Base {
     }
     return headers
   }
-
-  static isSupportVision(model: OpenAIModel | 'custom-model' | string): boolean {
-    return isSupportVision(model)
-  }
-
-  isSupportToolUse() {
-    return this.options.model !== 'custom-model'
-  }
 }
 
 // Ref: https://platform.openai.com/docs/models/gpt-4
@@ -420,7 +424,7 @@ export function isOSeriesModel(model: string): boolean {
   return /o\d+/.test(model)
 }
 
-export function isSupportVision(model: OpenAIModel | 'custom-model' | string): boolean {
+function isSupportVision(model: OpenAIModel | 'custom-model' | string): boolean {
   // 因为历史原因，有些用户会在 openai 提供商的设置中使用其他厂商的模型
   return (
     model === 'custom-model' ||

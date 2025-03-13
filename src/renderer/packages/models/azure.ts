@@ -1,5 +1,5 @@
 import { Message } from 'src/shared/types'
-import Base, { onResultChange } from './base'
+import Base, { onResultChange, ModelHelpers } from './base'
 import { ApiError } from './errors'
 import {
   injectModelSystemPrompt,
@@ -11,6 +11,16 @@ import {
 import * as settingActions from '@/stores/settingActions'
 import { apiRequest } from '@/utils/request'
 import { handleSSE } from '@/utils/stream'
+
+const helpers: ModelHelpers = {
+  isModelSupportVision: (model: string) => {
+    const list = ['gpt-4-vision-preview', 'gpt-4o', 'gpt-4o-mini']
+    return list.includes(model) || list.includes(model.toLowerCase())
+  },
+  isModelSupportToolUse: (model: string) => {
+    return false
+  },
+}
 
 interface Options {
   azureEndpoint: string
@@ -30,16 +40,14 @@ interface Options {
 
 export default class AzureOpenAI extends Base {
   public name = 'Azure OpenAI'
+  public static helpers = helpers
 
-  public options: Options
-  constructor(options: Options) {
+  constructor(public options: Options) {
     super()
-    this.options = options
   }
 
-  getApiVersion() {
-    const apiVersion = settingActions.getSettings().azureApiVersion
-    return apiVersion
+  private getApiVersion() {
+    return settingActions.getSettings().azureApiVersion
   }
 
   async callChatCompletion(
@@ -132,12 +140,7 @@ export default class AzureOpenAI extends Base {
     }
   }
 
-  static isSupportVision(model: string): boolean {
-    const list = ['gpt-4-vision-preview', 'gpt-4o', 'gpt-4o-mini']
-    return list.includes(model) || list.includes(model.toLowerCase())
-  }
-
-  isSupportToolUse(): boolean {
-    return false
+  isSupportToolUse() {
+    return helpers.isModelSupportToolUse(this.options.azureDeploymentName)
   }
 }

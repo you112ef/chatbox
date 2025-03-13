@@ -29,11 +29,10 @@ export default class PerplexitySettingUtil extends BaseConfig implements ModelSe
   }
 
   isCurrentModelSupportImageInput(settings: ModelSettings): boolean {
-    const perplexity = new Perplexity(settings)
-    return perplexity.isSupportVision(settings.perplexityModel)
+    return Perplexity.helpers.isModelSupportVision(settings.perplexityModel)
   }
 
-  isCurrentModelSupportWebBrowsing(settings: ModelSettings): boolean {
-    return true
+  isCurrentModelSupportToolUse(settings: ModelSettings): boolean {
+    return Perplexity.helpers.isModelSupportToolUse(settings.perplexityModel)
   }
 }
