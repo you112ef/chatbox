@@ -1,5 +1,5 @@
 import { Message } from 'src/shared/types'
-import Base from './base'
+import Base, { CallChatCompletionOptions } from './base'
 import { sequenceMessages } from '@/utils/message'
 
 class MockModel extends Base {
@@ -7,6 +7,10 @@ class MockModel extends Base {
 
   isSupportToolUse() {
     return false
+  }
+
+  protected async callChatCompletion(messages: Message[], options: CallChatCompletionOptions): Promise<string> {
+    return 'mock'
   }
 }
 
