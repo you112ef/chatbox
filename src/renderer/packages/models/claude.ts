@@ -15,7 +15,7 @@ import { ApiError } from './errors'
 // import { MessageParam } from '@anthropic-ai/sdk/resources'
 
 // https://docs.anthropic.com/claude/docs/models-overview
-export const modelConfig: ModelMeta = {
+const modelConfig: ModelMeta = {
   'claude-3-5-sonnet-latest': {
     contextWindow: 200_000,
     maxOutput: 8192,

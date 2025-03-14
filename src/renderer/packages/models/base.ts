@@ -1,9 +1,4 @@
-import * as promptFormat from '@/packages/prompts'
-import * as settingActions from '@/stores/settingActions'
-import { sequenceMessages } from '@/utils/message'
-import { isEmpty, last } from 'lodash'
-import { Message, MessageToolCalls, MessageWebBrowsing, ModelMeta } from 'src/shared/types'
-import { webSearchExecutor } from '../web-search'
+import { Message, MessageToolCalls, MessageWebBrowsing } from 'src/shared/types'
 import { AIProviderNoImplementedPaintError } from './errors'
 
 export interface ModelHelpers {
@@ -13,7 +8,6 @@ export interface ModelHelpers {
 
 export interface ModelInterface {
   name: string
-  modelMeta: ModelMeta
   isSupportToolUse(): boolean
   chat: (messages: Message[], options: CallChatCompletionOptions) => Promise<string>
   paint: (prompt: string, num: number, callback?: (picBase64: string) => any, signal?: AbortSignal) => Promise<string[]>
@@ -27,7 +21,6 @@ export interface CallChatCompletionOptions {
 
 export default abstract class Base implements ModelInterface {
   public name = 'Unknown'
-  public modelMeta: ModelMeta = {}
   public static helpers: ModelHelpers
 
   public abstract isSupportToolUse(): boolean

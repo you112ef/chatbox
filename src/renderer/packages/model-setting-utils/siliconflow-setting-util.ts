@@ -1,7 +1,7 @@
 import { ModelSettings, Session, SessionType, Settings } from 'src/shared/types'
 import { ModelSettingUtil } from './interface'
 import BaseConfig from './base-config'
-import SiliconFlow, { siliconFlowModels, modelMeta } from '../models/siliconflow'
+import SiliconFlow, { siliconFlowModels } from '../models/siliconflow'
 
 export default class SiliconFlowSettingUtil extends BaseConfig implements ModelSettingUtil {
   async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {

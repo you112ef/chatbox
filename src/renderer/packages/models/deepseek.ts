@@ -41,20 +41,17 @@ interface Options {
 
 export default class DeepSeek extends OpenAICompatible {
   public name = 'DeepSeek'
-  public useProxy = platform.type !== 'desktop'
   public static helpers = helpers
 
   constructor(public options: Options) {
-    super()
-    this.secretKey = options.deepseekAPIKey
-    this.apiHost = 'https://api.deepseek.com/v1'
-    this.model = options.deepseekModel
-    this.temperature = options.temperature
-    this.topP = options.topP
-    if (this.model === 'deepseek-reasoner') {
-      this.temperature = undefined
-      this.topP = undefined
-    }
+    super({
+      apiKey: options.deepseekAPIKey,
+      apiHost: 'https://api.deepseek.com/v1',
+      model: options.deepseekModel,
+      temperature: options.deepseekModel === 'deepseek-reasoner' ? undefined : options.temperature,
+      topP: options.deepseekModel === 'deepseek-reasoner' ? undefined : options.topP,
+      useProxy: platform.type !== 'desktop',
+    })
   }
 
   listLocalModels(): string[] {
@@ -63,9 +60,5 @@ export default class DeepSeek extends OpenAICompatible {
 
   isSupportToolUse() {
     return helpers.isModelSupportToolUse(this.options.deepseekModel)
-  }
-
-  protected get webSearchModel(): string {
-    return 'deepseek-chat'
   }
 }

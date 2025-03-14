@@ -1,6 +1,5 @@
-import { apiRequest } from '@/utils/request'
 import { handleSSE } from '@/utils/stream'
-import { ModelHelpers, onResultChange } from './base'
+import { CallChatCompletionOptions, ModelHelpers } from './base'
 import { ApiError } from './errors'
 import OpenAICompatible from './openai-compatible'
 
@@ -25,45 +24,31 @@ export default class Perplexity extends OpenAICompatible {
   public static helpers = helpers
 
   constructor(public options: Options) {
-    super()
-    this.secretKey = options.perplexityApiKey
-    this.apiHost = 'https://api.perplexity.ai'
-    this.model = options.perplexityModel
-    this.temperature = options.temperature
-    this.topP = options.topP
+    super({
+      apiKey: options.perplexityApiKey,
+      apiHost: 'https://api.perplexity.ai',
+      model: options.perplexityModel,
+      temperature: options.temperature,
+      topP: options.topP,
+    })
   }
 
   isSupportToolUse() {
     return helpers.isModelSupportToolUse(this.options.perplexityModel)
   }
 
-  listLocalModels(): string[] {
-    return [
-      'sonar-reasoning-pro',
-      'sonar-reasoning',
-      'sonar-pro',
-      'sonar',
-      // 'llama-3.1-sonar-small-128k-online',
-      // 'llama-3.1-sonar-large-128k-online',
-      // 'llama-3.1-sonar-huge-128k-online'
-    ]
+  protected listLocalModels(): string[] {
+    return ['sonar-deep-research', 'sonar-reasoning-pro', 'sonar-reasoning', 'sonar-pro', 'sonar']
   }
 
-  async listRemoteModels(): Promise<string[]> {
+  protected async listRemoteModels(): Promise<string[]> {
     // perplexity api 不提供模型列表接口
     // https://docs.perplexity.ai/api-reference/chat-completions
     return []
   }
 
-  async requestChatCompletionsStream(
-    requestBody: Record<string, any>,
-    signal?: AbortSignal,
-    onResultChange?: onResultChange
-  ): Promise<string> {
-    const response = await apiRequest.post(`${this.apiHost}/chat/completions`, this.getHeaders(), requestBody, {
-      signal,
-      useProxy: this.useProxy,
-    })
+  // 覆写以处理citations
+  protected async handleResponse(response: Response, options: CallChatCompletionOptions): Promise<string> {
     let content = ''
     let reasoningContent: string | undefined
     await handleSSE(response, (message) => {
@@ -79,10 +64,10 @@ export default class Perplexity extends OpenAICompatible {
       if (typeof text === 'string') {
         content += text
       }
-      // 处理返回中的 <think>...</think> 思考链
+      // 处理<think>...</think>思考链
       if (
         !reasoningContent &&
-        this.model.includes('reasoning') &&
+        this.options.perplexityModel.includes('reasoning') &&
         content.includes('<think>') &&
         content.includes('</think>')
       ) {
@@ -90,18 +75,16 @@ export default class Perplexity extends OpenAICompatible {
         reasoningContent = content.slice(0, index + 8)
         content = content.slice(index + 8)
       }
-      if (onResultChange) {
-        onResultChange({
-          content: content,
-          reasoningContent,
-          webBrowsing: citations
-            ? {
-                query: [],
-                links: citations.map((url) => ({ title: url, url })),
-              }
-            : undefined,
-        })
-      }
+      options.onResultChange?.({
+        content,
+        reasoningContent,
+        webBrowsing: citations
+          ? {
+              query: [],
+              links: citations.map((url) => ({ title: url, url })),
+            }
+          : undefined,
+      })
     })
     return content
   }

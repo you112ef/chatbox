@@ -4,8 +4,8 @@ import { handleSSE } from '@/utils/stream'
 import { uniq } from 'lodash'
 import { Message, MessageToolCalls } from 'src/shared/types'
 import { webSearchTool } from '../web-search'
-import Base, { CallChatCompletionOptions, onResultChange } from './base'
-import { ApiError, ChatboxAIAPIError } from './errors'
+import { CallChatCompletionOptions, ModelInterface } from './base'
+import { AIProviderNoImplementedPaintError, ApiError, ChatboxAIAPIError } from './errors'
 import { fixMessageRoleSequence } from './llm_utils'
 import {
   injectModelSystemPrompt,
@@ -15,30 +15,26 @@ import {
   populateOpenAIMessageVision,
 } from './openai'
 
-export default abstract class OpenAICompatible extends Base {
+interface OpenAICompatibleSettings {
+  apiKey: string
+  apiHost: string
+  model: string
+  temperature?: number
+  topP?: number
+  useProxy?: boolean
+}
+
+export default abstract class OpenAICompatible implements ModelInterface {
   public name = 'OpenAI Compatible'
-
-  public secretKey = ''
-  public apiHost = ''
-
-  public model = ''
-  public temperature?: number
-  public topP?: number
-
   public injectDefaultMetadata = true
-  public useProxy = false
 
-  constructor() {
-    super()
-  }
+  constructor(private settings: OpenAICompatibleSettings) {}
 
-  protected get webSearchModel() {
-    return this.model
-  }
+  public abstract isSupportToolUse(): boolean
 
-  async callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<string> {
+  public async chat(messages: Message[], options: CallChatCompletionOptions): Promise<string> {
     try {
-      return await this._callChatCompletion(rawMessages, options)
+      return await this._callChatCompletion(messages, options)
     } catch (e) {
       // 如果当前模型不支持图片输入，抛出对应的错误
       if (
@@ -57,42 +53,46 @@ export default abstract class OpenAICompatible extends Base {
     }
   }
 
-  async _callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<string> {
-    const model = this.model
+  public async paint(
+    prompt: string,
+    num: number,
+    callback?: (picBase64: string) => any,
+    signal?: AbortSignal
+  ): Promise<string[]> {
+    throw new AIProviderNoImplementedPaintError(this.name)
+  }
+
+  private async _callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<string> {
+    const { model } = this.settings
     if (this.injectDefaultMetadata) {
       rawMessages = injectModelSystemPrompt(model, rawMessages)
     }
-    let messages = await this.populateMessages(fixMessageRoleSequence(rawMessages), model)
+    const messages = await this.populateMessages(fixMessageRoleSequence(rawMessages))
     const requestBody = {
       messages,
       model,
-      temperature: this.temperature,
-      top_p: this.topP,
+      temperature: this.settings.temperature,
+      top_p: this.settings.topP,
       stream: true,
       tools: options?.webBrowsing ? [webSearchTool] : undefined,
     }
-    const proceed = () => this.requestChatCompletionsStream(requestBody, options.signal, options.onResultChange)
-
-    if (!options?.webBrowsing || this.isSupportToolUse()) {
-      return proceed()
-    }
-    // 正常不应该走到这里，在base里会进入通用搜索
-    requestBody.tools = undefined
-    return proceed()
+    const response = await apiRequest.post(
+      `${this.settings.apiHost}/chat/completions`,
+      this.getHeaders(),
+      requestBody,
+      {
+        signal: options.signal,
+        useProxy: this.settings.useProxy,
+      }
+    )
+    return this.handleResponse(response, options)
   }
 
-  async requestChatCompletionsStream(
-    requestBody: Record<string, any>,
-    signal?: AbortSignal,
-    onResultChange?: onResultChange
-  ): Promise<string> {
-    const response = await apiRequest.post(`${this.apiHost}/chat/completions`, this.getHeaders(), requestBody, {
-      signal,
-      useProxy: this.useProxy,
-    })
+  protected async handleResponse(response: Response, options: CallChatCompletionOptions): Promise<string> {
     let result = ''
     let reasoningContent: string | undefined = undefined
     const finalToolCalls: MessageToolCalls = {}
+
     await handleSSE(response, (message) => {
       if (message === '[DONE]') {
         return
@@ -107,24 +107,18 @@ export default abstract class OpenAICompatible extends Base {
         const toolCalls = data.choices[0].delta.tool_calls || []
         for (const toolCall of toolCalls) {
           const { index } = toolCall
-
           if (!finalToolCalls[index]) {
             finalToolCalls[index] = toolCall
           }
-
           finalToolCalls[index].function.arguments += toolCall.function.arguments
         }
-        if (onResultChange) {
-          onResultChange({ content: result, reasoningContent, toolCalls: finalToolCalls })
-        }
+        options.onResultChange?.({ content: result, reasoningContent, toolCalls: finalToolCalls })
       }
 
       const part = data.choices[0]?.delta?.content
       if (typeof part === 'string') {
         result += part
-        if (onResultChange) {
-          onResultChange({ content: result, reasoningContent, toolCalls: finalToolCalls })
-        }
+        options.onResultChange?.({ content: result, reasoningContent, toolCalls: finalToolCalls })
       }
       // 支持 deepseek r1 的思考链
       const reasoningContentPart = data.choices[0]?.delta?.reasoning_content || data.choices[0]?.delta?.reasoning
@@ -133,14 +127,12 @@ export default abstract class OpenAICompatible extends Base {
           reasoningContent = ''
         }
         reasoningContent += reasoningContentPart
-        if (onResultChange) {
-          onResultChange({ content: result, reasoningContent, toolCalls: finalToolCalls })
-        }
+        options.onResultChange?.({ content: result, reasoningContent, toolCalls: finalToolCalls })
       }
       // 处理一些本地部署或三方的 deepseek-r1 返回中的 <think>...</think> 思考链
       if (
         !reasoningContent &&
-        this.model.includes('deepseek-r') &&
+        this.settings.model.includes('deepseek-r') &&
         result.includes('<think>') &&
         result.includes('</think>')
       ) {
@@ -148,61 +140,23 @@ export default abstract class OpenAICompatible extends Base {
         reasoningContent = result.slice(0, index + 8)
         result = result.slice(index + 8)
       }
-      if (onResultChange) {
-        onResultChange({ content: result, reasoningContent, toolCalls: finalToolCalls })
-      }
+      options.onResultChange?.({ content: result, reasoningContent, toolCalls: finalToolCalls })
     })
+
     return result
   }
 
-  async requestChatCompletionsNotStream(
-    requestBody: Record<string, any>,
-    signal?: AbortSignal,
-    onResultChange?: onResultChange
-  ): Promise<string> {
-    const response = await apiRequest.post(`${this.apiHost}/chat/completions`, this.getHeaders(), requestBody, {
-      signal,
-      useProxy: this.useProxy,
-    })
-    const json = await response.json()
-    if (json.error) {
-      throw new ApiError(`Error from ${this.name}: ${JSON.stringify(json)}`)
-    }
-    const content: string = json.choices[0].message.content || ''
-    if (onResultChange) {
-      onResultChange({ content })
-    }
-    return content
-  }
-
-  async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
-    throw new Error('Not implemented')
-    // const res = await this.post(
-    //     `${this.options.apiHost}/images/generations`,
-    //     this.getHeaders(),
-    //     {
-    //         prompt,
-    //         response_format: 'b64_json',
-    //         model: 'dall-e-3',
-    //         style: this.options.dalleStyle,
-    //     },
-    //     { signal }
-    // )
-    // const json = await res.json()
-    // return json['data'][0]['b64_json']
-  }
-
-  getHeaders() {
+  private getHeaders() {
     const headers: Record<string, string> = {
-      Authorization: `Bearer ${this.secretKey}`,
+      Authorization: `Bearer ${this.settings.apiKey}`,
       'Content-Type': 'application/json',
     }
     return headers
   }
 
   protected async listRemoteModels(): Promise<string[]> {
-    const response = await apiRequest.get(`${this.apiHost}/models`, this.getHeaders(), {
-      useProxy: this.useProxy,
+    const response = await apiRequest.get(`${this.settings.apiHost}/models`, this.getHeaders(), {
+      useProxy: this.settings.useProxy,
     })
     const json: ListModelsResponse = await response.json()
     if (!json.data) {
@@ -215,22 +169,17 @@ export default abstract class OpenAICompatible extends Base {
     return []
   }
 
-  async listModels(): Promise<string[]> {
+  public async listModels(): Promise<string[]> {
     const locals = this.listLocalModels()
     const remotes = await this.listRemoteModels().catch(() => [])
     return uniq([...locals, ...remotes])
   }
 
-  isSupportVision(model: string): boolean {
-    return true
-  }
-
-  async populateMessages(rawMessages: Message[], model: string): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
-    if (this.isSupportVision(model) && rawMessages.some((m) => m.pictures && m.pictures.length > 0)) {
-      return await populateOpenAIMessageVision(rawMessages)
-    } else {
-      return await populateOpenAIMessageText(rawMessages)
+  private async populateMessages(rawMessages: Message[]): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
+    if (rawMessages.some((m) => m.pictures && m.pictures.length > 0)) {
+      return populateOpenAIMessageVision(rawMessages)
     }
+    return populateOpenAIMessageText(rawMessages)
   }
 }
 

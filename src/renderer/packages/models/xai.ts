@@ -4,10 +4,10 @@ import OpenAICompatible from './openai-compatible'
 
 const helpers: ModelHelpers = {
   isModelSupportVision: (model: string) => {
-    return false
+    return model.includes('vision')
   },
   isModelSupportToolUse: (model: string) => {
-    return false
+    return true
   },
 }
 
@@ -20,27 +20,20 @@ interface Options {
 
 export default class XAI extends OpenAICompatible {
   public name = 'xAI'
-  public useProxy = platform.type !== 'desktop'
   public static helpers = helpers
 
   constructor(public options: Options) {
-    super()
-    this.secretKey = options.xAIKey
-    this.apiHost = 'https://api.x.ai/v1'
-    this.model = options.xAIModel
-    this.temperature = options.temperature
-    this.topP = options.topP
+    super({
+      apiKey: options.xAIKey,
+      apiHost: 'https://api.x.ai/v1',
+      model: options.xAIModel,
+      temperature: options.temperature,
+      topP: options.topP,
+      useProxy: platform.type !== 'desktop',
+    })
   }
 
   isSupportToolUse() {
     return helpers.isModelSupportToolUse(this.options.xAIModel)
-  }
-
-  listLocalModels(): string[] {
-    return ['grok-beta']
-  }
-
-  async listRemoteModels(): Promise<string[]> {
-    return [] // 暂时无法得知是否提供接口
   }
 }

@@ -25,25 +25,22 @@ export default class SiliconFlow extends OpenAICompatible {
   public static helpers = helpers
 
   constructor(public options: Options) {
-    super()
-    this.secretKey = options.siliconCloudKey
-    this.apiHost = 'https://api.siliconflow.cn/v1'
-    this.model = options.siliconCloudModel
-    this.temperature = options.temperature
-    this.topP = options.topP
+    super({
+      apiKey: options.siliconCloudKey,
+      apiHost: 'https://api.siliconflow.cn/v1',
+      model: options.siliconCloudModel,
+      temperature: options.temperature,
+      topP: options.topP,
+    })
   }
 
   isSupportToolUse() {
     return helpers.isModelSupportToolUse(this.options.siliconCloudModel)
   }
-
-  get webSearchModel() {
-    return 'Qwen/Qwen2.5-72B-Instruct'
-  }
 }
 
 // Ref: https://siliconflow.cn/zh-cn/models
-export const modelMeta: ModelMeta = {
+const modelMeta: ModelMeta = {
   'deepseek-ai/DeepSeek-R1': { contextWindow: ContextWindowSize.t64k, reasoning: true },
   'deepseek-ai/DeepSeek-V3': { contextWindow: ContextWindowSize.t64k, functionCalling: false }, // model respond with malformed json, so disable it
   'deepseek-ai/DeepSeek-R1-Distill-Llama-70B': { contextWindow: ContextWindowSize.t32k, reasoning: true },
