@@ -44,8 +44,9 @@ import { getModelDisplayName, isModelSupportImageInput, isModelSupportToolUse } 
 import { languageNameMap } from '@/i18n/locales'
 import { isTextFilePath } from 'src/shared/file-extensions'
 import * as localParser from '@/packages/local-parser'
-import { onResultChangeWithCancel } from '@/packages/models/base'
+import type { ModelInterface, onResultChangeWithCancel } from '@/packages/models/base'
 import * as appleAppStore from '@/packages/apple_app_store'
+import { streamText, generateText, generateImage } from '@/packages/model-calls'
 
 /**
  * 创建一个新的会话
@@ -853,7 +854,11 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
           }
           modifyMessage(sessionId, targetMsg)
         }, 100)
-        await model.chat(promptMsgs, throttledModifyMessage, options)
+        await streamText(model, {
+          messages: promptMsgs,
+          onResultChangeWithCancel: throttledModifyMessage,
+          webBrowsing: options?.webBrowsing,
+        })
         targetMsg = {
           ...targetMsg,
           generating: false,
@@ -876,22 +881,26 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
             break
           }
         }
-        await model.paint(prompt, settings.imageGenerateNum, async (picBase64) => {
-          const storageKey = `picture:${sessionId}:${targetMsg.id}:${uuidv4()}`
-          // 图片需要存储到 indexedDB，如果直接使用 OpenAI 返回的图片链接，图片链接将随着时间而失效
-          await storage.setBlob(storageKey, picBase64)
+        await generateImage(model, {
+          prompt,
+          num: settings.imageGenerateNum,
+          callback: async (picBase64) => {
+            const storageKey = `picture:${sessionId}:${targetMsg.id}:${uuidv4()}`
+            // 图片需要存储到 indexedDB，如果直接使用 OpenAI 返回的图片链接，图片链接将随着时间而失效
+            await storage.setBlob(storageKey, picBase64)
 
-          const newPictures = targetMsg.pictures ? [...targetMsg.pictures] : []
-          const loadingIndex = newPictures.findIndex((p) => p.loading)
-          if (loadingIndex >= 0) {
-            newPictures[loadingIndex] = { storageKey }
-          }
-          targetMsg = {
-            ...targetMsg,
-            pictures: newPictures,
-            status: [],
-          }
-          modifyMessage(sessionId, targetMsg, true)
+            const newPictures = targetMsg.pictures ? [...targetMsg.pictures] : []
+            const loadingIndex = newPictures.findIndex((p) => p.loading)
+            if (loadingIndex >= 0) {
+              newPictures[loadingIndex] = { storageKey }
+            }
+            targetMsg = {
+              ...targetMsg,
+              pictures: newPictures,
+              status: [],
+            }
+            modifyMessage(sessionId, targetMsg, true)
+          },
         })
         targetMsg = {
           ...targetMsg,
@@ -975,7 +984,8 @@ async function _generateName(sessionId: string, modifyName: (sessionId: string, 
   const configs = await platform.getConfig()
   try {
     const model = getModel(settings, configs)
-    let name = await model.chat(
+    let name = await generateText(
+      model,
       promptFormat.nameConversation(
         session.messages.filter((m) => m.role !== 'system').slice(0, 4),
         languageNameMap[settings.language]

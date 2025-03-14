@@ -16,7 +16,7 @@ function getSearchProviders() {
   const selectedProviders: WebSearch[] = []
   const provider = settings.webSearch.provider
   const language = getLanguage()
-  
+
   switch (provider) {
     case 'bing':
       selectedProviders.push(new BingSearch())
@@ -111,7 +111,7 @@ export const webSearchExecutor = async (
     ttl: 1000 * 60 * 5,
     getFreshValue: () => _searchRelatedResults(query, abortSignal),
   })
-  return { searchResults }
+  return { query, searchResults }
 }
 
 export type { SearchResultItem }
