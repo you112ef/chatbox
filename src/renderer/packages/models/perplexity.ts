@@ -40,8 +40,6 @@ export default class Perplexity extends AbstractAISDKModel {
   isSupportToolUse() {
     return helpers.isModelSupportToolUse(this.options.perplexityModel)
   }
-
-  public listModels() {
-    return ['sonar-deep-research', 'sonar-reasoning-pro', 'sonar-reasoning', 'sonar-pro', 'sonar']
-  }
 }
+
+export const perplexityModels = ['sonar-deep-research', 'sonar-reasoning-pro', 'sonar-reasoning', 'sonar-pro', 'sonar']

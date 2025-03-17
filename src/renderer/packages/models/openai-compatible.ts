@@ -57,14 +57,8 @@ export default abstract class OpenAICompatible extends AbstractAISDKModel implem
     return json.data.map((item) => item.id)
   }
 
-  protected listLocalModels(): string[] {
-    return []
-  }
-
   public async listModels(): Promise<string[]> {
-    const locals = this.listLocalModels()
-    const remotes = await this.listRemoteModels().catch(() => [])
-    return uniq([...locals, ...remotes])
+    return this.listRemoteModels().catch(() => [])
   }
 }
 

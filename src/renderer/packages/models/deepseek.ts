@@ -54,10 +54,6 @@ export default class DeepSeek extends OpenAICompatible {
     })
   }
 
-  listLocalModels(): string[] {
-    return deepSeekModels
-  }
-
   isSupportToolUse() {
     return helpers.isModelSupportToolUse(this.options.deepseekModel)
   }

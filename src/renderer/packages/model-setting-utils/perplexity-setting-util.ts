@@ -1,7 +1,7 @@
 import { ModelSettings, Session, SessionType, Settings } from 'src/shared/types'
-import { ModelSettingUtil } from './interface'
+import Perplexity, { perplexityModels } from '../models/perplexity'
 import BaseConfig from './base-config'
-import Perplexity from '../models/perplexity'
+import { ModelSettingUtil } from './interface'
 
 export default class PerplexitySettingUtil extends BaseConfig implements ModelSettingUtil {
   async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
@@ -13,12 +13,11 @@ export default class PerplexitySettingUtil extends BaseConfig implements ModelSe
   }
 
   public getLocalOptionGroups(settings: ModelSettings) {
-    return []
+    return [{ options: perplexityModels.map((model) => ({ label: model, value: model })) }]
   }
 
   protected async listProviderModels(settings: ModelSettings) {
-    const perplexity = new Perplexity(settings)
-    return perplexity.listModels()
+    return []
   }
 
   selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {
