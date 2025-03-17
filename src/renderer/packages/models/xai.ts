@@ -1,4 +1,3 @@
-import platform from '@/platform'
 import { ModelHelpers } from './base'
 import OpenAICompatible from './openai-compatible'
 
@@ -29,7 +28,6 @@ export default class XAI extends OpenAICompatible {
       model: options.xAIModel,
       temperature: options.temperature,
       topP: options.topP,
-      useProxy: platform.type !== 'desktop',
     })
   }
 

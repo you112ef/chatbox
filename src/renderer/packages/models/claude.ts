@@ -1,11 +1,9 @@
 import * as base64 from '@/packages/base64'
-import platform from '@/platform'
 import storage from '@/storage'
 import { sequenceMessages } from '@/utils/message'
 import { apiRequest } from '@/utils/request'
 import { handleSSE } from '@/utils/stream'
 import { get } from 'lodash'
-import * as defaults from 'src/shared/defaults'
 import { Message, ModelMeta } from 'src/shared/types'
 import Base, { CallChatCompletionOptions, ModelHelpers } from './base'
 import { ApiError } from './errors'
@@ -165,7 +163,6 @@ export default class Claude extends Base {
       },
       {
         signal: options.signal,
-        useProxy: platform.type !== 'desktop' && this.options.claudeApiHost === defaults.settings().claudeApiHost,
       }
     )
     let result = ''
@@ -201,9 +198,7 @@ export default class Claude extends Base {
       }[]
     }
     const url = `${this.options.claudeApiHost}/v1/models?limit=990`
-    const res = await apiRequest.get(url, this.getHeaders(), {
-      useProxy: platform.type !== 'desktop' && this.options.claudeApiHost === defaults.settings().claudeApiHost,
-    })
+    const res = await apiRequest.get(url, this.getHeaders())
     const json: Response = await res.json()
     // {
     //   "data": [
