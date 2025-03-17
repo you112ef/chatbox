@@ -40,6 +40,11 @@ export class AppUpdater {
     for (const url of feedUrls) {
       try {
         autoUpdater.setFeedURL(url)
+        const settings = getSettings()
+
+        if (settings.betaUpdate) {
+          autoUpdater.channel = 'beta'
+        }
         const result = await autoUpdater.checkForUpdatesAndNotify()
         if (result) {
           return result

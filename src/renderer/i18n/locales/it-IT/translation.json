@@ -316,6 +316,7 @@
   "Operations": "Operazioni",
   "Press hotkey": "Inserisci hotkey",
   "Automatic updates": "Aggiornamenti automatici",
+  "Beta updates": "Aggiornamenti beta",
   "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "Si prega di assicurarsi che il Servizio LM Studio Remoto possa connettersi in remoto. Per maggiori dettagli, consulta <a>questo tutorial</a>.",
   "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model or use the recommended <OpenMorePlanButton>Chatbox AI Models</OpenMorePlanButton>.": "Spiacenti, il modello attuale {{model}} API non supporta l'interpretazione delle immagini. Se hai bisogno di inviare immagini, per favore passa a un altro modello o usa i <OpenMorePlanButton>modelli Chatbox AI</OpenMorePlanButton> consigliati.",
   "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "Spiacenti, il modello attuale {{model}} API non supporta l'interpretazione delle immagini. Se hai bisogno di inviare immagini, per favore passa a un altro modello.",

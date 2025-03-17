@@ -1,44 +1,51 @@
 name: Release Linux
 
 on:
-    push:
-        tags: [v\d+\.\d+\.\d+]
+  push:
+    tags: [v\d+\.\d+\.\d+, v\d+\.\d+\.\d+-beta\.\d+]
 
 jobs:
-    publish:
-        runs-on: ${{ matrix.os }}
+  publish:
+    runs-on: ${{ matrix.os }}
 
-        strategy:
-            matrix:
-                os: [macos-latest]
+    strategy:
+      matrix:
+        os: [macos-latest]
 
-        steps:
-            - name: Checkout git repo
-              uses: actions/checkout@v3
+    steps:
+      - name: Set update channel
+        run: |
+          if [[ ${{ github.ref_name }} =~ -beta\.[0-9]+$ ]]; then
+            echo "UPDATE_CHANNEL=beta" >> $GITHUB_ENV
+          fi
 
-            - name: Install Node and NPM
-              uses: actions/setup-node@v3
-              with:
-                  node-version: 18
-                  cache: npm
+      - name: Checkout git repo
+        uses: actions/checkout@v3
 
-            - name: Install and build
-              run: |
-                  npm install
-                  npm run postinstall
-                  npm run build
+      - name: Install Node and NPM
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
 
-            - name: Publish releases
-              env:
-                  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  GITHUB_TOKEN: ${{ secrets.GITHUBTOKEN }}
-                  GH_TOKEN: ${{ secrets.GH_TOKEN }}
-                  APPLE_ID: ${{ secrets.APPLE_ID }}
-                  APPLE_ID_PASS: ${{ secrets.APPLE_ID_PASS }}
-                  APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
-                  APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-                  CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
-                  CSC_LINK: ${{ secrets.CSC_LINK }}
-              run: |
-                  npm run release:linux
+      - name: Install and build
+        run: |
+          npm install
+          npm run postinstall
+          npm run build
+
+      - name: Publish releases
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUBTOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASS: ${{ secrets.APPLE_ID_PASS }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          UPDATE_CHANNEL: ${{ env.UPDATE_CHANNEL }}
+        run: |
+          npm run release:linux
