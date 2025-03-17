@@ -15,9 +15,9 @@ jobs:
     steps:
       - name: Set update channel
         run: |
-          if [[ ${{ github.ref_name }} =~ -beta\.[0-9]+$ ]]; then
-            echo "UPDATE_CHANNEL=beta" >> $GITHUB_ENV
-          fi
+          if ($env:github_ref_name -match '-beta\.\d+$') {
+              echo "UPDATE_CHANNEL=beta" | Out-File -FilePath $env:GITHUB_ENV -Append
+          }
       
       - name: Checkout git repo
         uses: actions/checkout@v3
