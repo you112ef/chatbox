@@ -1,4 +1,8 @@
 const changelog = `
+### v1.10.7 - 2025.03.17
+
+1. Added beta update channel, can be enabled in settings
+
 ### v1.10.5 - 2025.03.10
 
 1. Improved model setting UI
