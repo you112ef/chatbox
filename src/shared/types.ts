@@ -39,7 +39,6 @@ export interface MessageWebBrowsing {
 export type MessageToolCalls = { [key: string]: MessageToolCall }
 
 export type MessageToolCall = {
-  index: string
   id: string
   function: {
     name: string
@@ -58,11 +57,11 @@ export type MessageRole = (typeof MessageRoleEnum)[keyof typeof MessageRoleEnum]
 
 // Chatbox 应用的消息类型
 export interface Message {
-  id: string
+  id: string // 当role为tool时，id为toolCallId
 
   role: MessageRole
   content: string
-  name?: string
+  name?: string // 之前不知道是干什么的，现在用于role=tool时存储tool name
 
   cancel?: () => void
   generating?: boolean

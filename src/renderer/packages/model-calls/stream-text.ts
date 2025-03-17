@@ -33,6 +33,7 @@ async function handleToolCalls(
     messages.push({
       id: toolCall.id, // store tool_call_id in id field
       role: 'tool',
+      name: toolCall.function.name,
       content: toolResult ? JSON.stringify(toolResult) : '',
     })
   }
