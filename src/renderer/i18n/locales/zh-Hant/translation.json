@@ -26,7 +26,7 @@
   "name": "名稱",
   "clean": "清除",
   "delete confirmation": "此動作將永久刪除 {{sessionName}} 的內容。您確定要繼續嗎？",
-  "clean it up": "清除",
+  "clean it up": "清理",
   "copy": "複製",
   "edit": "編輯",
   "quote": "引用",
