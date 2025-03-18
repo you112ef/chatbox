@@ -385,7 +385,7 @@ export interface Settings extends ModelSettings {
 
   autoLaunch: boolean
   autoUpdate: boolean // 是否自动检查更新
-
+  betaUpdate: boolean // 是否自动检查 beta 更新
   shortcuts: ShortcutSetting
 
   extension: ExtensionSettings

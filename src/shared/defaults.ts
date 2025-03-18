@@ -87,6 +87,7 @@ export function settings(): Settings {
 
     autoLaunch: false,
     autoUpdate: true,
+    betaUpdate: false,
 
     shortcuts: {
       quickToggle: 'Alt+`', // 快速切换窗口显隐的快捷键

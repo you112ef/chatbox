@@ -27,16 +27,18 @@ export async function searchByPromptEngineering(model: ModelInterface, messages:
     { signal }
   )
   // extract json from response
-  const regex = /{(?:[^{}]|{(?:[^{}]|{[^{}]*})*})*}/
+  const regex = /{(?:[^{}]|{(?:[^{}]|{[^{}]*})*})*}/g
   const match = queryResponse.match(regex)
   if (match) {
-    const jsonString = match[0]
-    const jsonObject = JSON.parse(jsonString) as {
-      action: 'search' | 'proceed'
-      query: string
-    }
-    if (jsonObject.action === 'search') {
-      return callTool('web_search', { query: jsonObject.query }, { signal })
+    for (const jsonString of match) {
+      const jsonObject = JSON.parse(jsonString) as {
+        action: 'search' | 'proceed'
+        query: string
+      }
+      if (jsonObject.action === 'search') {
+        const { searchResults } = await webSearchExecutor({ query: jsonObject.query }, { abortSignal: signal })
+        return { query: jsonObject.query?.toString(), searchResults }
+      }
     }
   }
 }

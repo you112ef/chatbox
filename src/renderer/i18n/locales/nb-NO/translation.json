@@ -316,6 +316,7 @@
   "Operations": "Åtgärder",
   "Press hotkey": "Skriv in snabbknapp",
   "Automatic updates": "Automatisk oppdatering",
+  "Beta updates": "Beta oppdateringer",
   "Please ensure that the Remote LM Studio Service is able to connect remotely. For more details, refer to <a>this tutorial</a>.": "Vennligst sørg for at den eksterne LM Studio-tjenesten kan koble til eksternt. For mer informasjon, se <a>denne veiledningen</a>.",
   "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model or use the recommended <OpenMorePlanButton>Chatbox AI Models</OpenMorePlanButton>.": "Beklager, den nåværende modellen {{model}} API i seg selv støtter ikke bildeforståelse. Hvis du trenger å sende bilder, vennligst bytt til en annen modell eller bruk den anbefalte <OpenMorePlanButton>Chatbox AI-modeller</OpenMorePlanButton>.",
   "Sorry, the current model {{model}} API itself does not support image understanding. If you need to send images, please switch to another model.": "Beklager, den nåværende modellen {{model}} API i seg selv støtter ikke bildeforståelse. Hvis du trenger å sende bilder, vennligst bytt til en annen modell.",
