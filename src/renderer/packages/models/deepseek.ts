@@ -1,4 +1,3 @@
-import platform from '@/platform'
 import { ModelHelpers } from './base'
 import OpenAICompatible from './openai-compatible'
 
@@ -50,7 +49,6 @@ export default class DeepSeek extends OpenAICompatible {
       model: options.deepseekModel,
       temperature: options.deepseekModel === 'deepseek-reasoner' ? undefined : options.temperature,
       topP: options.deepseekModel === 'deepseek-reasoner' ? undefined : options.topP,
-      useProxy: platform.type !== 'desktop',
     })
   }
 
