@@ -1,6 +1,5 @@
 import { apiRequest, fetchWithProxy } from '@/utils/request'
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
-import { uniq } from 'lodash'
 import AbstractAISDKModel from './abstract-ai-sdk'
 import { ModelInterface } from './base'
 import { ApiError } from './errors'
