@@ -38,7 +38,7 @@ async function doRequest(
     headers.set('CHATBOX-TARGET-URI', url)
     headers.set('CHATBOX-PLATFORM', platform.type)
     headers.set('CHATBOX-VERSION', (await platform.getVersion()) || 'unknown')
-    url = 'https://proxy.ai-chatbox.com/proxy-api/completions'
+    url = 'https://cors-proxy.chatboxai.app/proxy-api/completions'
   }
 
   let requestError: ApiError | NetworkError | null = null
