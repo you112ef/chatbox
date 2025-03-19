@@ -17,6 +17,8 @@ import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import VrpanoIcon from '@mui/icons-material/Vrpano'
 import { ImageInStorage } from '@/components/Image'
 import { ConfirmDeleteMenuItem } from './ConfirmDeleteButton'
+import { useNavigate } from '@tanstack/react-router'
+import NiceModal from '@ebay/nice-modal-react'
 
 export interface Props {
   session: Session
@@ -25,8 +27,8 @@ export interface Props {
 
 function _SessionItem(props: Props) {
   const { session, selected } = props
+  const navigate = useNavigate()
   const { t } = useTranslation()
-  const setChatConfigDialogSessionId = useSetAtom(atoms.chatConfigDialogIdAtom)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -39,6 +41,9 @@ function _SessionItem(props: Props) {
   }
   const onClick = () => {
     sessionActions.switchCurrentSession(session.id)
+    navigate({
+      to: `/session/${session.id}`,
+    })
   }
   const theme = useTheme()
   const medianSize = theme.typography.pxToRem(24)
@@ -104,7 +109,9 @@ function _SessionItem(props: Props) {
         <MenuItem
           key={session.id + 'edit'}
           onClick={() => {
-            setChatConfigDialogSessionId(session.id)
+            NiceModal.show('session-settings', {
+              chatConfigDialogSessionId: session.id,
+            })
             handleMenuClose()
           }}
           disableRipple

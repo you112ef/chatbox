@@ -11,9 +11,11 @@ import { ChatboxAIAPIError } from '@/packages/models/errors'
 import platform from '@/platform'
 import { trackingEvent } from '@/packages/event'
 import LinkTargetBlank from './Link'
+import { useNavigate } from '@tanstack/react-router'
 
 export default function MessageErrTips(props: { msg: Message }) {
   const { msg } = props
+  const navigate = useNavigate()
   const setOpenSettingDialogAtom = useSetAtom(atoms.openSettingDialogAtom)
   if (!msg.error) {
     return null
@@ -31,7 +33,12 @@ export default function MessageErrTips(props: { msg: Message }) {
           buttonOpenSettings: (
             <a
               className="cursor-pointer underline font-bold hover:text-blue-600 transition-colors"
-              onClick={() => setOpenSettingDialogAtom('ai')}
+              onClick={() => {
+                setOpenSettingDialogAtom('ai')
+                navigate({
+                  to: '/settings',
+                })
+              }}
             />
           ),
           a: <a href={`https://chatboxai.app/redirect_app/faqs/${settingActions.getLanguage()}`} target="_blank" />,
@@ -58,7 +65,17 @@ export default function MessageErrTips(props: { msg: Message }) {
         values={{
           aiProvider: msg.aiProvider ? aiProviderNameHash[msg.aiProvider] : 'AI Provider',
         }}
-        components={[<Link className="cursor-pointer font-bold" onClick={() => setOpenSettingDialogAtom('ai')}></Link>]}
+        components={[
+          <Link
+            className="cursor-pointer font-bold"
+            onClick={() => {
+              setOpenSettingDialogAtom('ai')
+              navigate({
+                to: '/settings',
+              })
+            }}
+          ></Link>,
+        ]}
       />
     )
   } else if (msg.errorCode && ChatboxAIAPIError.getDetail(msg.errorCode)) {
@@ -74,7 +91,15 @@ export default function MessageErrTips(props: { msg: Message }) {
           }}
           components={{
             OpenSettingButton: (
-              <Link className="cursor-pointer italic" onClick={() => setOpenSettingDialogAtom('ai')}></Link>
+              <Link
+                className="cursor-pointer italic"
+                onClick={() => {
+                  setOpenSettingDialogAtom('ai')
+                  navigate({
+                    to: '/settings',
+                  })
+                }}
+              ></Link>
             ),
             OpenMorePlanButton: (
               <Link

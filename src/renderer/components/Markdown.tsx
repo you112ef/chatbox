@@ -23,6 +23,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import PlayCircleIcon from '@mui/icons-material/PlayCircle'
+import NiceModal from '@ebay/nice-modal-react'
 
 export default function Markdown(props: {
   children: string
@@ -159,7 +160,6 @@ function BlockCode(props: {
   const { children, hiddenCodeCopyButton, preferCollapsed, language, generating } = props
   const theme = useTheme()
   const { t } = useTranslation()
-  const setArtifactDialogHtmlCode = useSetAtom(atoms.artifactDialogHtmlCodeAtom)
 
   const initialState = useMemo(
     () =>
@@ -214,7 +214,9 @@ function BlockCode(props: {
     (event: React.MouseEvent) => {
       event.stopPropagation() // 优化搜索窗口中的展开逻辑
       event.preventDefault()
-      setArtifactDialogHtmlCode(String(children))
+      NiceModal.show('artifact-preview', {
+        htmlCode: String(children),
+      })
     },
     [children]
   )

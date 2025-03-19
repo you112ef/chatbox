@@ -19,11 +19,11 @@ import { ConfirmDeleteMenuItem } from './ConfirmDeleteButton'
 
 const sessionScrollPositionCache = new Map<string, StateSnapshot>()
 
-export default function MessageList(props: { className?: string }) {
+export default function MessageList(props: { className?: string; currentSession: Session }) {
   const { t } = useTranslation()
   const theme = useTheme()
 
-  const currentSession = useAtomValue(atoms.currentSessionAtom)
+  const currentSession = props.currentSession
   const currentMessageList = useAtomValue(atoms.currentMessageListAtom)
   const currentThreadHash = useAtomValue(atoms.currentThreadHistoryHashAtom)
   const virtuoso = useRef<VirtuosoHandle>(null)

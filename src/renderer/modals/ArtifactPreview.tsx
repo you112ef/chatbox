@@ -1,24 +1,32 @@
+import NiceModal, { muiDialogV5, useModal } from '@ebay/nice-modal-react'
 import { Button, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import * as atoms from '../stores/atoms'
-import { useAtom } from 'jotai'
 import { Artifact } from '@/components/Artifact'
 import { useState } from 'react'
 
-export default function ArtifactDialog(props: {}) {
+const ArtifactPreview = NiceModal.create(({ htmlCode }: { htmlCode: string }) => {
+  const modal = useModal()
   const { t } = useTranslation()
-  const [htmlCode, setHtmlCode] = useAtom(atoms.artifactDialogHtmlCodeAtom)
   const [reloadSign, setReloadSign] = useState(0)
-
   const onReload = () => {
     setReloadSign(Math.random())
   }
   const onClose = () => {
-    setHtmlCode('')
+    modal.resolve()
+    modal.hide()
   }
 
   return (
-    <Dialog open={!!htmlCode} onClose={onClose} fullWidth maxWidth="md" classes={{ paper: 'h-4/5' }}>
+    <Dialog
+      {...muiDialogV5(modal)}
+      onClose={() => {
+        modal.resolve()
+        modal.hide()
+      }}
+      fullWidth
+      maxWidth="md"
+      classes={{ paper: 'h-4/5' }}
+    >
       <DialogTitle>{t('Preview')}</DialogTitle>
       <DialogContent style={{ padding: '0', margin: '0' }}>
         <Artifact htmlCode={htmlCode} reloadSign={reloadSign} className="h-[96%]" />
@@ -29,4 +37,6 @@ export default function ArtifactDialog(props: {}) {
       </DialogActions>
     </Dialog>
   )
-}
+})
+
+export default ArtifactPreview

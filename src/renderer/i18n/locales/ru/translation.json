@@ -342,5 +342,10 @@
   "Web Search": "Поиск в Интернете",
   "Search Provider": "Поисковый сервис",
   "Tavily API Key": "Ключ API Tavily",
-  "Get API Key": "Получить API ключ"
+  "Get API Key": "Получить API ключ",
+  "Select Model": "Выбрать модель",
+  "Unsaved settings": "Не сохраненные настройки",
+  "You have unsaved settings. Are you sure you want to leave?": "У вас есть несохраненные настройки. Вы уверены, что хотите уйти?",
+  "Yes": "Да",
+  "No": "Нет"
 }

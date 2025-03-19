@@ -1,14 +1,13 @@
+import NiceModal, { muiDialogV5, useModal } from '@ebay/nice-modal-react'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { Input, Button, Dialog, DialogContent, DialogActions, DialogTitle, DialogContentText } from '@mui/material'
 import { useTranslation, Trans } from 'react-i18next'
 import * as sessionActions from '../stores/sessionActions'
 import { trackingEvent } from '@/packages/event'
-import * as atoms from '@/stores/atoms'
-import { useAtom } from 'jotai'
 
-export default function ClearConversationListWindow(props: {}) {
+const ClearSessionList = NiceModal.create(() => {
+  const modal = useModal()
   const { t } = useTranslation()
-  const [open, setOpen] = useAtom(atoms.openClearConversationListDialogAtom)
   const [value, setValue] = useState(100)
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
     const int = parseInt(event.target.value || '0')
@@ -16,22 +15,30 @@ export default function ClearConversationListWindow(props: {}) {
       setValue(int)
     }
   }
+
   useEffect(() => {
-    setValue(100)
-    if (open) {
-      trackingEvent('clear_conversation_list_window', { event_category: 'screen_view' })
-    }
-  }, [open])
+    trackingEvent('clear_conversation_list_window', { event_category: 'screen_view' })
+  }, [])
+
   const clean = () => {
     sessionActions.clearConversationList(value)
     trackingEvent('clear_conversation_list', { event_category: 'user' })
     handleClose()
   }
+
   const handleClose = () => {
-    setOpen(false)
+    modal.resolve()
+    modal.hide()
   }
+
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog
+      {...muiDialogV5(modal)}
+      onClose={() => {
+        modal.resolve()
+        modal.hide()
+      }}
+    >
       <DialogTitle>{t('Clear Conversation List')}</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -57,4 +64,6 @@ export default function ClearConversationListWindow(props: {}) {
       </DialogActions>
     </Dialog>
   )
-}
+})
+
+export default ClearSessionList

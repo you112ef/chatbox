@@ -1,3 +1,4 @@
+import NiceModal, { muiDialogV5, useModal } from '@ebay/nice-modal-react'
 import { TextField, Button, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import * as atoms from '../stores/atoms'
@@ -8,43 +9,49 @@ import SimpleSelect from '@/components/SimpleSelect'
 import * as toastActions from '@/stores/toastActions'
 import * as remote from '@/packages/remote'
 
-export default function ReportContentDialog(props: {}) {
+const ReportContent = NiceModal.create(({ contentId }: { contentId: string }) => {
+  const modal = useModal()
   const { t } = useTranslation()
   const isSmallScreen = useIsSmallScreen()
-  const [reportObject, setReportObject] = useAtom(atoms.reportContentDialogAtom)
 
   const [content, setContent] = useState('')
   const [reportType, setReportType] = useState('Harmful or offensive content')
 
   const onClose = () => {
-    setReportObject(null)
+    modal.resolve()
+    modal.hide()
   }
 
   const onSubmit = async () => {
-    setReportObject(null)
     toastActions.add(t('Thank you for your report'))
-    if (!reportObject) {
+    if (!contentId) {
       return
     }
     await remote.reportContent({
-      id: reportObject.id,
+      id: contentId,
       type: reportType,
       details: content,
     })
+    modal.resolve()
+    modal.hide()
   }
 
-  if (!reportObject) {
-    return null
-  }
   return (
-    <Dialog open={!!reportObject} onClose={onClose} fullWidth>
+    <Dialog
+      {...muiDialogV5(modal)}
+      onClose={() => {
+        modal.resolve()
+        modal.hide()
+      }}
+      fullWidth
+    >
       <DialogTitle>{t('Report Content')}</DialogTitle>
       <DialogContent>
         <TextField
           label={t('Report Content ID')}
           className="w-full"
           autoFocus={!isSmallScreen}
-          value={reportObject.id}
+          value={contentId}
           // onChange={(e) => setReportObject({ ...reportObject, id: e.target.value })}
           disabled
           margin="dense"
@@ -87,4 +94,6 @@ export default function ReportContentDialog(props: {}) {
       </DialogActions>
     </Dialog>
   )
-}
+})
+
+export default ReportContent

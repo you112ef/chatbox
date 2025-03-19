@@ -1,3 +1,4 @@
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import React, { useState, useEffect } from 'react'
 import {
   Button,
@@ -23,30 +24,36 @@ import {
 import { CopilotDetail, Message } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import EditIcon from '@mui/icons-material/Edit'
-import StyledMenu from '../components/StyledMenu'
+import StyledMenu from '@/components/StyledMenu'
 import StarIcon from '@mui/icons-material/Star'
 import StarOutlineIcon from '@mui/icons-material/StarOutline'
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined'
-import { useMyCopilots, useRemoteCopilots } from '../hooks/useCopilots'
-import * as remote from '../packages/remote'
+import { useMyCopilots, useRemoteCopilots } from '@/hooks/useCopilots'
+import * as remote from '@/packages/remote'
 import { v4 as uuidv4 } from 'uuid'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
-import * as atoms from '../stores/atoms'
-import * as sessionActions from '../stores/sessionActions'
+import * as atoms from '@/stores/atoms'
+import * as sessionActions from '@/stores/sessionActions'
 import { useAtom, useAtomValue } from 'jotai'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
-import platform from '../platform'
+import platform from '@/platform'
 import { trackingEvent } from '@/packages/event'
-import { ConfirmDeleteMenuItem } from '../components/ConfirmDeleteButton'
+import { ConfirmDeleteMenuItem } from '@/components/ConfirmDeleteButton'
+import Page from '@/components/Page'
 
-export default function CopilotWindow(props: {}) {
+export const Route = createFileRoute('/copilots')({
+  component: Copilots,
+})
+
+function Copilots() {
   const language = useAtomValue(atoms.languageAtom)
   const [open, setOpen] = useAtom(atoms.openCopilotDialogAtom)
+  const navigate = useNavigate()
 
   const { t } = useTranslation()
 
   const store = useMyCopilots()
-  const remoteStore = useRemoteCopilots(language, open)
+  const remoteStore = useRemoteCopilots(language, true)
 
   const createChatSessionWithCopilot = (copilot: CopilotDetail) => {
     const msgs: Message[] = []
@@ -65,7 +72,7 @@ export default function CopilotWindow(props: {}) {
         content: copilot.demoAnswer,
       })
     }
-    sessionActions.create({
+    const newSession = sessionActions.create({
       id: uuidv4(),
       name: copilot.name,
       type: 'chat',
@@ -73,6 +80,9 @@ export default function CopilotWindow(props: {}) {
       messages: msgs,
       starred: false,
       copilotId: copilot.id,
+    })
+    navigate({
+      to: `/session/${newSession.id}`,
     })
     trackingEvent('create_copilot_conversation', { event_category: 'user' })
   }
@@ -105,9 +115,8 @@ export default function CopilotWindow(props: {}) {
   ]
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md" classes={{ paper: 'h-4/5' }}>
-      <DialogTitle>{t('My Copilots')}</DialogTitle>
-      <DialogContent style={{ width: '100%' }}>
+    <Page title={t('My Copilots')}>
+      <div className="p-4 max-w-4xl mx-auto">
         {copilotEdit ? (
           <CopilotForm
             copilotDetail={copilotEdit}
@@ -191,11 +200,8 @@ export default function CopilotWindow(props: {}) {
             <MiniItem key={`${item.id}_${ix}`} mode="remote" detail={item} useMe={() => useCopilot(item)} />
           ))}
         </div>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose}>{t('close')}</Button>
-      </DialogActions>
-    </Dialog>
+      </div>
+    </Page>
   )
 }
 

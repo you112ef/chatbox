@@ -12,6 +12,7 @@ import {
   Typography,
   Divider,
   useTheme,
+  Button,
 } from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
@@ -22,17 +23,18 @@ import AddIcon from '@mui/icons-material/AddCircleOutline'
 import useVersion from './hooks/useVersion'
 import SessionList from './components/SessionList'
 import * as sessionActions from './stores/sessionActions'
-import { useAtomValue, useAtom, useSetAtom } from 'jotai'
+import { useAtomValue, useAtom } from 'jotai'
 import * as atoms from './stores/atoms'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import { useIsSmallScreen, useSidebarWidth } from './hooks/useScreenChange'
 import { trackingEvent } from './packages/event'
 import { PanelLeftClose } from 'lucide-react'
+import { useNavigate, useRouterState } from '@tanstack/react-router'
 
 export default function Sidebar(props: {}) {
   const language = useAtomValue(atoms.languageAtom)
   const [showSidebar, setShowSidebar] = useAtom(atoms.showSidebarAtom)
-  const currentSessionId = useAtomValue(atoms.currentSessionIdAtom)
+  const routerState = useRouterState()
 
   const sessionListRef = useRef<HTMLDivElement>(null)
 
@@ -44,7 +46,7 @@ export default function Sidebar(props: {}) {
     if (isSmallScreen) {
       setShowSidebar(false)
     }
-  }, [isSmallScreen, currentSessionId])
+  }, [isSmallScreen, routerState.location.pathname])
 
   const theme = useTheme()
 
@@ -117,33 +119,51 @@ function SidebarButtons(props: { sessionListRef: React.RefObject<HTMLDivElement>
   const { sessionListRef } = props
   const { t } = useTranslation()
   const versionHook = useVersion()
-  const setOpenSettingDialog = useSetAtom(atoms.openSettingDialogAtom)
-  const setOpenAboutWindow = useSetAtom(atoms.openAboutDialogAtom)
-  const setOpenCopilotDialog = useSetAtom(atoms.openCopilotDialogAtom)
   const handleCreateNewSession = () => {
-    sessionActions.createEmpty('chat')
+    const newSession = sessionActions.createEmpty('chat')
+    navigate({
+      to: `/session/${newSession.id}`,
+    })
     if (sessionListRef.current) {
       sessionListRef.current.scrollTo(0, 0)
     }
     trackingEvent('create_new_conversation', { event_category: 'user' })
   }
   const handleCreateNewPictureSession = () => {
-    sessionActions.createEmpty('picture')
+    const newSession = sessionActions.createEmpty('picture')
+    navigate({
+      to: `/session/${newSession.id}`,
+    })
     if (sessionListRef.current) {
       sessionListRef.current.scrollTo(0, 0)
     }
     trackingEvent('create_new_picture_conversation', { event_category: 'user' })
   }
-  const handleOpenAboutWindow = () => {
-    setOpenAboutWindow(true)
-  }
-  const handleOpenCopilotDialog = () => {
-    setOpenCopilotDialog(true)
-  }
+
+  const routerState = useRouterState()
+  const navigate = useNavigate()
 
   return (
     <MenuList>
-      <MenuItem onClick={handleCreateNewSession} sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}>
+      <Box className="flex flex-col m-1 mb-2 gap-2">
+        <Button variant="contained" className="w-full gap-2" size="large" onClick={handleCreateNewSession}>
+          <AddIcon fontSize="small" />
+          <span className="flex flex-col normal-case">
+            <span>{t('new chat')}</span>
+            <span className="opacity-0 h-0">{t('New Images')}</span>
+          </span>
+        </Button>
+
+        <Button variant="outlined" className="w-full gap-2 " size="large" onClick={handleCreateNewPictureSession}>
+          <AddPhotoAlternateIcon fontSize="small" />
+          <span className="flex flex-col normal-case">
+            <span className="opacity-0 h-0">{t('new chat')}</span>
+            <span>{t('New Images')}</span>
+          </span>
+        </Button>
+      </Box>
+
+      {/* <MenuItem onClick={handleCreateNewSession} sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}>
         <ListItemIcon>
           <IconButton>
             <AddIcon fontSize="small" />
@@ -151,7 +171,6 @@ function SidebarButtons(props: { sessionListRef: React.RefObject<HTMLDivElement>
         </ListItemIcon>
         <ListItemText>{t('new chat')}</ListItemText>
         <Typography variant="body2" color="text.secondary">
-          {/* ⌘N */}
         </Typography>
       </MenuItem>
 
@@ -163,11 +182,18 @@ function SidebarButtons(props: { sessionListRef: React.RefObject<HTMLDivElement>
         </ListItemIcon>
         <ListItemText>{t('New Images')}</ListItemText>
         <Typography variant="body2" color="text.secondary">
-          {/* ⌘N */}
         </Typography>
-      </MenuItem>
+      </MenuItem> */}
 
-      <MenuItem onClick={handleOpenCopilotDialog} sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}>
+      <MenuItem
+        onClick={() => {
+          navigate({
+            to: '/copilots',
+          })
+        }}
+        selected={routerState.location.pathname === '/copilots'}
+        sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}
+      >
         <ListItemIcon>
           <IconButton>
             <SmartToyIcon fontSize="small" />
@@ -180,8 +206,12 @@ function SidebarButtons(props: { sessionListRef: React.RefObject<HTMLDivElement>
 
       <MenuItem
         onClick={() => {
-          setOpenSettingDialog('ai')
+          // setOpenSettingDialog('ai')
+          navigate({
+            to: '/settings',
+          })
         }}
+        selected={routerState.location.pathname === '/settings'}
         sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}
       >
         <ListItemIcon>
@@ -195,7 +225,15 @@ function SidebarButtons(props: { sessionListRef: React.RefObject<HTMLDivElement>
         </Typography>
       </MenuItem>
 
-      <MenuItem onClick={handleOpenAboutWindow} sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}>
+      <MenuItem
+        onClick={() => {
+          navigate({
+            to: '/about',
+          })
+        }}
+        selected={routerState.location.pathname === '/about'}
+        sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}
+      >
         <ListItemIcon>
           <IconButton>
             <InfoOutlinedIcon fontSize="small" />

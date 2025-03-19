@@ -169,3 +169,6 @@ dist
 electron-builder.env
 
 .vscode
+
+
+**/routeTree.gen.ts

@@ -1,3 +1,4 @@
+import NiceModal, { muiDialogV5, useModal } from '@ebay/nice-modal-react'
 import { useState } from 'react'
 import {
   Button,
@@ -11,29 +12,34 @@ import {
   FormControl,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import * as sessionActions from '../stores/sessionActions'
-import * as atoms from '../stores/atoms'
-import { useAtom } from 'jotai'
-import { ExportChatFormat, ExportChatScope } from '../../shared/types'
+import * as sessionActions from '@/stores/sessionActions'
+import { ExportChatFormat, ExportChatScope } from '@/../shared/types'
 
-interface Props {}
-
-export default function ExportChatDialog(props: Props) {
+const ExportChat = NiceModal.create(() => {
+  const modal = useModal()
   const { t } = useTranslation()
-  const [openExportChatDialog, setOpenExportChatDialog] = useAtom(atoms.openExportChatDialogAtom)
   const [scope, setScope] = useState<ExportChatScope>('all_threads')
   const [format, setFormat] = useState<ExportChatFormat>('HTML')
 
   const onCancel = () => {
-    setOpenExportChatDialog(false)
+    modal.resolve()
+    modal.hide()
   }
   const onExport = () => {
     sessionActions.exportCurrentSessionChat(scope, format)
-    setOpenExportChatDialog(false)
+    modal.resolve()
+    modal.hide()
   }
 
   return (
-    <Dialog open={openExportChatDialog} onClose={onCancel} fullWidth>
+    <Dialog
+      {...muiDialogV5(modal)}
+      onClose={() => {
+        modal.resolve()
+        modal.hide()
+      }}
+      fullWidth
+    >
       <DialogTitle>{t('Export Chat')}</DialogTitle>
       <DialogContent>
         <FormControl fullWidth variant="outlined" margin="dense">
@@ -77,4 +83,6 @@ export default function ExportChatDialog(props: Props) {
       </DialogActions>
     </Dialog>
   )
-}
+})
+
+export default ExportChat

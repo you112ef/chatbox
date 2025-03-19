@@ -4,7 +4,7 @@ import { useTheme } from '@mui/material'
 import { createMessage, ShortcutSendValue } from '../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as atoms from '../stores/atoms'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import * as sessionActions from '../stores/sessionActions'
 import * as dom from '../hooks/dom'
 import { Keys } from './Shortcut'
@@ -23,7 +23,7 @@ import autosize from 'autosize'
 import platform from '@/platform'
 import { useDropzone } from 'react-dropzone'
 import * as picUtils from '@/packages/pic_utils'
-import { useHotkeys } from 'react-hotkeys-hook'
+import NiceModal from '@ebay/nice-modal-react'
 
 export default function InputBox(props: {}) {
   const theme = useTheme()
@@ -31,7 +31,6 @@ export default function InputBox(props: {}) {
   const currentSessionId = useAtomValue(atoms.currentSessionIdAtom)
   const currentSessionType = useAtomValue(atoms.currentSessionTypeAtom)
   const isSmallScreen = useIsSmallScreen()
-  const setChatConfigDialogSessionId = useSetAtom(atoms.chatConfigDialogIdAtom)
   const { t } = useTranslation()
   const [messageInput, setMessageInput] = useState('')
   const [pictureKeys, setPictureKeys] = useState<string[]>([])
@@ -44,7 +43,6 @@ export default function InputBox(props: {}) {
   const showRollbackThreadButtonTimerRef = useRef<null | NodeJS.Timeout>(null)
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
   const [previousMessageQuickInputMark, setPreviousMessageQuickInputMark] = useState('')
-  const setOpenAttachLinkDialog = useSetAtom(atoms.openAttachLinkDialogAtom)
   const pasteLongTextAsAFile = useAtomValue(atoms.pasteLongTextAsAFileAtom)
   const shortcuts = useAtomValue(atoms.shortcutsAtom)
 
@@ -415,7 +413,12 @@ export default function InputBox(props: {}) {
             <MiniButton
               className={cn('mr-1 sm:mr-2', currentSessionType !== 'picture' ? '' : 'hidden')}
               style={{ color: theme.palette.text.primary }}
-              onClick={() => setOpenAttachLinkDialog(true)}
+              onClick={async () => {
+                const links: string[] = await NiceModal.show('attach-link')
+                if (links) {
+                  insertLinks(links)
+                }
+              }}
               tooltipTitle={
                 <div className="text-center inline-block">
                   <span>{t('Attach Link')}</span>
@@ -450,7 +453,11 @@ export default function InputBox(props: {}) {
             <MiniButton
               className="mr-1 sm:mr-2"
               style={{ color: theme.palette.text.primary }}
-              onClick={() => setChatConfigDialogSessionId(sessionActions.getCurrentSession().id)}
+              onClick={() =>
+                NiceModal.show('session-settings', {
+                  chatConfigDialogSessionId: sessionActions.getCurrentSession().id,
+                })
+              }
               tooltipTitle={
                 <div className="text-center inline-block">
                   <span>{t('Customize settings for the current conversation')}</span>

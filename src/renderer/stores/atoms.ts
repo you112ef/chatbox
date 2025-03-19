@@ -247,20 +247,12 @@ export const showThreadHistoryDrawerAtom = atom<boolean | string>(false)
 export const openSearchDialogAtom = atom(false)
 export const openSettingDialogAtom = atom<SettingWindowTab | null>(null)
 export const sessionCleanDialogAtom = atom<Session | null>(null) // 清空会话的弹窗
-export const chatConfigDialogIdAtom = atom<string | null>(null) // 会话配置窗口
-export const openExportChatDialogAtom = atom(false) // 导出聊天记录的弹窗
 export const openWelcomeDialogAtom = atom(false)
 export const openAboutDialogAtom = atom(false) // 是否展示相关信息的窗口
 export const openCopilotDialogAtom = atom(false) // 是否展示copilot窗口
-export const openClearConversationListDialogAtom = atom(false) // 是否展示会话列表清理窗口
-export const openAttachLinkDialogAtom = atom(false) // 是否展示链接插入窗口
-export const reportContentDialogAtom = atom<{ id: string } | null>(null) // 是否展示举报内容窗口
-export const openAppStoreRatingDialogAtom = atom(false) // 是否展示App Store评分弹窗
 
 export const inputBoxLinksAtom = atom<{ url: string }[]>([])
 export const inputBoxWebBrowsingModeAtom = atom(false)
-
-export const artifactDialogHtmlCodeAtom = atom('') // artifact 预览弹窗（当 html 不为空时则弹窗）
 
 // 图片展示窗口的图片
 export const pictureShowAtom = atom<{
@@ -271,8 +263,5 @@ export const pictureShowAtom = atom<{
   }[]
   onSave?: () => void
 } | null>(null)
-
-// 会话编辑窗口
-export const messageEditDialogShowAtom = atom<{ msg: Message; sessionId: string } | null>(null)
 
 export const widthFullAtom = atomWithStorage<boolean>('widthFull', false)

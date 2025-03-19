@@ -341,5 +341,10 @@
   "Web Search": "Ricerca su Internet",
   "Search Provider": "Provider di ricerca",
   "Tavily API Key": "Chiave API Tavily",
-  "Get API Key": "Ottieni chiave API"
+  "Get API Key": "Ottieni chiave API",
+  "Select Model": "Seleziona modello",
+  "Unsaved settings": "Impostazioni non salvate",
+  "You have unsaved settings. Are you sure you want to leave?": "Hai delle impostazioni non salvate. Sei sicuro di voler uscire?",
+  "Yes": "Sì",
+  "No": "No"
 }

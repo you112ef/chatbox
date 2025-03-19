@@ -343,5 +343,10 @@
   "Search Providers": "搜索服务商",
   "Search Provider": "搜索提供方",
   "Tavily API Key": "Tavily API 密钥",
-  "Get API Key": "获取 API 密钥"
+  "Get API Key": "获取 API 密钥",
+  "Select Model": "选择模型",
+  "Unsaved settings": "未保存的设置",
+  "You have unsaved settings. Are you sure you want to leave?": "您有未保存的设置。确定要离开吗？",
+  "Yes": "是",
+  "No": "否"
 }

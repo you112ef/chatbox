@@ -341,5 +341,10 @@
   "Web Search": "Web Search",
   "Search Provider": "Search Provider",
   "Tavily API Key": "Tavily API Key",
-  "Get API Key": "Get API Key"
+  "Get API Key": "Get API Key",
+  "Select Model": "Select Model",
+  "Unsaved settings": "Unsaved settings",
+  "You have unsaved settings. Are you sure you want to leave?": "You have unsaved settings. Are you sure you want to leave?",
+  "Yes": "Yes",
+  "No": "No"
 }

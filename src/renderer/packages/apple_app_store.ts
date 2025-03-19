@@ -1,9 +1,7 @@
 import * as Sentry from '@sentry/react'
-import { getDefaultStore } from 'jotai'
-import * as atoms from '../stores/atoms'
 import { store as keypairStore } from './keypairs'
-import platform from '../platform'
 import { CHATBOX_BUILD_PLATFORM } from '../variables'
+import NiceModal from '@ebay/nice-modal-react'
 
 // 本次启动是否已经引导过用户评价 App Store
 let hasOpenAppStoreReviewPage = false
@@ -24,8 +22,7 @@ export async function tryOpenAppStoreReviewPage() {
     }
     hasOpenAppStoreReviewPage = true
     await keypairStore.setItem('lastAppStoreReviewTime', now)
-    const store = getDefaultStore()
-    store.set(atoms.openAppStoreRatingDialogAtom, true)
+    NiceModal.show('app-store-rating')
   } catch (e) {
     console.error(e)
     Sentry.captureException(e)

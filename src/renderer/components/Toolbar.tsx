@@ -17,6 +17,7 @@ import WidthWideIcon from '@mui/icons-material/WidthWide'
 import { useIsLargeScreen, useIsSmallScreen } from '@/hooks/useScreenChange'
 import * as sessionActions from '@/stores/sessionActions'
 import { ConfirmDeleteMenuItem } from './ConfirmDeleteButton'
+import NiceModal from '@ebay/nice-modal-react'
 
 /**
  * 顶部标题工具栏（右侧）
@@ -31,7 +32,6 @@ export default function Toolbar() {
 
   const setOpenSearchDialog = useSetAtom(atoms.openSearchDialogAtom)
   const setThreadHistoryDrawerOpen = useSetAtom(atoms.showThreadHistoryDrawerAtom)
-  const setOpenExportChatDialog = useSetAtom(atoms.openExportChatDialogAtom)
   const [widthFull, setWidthFull] = useAtom(atoms.widthFullAtom)
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -46,7 +46,7 @@ export default function Toolbar() {
     setAnchorEl(null)
   }
   const handleExportAndSave = () => {
-    setOpenExportChatDialog(true)
+    NiceModal.show('export-chat')
     handleMoreMenuClose()
   }
   const handleSessionClean = () => {

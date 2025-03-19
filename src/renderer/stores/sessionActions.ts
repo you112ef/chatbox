@@ -56,6 +56,7 @@ export function create(newSession: Session) {
   const store = getDefaultStore()
   store.set(atoms.sessionsAtom, (sessions) => [...sessions, newSession])
   switchCurrentSession(newSession.id)
+  return newSession
 }
 
 /**

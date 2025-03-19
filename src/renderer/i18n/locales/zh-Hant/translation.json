@@ -342,5 +342,10 @@
   "Web Search": "聯網搜索",
   "Search Provider": "搜索提供商",
   "Tavily API Key": "Tavily API 密鑰",
-  "Get API Key": "獲取 API 密鑰"
+  "Get API Key": "獲取 API 密鑰",
+  "Select Model": "選擇模型",
+  "Unsaved settings": "未保存的設置",
+  "You have unsaved settings. Are you sure you want to leave?": "您有未保存的設置。確定要離開嗎？",
+  "Yes": "是",
+  "No": "否"
 }

@@ -1,3 +1,4 @@
+import NiceModal, { muiDialogV5, useModal } from '@ebay/nice-modal-react'
 import {
   Typography,
   TextField,
@@ -12,67 +13,63 @@ import {
   DialogTitle,
 } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import * as atoms from '../stores/atoms'
-import { useAtom } from 'jotai'
-import { MessageRoleEnum, MessageRole } from 'src/shared/types'
-import * as sessionActions from '../stores/sessionActions'
+import { MessageRoleEnum, MessageRole, Message } from '@/../shared/types'
+import * as sessionActions from '@/stores/sessionActions'
 import PersonIcon from '@mui/icons-material/Person'
 import SmartToyIcon from '@mui/icons-material/SmartToy'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import { useCallback, useState } from 'react'
 
-interface Props {}
-
-export default function MessageEditDialog(props: Props) {
+const MessageEdit = NiceModal.create((props: { sessionId: string; msg: Message }) => {
+  const modal = useModal()
   const { t } = useTranslation()
   const isSmallScreen = useIsSmallScreen()
-  const [data, setData] = useAtom(atoms.messageEditDialogShowAtom)
+  // const [data, setData] = useAtom(atoms.messageEditDialogShowAtom)
+  const [sessionId] = useState(props.sessionId)
+  const [msg, _setMsg] = useState<Message>({ ...props.msg })
+  const setMsg = useCallback((m: Partial<Message>) => {
+    _setMsg((_m) => ({ ..._m, ...m }))
+  }, [])
 
   const onClose = () => {
-    setData(null)
+    modal.resolve()
+    modal.hide()
   }
 
   const onSave = () => {
-    if (!data) {
+    if (!msg || !sessionId) {
       return
     }
-    sessionActions.modifyMessage(data.sessionId, data.msg, true)
+    sessionActions.modifyMessage(sessionId, msg, true)
     onClose()
   }
   const onSaveAndReply = () => {
-    if (!data) {
+    if (!msg || !sessionId) {
       return
     }
     onSave()
-    sessionActions.generateMoreInNewFork(data.sessionId, data.msg.id)
+    sessionActions.generateMoreInNewFork(sessionId, msg.id)
   }
 
   const onRoleSelect = (e: SelectChangeEvent) => {
-    if (!data) {
+    if (!msg || !sessionId) {
       return
     }
-    setData({
-      ...data,
-      msg: {
-        ...data.msg,
-        role: e.target.value as MessageRole,
-      },
+    setMsg({
+      role: e.target.value as MessageRole,
     })
   }
   const onContentInput = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    if (!data) {
+    if (!msg || !sessionId) {
       return
     }
-    setData({
-      ...data,
-      msg: {
-        ...data.msg,
-        content: e.target.value,
-      },
+    setMsg({
+      content: e.target.value,
     })
   }
   const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (!data) {
+    if (!msg || !sessionId) {
       return
     }
     const ctrlOrCmd = event.ctrlKey || event.metaKey
@@ -92,19 +89,21 @@ export default function MessageEditDialog(props: Props) {
     }
   }
 
-  if (!data) {
+  if (!msg || !sessionId) {
     return null
   }
+
   return (
     <Dialog
-      open={!!data}
-      onClose={onClose}
-      fullWidth
-      // classes={{ paper: 'h-4/5' }}
+      {...muiDialogV5(modal)}
+      onClose={() => {
+        modal.resolve()
+        modal.hide()
+      }}
     >
       <DialogTitle></DialogTitle>
       <DialogContent>
-        <Select value={data.msg.role} onChange={onRoleSelect} size="small" id={data.msg.id + 'select'} className="mb-2">
+        <Select value={msg.role} onChange={onRoleSelect} size="small" id={msg.id + 'select'} className="mb-2">
           <MenuItem value={MessageRoleEnum.System}>
             <Avatar>
               <SettingsIcon />
@@ -128,9 +127,9 @@ export default function MessageEditDialog(props: Props) {
           minRows={5}
           maxRows={15}
           placeholder="prompt"
-          value={data.msg.content}
+          value={msg.content}
           onChange={onContentInput}
-          id={data.msg.id + 'input'}
+          id={msg.id + 'input'}
           onKeyDown={onKeyDown}
         />
         {!isSmallScreen && (
@@ -146,4 +145,6 @@ export default function MessageEditDialog(props: Props) {
       </DialogActions>
     </Dialog>
   )
-}
+})
+
+export default MessageEdit

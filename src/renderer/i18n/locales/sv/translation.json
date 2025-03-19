@@ -341,5 +341,10 @@
   "Web Search": "Internetsökning",
   "Search Provider": "Sökleverantör",
   "Tavily API Key": "Tavily API-nyckel",
-  "Get API Key": "Hämta API-nyckel"
+  "Get API Key": "Hämta API-nyckel",
+  "Select Model": "Välj modell",
+  "Unsaved settings": "Olagrade inställningar",
+  "You have unsaved settings. Are you sure you want to leave?": "Du har olagrade inställningar. Är du säker på att du vill lämna?",
+  "Yes": "Ja",
+  "No": "Nej"
 }

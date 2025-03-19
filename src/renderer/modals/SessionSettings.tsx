@@ -1,3 +1,4 @@
+import NiceModal, { muiDialogV5, useModal } from '@ebay/nice-modal-react'
 import CreatableSelect from '@/components/CreatableSelect'
 import EditableAvatar from '@/components/EditableAvatar'
 import { ImageInStorage, handleImageInputAndSave } from '@/components/Image'
@@ -38,23 +39,23 @@ import {
   createMessage,
   isChatSession,
   isPictureSession,
-} from '../../shared/types'
-import { Accordion, AccordionDetails, AccordionSummary } from '../components/Accordion'
-import AIProviderSelect from '../components/AIProviderSelect'
-import MaxContextMessageCountSlider from '../components/MaxContextMessageCountSlider'
-import ChatboxAIModelSelect from '../components/model-select/ChatboxAIModelSelect'
-import ClaudeModelSelect from '../components/model-select/ClaudeModelSelect'
-import OpenAIModelSelect from '../components/model-select/OpenAIModelSelect'
-import TemperatureSlider from '../components/TemperatureSlider'
-import TopPSlider from '../components/TopPSlider'
-import * as atoms from '../stores/atoms'
-import * as sessionActions from '../stores/sessionActions'
-import { OllamaHostInput } from './SettingDialog/OllamaSetting'
+} from '@/../shared/types'
+import { Accordion, AccordionDetails, AccordionSummary } from '@/components/Accordion'
+import AIProviderSelect from '@/components/AIProviderSelect'
+import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
+import ChatboxAIModelSelect from '@/components/model-select/ChatboxAIModelSelect'
+import ClaudeModelSelect from '@/components/model-select/ClaudeModelSelect'
+import OpenAIModelSelect from '@/components/model-select/OpenAIModelSelect'
+import TemperatureSlider from '@/components/TemperatureSlider'
+import TopPSlider from '@/components/TopPSlider'
+import * as atoms from '@/stores/atoms'
+import * as sessionActions from '@/stores/sessionActions'
+import { OllamaHostInput } from '@/pages/SettingDialog/OllamaSetting'
 
-export default function ChatConfigWindow(props: {}) {
+const SessionSettings = NiceModal.create(({ chatConfigDialogSessionId }: { chatConfigDialogSessionId: string }) => {
+  const modal = useModal()
   const { t } = useTranslation()
   const isSmallScreen = useIsSmallScreen()
-  const [chatConfigDialogSessionId, setChatConfigDialogSessionId] = useAtom(atoms.chatConfigDialogIdAtom)
   const globalSettings = useAtomValue(atoms.settingsAtom)
   const theme = useTheme()
 
@@ -99,8 +100,10 @@ export default function ChatConfigWindow(props: {}) {
   }, [chatConfigDialogSessionId])
 
   const onCancel = () => {
-    setChatConfigDialogSessionId(null)
+    // setChatConfigDialogSessionId(null)
     setEditingData(null)
+    modal.resolve()
+    modal.hide()
   }
   const onSave = () => {
     if (!chatConfigDialogSession || !editingData) {
@@ -121,14 +124,24 @@ export default function ChatConfigWindow(props: {}) {
       }
     }
     sessionActions.modify(editingData)
-    setChatConfigDialogSessionId(null)
+    // setChatConfigDialogSessionId(null)
+    modal.resolve()
+    modal.hide()
   }
 
   if (!chatConfigDialogSession || !editingData) {
     return null
   }
+
   return (
-    <Dialog open={!!chatConfigDialogSession} onClose={onCancel} fullWidth>
+    <Dialog
+      {...muiDialogV5(modal)}
+      onClose={() => {
+        modal.resolve()
+        modal.hide()
+      }}
+      fullWidth
+    >
       <DialogTitle>{t('Conversation Settings')}</DialogTitle>
       <DialogContent>
         <DialogContentText></DialogContentText>
@@ -225,7 +238,9 @@ export default function ChatConfigWindow(props: {}) {
       </DialogActions>
     </Dialog>
   )
-}
+})
+
+export default SessionSettings
 
 function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => void }) {
   const { dataEdit, setDataEdit } = props

@@ -342,5 +342,10 @@
   "Web Search": "インターネット検索",
   "Search Provider": "検索プロバイダー",
   "Tavily API Key": "Tavily API キー",
-  "Get API Key": "API キーを取得"
+  "Get API Key": "API キーを取得",
+  "Select Model": "モデルを選択",
+  "Unsaved settings": "未保存の設定",
+  "You have unsaved settings. Are you sure you want to leave?": "未保存の設定があります。本当に移動しますか？",
+  "Yes": "はい",
+  "No": "いいえ"
 }

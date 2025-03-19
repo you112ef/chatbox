@@ -11,6 +11,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import * as atoms from '@/stores/atoms'
 import FullscreenIcon from './icons/FullscreenIcon'
 import ArrowRightIcon from './icons/ArrowRightIcon'
+import NiceModal from '@ebay/nice-modal-react'
 
 const RENDERABLE_CODE_LANGUAGES = ['html'] as const
 export type RenderableCodeLanguage = (typeof RENDERABLE_CODE_LANGUAGES)[number]
@@ -60,7 +61,6 @@ export function ArtifactWithButtons(props: {
   const { t } = useTranslation()
   const [reloadSign, setReloadSign] = useState(0)
   const isSmallScreen = useIsSmallScreen()
-  const setArtifactDialogHtmlCode = useSetAtom(atoms.artifactDialogHtmlCodeAtom)
 
   const onReplay = () => {
     setReloadSign(Math.random())
@@ -73,7 +73,9 @@ export function ArtifactWithButtons(props: {
     setPreview(false)
   }
   const onOpenFullscreen = () => {
-    setArtifactDialogHtmlCode(htmlCode)
+    NiceModal.show('artifact-preview', {
+      htmlCode,
+    })
   }
   if (!preview) {
     return (

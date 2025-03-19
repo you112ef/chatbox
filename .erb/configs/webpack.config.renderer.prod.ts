@@ -15,6 +15,7 @@ import webpackPaths from './webpack.paths'
 import checkNodeEnv from '../scripts/check-node-env'
 import deleteSourceMaps from '../scripts/delete-source-maps'
 import JavaScriptObfuscator from 'webpack-obfuscator'
+import { TanStackRouterWebpack } from '@tanstack/router-plugin/webpack'
 
 checkNodeEnv('production')
 
@@ -114,6 +115,13 @@ const configuration: webpack.Configuration = {
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production',
       DEBUG_PROD: false,
+    }),
+
+    TanStackRouterWebpack({
+      target: 'react',
+      autoCodeSplitting: true,
+      routesDirectory: './src/renderer/routes',
+      generatedRouteTree: './src/renderer/routeTree.gen.ts',
     }),
 
     new MiniCssExtractPlugin({

@@ -1,15 +1,14 @@
-import { useAtom } from 'jotai'
+import NiceModal, { muiDialogV5, useModal } from '@ebay/nice-modal-react'
 import { Dialog, DialogContent, DialogActions, Button, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import platform from '@/platform'
-import * as atoms from '../stores/atoms'
 import StarIcon from '@mui/icons-material/Star'
 import ThumbUpIcon from '@mui/icons-material/ThumbUp'
 import { recordAppStoreRatingClick } from '@/packages/apple_app_store'
 
-export function AppStoreRatingDialog() {
+const AppStoreRating = NiceModal.create(() => {
   const { t } = useTranslation()
-  const [open, setOpen] = useAtom(atoms.openAppStoreRatingDialogAtom)
+  const modal = useModal()
 
   const handleRateNow = async () => {
     const appStoreUrl = 'itms-apps://itunes.apple.com/app/id6471368056?action=write-review'
@@ -18,17 +17,22 @@ export function AppStoreRatingDialog() {
     } catch (error) {
       console.error('Failed to open App Store:', error)
     }
-    setOpen(false)
+    modal.resolve()
+    modal.hide()
     await recordAppStoreRatingClick()
   }
   const onClose = () => {
-    setOpen(false)
+    modal.resolve()
+    modal.hide()
   }
 
   return (
     <Dialog
-      open={open}
-      onClose={onClose}
+      {...muiDialogV5(modal)}
+      onClose={() => {
+        modal.resolve()
+        modal.hide()
+      }}
       PaperProps={{
         sx: {
           maxWidth: '400px',
@@ -118,4 +122,6 @@ export function AppStoreRatingDialog() {
       </DialogActions>
     </Dialog>
   )
-}
+})
+
+export default AppStoreRating

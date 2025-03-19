@@ -1,18 +1,18 @@
 {
-    "name": "xyz.chatboxapp.app",
-    "productName": "xyz.chatboxapp.app",
-    "version": "1.10.7",
-    "description": "A desktop client for multiple cutting-edge AI models",
-    "author": {
-        "name": "Benn Huang",
-        "email": "hi@chatboxai.com",
-        "url": "https://github.com/Bin-Huang"
-    },
-    "main": "./dist/main/main.js",
-    "scripts": {
-        "rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",
-        "postinstall": "npm run rebuild && npm run link-modules",
-        "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts"
-    },
-    "dependencies": {}
+  "name": "xyz.chatboxapp.app",
+  "productName": "xyz.chatboxapp.app",
+  "version": "1.11.0-alpha.2",
+  "description": "A desktop client for multiple cutting-edge AI models",
+  "author": {
+    "name": "Benn Huang",
+    "email": "hi@chatboxai.com",
+    "url": "https://github.com/Bin-Huang"
+  },
+  "main": "./dist/main/main.js",
+  "scripts": {
+    "rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",
+    "postinstall": "npm run rebuild && npm run link-modules",
+    "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts"
+  },
+  "dependencies": {}
 }

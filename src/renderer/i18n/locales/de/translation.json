@@ -341,5 +341,10 @@
   "extension": "Erweiterungen",
   "Web Search": "Internetsuche",
   "Search Provider": "Suchanbieter",
-  "Tavily API Key": "Tavily API-Schlüssel"
+  "Tavily API Key": "Tavily API-Schlüssel",
+  "Select Model": "Modell auswählen",
+  "Unsaved settings": "Ungespeicherte Einstellungen",
+  "You have unsaved settings. Are you sure you want to leave?": "Sie haben ungespeicherte Einstellungen. Möchten Sie wirklich gehen?",
+  "Yes": "Ja",
+  "No": "Nein"
 }

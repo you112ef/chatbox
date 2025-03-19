@@ -342,5 +342,10 @@
   "Web Search": "인터넷 검색",
   "Search Provider": "검색 제공자",
   "Tavily API Key": "Tavily API 키",
-  "Get API Key": "API 키 가져오기"
+  "Get API Key": "API 키 가져오기",
+  "Select Model": "모델 선택",
+  "Unsaved settings": "저장되지 않은 설정",
+  "You have unsaved settings. Are you sure you want to leave?": "저장되지 않은 설정이 있습니다. 나가시겠습니까?",
+  "Yes": "예",
+  "No": "아니요"
 }

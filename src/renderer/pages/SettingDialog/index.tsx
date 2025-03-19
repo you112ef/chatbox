@@ -17,6 +17,7 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import { trackingEvent } from '@/packages/event'
 import * as atoms from '@/stores/atoms'
 import ExtensionIcon from '@mui/icons-material/Extension'
+import { useBlocker } from '@tanstack/react-router'
 // import { resetTokenConfig } from '../../packages/token_config'
 
 export default function SettingWindow(props: {}) {
@@ -55,9 +56,15 @@ export default function SettingWindow(props: {}) {
     _setSettingsEdit(settings)
   }, [settings])
 
+  const { proceed, reset, status } = useBlocker({
+    shouldBlockFn: () => settings !== settingsEdit,
+    withResolver: true,
+  })
+
   const onSave = () => {
     setSettings(settingsEdit)
     handleClose()
+    proceed?.()
   }
 
   const onCancel = () => {
@@ -65,6 +72,7 @@ export default function SettingWindow(props: {}) {
     setSettingsEdit(settings)
     // need to restore the previous theme
     switchTheme(settings.theme ?? Theme.System)
+    proceed?.()
   }
 
   const changeThemeWithPreview = (newMode: Theme) => {
@@ -73,9 +81,8 @@ export default function SettingWindow(props: {}) {
   }
 
   return (
-    <Dialog open={!!targetTab} onClose={onCancel} fullWidth>
-      <DialogTitle>{t('settings')}</DialogTitle>
-      <DialogContent>
+    <>
+      <Box>
         <Box
           sx={{
             borderBottom: 1,
@@ -85,6 +92,7 @@ export default function SettingWindow(props: {}) {
         >
           <Tabs
             value={currentTab}
+            className="max-w-4xl mx-auto"
             onChange={(_, value) => setCurrentTab(value)}
             variant="scrollable"
             scrollButtons
@@ -139,57 +147,77 @@ export default function SettingWindow(props: {}) {
           </Tabs>
         </Box>
 
-        {currentTab === 'ai' && (
-          <ModelSettingTab
-            settingsEdit={settingsEdit}
-            setSettingsEdit={(updated) => {
-              setSettingsEdit({ ...settingsEdit, ...updated })
-            }}
-          />
-        )}
+        <Box className="max-w-4xl mx-auto px-5 pb-5">
+          {currentTab === 'ai' && (
+            <ModelSettingTab
+              settingsEdit={settingsEdit}
+              setSettingsEdit={(updated) => {
+                setSettingsEdit({ ...settingsEdit, ...updated })
+              }}
+            />
+          )}
 
-        {currentTab === 'display' && (
-          <DisplaySettingTab
-            settingsEdit={settingsEdit}
-            setSettingsEdit={(updated) => {
-              setSettingsEdit({ ...settingsEdit, ...updated })
-            }}
-            changeModeWithPreview={changeThemeWithPreview}
-          />
-        )}
+          {currentTab === 'display' && (
+            <DisplaySettingTab
+              settingsEdit={settingsEdit}
+              setSettingsEdit={(updated) => {
+                setSettingsEdit({ ...settingsEdit, ...updated })
+              }}
+              changeModeWithPreview={changeThemeWithPreview}
+            />
+          )}
 
-        {currentTab === 'chat' && (
-          <ChatSettingTab
-            settingsEdit={settingsEdit}
-            setSettingsEdit={(updated) => {
-              setSettingsEdit({ ...settingsEdit, ...updated })
-            }}
-          />
-        )}
+          {currentTab === 'chat' && (
+            <ChatSettingTab
+              settingsEdit={settingsEdit}
+              setSettingsEdit={(updated) => {
+                setSettingsEdit({ ...settingsEdit, ...updated })
+              }}
+            />
+          )}
 
-        {currentTab === 'advanced' && (
-          <AdvancedSettingTab
-            settingsEdit={settingsEdit}
-            setSettingsEdit={(updated) => {
-              setSettingsEdit({ ...settingsEdit, ...updated })
-            }}
-            onCancel={onCancel}
-          />
-        )}
+          {currentTab === 'advanced' && (
+            <AdvancedSettingTab
+              settingsEdit={settingsEdit}
+              setSettingsEdit={(updated) => {
+                setSettingsEdit({ ...settingsEdit, ...updated })
+              }}
+              onCancel={onCancel}
+            />
+          )}
 
-        {currentTab === 'extension' && (
-          <ExtensionSettingTab
-            settingsEdit={settingsEdit}
-            setSettingsEdit={(updated) => {
-              setSettingsEdit({ ...settingsEdit, ...updated })
-            }}
-          />
-        )}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onCancel}>{t('cancel')}</Button>
-        <Button onClick={onSave}>{t('save')}</Button>
-      </DialogActions>
-    </Dialog>
+          {currentTab === 'extension' && (
+            <ExtensionSettingTab
+              settingsEdit={settingsEdit}
+              setSettingsEdit={(updated) => {
+                setSettingsEdit({ ...settingsEdit, ...updated })
+              }}
+            />
+          )}
+        </Box>
+
+        <Box className="max-w-4xl mx-auto" sx={{ padding: '0 20px 20px', display: 'flex', justifyContent: 'flex-end' }}>
+          {/* <Button onClick={onCancel}>{t('cancel')}</Button> */}
+          <Button
+            variant="contained"
+            size="large"
+            disabled={settings === settingsEdit}
+            sx={{ minWidth: 120 }}
+            onClick={onSave}
+          >
+            {t('save')}
+          </Button>
+        </Box>
+      </Box>
+
+      <Dialog open={status === 'blocked'} closeAfterTransition onClose={reset}>
+        <DialogTitle>{t('Unsaved settings')}</DialogTitle>
+        <DialogContent>{t('You have unsaved settings. Are you sure you want to leave?')}</DialogContent>
+        <DialogActions>
+          <Button onClick={reset}>{t('No')}</Button>
+          <Button onClick={proceed}>{t('Yes')}</Button>
+        </DialogActions>
+      </Dialog>
+    </>
   )
 }

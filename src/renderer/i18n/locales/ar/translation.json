@@ -340,5 +340,10 @@
   "extension": "الإضافات",
   "Web Search": "البحث في الإنترنت",
   "Search Provider": "مزود البحث",
-  "Tavily API Key": "مفتاح API Tavily"
+  "Tavily API Key": "مفتاح API Tavily",
+  "Select Model": "اختر النموذج",
+  "Unsaved settings": "الإعدادات غير المحفوظة",
+  "You have unsaved settings. Are you sure you want to leave?": "لديك إعدادات غير محفوظة. هل أنت متأكد من أنك تريد المغادرة؟",
+  "Yes": "نعم",
+  "No": "لا"
 }

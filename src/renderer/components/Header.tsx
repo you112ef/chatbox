@@ -12,6 +12,7 @@ import { PanelRightClose } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import EditIcon from '@mui/icons-material/Edit'
 import * as settingActions from '../stores/settingActions'
+import NiceModal from '@ebay/nice-modal-react'
 
 interface Props {}
 
@@ -19,7 +20,6 @@ export default function Header(props: Props) {
   const { t } = useTranslation()
   const theme = useTheme()
   const currentSession = useAtomValue(atoms.currentSessionAtom)
-  const setChatConfigDialogSession = useSetAtom(atoms.chatConfigDialogIdAtom)
   const [showSidebar, setShowSidebar] = useAtom(atoms.showSidebarAtom)
 
   const isSmallScreen = useIsSmallScreen()
@@ -40,7 +40,7 @@ export default function Header(props: Props) {
   }, [currentSession.messages.length])
 
   const editCurrentSession = () => {
-    setChatConfigDialogSession(currentSession.id)
+    NiceModal.show('session-settings', { chatConfigDialogSessionId: currentSession.id })
   }
 
   let EditButton: React.ReactNode | null = null

@@ -1,43 +1,30 @@
+import NiceModal, { muiDialogV5, useModal } from '@ebay/nice-modal-react'
 import { TextField, Button, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import * as atoms from '../stores/atoms'
-import { useAtom, useSetAtom } from 'jotai'
 import { useState } from 'react'
 import _ from 'lodash'
 
-export default function OpenAttachLinkDialog(props: {}) {
+const AttachLink = NiceModal.create(() => {
+  const modal = useModal()
   const { t } = useTranslation()
-  const [open, setOpen] = useAtom(atoms.openAttachLinkDialogAtom)
   const [input, setInput] = useState('')
-  const setInputBoxLinks = useSetAtom(atoms.inputBoxLinksAtom)
   const onClose = () => {
-    setInput('')
-    setOpen(false)
+    modal.resolve([])
+    modal.hide()
   }
   const onSubmit = () => {
-    if (!open) {
-      return
-    }
     const raw = input.trim()
     const urls = raw
       .split(/\s+/)
       .map((url) => url.trim())
       .map((url) => (url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`))
-    setInputBoxLinks((links) => {
-      let newLinks = [...links, ...urls.map((u) => ({ url: u }))]
-      newLinks = _.uniqBy(newLinks, 'url')
-      newLinks = newLinks.slice(-6) // 最多插入 6 个链接
-      return newLinks
-    })
-    onClose()
+    modal.resolve(urls)
+    modal.hide()
   }
   const onInput = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     setInput(e.target.value)
   }
   const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (!open) {
-      return
-    }
     const ctrlOrCmd = event.ctrlKey || event.metaKey
     // ctrl + enter 提交
     if (event.keyCode === 13 && ctrlOrCmd) {
@@ -47,11 +34,15 @@ export default function OpenAttachLinkDialog(props: {}) {
     }
   }
 
-  if (!open) {
-    return null
-  }
   return (
-    <Dialog open={!!open} onClose={onClose} fullWidth>
+    <Dialog
+      {...muiDialogV5(modal)}
+      onClose={() => {
+        modal.resolve()
+        modal.hide()
+      }}
+      fullWidth
+    >
       <DialogTitle>{t('Attach Link')}</DialogTitle>
       <DialogContent>
         <TextField
@@ -72,4 +63,6 @@ export default function OpenAttachLinkDialog(props: {}) {
       </DialogActions>
     </Dialog>
   )
-}
+})
+
+export default AttachLink

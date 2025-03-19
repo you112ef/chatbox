@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useTheme } from '@mui/material'
+import { Box, Drawer, Typography, useTheme } from '@mui/material'
 import * as atoms from '../stores/atoms'
 import { useAtomValue } from 'jotai'
 import { Sparkles, ChevronsUpDown } from 'lucide-react'
@@ -15,8 +15,10 @@ import useModelConfig from '@/hooks/useModelConfig'
 import { chatboxAIModelLabelHash } from './model-select/ChatboxAIModelSelect'
 import { ModelProvider } from '../../shared/types'
 import { ChevronDown, ChevronRight } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 export function ChatModelSelector(props: {}) {
+  const { t } = useTranslation()
   const currentMergedSettings = useAtomValue(atoms.currentMergedSettingsAtom)
   const theme = useTheme()
   const currentSessionId = useAtomValue(atoms.currentSessionIdAtom)
@@ -68,6 +70,56 @@ export function ChatModelSelector(props: {}) {
 
   const labelHash = currentMergedSettings.aiProvider === ModelProvider.ChatboxAI ? chatboxAIModelLabelHash : {}
 
+  const optionElements = optionGroups
+    .map((group, index) => {
+      const items: React.ReactNode[] = []
+      const isExpanded = expandedGroups.includes(group.group_name ?? '')
+      if (index > 0 && group.group_name) {
+        items.push(
+          <MenuItem
+            key={`group-${index}-group-name`}
+            disabled={!group.collapsable}
+            dense
+            sx={{
+              opacity: group.collapsable && !isExpanded ? 1 : 0.5,
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+            onClick={() => onClickGroupName(group.group_name ?? '')}
+          >
+            <span>{group.group_name}</span>
+            {group.collapsable &&
+              (isExpanded ? (
+                <ChevronDown className="w-4 h-4" strokeWidth={1} />
+              ) : (
+                <ChevronRight className="w-4 h-4" strokeWidth={1} />
+              ))}
+          </MenuItem>
+        )
+      }
+      if (!group.collapsable || isExpanded) {
+        items.push(
+          ...group.options.map((option) => (
+            <MenuItem
+              key={`group-${index}-option-${option.value}`}
+              selected={option.value === currentOption.value}
+              onClick={() => handleMenuItemSelect(option.value)}
+              dense
+            >
+              {labelHash[option.value] || option.label}
+            </MenuItem>
+          ))
+        )
+      }
+      if (index < optionGroups.length - 1) {
+        items.push(<Divider key={`group-${index}-divider`} />)
+      }
+      return items
+    })
+    .flat()
+
   return (
     <div>
       {isSmallScreen ? (
@@ -89,79 +141,42 @@ export function ChatModelSelector(props: {}) {
           <ChevronsUpDown size="16" strokeWidth={1} className="opacity-50" />
         </MiniButton>
       )}
-      <StyledMenu
-        MenuListProps={{
-          'aria-labelledby': '',
-        }}
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleMenuClose}
-        PaperProps={{
-          style: {
-            maxHeight: 'calc(60vh - 96px)',
-            marginTop: '0px', // 调整弹出菜单的位置
-          },
-        }}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        elevation={0}
-      >
-        {optionGroups
-          .map((group, index) => {
-            const items: React.ReactNode[] = []
-            const isExpanded = expandedGroups.includes(group.group_name ?? '')
-            if (index > 0 && group.group_name) {
-              items.push(
-                <MenuItem
-                  key={`group-${index}-group-name`}
-                  disabled={!group.collapsable}
-                  dense
-                  sx={{
-                    opacity: group.collapsable && !isExpanded ? 1 : 0.5,
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                  onClick={() => onClickGroupName(group.group_name ?? '')}
-                >
-                  <span>{group.group_name}</span>
-                  {group.collapsable &&
-                    (isExpanded ? (
-                      <ChevronDown className="w-4 h-4" strokeWidth={1} />
-                    ) : (
-                      <ChevronRight className="w-4 h-4" strokeWidth={1} />
-                    ))}
-                </MenuItem>
-              )
-            }
-            if (!group.collapsable || isExpanded) {
-              items.push(
-                ...group.options.map((option) => (
-                  <MenuItem
-                    key={`group-${index}-option-${option.value}`}
-                    selected={option.value === currentOption.value}
-                    onClick={() => handleMenuItemSelect(option.value)}
-                    dense
-                  >
-                    {labelHash[option.value] || option.label}
-                  </MenuItem>
-                ))
-              )
-            }
-            if (index < optionGroups.length - 1) {
-              items.push(<Divider key={`group-${index}-divider`} />)
-            }
-            return items
-          })
-          .flat()}
-      </StyledMenu>
+      {!isSmallScreen ? (
+        <StyledMenu
+          MenuListProps={{
+            'aria-labelledby': '',
+          }}
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleMenuClose}
+          PaperProps={{
+            style: {
+              maxHeight: 'calc(60vh - 96px)',
+              marginTop: '0px', // 调整弹出菜单的位置
+            },
+          }}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          elevation={0}
+        >
+          {optionElements}
+        </StyledMenu>
+      ) : (
+        <Drawer anchor="bottom" open={open} onClose={handleMenuClose}>
+          <Box className="max-h-[85vh] flex flex-col">
+            <Typography variant="h6" className="px-4 py-2 text-center">
+              {t('Select Model')}
+            </Typography>
+            <Box className="flex-1 overflow-auto">{optionElements}</Box>
+          </Box>
+        </Drawer>
+      )}
     </div>
   )
 }

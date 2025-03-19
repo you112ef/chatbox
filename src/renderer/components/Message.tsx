@@ -6,7 +6,6 @@ import { CircularProgress, IconButton, Typography, Grid, Tooltip, ButtonGroup, u
 import PersonIcon from '@mui/icons-material/Person'
 import SmartToyIcon from '@mui/icons-material/SmartToy'
 import SettingsIcon from '@mui/icons-material/Settings'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import EditIcon from '@mui/icons-material/Edit'
 import StopIcon from '@mui/icons-material/Stop'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
@@ -17,7 +16,6 @@ import ReplayIcon from '@mui/icons-material/Replay'
 import CopyAllIcon from '@mui/icons-material/CopyAll'
 import { useAtomValue, useSetAtom } from 'jotai'
 import {
-  messageEditDialogShowAtom,
   messageScrollingScrollPositionAtom,
   pictureShowAtom,
   quoteAtom,
@@ -32,11 +30,9 @@ import {
   enableLaTeXRenderingAtom,
   enableMermaidRenderingAtom,
   currentSessionAssistantAvatarKeyAtom,
-  chatConfigDialogIdAtom,
   widthFullAtom,
   autoPreviewArtifactsAtom,
   autoCollapseCodeBlockAtom,
-  reportContentDialogAtom,
   showFirstTokenLatencyAtom,
 } from '../stores/atoms'
 import { currsentSessionPicUrlAtom, showTokenUsedAtom } from '../stores/atoms'
@@ -64,6 +60,8 @@ import { isContainRenderableCode, MessageArtifact } from './Artifact'
 import ReportIcon from '@mui/icons-material/Report'
 import { ConfirmDeleteMenuItem } from './ConfirmDeleteButton'
 import platform from '@/platform'
+import NiceModal from '@ebay/nice-modal-react'
+import { useNavigate } from '@tanstack/react-router'
 
 export interface Props {
   id?: string
@@ -83,6 +81,7 @@ function _Message(props: Props) {
   if (!msg.content && msg.content !== '') {
     msg.content = ''
   }
+  const navigate = useNavigate()
   const { t } = useTranslation()
   const theme = useTheme()
   const currentSessionAssistantAvatarKey = useAtomValue(currentSessionAssistantAvatarKeyAtom)
@@ -100,13 +99,10 @@ function _Message(props: Props) {
   const currentSessionPicUrl = useAtomValue(currsentSessionPicUrlAtom)
   const messageScrollingScrollPosition = useAtomValue(messageScrollingScrollPositionAtom)
   const setPictureShow = useSetAtom(pictureShowAtom)
-  const setMessageEditDialogShow = useSetAtom(messageEditDialogShowAtom)
   const setOpenSettingWindow = useSetAtom(openSettingDialogAtom)
-  const setChatConfigDialog = useSetAtom(chatConfigDialogIdAtom)
   const widthFull = useAtomValue(widthFullAtom)
   const autoPreviewArtifacts = useAtomValue(autoPreviewArtifactsAtom)
   const autoCollapseCodeBlock = useAtomValue(autoCollapseCodeBlockAtom)
-  const setReportObject = useSetAtom(reportContentDialogAtom)
 
   const [previewArtifact, setPreviewArtifact] = useState(autoPreviewArtifacts)
 
@@ -163,7 +159,7 @@ function _Message(props: Props) {
 
   const onReport = () => {
     setAnchorEl(null)
-    setReportObject({ id: msg.content || msg.id })
+    NiceModal.show('report-content', { contentId: msg.content || msg.id })
   }
 
   const setMsg = (updated: Message) => {
@@ -175,10 +171,7 @@ function _Message(props: Props) {
   }
   const onEditClick = () => {
     setAnchorEl(null)
-    setMessageEditDialogShow({
-      sessionId: props.sessionId,
-      msg: msg,
-    })
+    NiceModal.show('message-edit', { sessionId: props.sessionId, msg: msg })
   }
 
   const tips: string[] = []
@@ -320,7 +313,7 @@ function _Message(props: Props) {
   )
 
   const onClickAssistantAvatar = () => {
-    setChatConfigDialog(props.sessionId)
+    NiceModal.show('session-settings', { chatConfigDialogSessionId: props.sessionId })
   }
 
   return (
@@ -422,7 +415,12 @@ function _Message(props: Props) {
                       height: '28px',
                     }}
                     className="cursor-pointer"
-                    onClick={() => setOpenSettingWindow('chat')}
+                    onClick={() => {
+                      setOpenSettingWindow('chat')
+                      navigate({
+                        to: '/settings',
+                      })
+                    }}
                   >
                     {userAvatarKey ? (
                       <ImageInStorage storageKey={userAvatarKey} className="object-cover object-center w-full h-full" />

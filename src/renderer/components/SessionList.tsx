@@ -18,6 +18,8 @@ import {
 } from '@dnd-kit/core'
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
+import NiceModal from '@ebay/nice-modal-react'
+import { useRouterState } from '@tanstack/react-router'
 
 export interface Props {
   sessionListRef: MutableRefObject<HTMLDivElement | null>
@@ -26,8 +28,6 @@ export interface Props {
 export default function SessionList(props: Props) {
   const sortedSessions = useAtomValue(atoms.sortedSessionsAtom)
   const setSessions = useSetAtom(atoms.sessionsAtom)
-  const setOpenClearConversationListDialog = useSetAtom(atoms.openClearConversationListDialogAtom)
-  const currentSessionId = useAtomValue(atoms.currentSessionIdAtom)
   const sensors = useSensors(
     useSensor(TouchSensor, {
       activationConstraint: {
@@ -57,6 +57,8 @@ export default function SessionList(props: Props) {
       setSessions(atoms.sortSessions(newReversed))
     }
   }
+  const routerState = useRouterState()
+
   return (
     <MenuList
       sx={{
@@ -65,7 +67,7 @@ export default function SessionList(props: Props) {
         '& ul': { padding: 0 },
         flexGrow: 1,
       }}
-      subheader={<Subheader openClearWindow={() => setOpenClearConversationListDialog(true)} />}
+      subheader={<Subheader openClearWindow={() => NiceModal.show('clear-session-list')} />}
       component="div"
       ref={props.sessionListRef}
     >
@@ -78,7 +80,11 @@ export default function SessionList(props: Props) {
         <SortableContext items={sortedSessions} strategy={verticalListSortingStrategy}>
           {sortedSessions.map((session, ix) => (
             <SortableItem key={session.id} id={session.id}>
-              <SessionItem key={session.id} selected={currentSessionId === session.id} session={session} />
+              <SessionItem
+                key={session.id}
+                selected={routerState.location.pathname === `/session/${session.id}`}
+                session={session}
+              />
             </SortableItem>
           ))}
         </SortableContext>
