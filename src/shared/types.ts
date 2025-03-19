@@ -310,8 +310,8 @@ export interface ModelSettings {
   selectedCustomProviderId?: string // 选中的自定义提供者 ID，仅当 aiProvider 为 custom 时有效
   customProviders: CustomProvider[]
 
-  temperature: number
-  topP: number
+  temperature: number // 0-2
+  topP: number // 0-1
   // openaiMaxTokens: number // 生成消息的最大限制，是传入 OpenAI 接口的参数。0 代表不限制（不传递）
   // openaiMaxContextTokens: number // 聊天消息上下文的tokens限制。
   openaiMaxContextMessageCount: number // 聊天消息上下文的消息数量限制。超过20表示不限制

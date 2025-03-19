@@ -57,8 +57,8 @@ export function getModel(setting: Settings, config: Config): ModelInterface {
         openaiCustomModel: customProvider.model,
         dalleStyle: 'vivid',
         // openaiMaxTokens: number
-        temperature: keepRange(setting.temperature, 0.1, 0.9),
-        topP: keepRange(setting.topP, 0.1, 0.9),
+        temperature: setting.temperature,
+        topP: setting.topP,
         injectDefaultMetadata: setting.injectDefaultMetadata,
         openaiUseProxy: customProvider.useProxy || false,
       })
