@@ -31,8 +31,9 @@ export async function handleSSE(response: Response, onMessage: (message: string)
       onMessage(event.data)
     }
   })
+  const decoder = new TextDecoder()
   for await (const chunk of iterableStreamAsync(response.body)) {
-    const str = new TextDecoder().decode(chunk, { stream: true })
+    const str = decoder.decode(chunk, { stream: true })
     parser.feed(str)
   }
 }
@@ -47,8 +48,9 @@ export async function handleNdjson(response: Response, onMessage: (message: stri
     throw new Error('No response body')
   }
   let buffer = ''
+  const decoder = new TextDecoder()
   for await (const chunk of iterableStreamAsync(response.body)) {
-    let data = new TextDecoder().decode(chunk)
+    let data = decoder.decode(chunk, { stream: true })
     buffer = buffer + data
     let lines = buffer.split('\n')
     if (lines.length <= 1) {
