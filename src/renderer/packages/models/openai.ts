@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import storage from '@/storage'
 import * as settingActions from '@/stores/settingActions'
 import { apiRequest } from '@/utils/request'
@@ -484,11 +485,7 @@ export async function populateOpenAIMessageVision(rawMessages: Message[]): Promi
  * @returns
  */
 export function injectModelSystemPrompt(model: string, messages: Message[]) {
-  const metadataPrompt = `
-Current model: ${model}
-Current date: ${new Date().toISOString()}
-
-`
+  const metadataPrompt = `Current model: ${model}\nCurrent date: ${dayjs().format('YYYY-MM-DD')}\n`
   let hasInjected = false
   return messages.map((m) => {
     if (m.role === 'system' && !hasInjected) {
