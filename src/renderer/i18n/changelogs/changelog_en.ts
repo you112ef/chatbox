@@ -1,4 +1,10 @@
 const changelog = `
+### v1.11.1 - 2025.03.19
+
+1. Refactor Settings UI
+2. Fixed some issues with LLM API calling
+3. Fixed model temperature and topP parameter
+
 ### v1.10.7 - 2025.03.17
 
 1. Added beta update channel, can be enabled in settings
