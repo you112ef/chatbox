@@ -1,6 +1,5 @@
 import { ofetch } from 'ofetch'
 import WebSearch, { SearchResult } from './base'
-import { CapacitorHttp } from '@capacitor/core'
 
 export class BingSearch extends WebSearch {
   async search(query: string, signal?: AbortSignal): Promise<SearchResult> {
@@ -10,7 +9,7 @@ export class BingSearch extends WebSearch {
   }
 
   private async fetchSerp(query: string, signal?: AbortSignal) {
-    const html = await this.fetch('https://www.bing.com/search', {
+    const html = await ofetch('https://www.bing.com/search', {
       method: 'GET',
       query: { q: query },
       signal,

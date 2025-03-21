@@ -9,7 +9,7 @@ export class DuckDuckGoSearch extends WebSearch {
   }
 
   private async fetchSerp(query: string, signal?: AbortSignal) {
-    const html = await this.fetch('https://html.duckduckgo.com/html/', {
+    const html = await ofetch('https://html.duckduckgo.com/html/', {
       method: 'POST',
       body: new URLSearchParams({ q: query, df: 'y' }),
       signal,
