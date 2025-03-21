@@ -662,8 +662,8 @@ export async function submitNewUserMessage(params: {
 
     console.log('sessionAction', settings)
     // 如果本次消息开启了联网问答，需要检查当前模型是否支持
-    // 桌面版总是支持联网问答，不再需要检查模型是否支持
-    if (webBrowsing && platform.type !== 'desktop' && !isModelSupportToolUse(settings)) {
+    // 桌面版&手机端总是支持联网问答，不再需要检查模型是否支持
+    if (webBrowsing && platform.type === 'web' && !isModelSupportToolUse(settings)) {
       if (remoteConfig.setting_chatboxai_first) {
         throw ChatboxAIAPIError.fromCodeName('model_not_support_web_browsing', 'model_not_support_web_browsing')
       } else {
