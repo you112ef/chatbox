@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    tags: [v\d+\.\d+\.\d+, v\d+\.\d+\.\d+-beta\.\d+]
+    tags: [v\d+\.\d+\.\d+, v\d+\.\d+\.\d+-alpha\.\d+, v\d+\.\d+\.\d+-beta\.\d+]
 
 jobs:
   publish:
@@ -17,6 +17,9 @@ jobs:
         run: |
           if [[ ${{ github.ref_name }} =~ -beta\.[0-9]+$ ]]; then
             echo "UPDATE_CHANNEL=beta" >> $GITHUB_ENV
+          fi
+          if [[ ${{ github.ref_name }} =~ -alpha\.[0-9]+$ ]]; then
+            echo "UPDATE_CHANNEL=alpha" >> $GITHUB_ENV
           fi
 
       - name: Checkout git repo
@@ -36,8 +39,8 @@ jobs:
 
       - name: Publish releases
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.IFTECH_CF_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.IFTECH_CF_AWS_ACCESS_KEY_ID }}
           GITHUB_TOKEN: ${{ secrets.GITHUBTOKEN }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
