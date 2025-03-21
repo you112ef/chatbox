@@ -6,9 +6,7 @@ import * as migration from './stores/migration'
 import './static/index.css'
 import './static/globals.css'
 import { CHATBOX_BUILD_TARGET, CHATBOX_BUILD_PLATFORM } from './variables'
-import { RouterProvider, createHashHistory, createRouter, useNavigate } from '@tanstack/react-router'
-// Import the generated route tree
-import { routeTree } from './routeTree.gen'
+import { RouterProvider } from '@tanstack/react-router'
 
 // ==========执行初始化==============
 
@@ -38,7 +36,7 @@ migration.migrate()
 // 最后执行 storage 清理
 import './setup/storage_clear'
 import NiceModal from '@ebay/nice-modal-react'
-import platform from './platform'
+import { router } from './router'
 
 // ==========渲染节点==============
 
@@ -48,24 +46,6 @@ import platform from './platform'
 //     <App />
 //   </React.StrictMode>
 // )
-
-// Create a new router instance
-const router = createRouter({
-  routeTree,
-  defaultNotFoundComponent: () => {
-    const navigate = useNavigate() // Hook for navigating programmatically
-    navigate({ to: '/' }) // 重定向到首页
-    return null
-  },
-  history: platform.type === 'web' ? undefined : createHashHistory(),
-})
-
-// Register the router instance for type safety
-declare module '@tanstack/react-router' {
-  interface Register {
-    router: typeof router
-  }
-}
 
 // Render the app
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)

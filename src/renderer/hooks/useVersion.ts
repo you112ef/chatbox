@@ -14,7 +14,8 @@ export default function useVersion() {
       _setVersion(version)
       try {
         const os = await platform.getPlatform()
-        const needUpdate = await remote.checkNeedUpdate(version, os, config, settings)
+        const needUpdate =
+          platform.type === 'desktop' ? await remote.checkNeedUpdate(version, os, config, settings) : false
         setNeedCheckUpdate(needUpdate)
       } catch (e) {
         console.log(e)

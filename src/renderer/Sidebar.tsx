@@ -120,20 +120,14 @@ function SidebarButtons(props: { sessionListRef: React.RefObject<HTMLDivElement>
   const { t } = useTranslation()
   const versionHook = useVersion()
   const handleCreateNewSession = () => {
-    const newSession = sessionActions.createEmpty('chat')
-    navigate({
-      to: `/session/${newSession.id}`,
-    })
+    sessionActions.createEmpty('chat')
     if (sessionListRef.current) {
       sessionListRef.current.scrollTo(0, 0)
     }
     trackingEvent('create_new_conversation', { event_category: 'user' })
   }
   const handleCreateNewPictureSession = () => {
-    const newSession = sessionActions.createEmpty('picture')
-    navigate({
-      to: `/session/${newSession.id}`,
-    })
+    sessionActions.createEmpty('picture')
     if (sessionListRef.current) {
       sessionListRef.current.scrollTo(0, 0)
     }

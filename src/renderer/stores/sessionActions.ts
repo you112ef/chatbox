@@ -47,6 +47,7 @@ import * as localParser from '@/packages/local-parser'
 import type { ModelInterface, onResultChangeWithCancel } from '@/packages/models/base'
 import * as appleAppStore from '@/packages/apple_app_store'
 import { streamText, generateText, generateImage } from '@/packages/model-calls'
+import { router } from '@/router'
 
 /**
  * 创建一个新的会话
@@ -108,14 +109,23 @@ export function modifyThreadName(sessionId: string, threadName: string) {
  * 创建一个空的会话
  */
 export function createEmpty(type: 'chat' | 'picture') {
+  let newSession: Session
   switch (type) {
     case 'chat':
-      return create(initEmptyChatSession())
+      newSession = create(initEmptyChatSession())
+      break
     case 'picture':
-      return create(initEmptyPictureSession())
+      newSession = create(initEmptyPictureSession())
+      break
     default:
       throw new Error(`Unknown session type: ${type}`)
   }
+
+  router.navigate({
+    to: `/session/${newSession.id}`,
+  })
+
+  return newSession
 }
 
 /**
@@ -138,6 +148,9 @@ export function createLoadingPictures(n: number): MessagePicture[] {
 export function switchCurrentSession(sessionId: string) {
   const store = getDefaultStore()
   store.set(atoms.currentSessionIdAtom, sessionId)
+  router.navigate({
+    to: `/session/${sessionId}`,
+  })
   // scrollActions.scrollToBottom() // 切换会话时自动滚动到底部
   scrollActions.clearAutoScroll() // 切换会话时清除自动滚动
 }

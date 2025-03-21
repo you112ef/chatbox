@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { sliceTextByTokenLimit } from '@/packages/token'
 import { CHATBOX_BUILD_PLATFORM } from '@/variables'
 import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@capacitor-community/sqlite'
+import { App } from '@capacitor/app'
 
 class SQLiteStorage {
   private sqlite: SQLiteConnection
@@ -140,7 +141,7 @@ export default class MobilePlatform implements Platform {
   constructor() {}
 
   public async getVersion(): Promise<string> {
-    return ''
+    return (await App.getInfo()).version
   }
   public async getPlatform(): Promise<string> {
     return CHATBOX_BUILD_PLATFORM

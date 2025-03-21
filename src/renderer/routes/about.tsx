@@ -126,7 +126,11 @@ function About() {
           <Button
             variant="outlined"
             sx={{ margin: '4px' }}
-            onClick={() => platform.openLink(`https://chatboxai.app/redirect_app/faqs/${language}`)}
+            onClick={() =>
+              platform.openLink(
+                `https://chatboxai.app/${language.split('-')[0] || 'en'}/help-center/chatbox-ai-service-faqs`
+              )
+            }
           >
             {t('FAQs')}
           </Button>
