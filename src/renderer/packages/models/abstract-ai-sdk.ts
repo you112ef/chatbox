@@ -103,7 +103,7 @@ export default abstract class AbstractAISDKModel implements ModelInterface {
     }
 
     const sources = await result.sources // 已知perplexity会返回，以后可能还会有别的
-    if (sources) {
+    if (sources && sources.length > 0) {
       options.onResultChange?.({
         content: textContent,
         reasoningContent,
