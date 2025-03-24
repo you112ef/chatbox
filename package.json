@@ -324,7 +324,7 @@
       {
         "provider": "s3",
         "bucket": "chatbox",
-        "endpoint": "https://323943171e765db4cc94a7f640e57cb0.r2.cloudflarestorage.com",
+        "endpoint": "https://208624959c9d215edea0720162a740c1.r2.cloudflarestorage.com",
         "path": "/releases",
         "channel": "${env.UPDATE_CHANNEL}"
       }
