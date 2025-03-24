@@ -1,5 +1,5 @@
 const changelog = `
-### v1.11.1 - 2025.03.19
+### v1.11.3 - 2025.03.24
 
 1. Refactor Settings UI
 2. Fixed some issues with LLM API calling
