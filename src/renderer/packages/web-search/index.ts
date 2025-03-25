@@ -4,20 +4,32 @@ import type { SearchResultItem } from './base'
 import { BingNewsSearch } from './bing-news'
 import { BingSearch } from './bing'
 import { TavilySearch } from './tavily'
-import { getExtensionSettings, getLanguage } from '@/stores/settingActions'
+import { getExtensionSettings, getLanguage, getLicenseKey } from '@/stores/settingActions'
 import WebSearch from './base'
+import { ChatboxAIAPIError } from '../models/errors'
+import { ChatboxSearch } from './chatbox-search'
 
 const MAX_CONTEXT_ITEMS = 10
 
 // 根据配置的搜索提供方来选择搜索服务
 function getSearchProviders() {
   const settings = getExtensionSettings()
+  const licenseKey = getLicenseKey()
 
   const selectedProviders: WebSearch[] = []
   const provider = settings.webSearch.provider
   const language = getLanguage()
 
   switch (provider) {
+    case 'build-in':
+      if (!licenseKey) {
+        throw ChatboxAIAPIError.fromCodeName(
+          'chatbox_search_license_key_required',
+          'chatbox_search_license_key_required'
+        )
+      }
+      selectedProviders.push(new ChatboxSearch(licenseKey))
+      break
     case 'bing':
       selectedProviders.push(new BingSearch())
       if (language !== 'zh-Hans') {
@@ -26,7 +38,7 @@ function getSearchProviders() {
       break
     case 'tavily':
       if (!settings.webSearch.tavilyApiKey) {
-        throw new Error('Tavily API key is required')
+        throw ChatboxAIAPIError.fromCodeName('tavily_api_key_required', 'tavily_api_key_required')
       }
       selectedProviders.push(new TavilySearch(settings.webSearch.tavilyApiKey))
       break

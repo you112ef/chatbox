@@ -347,5 +347,8 @@
   "Unsaved settings": "저장되지 않은 설정",
   "You have unsaved settings. Are you sure you want to leave?": "저장되지 않은 설정이 있습니다. 나가시겠습니까?",
   "Yes": "예",
-  "No": "아니요"
+  "No": "아니요",
+  "No search results found. Please use another <OpenExtensionSettingButton>search provider</OpenExtensionSettingButton> or try again later.": "검색 결과가 없습니다. 다른 <OpenExtensionSettingButton>검색 제공자</OpenExtensionSettingButton>를 사용하거나 나중에 다시 시도하세요.",
+  "You have selected Chatbox AI as the search provider, but a license key has not been entered yet. Please <OpenSettingButton>click here to open Settings</OpenSettingButton> and enter your license key, or choose a different <OpenExtensionSettingButton>search provider</OpenExtensionSettingButton>.": "Chatbox AI를 검색 제공자로 선택했지만 라이선스 키가 아직 입력되지 않았습니다. <OpenSettingButton>여기를 클릭하여 설정을 열고</OpenSettingButton> 라이선스 키를 입력하거나 다른 <OpenExtensionSettingButton>검색 제공자</OpenExtensionSettingButton>를 선택하세요.",
+  "You have selected Tavily as the search provider, but an API key has not been entered yet. Please <OpenExtensionSettingButton>click here to open Settings</OpenExtensionSettingButton> and enter your API key, or choose a different search provider.": "Tavily를 검색 제공자로 선택했지만 API 키가 아직 입력되지 않았습니다. <OpenExtensionSettingButton>여기를 클릭하여 설정을 열고</OpenExtensionSettingButton> API 키를 입력하거나 다른 검색 제공자를 선택하세요."
 }

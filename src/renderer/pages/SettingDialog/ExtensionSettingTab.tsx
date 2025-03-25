@@ -1,12 +1,5 @@
 import SimpleSelect from '@/components/SimpleSelect'
-import {
-  Box,
-  FormGroup,
-  Link,
-  Stack,
-  TextField,
-  Typography
-} from '@mui/material'
+import { Box, FormGroup, Link, Stack, TextField, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { Settings } from '../../../shared/types'
 import { Accordion, AccordionDetails, AccordionSummary } from '../../components/Accordion'
@@ -50,6 +43,7 @@ export default function ExtensionSettingTab(props: Props) {
                   })
                 }}
                 options={[
+                  { value: 'build-in', label: 'Chatbox' },
                   { value: 'bing', label: 'Bing' },
                   { value: 'tavily', label: 'Tavily' },
                 ]}

@@ -101,6 +101,17 @@ export default function MessageErrTips(props: { msg: Message }) {
                 }}
               ></Link>
             ),
+            OpenExtensionSettingButton: (
+              <Link
+                className="cursor-pointer italic"
+                onClick={() => {
+                  setOpenSettingDialogAtom('extension')
+                  navigate({
+                    to: '/settings',
+                  })
+                }}
+              ></Link>
+            ),
             OpenMorePlanButton: (
               <Link
                 className="cursor-pointer italic"

@@ -108,7 +108,7 @@ export function settings(): Settings {
     },
     extension: {
       webSearch: {
-        provider: 'bing',
+        provider: 'build-in',
         tavilyApiKey: '',
       },
     },

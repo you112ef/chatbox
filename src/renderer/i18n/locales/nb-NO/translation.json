@@ -346,5 +346,8 @@
   "Unsaved settings": "Ulagrede innstillinger",
   "You have unsaved settings. Are you sure you want to leave?": "Du har ulagrede innstillinger. Er du sikker på at du vil forlate?",
   "Yes": "Ja",
-  "No": "Nei"
+  "No": "Nei",
+  "No search results found. Please use another <OpenExtensionSettingButton>search provider</OpenExtensionSettingButton> or try again later.": "Ingen søkeresultater funnet. Vennligst bruk en annen <OpenExtensionSettingButton>søkeleverandør</OpenExtensionSettingButton> eller prøv igjen senere.",
+  "You have selected Chatbox AI as the search provider, but a license key has not been entered yet. Please <OpenSettingButton>click here to open Settings</OpenSettingButton> and enter your license key, or choose a different <OpenExtensionSettingButton>search provider</OpenExtensionSettingButton>.": "Du har valgt Chatbox AI som søkeleverandør, men ingen lisensnøkkel er lagt inn ennå. Vennligst <OpenSettingButton>klikk her for å åpne Innstillinger</OpenSettingButton> og legg inn lisensnøkkelen din, eller velg en annen <OpenExtensionSettingButton>søkeleverandør</OpenExtensionSettingButton>.",
+  "You have selected Tavily as the search provider, but an API key has not been entered yet. Please <OpenExtensionSettingButton>click here to open Settings</OpenExtensionSettingButton> and enter your API key, or choose a different search provider.": "Du har valgt Tavily som søkeleverandør, men ingen API-nøkkel er lagt inn ennå. Vennligst <OpenExtensionSettingButton>klikk her for å åpne Innstillinger</OpenExtensionSettingButton> og legg inn API-nøkkelen din, eller velg en annen søkeleverandør."
 }

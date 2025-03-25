@@ -347,5 +347,8 @@
   "Unsaved settings": "Definições não guardadas",
   "You have unsaved settings. Are you sure you want to leave?": "Tem definições não guardadas. Tem a certeza que deseja sair?",
   "Yes": "Sim",
-  "No": "Não"
+  "No": "Não",
+  "No search results found. Please use another <OpenExtensionSettingButton>search provider</OpenExtensionSettingButton> or try again later.": "Nenhum resultado de pesquisa encontrado. Por favor, use outro <OpenExtensionSettingButton>provedor de pesquisa</OpenExtensionSettingButton> ou tente novamente mais tarde.",
+  "You have selected Chatbox AI as the search provider, but a license key has not been entered yet. Please <OpenSettingButton>click here to open Settings</OpenSettingButton> and enter your license key, or choose a different <OpenExtensionSettingButton>search provider</OpenExtensionSettingButton>.": "Você selecionou Chatbox AI como o provedor de pesquisa, mas ainda não introduziu uma chave de licença. Por favor <OpenSettingButton>clique aqui para abrir Configurações</OpenSettingButton> e introduza a sua chave de licença, ou escolha um <OpenExtensionSettingButton>provedor de pesquisa</OpenExtensionSettingButton> diferente.",
+  "You have selected Tavily as the search provider, but a API key has not been entered yet. Please <OpenExtensionSettingButton>click here to open Settings</OpenExtensionSettingButton> and enter your API key, or choose a different search provider.": "Você selecionou Tavily como o provedor de pesquisa, mas ainda não introduziu uma chave de API. Por favor <OpenExtensionSettingButton>clique aqui para abrir Configurações</OpenExtensionSettingButton> e introduza a sua chave de API, ou escolha um provedor de pesquisa diferente."
 }

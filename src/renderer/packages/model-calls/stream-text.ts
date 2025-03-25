@@ -2,6 +2,7 @@ import { isEmpty } from 'lodash'
 import { Message, MessageToolCalls } from '../../../shared/types'
 import { ModelInterface, OnResultChange, onResultChangeWithCancel } from '../models/base'
 import { callTool, constructMessagesWithSearchResults, searchByPromptEngineering } from './tools'
+import { ChatboxAIAPIError } from '../models/errors'
 
 async function handleToolCalls(
   messages: Message[],
@@ -65,6 +66,9 @@ export async function streamText(
     if (params.webBrowsing && !model.isSupportToolUse()) {
       // 不支持工具调用的模型，则使用prompt engineering的方式进行联网搜索
       const result = await searchByPromptEngineering(model, params.messages, controller.signal)
+      if (!result?.searchResults?.length) {
+        throw ChatboxAIAPIError.fromCodeName('no_search_result', 'no_search_result')
+      }
       if (result) {
         onResultChange({
           webBrowsing: {

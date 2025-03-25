@@ -348,5 +348,8 @@
   "Unsaved settings": "未保存的设置",
   "You have unsaved settings. Are you sure you want to leave?": "您有未保存的设置。确定要离开吗？",
   "Yes": "是",
-  "No": "否"
+  "No": "否",
+  "No search results found. Please use another <OpenExtensionSettingButton>search provider</OpenExtensionSettingButton> or try again later.": "未找到搜索结果。请使用其他<OpenExtensionSettingButton>搜索提供方</OpenExtensionSettingButton>或稍后重试。",
+  "You have selected Chatbox AI as the search provider, but a license key has not been entered yet. Please <OpenSettingButton>click here to open Settings</OpenSettingButton> and enter your license key, or choose a different <OpenExtensionSettingButton>search provider</OpenExtensionSettingButton>.": "您已选择 Chatbox AI 作为搜索提供方，但尚未输入 license key。请<OpenSettingButton>点击这里打开设置</OpenSettingButton>并输入您的 license key，或选择其他<OpenExtensionSettingButton>搜索提供方</OpenExtensionSettingButton>。",
+  "You have selected Tavily as the search provider, but an API key has not been entered yet. Please <OpenExtensionSettingButton>click here to open Settings</OpenExtensionSettingButton> and enter your API key, or choose a different search provider.": "您已选择 Tavily 作为搜索提供方，但尚未输入 API key。请<OpenExtensionSettingButton>点击这里打开设置</OpenExtensionSettingButton>并输入您的 API key，或选择其他搜索提供方。"
 }

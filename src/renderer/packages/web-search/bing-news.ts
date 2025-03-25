@@ -9,7 +9,7 @@ export class BingNewsSearch extends WebSearch {
   }
 
   private async fetchSerp(query: string, signal?: AbortSignal) {
-    const html = await ofetch('https://www.bing.com/news/infinitescrollajax', {
+    const html = await this.fetch('https://www.bing.com/news/infinitescrollajax', {
       method: 'GET',
       query: { InfiniteScroll: '1', q: query },
       signal,

@@ -347,5 +347,8 @@
   "Unsaved settings": "未保存の設定",
   "You have unsaved settings. Are you sure you want to leave?": "未保存の設定があります。本当に移動しますか？",
   "Yes": "はい",
-  "No": "いいえ"
+  "No": "いいえ",
+  "No search results found. Please use another <OpenExtensionSettingButton>search provider</OpenExtensionSettingButton> or try again later.": "検索結果が見つかりませんでした。別の<OpenExtensionSettingButton>検索プロバイダー</OpenExtensionSettingButton>を使用するか、後で再試行してください。",
+  "You have selected Chatbox AI as the search provider, but a license key has not been entered yet. Please <OpenSettingButton>click here to open Settings</OpenSettingButton> and enter your license key, or choose a different <OpenExtensionSettingButton>search provider</OpenExtensionSettingButton>.": "Chatbox AIを検索プロバイダーとして選択しましたが、ライセンスキーがまだ入力されていません。ライセンスキーを入力するか、別の<OpenExtensionSettingButton>検索プロバイダー</OpenExtensionSettingButton>を選択してください。",
+  "You have selected Tavily as the search provider, but an API key has not been entered yet. Please <OpenExtensionSettingButton>click here to open Settings</OpenExtensionSettingButton> and enter your API key, or choose a different search provider.": "Tavilyを検索プロバイダーとして選択しましたが、APIキーがまだ入力されていません。APIキーを入力するか、別の検索プロバイダーを選択してください。"
 }

@@ -343,7 +343,7 @@ export interface CustomProvider {
 
 export interface ExtensionSettings {
   webSearch: {
-    provider: 'bing' | 'tavily' // 搜索提供方
+    provider: 'build-in' | 'bing' | 'tavily' // 搜索提供方
     tavilyApiKey?: string // Tavily API 密钥
   }
 }

@@ -189,6 +189,24 @@ export class ChatboxAIAPIError extends BaseError {
       i18nKey:
         'The {{model}} API itself does not support web browsing. Supported models: {{supported_web_browsing_models}}',
     },
+    no_search_result: {
+      name: 'no_search_result',
+      code: 20023,
+      i18nKey:
+        'No search results found. Please use another <OpenExtensionSettingButton>search provider</OpenExtensionSettingButton> or try again later.',
+    },
+    chatbox_search_license_key_required: {
+      name: 'chatbox_search_license_key_required',
+      code: 20024,
+      i18nKey:
+        'You have selected Chatbox AI as the search provider, but a license key has not been entered yet. Please <OpenSettingButton>click here to open Settings</OpenSettingButton> and enter your license key, or choose a different <OpenExtensionSettingButton>search provider</OpenExtensionSettingButton>.',
+    },
+    tavily_api_key_required: {
+      name: 'tavily_api_key_required',
+      code: 20025,
+      i18nKey:
+        'You have selected Tavily as the search provider, but an API key has not been entered yet. Please <OpenExtensionSettingButton>click here to open Settings</OpenExtensionSettingButton> and enter your API key, or choose a different search provider.',
+    },
   }
   static fromCodeName(response: string, codeName: string) {
     if (!codeName) {
