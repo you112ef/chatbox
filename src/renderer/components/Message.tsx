@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react'
+import React, { useEffect, useState, useRef, useMemo, MouseEventHandler } from 'react'
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import MenuItem from '@mui/material/MenuItem'
@@ -62,6 +62,7 @@ import { ConfirmDeleteMenuItem } from './ConfirmDeleteButton'
 import platform from '@/platform'
 import NiceModal from '@ebay/nice-modal-react'
 import { useNavigate } from '@tanstack/react-router'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 
 export interface Props {
   id?: string
@@ -155,6 +156,15 @@ function _Message(props: Props) {
     copyToClipboard(msg.content)
     toastActions.add(t('copied to clipboard'))
     setAnchorEl(null)
+  }
+
+  const onCopyReasoningContent: MouseEventHandler<HTMLAnchorElement> = (e) => {
+    e.stopPropagation()
+    if (msg.reasoningContent) {
+      copyToClipboard(msg.reasoningContent)
+      toastActions.add(t('copied to clipboard'))
+      setAnchorEl(null)
+    }
   }
 
   const onReport = () => {
@@ -466,13 +476,13 @@ function _Message(props: Props) {
               )}
             >
               {msg.reasoningContent && (
-                <Box
-                  className="bg-stone-100 dark:bg-slate-800 rounded p-2 mb-2 cursor-pointer"
-                  onClick={() => setIsCollapsedReasoning(!isCollapsedReasoning)}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box className="bg-stone-300/10 dark:bg-blue-300/10 rounded p-2 mb-2 ">
+                  <Box
+                    className="cursor-pointer select-none flex flex-row justify-start items-center gap-1"
+                    onClick={() => setIsCollapsedReasoning(!isCollapsedReasoning)}
+                  >
                     <Typography variant="caption" color="text.secondary">
-                      {t('Thinking')}
+                      {msg.generating ? t('Thinking') : t('Deeply thought')}
                     </Typography>
                     <SouthIcon
                       sx={{
@@ -481,6 +491,21 @@ function _Message(props: Props) {
                         transition: 'transform 0.2s',
                       }}
                     />
+
+                    {!msg.generating && (
+                      <IconButton
+                        sx={{
+                          marginLeft: 'auto',
+                        }}
+                        onClick={onCopyReasoningContent}
+                      >
+                        <ContentCopyIcon
+                          sx={{
+                            fontSize: 16,
+                          }}
+                        />
+                      </IconButton>
+                    )}
                   </Box>
                   {!isCollapsedReasoning && (
                     <Box sx={{ mt: 1 }}>

@@ -4,9 +4,9 @@
   "version": "1.11.3",
   "description": "A desktop client for multiple cutting-edge AI models",
   "author": {
-    "name": "Benn Huang",
+    "name": "Mediocre Company",
     "email": "hi@chatboxai.com",
-    "url": "https://github.com/Bin-Huang"
+    "url": "https://github.com/chatboxai"
   },
   "main": "./dist/main/main.js",
   "scripts": {

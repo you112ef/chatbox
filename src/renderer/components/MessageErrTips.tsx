@@ -25,7 +25,7 @@ export default function MessageErrTips(props: { msg: Message }) {
   if (msg.error.startsWith('API Error')) {
     tips.push(
       <Trans
-        i18nKey="Connection to {{aiProvider}} failed. This typically occurs due to incorrect configuration or {{aiProvider}} account issues. Please <buttonOpenSettings>check your settings</buttonOpenSettings> and verify your {{aiProvider}} account status."
+        i18nKey="Connection to {{aiProvider}} failed. This typically occurs due to incorrect configuration or {{aiProvider}} account issues. Please <buttonOpenSettings>check your settings</buttonOpenSettings> and verify your {{aiProvider}} account status, or purchase a <LinkToLicensePricing>Chatbox AI License</LinkToLicensePricing> to unlock all advanced models instantly without any configuration."
         values={{
           aiProvider: msg.aiProvider ? aiProviderNameHash[msg.aiProvider] : 'AI Provider',
         }}
@@ -39,6 +39,12 @@ export default function MessageErrTips(props: { msg: Message }) {
                   to: '/settings',
                 })
               }}
+            />
+          ),
+          LinkToLicensePricing: (
+            <LinkTargetBlank
+              className="!font-bold !text-gray-700 hover:!text-blue-600 transition-colors"
+              href="https://chatboxai.app/redirect_app/advanced_url_processing"
             />
           ),
           a: <a href={`https://chatboxai.app/redirect_app/faqs/${settingActions.getLanguage()}`} target="_blank" />,

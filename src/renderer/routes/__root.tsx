@@ -137,7 +137,9 @@ export const Route = createRootRoute({
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Root />
+        <NiceModal.Provider>
+          <Root />
+        </NiceModal.Provider>
       </ThemeProvider>
     )
   },

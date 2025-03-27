@@ -59,6 +59,7 @@ export default function SettingWindow(props: {}) {
   const { proceed, reset, status } = useBlocker({
     shouldBlockFn: () => settings !== settingsEdit,
     withResolver: true,
+    enableBeforeUnload: false,
   })
 
   const onSave = () => {

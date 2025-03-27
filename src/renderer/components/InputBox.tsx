@@ -25,7 +25,7 @@ import { useDropzone } from 'react-dropzone'
 import * as picUtils from '@/packages/pic_utils'
 import NiceModal from '@ebay/nice-modal-react'
 
-export default function InputBox(props: {}) {
+export default function InputBox(props: { disableSubmit?: boolean }) {
   const theme = useTheme()
   const [quote, setQuote] = useAtom(atoms.quoteAtom)
   const currentSessionId = useAtomValue(atoms.currentSessionIdAtom)
@@ -63,9 +63,13 @@ export default function InputBox(props: {}) {
     if (!isSmallScreen) {
       dom.focusMessageInput() // 大屏幕切换会话时自动聚焦
     }
+    setWebBrowsingMode(false)
   }, [currentSessionId])
 
   const handleSubmit = (needGenerating = true) => {
+    if (props.disableSubmit) {
+      return
+    }
     setPreviousMessageQuickInputMark('')
     if (messageInput.trim() === '' && links.length === 0 && attachments.length === 0 && pictureKeys.length === 0) {
       return
@@ -86,7 +90,7 @@ export default function InputBox(props: {}) {
     setPictureKeys([])
     setAttachments([])
     setLinks([])
-    setWebBrowsingMode(false)
+
     trackingEvent('send_message', { event_category: 'user' })
     // 重置清理上下文按钮
     if (showRollbackThreadButton) {
@@ -480,11 +484,15 @@ export default function InputBox(props: {}) {
                         />
                     </MiniButton> */}
             <MiniButton
+              disabled={props.disableSubmit}
               className="w-8 ml-2"
               style={{
                 color: theme.palette.getContrastText(theme.palette.primary.main),
-                backgroundColor:
-                  currentSessionType === 'picture' ? theme.palette.secondary.main : theme.palette.primary.main,
+                backgroundColor: props.disableSubmit
+                  ? theme.palette.grey[500]
+                  : currentSessionType === 'picture'
+                  ? theme.palette.secondary.main
+                  : theme.palette.primary.main,
               }}
               tooltipPlacement="top"
               onClick={() => handleSubmit()}

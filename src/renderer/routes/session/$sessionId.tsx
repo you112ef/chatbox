@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Box, IconButton, ButtonGroup } from '@mui/material'
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp'
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown'
@@ -20,6 +20,14 @@ function RouteComponent() {
   const sessions = useAtomValue(atoms.sessionsAtom)
   const { sessionId: currentSessionId } = Route.useParams()
   const currentSession = sessions.find((s) => s.id === currentSessionId)
+  const disableSubmit = useMemo(() => {
+    if (currentSession?.messages.length) {
+      if (currentSession.messages[currentSession.messages.length - 1].generating) {
+        return true
+      }
+    }
+    return false
+  }, [currentSession])
 
   useEffect(() => {
     setTimeout(() => {
@@ -49,7 +57,7 @@ function RouteComponent() {
       <MessageList key={currentSessionId} currentSession={currentSession} />
 
       <ScrollButtons />
-      <InputBox />
+      <InputBox disableSubmit={disableSubmit} />
       <ThreadHistoryDrawer />
     </div>
   ) : null

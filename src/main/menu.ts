@@ -197,7 +197,7 @@ export default class MenuBuilder {
         {
           label: 'Github Repo',
           click() {
-            shell.openExternal('https://github.com/Bin-Huang/chatbox')
+            shell.openExternal('https://github.com/chatboxai/chatbox')
           },
         },
         // {
@@ -209,7 +209,7 @@ export default class MenuBuilder {
         {
           label: 'Search Issues',
           click() {
-            shell.openExternal('https://github.com/Bin-Huang/chatbox/issues?q=is%3Aissue')
+            shell.openExternal('https://github.com/chatboxai/chatbox/issues?q=is%3Aissue')
           },
         },
       ],
@@ -288,7 +288,7 @@ export default class MenuBuilder {
           {
             label: 'Github Repo',
             click() {
-              shell.openExternal('https://github.com/Bin-Huang/chatbox')
+              shell.openExternal('https://github.com/chatboxai/chatbox')
             },
           },
           // {
@@ -300,7 +300,7 @@ export default class MenuBuilder {
           {
             label: 'Search Issues',
             click() {
-              shell.openExternal('https://github.com/Bin-Huang/chatbox/issues?q=is%3Aissue')
+              shell.openExternal('https://github.com/chatboxai/chatbox/issues?q=is%3Aissue')
             },
           },
         ],

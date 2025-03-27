@@ -35,7 +35,6 @@ migration.migrate()
 
 // 最后执行 storage 清理
 import './setup/storage_clear'
-import NiceModal from '@ebay/nice-modal-react'
 import { router } from './router'
 
 // ==========渲染节点==============
@@ -51,9 +50,7 @@ import { router } from './router'
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <StrictMode>
-    <NiceModal.Provider>
-      <RouterProvider router={router} />
-    </NiceModal.Provider>
+    <RouterProvider router={router} />
   </StrictMode>
 )
 
