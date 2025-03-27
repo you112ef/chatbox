@@ -63,6 +63,7 @@ import platform from '@/platform'
 import NiceModal from '@ebay/nice-modal-react'
 import { useNavigate } from '@tanstack/react-router'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import Loading from './icons/Loading'
 
 export interface Props {
   id?: string
@@ -305,12 +306,6 @@ function _Message(props: Props) {
   let content = msg.content // 消息正文
   if (typeof msg.content !== 'string') {
     content = JSON.stringify(msg.content)
-  }
-  if (msg.generating) {
-    content += '...'
-  }
-  if (needCollapse && isCollapsed) {
-    content = msg.content.slice(0, collapseThreshold) + '... '
   }
 
   const CollapseButton = (
@@ -600,6 +595,9 @@ function _Message(props: Props) {
                 />
               )}
               {msg.webBrowsing && <MessageWebBrowsing webBrowsing={msg.webBrowsing} />}
+
+              {msg.generating && <Loading />}
+
               {tips.length > 0 && (
                 <Typography variant="body2" sx={{ opacity: 0.5 }} className="pb-1">
                   {tips.join(', ')}

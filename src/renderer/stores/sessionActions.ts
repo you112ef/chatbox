@@ -802,7 +802,7 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
   const settings = session.settings ? mergeSettings(globalSettings, session.settings, session.type) : globalSettings
 
   // 将消息的状态修改成初始状态
-  const placeholder = session.type === 'picture' ? `[${i18n.t('Please wait about 20 seconds')}]` : '...'
+  const placeholder = session.type === 'picture' ? `[${i18n.t('Please wait about 20 seconds')}]` : ''
   targetMsg = {
     ...targetMsg,
     content: placeholder,
@@ -962,7 +962,7 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
  * @param msgId 消息ID
  */
 export async function generateMore(sessionId: string, msgId: string, options?: { webBrowsing?: boolean }) {
-  const newAssistantMsg = createMessage('assistant', '...')
+  const newAssistantMsg = createMessage('assistant', '')
   insertMessageAfter(sessionId, newAssistantMsg, msgId)
   await generate(sessionId, newAssistantMsg, options)
 }
