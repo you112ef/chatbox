@@ -1,4 +1,9 @@
 const changelog = `
+### v1.11.4-beta.1 - 2025.03.27
+
+1. Fixed minor issues
+2. Improve web search on mobile devices
+
 ### v1.11.3 - 2025.03.24
 
 1. Refactor Settings UI
