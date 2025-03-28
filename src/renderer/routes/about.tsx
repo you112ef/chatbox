@@ -134,6 +134,13 @@ function About() {
           >
             {t('FAQs')}
           </Button>
+          <Button
+            variant="outlined"
+            sx={{ margin: '4px' }}
+            onClick={() => platform.openLink(`mailto://hi@chatboxai.com`)}
+          >
+            {t('Email Us')}
+          </Button>
         </Box>
         <Box className="flex flex-row gap-4 justify-center items-center mb-6">
           <a href="https://x.com/ChatboxAI_HQ" target="_blank">
