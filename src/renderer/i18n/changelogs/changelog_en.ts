@@ -1,8 +1,11 @@
 const changelog = `
-### v1.11.4-beta.1 - 2025.03.27
+### v1.11.5 - 2025.03.28
 
-1. Fixed minor issues
-2. Improve web search on mobile devices
+- Fixed XAI only supporting Grok-Beta model, now works with other models
+- Fixed some models not showing chain-of-thought during inference
+- Fixed an issue where the app wouldn't close properly in certain cases
+- Improved web browsing experience on mobile devices for better stability and smoothness
+- Other performance optimizations and bug fixes
 
 ### v1.11.3 - 2025.03.24
 
@@ -22,6 +25,7 @@ const changelog = `
 4. Improved web search icon
 
 ### v1.10.4 - 2025.03.01
+
 
 1. Update web browsing search engine
 
