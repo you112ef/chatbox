@@ -9,7 +9,7 @@ import { CHATBOX_BUILD_TARGET, CHATBOX_BUILD_PLATFORM } from '@/variables'
 
   const version = await platform.getVersion().catch(() => 'unknown')
   Sentry.init({
-    dsn: 'https://3cf8d15960fc432cb886d6f62e3716dc@o180365.ingest.sentry.io/4505411943464960',
+    dsn: 'https://eca691c5e01ebfa05958fca1fcb487a9@sentry.midway.run/697',
     integrations: [
       new Sentry.BrowserTracing({
         // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
