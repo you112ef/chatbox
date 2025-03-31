@@ -35,7 +35,7 @@ const configuration: webpack.Configuration = {
 
   output: {
     path: webpackPaths.distRendererPath,
-    publicPath: './',
+    publicPath: process.env.CHATBOX_BUILD_PLATFORM === 'web' ? '/' : './',
     filename: 'renderer.[contenthash].js',
     library: {
       type: 'umd',
@@ -119,7 +119,7 @@ const configuration: webpack.Configuration = {
 
     TanStackRouterWebpack({
       target: 'react',
-      autoCodeSplitting: true,
+      autoCodeSplitting: process.env.CHATBOX_BUILD_PLATFORM === 'web' ? true : false,
       routesDirectory: './src/renderer/routes',
       generatedRouteTree: './src/renderer/routeTree.gen.ts',
     }),
