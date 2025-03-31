@@ -20,6 +20,15 @@ class SQLiteStorage {
   constructor() {
     this.sqlite = new SQLiteConnection(CapacitorSQLite)
     this.initializePromise = this.initialize() // 初始化 Promise
+
+    // 监听android返回键
+    App.addListener('backButton', ({ canGoBack }) => {
+      if (!canGoBack) {
+        App.exitApp()
+      } else {
+        window.history.back()
+      }
+    })
   }
 
   // 创建并打开数据库

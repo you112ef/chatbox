@@ -14,6 +14,7 @@ function Index() {
   useEffect(() => {
     navigate({
       to: `/session/${currentSessionId}`,
+      replace: true,
     })
   }, [currentSessionId])
   return <div className="p-2"></div>

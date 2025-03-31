@@ -37,7 +37,7 @@ function RouteComponent() {
 
   useEffect(() => {
     if (!currentSession) {
-      navigate({ to: '/' })
+      navigate({ to: '/', replace: true })
     }
   }, [currentSession])
 
