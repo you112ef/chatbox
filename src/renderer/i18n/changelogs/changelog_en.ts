@@ -1,11 +1,14 @@
 const changelog = `
+### v1.11.6-beta.1 - 2025.04.01
+ 1. Support Gemini multi-modal output
+
 ### v1.11.5 - 2025.03.28
 
-- Fixed XAI only supporting Grok-Beta model, now works with other models
-- Fixed some models not showing chain-of-thought during inference
-- Fixed an issue where the app wouldn't close properly in certain cases
-- Improved web browsing experience on mobile devices for better stability and smoothness
-- Other performance optimizations and bug fixes
+1. Fixed XAI only supporting Grok-Beta model, now works with other models
+2. Fixed some models not showing chain-of-thought during inference
+3. Fixed an issue where the app wouldn't close properly in certain cases
+4. Improved web browsing experience on mobile devices for better stability and smoothness
+5. Other performance optimizations and bug fixes
 
 ### v1.11.3 - 2025.03.24
 
