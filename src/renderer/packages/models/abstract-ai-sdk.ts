@@ -1,10 +1,32 @@
+import storage from '@/storage'
 import * as settingActions from '@/stores/settingActions'
-import { CoreMessage, jsonSchema, LanguageModelV1, streamText, tool } from 'ai'
-import { Message, MessageToolCalls } from 'src/shared/types'
+import { saveImage } from '@/utils/image'
+import { getMessageText, sequenceMessages } from '@/utils/message'
+import { GoogleGenerativeAIProviderMetadata } from '@ai-sdk/google'
+import {
+  CoreMessage,
+  CoreSystemMessage,
+  FilePart,
+  jsonSchema,
+  LanguageModelV1,
+  streamText,
+  TextPart,
+  tool,
+  ToolSet,
+} from 'ai'
+import { compact } from 'lodash'
+import {
+  Message,
+  MessageContentParts,
+  MessageImagePart,
+  MessageTextPart,
+  MessageToolCalls,
+  MessageWebBrowsing,
+  StreamTextResult,
+} from 'src/shared/types'
 import { webSearchTool as rawWebSearchTool } from '../web-search'
 import { CallChatCompletionOptions, ModelInterface } from './base'
 import { ApiError, ChatboxAIAPIError } from './errors'
-import { fixMessageRoleSequence } from './llm_utils'
 import { injectModelSystemPrompt } from './openai'
 
 const webSearchTool = tool({
@@ -16,20 +38,26 @@ const webSearchTool = tool({
 export interface CallSettings {
   temperature?: number
   topP?: number
+  providerOptions?: CoreSystemMessage['providerOptions']
+  tools?: ToolSet
 }
 
 export default abstract class AbstractAISDKModel implements ModelInterface {
   public name = 'AI SDK Model'
   public injectDefaultMetadata = true
 
-  protected abstract getChatModel(): LanguageModelV1
+  protected abstract getChatModel(options: CallChatCompletionOptions): LanguageModelV1
   public abstract isSupportToolUse(): boolean
 
-  protected getCallSettings(): CallSettings {
+  public isSupportSystemMessage() {
+    return true
+  }
+
+  protected getCallSettings(options: CallChatCompletionOptions): CallSettings {
     return {}
   }
 
-  public async chat(messages: Message[], options: CallChatCompletionOptions): Promise<string> {
+  public async chat(messages: Message[], options: CallChatCompletionOptions): Promise<StreamTextResult> {
     try {
       return await this._callChatCompletion(messages, options)
     } catch (e) {
@@ -59,31 +87,45 @@ export default abstract class AbstractAISDKModel implements ModelInterface {
     throw new Error('Not implemented')
   }
 
-  private async _callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<string> {
-    const model = this.getChatModel()
+  private async _callChatCompletion(
+    rawMessages: Message[],
+    options: CallChatCompletionOptions
+  ): Promise<StreamTextResult> {
+    const model = this.getChatModel(options)
 
-    if (this.injectDefaultMetadata) {
+    if (this.injectDefaultMetadata && this.isSupportSystemMessage()) {
       rawMessages = injectModelSystemPrompt(model.modelId, rawMessages)
     }
-    const messages = fixMessageRoleSequence(rawMessages)
+    if (!this.isSupportSystemMessage()) {
+      rawMessages = rawMessages.filter((m) => m.role !== 'system')
+    }
+
+    const messages = sequenceMessages(rawMessages)
 
     const result = streamText({
       model,
       maxSteps: 1,
-      messages: transformMessages(messages),
+      messages: await transformMessages(messages),
       tools: options?.webBrowsing ? { web_search: webSearchTool } : undefined,
       abortSignal: options.signal,
-      ...this.getCallSettings(),
+      ...this.getCallSettings(options),
     })
 
-    let textContent = ''
+    let blockIndex = 0
+    let contentParts: MessageContentParts = []
     let reasoningContent = ''
     const toolCalls: MessageToolCalls = {}
 
     for await (const chunk of result.fullStream) {
       console.debug('stream chunk', chunk)
       if (chunk.type === 'text-delta') {
-        textContent += chunk.textDelta
+        if (!contentParts[blockIndex]) {
+          contentParts[blockIndex] = { type: 'text', text: '' }
+        } else if (contentParts[blockIndex].type === 'image') {
+          contentParts[++blockIndex] = { type: 'text', text: '' }
+        }
+
+        ;(contentParts[blockIndex] as MessageTextPart).text += chunk.textDelta
       } else if (chunk.type === 'reasoning') {
         reasoningContent += chunk.textDelta
       } else if (chunk.type === 'tool-call') {
@@ -94,65 +136,105 @@ export default abstract class AbstractAISDKModel implements ModelInterface {
             arguments: JSON.stringify(chunk.args),
           },
         }
+      } else if (chunk.type === 'file' && chunk.mimeType.startsWith('image/')) {
+        const storageKey = await saveImage('response', `data:${chunk.mimeType};base64,${chunk.base64}`)
+        let image = { type: 'image', storageKey } as MessageImagePart
+        if (blockIndex < contentParts.length) {
+          contentParts[++blockIndex] = image
+        } else {
+          contentParts.push(image)
+        }
       } else if (chunk.type === 'error') {
         throw new ApiError(`Error from ${this.name}: ${chunk.error}`)
       } else {
         continue
       }
-      options.onResultChange?.({ content: textContent, reasoningContent, toolCalls })
+      options.onResultChange?.({ reasoningContent, toolCalls, contentParts })
     }
 
-    const sources = await result.sources // 已知perplexity会返回，以后可能还会有别的
+    const [sources, usage, providerMetadata] = await Promise.all([
+      result.sources, // Known to be returned by Perplexity and Gemini, others may follow
+      result.usage,
+      result.providerMetadata,
+    ])
+    const metadata = providerMetadata?.google as GoogleGenerativeAIProviderMetadata | undefined
+    const groundingMetadata = metadata?.groundingMetadata
+    let webBrowsing: MessageWebBrowsing | undefined
     if (sources && sources.length > 0) {
-      options.onResultChange?.({
-        content: textContent,
-        reasoningContent,
-        toolCalls,
-        webBrowsing: {
-          query: [],
-          links: sources.map((source) => ({
-            title: source.title || source.url,
-            url: source.url,
-          })),
-        },
-      })
+      webBrowsing = {
+        query: groundingMetadata?.webSearchQueries || [],
+        links: sources.map((source) => ({
+          title: source.title || source.url,
+          url: source.url,
+        })),
+      }
     }
+    options.onResultChange?.({
+      contentParts,
+      reasoningContent,
+      toolCalls,
+      webBrowsing,
+      tokenCount: usage?.completionTokens,
+      tokensUsed: usage?.totalTokens,
+    })
 
-    return textContent
+    return { contentParts, reasoningContent, usage }
   }
 }
 
-function transformMessages(messages: Message[]): CoreMessage[] {
-  return messages.map((m) => {
-    switch (m.role) {
-      case 'system':
-        return { role: 'system', content: m.content }
-      case 'user':
-        const pictures = (m.pictures || []).filter((p) => p.url)
-        return {
-          role: 'user',
-          content:
-            pictures && pictures.length > 0
-              ? [{ type: 'text', text: m.content }, ...pictures.map((p) => ({ type: 'image' as const, image: p.url! }))]
-              : m.content,
+async function transformContentParts(contentParts: MessageContentParts): Promise<Array<TextPart | FilePart>> {
+  return compact(
+    await Promise.all(
+      contentParts.map(async (c) => {
+        if (c.type === 'text') {
+          return { type: 'text', text: c.text! } as TextPart
+        } else if (c.type === 'image') {
+          return {
+            type: 'file',
+            data: (await storage.getBlob(c.storageKey))?.replace(/^data:image\/[^;]+;base64,/, ''),
+            mimeType: 'image/png',
+          } as FilePart
         }
-      case 'assistant':
-        return { role: 'assistant', content: m.content }
-      case 'tool':
-        return {
-          role: 'tool',
-          content: [
-            {
-              type: 'tool-result',
-              toolCallId: m.id,
-              toolName: m.name!,
-              result: m.content,
-            },
-          ],
+        return null
+      })
+    )
+  )
+}
+
+async function transformMessages(messages: Message[]): Promise<CoreMessage[]> {
+  return Promise.all(
+    messages.map(async (m) => {
+      switch (m.role) {
+        case 'system':
+          return { role: 'system', content: getMessageText(m) }
+        case 'user': {
+          const contentParts = await transformContentParts(m.contentParts || [])
+          return {
+            role: 'user',
+            content: contentParts,
+          }
         }
-      default:
-        const _exhaustiveCheck: never = m.role
-        throw new Error(`Unkown role: ${_exhaustiveCheck}`)
-    }
-  })
+        case 'assistant':
+          return {
+            role: 'assistant',
+            content: await transformContentParts(m.contentParts || []),
+          }
+        case 'tool':
+          return {
+            role: 'tool',
+            content: [
+              {
+                type: 'tool-result',
+                toolCallId: m.id,
+                toolName: m.name!,
+                result: getMessageText(m),
+              },
+            ],
+          }
+        default:
+          const _exhaustiveCheck: never = m.role
+          throw new Error(`Unkown role: ${_exhaustiveCheck}`)
+      }
+    })
+  )
 }

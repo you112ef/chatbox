@@ -2,6 +2,7 @@ import storage from '../storage'
 import { getDefaultStore } from 'jotai'
 import * as atoms from '../stores/atoms'
 import platform from '../platform'
+import { Message } from 'src/shared/types'
 
 // 启动时执行消息图片清理
 // 只有网页版本需要清理，桌面版本存在本地、空间足够大无需清理
@@ -29,10 +30,7 @@ export async function tickStorageTask() {
   const sessions = store.get(atoms.sessionsAtom)
   for (const session of sessions) {
     for (const msg of session.messages) {
-      if (!msg.pictures) {
-        continue
-      }
-      for (const pic of msg.pictures) {
+      for (const pic of (msg as Message & { pictures: { storageKey: string }[] }).pictures || []) {
         if (pic.storageKey) {
           needDeletedSet.delete(pic.storageKey)
         }
@@ -40,6 +38,11 @@ export async function tickStorageTask() {
       for (const file of msg.files || []) {
         if (file.storageKey) {
           needDeletedSet.delete(file.storageKey)
+        }
+      }
+      for (const part of msg.contentParts || []) {
+        if (part.type === 'image' && part.storageKey) {
+          needDeletedSet.delete(part.storageKey)
         }
       }
       if (needDeletedSet.size === 0) {

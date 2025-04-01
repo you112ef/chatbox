@@ -17,7 +17,8 @@ import storage, { StorageKey } from '../storage'
 import { VirtuosoHandle } from 'react-virtuoso'
 import platform from '../platform'
 import { mergeSettings } from './sessionActions'
-
+import { migrateMessage } from '../utils/message'
+import { migrateSession } from '../utils/session-utils'
 // settings
 
 const _settingsAtom = atomWithStorage<Settings>(StorageKey.Settings, defaults.settings(), storage)
@@ -142,9 +143,9 @@ export const currentSessionAtom = atom((get) => {
   const sessions = get(sessionsAtom)
   let current = sessions.find((session) => session.id === id)
   if (!current) {
-    return sessions[sessions.length - 1] // 当前会话不存在时，返回最后一个会话
+    current = sessions[sessions.length - 1] // 当前会话不存在时，返回最后一个会话
   }
-  return current
+  return migrateSession(current)
 })
 
 export const currentSessionNameAtom = selectAtom(currentSessionAtom, (s) => s.name)
@@ -164,7 +165,7 @@ export const currentMessageListAtom = selectAtom(currentSessionAtom, (s) => {
   if (s.messages) {
     messageContext = messageContext.concat(s.messages)
   }
-  return messageContext
+  return messageContext.map(migrateMessage)
 })
 
 export const currentThreadHistoryHashAtom = selectAtom(currentSessionAtom, (s) => {

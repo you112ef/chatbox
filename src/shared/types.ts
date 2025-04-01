@@ -1,9 +1,9 @@
+import { GeminiModel } from '@/packages/models/gemini'
+import { GroqModel } from '@/packages/models/groq'
+import { LanguageModelUsage } from 'ai'
 import pick from 'lodash/pick'
 import { v4 as uuidv4 } from 'uuid'
 import { OpenAIModel } from '../renderer/packages/models/openai'
-import { GeminiModel } from '@/packages/models/gemini'
-import { GroqModel } from '@/packages/models/groq'
-
 export interface MessageFile {
   id: string
   name: string
@@ -55,12 +55,21 @@ export const MessageRoleEnum = {
 
 export type MessageRole = (typeof MessageRoleEnum)[keyof typeof MessageRoleEnum]
 
+export type MessageTextPart = { type: 'text'; text: string }
+export type MessageImagePart = { type: 'image'; storageKey: string }
+export type MessageContentParts = (MessageTextPart | MessageImagePart)[]
+export type StreamTextResult = {
+  contentParts: MessageContentParts
+  reasoningContent?: string
+  usage?: LanguageModelUsage
+}
 // Chatbox 应用的消息类型
 export interface Message {
   id: string // 当role为tool时，id为toolCallId
 
   role: MessageRole
-  content: string
+  // 把这个字段注释是为了避免新的引用，兼容老数据的时候还是可以读取
+  // content?: string // contentParts 有值的时候用contentParts
   name?: string // 之前不知道是干什么的，现在用于role=tool时存储tool name
 
   cancel?: () => void
@@ -70,14 +79,15 @@ export interface Message {
   model?: string
 
   style?: string // image style
-  pictures?: MessagePicture[]
+  // pictures?: MessagePicture[] // 迁移到 contentParts 中
 
-  files?: MessageFile[]
-  links?: MessageLink[]
-  webBrowsing?: MessageWebBrowsing
+  files?: MessageFile[] // chatboxai 专用
+  links?: MessageLink[] // chatboxai 专用
+  webBrowsing?: MessageWebBrowsing // chatboxai 专用
 
   reasoningContent?: string
   toolCalls?: MessageToolCalls
+  contentParts: MessageContentParts
 
   errorCode?: number
   error?: string
@@ -212,7 +222,7 @@ export function pickPictureSettings(settings: ModelSettings) {
 export function createMessage(role: MessageRole = MessageRoleEnum.User, content: string = ''): Message {
   return {
     id: uuidv4(),
-    content: content || '', // 防止为 undefined 或 null
+    contentParts: content ? [{ type: 'text', text: content }] : [], // 防止为 undefined 或 null
     role: role,
     timestamp: new Date().getTime(),
   }
@@ -515,17 +525,6 @@ export interface ModelOptionGroup {
   }[]
   // hidden?: boolean
   collapsable?: boolean
-}
-
-export function copySession(source: Session): Session {
-  const newSession: Session = {
-    ...source,
-    messages: source.messages.map(copyMessage),
-    threads: copyThreads(source.threads),
-    id: uuidv4(),
-    messageForksHash: undefined, // 不复制分叉数据
-  }
-  return newSession
 }
 
 export function copyMessage(source: Message): Message {

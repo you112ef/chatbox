@@ -1,19 +1,41 @@
-import NiceModal, { muiDialogV5, useModal } from '@ebay/nice-modal-react'
+import {
+  ModelProvider,
+  ModelSettings,
+  Session,
+  createMessage,
+  isChatSession,
+  isPictureSession,
+} from '@/../shared/types'
+import { Accordion, AccordionDetails, AccordionSummary } from '@/components/Accordion'
+import AIProviderSelect from '@/components/AIProviderSelect'
 import CreatableSelect from '@/components/CreatableSelect'
 import EditableAvatar from '@/components/EditableAvatar'
 import { ImageInStorage, handleImageInputAndSave } from '@/components/Image'
 import ImageCountSlider from '@/components/ImageCountSlider'
 import ImageStyleSelect from '@/components/ImageStyleSelect'
+import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
+import ChatboxAIModelSelect from '@/components/model-select/ChatboxAIModelSelect'
+import ClaudeModelSelect from '@/components/model-select/ClaudeModelSelect'
 import DeepSeekModelSelect from '@/components/model-select/DeepSeekModelSelect'
 import GeminiModelSelect from '@/components/model-select/GeminiModelSelect'
 import GropModelSelect from '@/components/model-select/GroqModelSelect'
 import LMStudioModelSelect from '@/components/model-select/LMStudioModelSelect'
 import { OllamaModelSelect } from '@/components/model-select/OllamaModelSelect'
+import OpenAIModelSelect from '@/components/model-select/OpenAIModelSelect'
 import { PerplexityModelSelect } from '@/components/model-select/PerplexityModelSelect'
 import { SiliconflowModelSelect } from '@/components/model-select/SiliconflowModelSelect'
 import { XAIModelSelect } from '@/components/model-select/XAIModelSelect'
+import TemperatureSlider from '@/components/TemperatureSlider'
+import TopPSlider from '@/components/TopPSlider'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import { trackingEvent } from '@/packages/event'
+import { OllamaHostInput } from '@/pages/SettingDialog/OllamaSetting'
+import { StorageKeyGenerator } from '@/storage/StoreStorage'
+import * as atoms from '@/stores/atoms'
+import { getSession, saveSession } from '@/stores/session-store'
+import * as sessionActions from '@/stores/sessionActions'
+import { getMessageText } from '@/utils/message'
+import NiceModal, { muiDialogV5, useModal } from '@ebay/nice-modal-react'
 import ImageIcon from '@mui/icons-material/Image'
 import SmartToyIcon from '@mui/icons-material/SmartToy'
 import {
@@ -31,26 +53,6 @@ import {
 import { useAtom, useAtomValue } from 'jotai'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { v4 as uuidv4 } from 'uuid'
-import {
-  ModelProvider,
-  ModelSettings,
-  Session,
-  createMessage,
-  isChatSession,
-  isPictureSession,
-} from '@/../shared/types'
-import { Accordion, AccordionDetails, AccordionSummary } from '@/components/Accordion'
-import AIProviderSelect from '@/components/AIProviderSelect'
-import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
-import ChatboxAIModelSelect from '@/components/model-select/ChatboxAIModelSelect'
-import ClaudeModelSelect from '@/components/model-select/ClaudeModelSelect'
-import OpenAIModelSelect from '@/components/model-select/OpenAIModelSelect'
-import TemperatureSlider from '@/components/TemperatureSlider'
-import TopPSlider from '@/components/TopPSlider'
-import * as atoms from '@/stores/atoms'
-import * as sessionActions from '@/stores/sessionActions'
-import { OllamaHostInput } from '@/pages/SettingDialog/OllamaSetting'
 
 const SessionSettings = NiceModal.create(({ chatConfigDialogSessionId }: { chatConfigDialogSessionId: string }) => {
   const modal = useModal()
@@ -59,7 +61,7 @@ const SessionSettings = NiceModal.create(({ chatConfigDialogSessionId }: { chatC
   const globalSettings = useAtomValue(atoms.settingsAtom)
   const theme = useTheme()
 
-  const chatConfigDialogSession = sessionActions.getSession(chatConfigDialogSessionId || '')
+  const chatConfigDialogSession = getSession(chatConfigDialogSessionId || '')
   const [editingData, setEditingData] = React.useState<Session | null>(chatConfigDialogSession || null)
   useEffect(() => {
     if (!chatConfigDialogSession) {
@@ -78,7 +80,7 @@ const SessionSettings = NiceModal.create(({ chatConfigDialogSessionId }: { chatC
       setSystemPrompt('')
     } else {
       const systemMessage = chatConfigDialogSession.messages.find((m) => m.role === 'system')
-      setSystemPrompt(systemMessage?.content || '')
+      setSystemPrompt(systemMessage ? getMessageText(systemMessage) : '')
     }
   }, [chatConfigDialogSessionId])
 
@@ -100,8 +102,11 @@ const SessionSettings = NiceModal.create(({ chatConfigDialogSessionId }: { chatC
   }, [chatConfigDialogSessionId])
 
   const onCancel = () => {
-    // setChatConfigDialogSessionId(null)
-    setEditingData(null)
+    if (chatConfigDialogSession) {
+      setEditingData({
+        ...chatConfigDialogSession,
+      })
+    }
     modal.resolve()
     modal.hide()
   }
@@ -118,12 +123,12 @@ const SessionSettings = NiceModal.create(({ chatConfigDialogSessionId }: { chatC
     } else {
       const systemMessage = editingData.messages.find((m) => m.role === 'system')
       if (systemMessage) {
-        systemMessage.content = systemPrompt.trim()
+        systemMessage.contentParts = [{ type: 'text', text: systemPrompt.trim() }]
       } else {
         editingData.messages.unshift(createMessage('system', systemPrompt.trim()))
       }
     }
-    sessionActions.modify(editingData)
+    saveSession(editingData)
     // setChatConfigDialogSessionId(null)
     modal.resolve()
     modal.hide()
@@ -147,7 +152,7 @@ const SessionSettings = NiceModal.create(({ chatConfigDialogSessionId }: { chatC
         <DialogContentText></DialogContentText>
         <EditableAvatar
           onChange={(event) => {
-            const key = `picture:assistant-avatar-${chatConfigDialogSession?.id}:${uuidv4()}`
+            const key = StorageKeyGenerator.picture(`assistant-avatar:${chatConfigDialogSession?.id}`)
             handleImageInputAndSave(event, key, () => setEditingData({ ...editingData, assistantAvatarKey: key }))
           }}
           onRemove={() => {

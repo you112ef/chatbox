@@ -1,5 +1,6 @@
-import { Message, MessageToolCalls, MessageWebBrowsing } from 'src/shared/types'
+import { Message, MessageContentParts, MessageToolCalls, MessageWebBrowsing } from 'src/shared/types'
 import { AIProviderNoImplementedPaintError } from './errors'
+import { StreamTextResult } from 'src/shared/types'
 
 export interface ModelHelpers {
   isModelSupportVision(model: string): boolean
@@ -9,7 +10,8 @@ export interface ModelHelpers {
 export interface ModelInterface {
   name: string
   isSupportToolUse(): boolean
-  chat: (messages: Message[], options: CallChatCompletionOptions) => Promise<string>
+  isSupportSystemMessage(): boolean
+  chat: (messages: Message[], options: CallChatCompletionOptions) => Promise<StreamTextResult>
   paint: (prompt: string, num: number, callback?: (picBase64: string) => any, signal?: AbortSignal) => Promise<string[]>
 }
 
@@ -24,13 +26,16 @@ export default abstract class Base implements ModelInterface {
   public static helpers: ModelHelpers
 
   public abstract isSupportToolUse(): boolean
-  protected abstract callChatCompletion(messages: Message[], options: CallChatCompletionOptions): Promise<string>
+  public isSupportSystemMessage() {
+    return true
+  }
+  protected abstract callChatCompletion(messages: Message[], options: CallChatCompletionOptions): Promise<StreamTextResult>
 
   protected async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
     throw new AIProviderNoImplementedPaintError(this.name)
   }
 
-  public async chat(messages: Message[], options: CallChatCompletionOptions): Promise<string> {
+  public async chat(messages: Message[], options: CallChatCompletionOptions): Promise<StreamTextResult> {
     return this.callChatCompletion(messages, options)
   }
 
@@ -56,10 +61,12 @@ export default abstract class Base implements ModelInterface {
 }
 
 export interface ResultChange {
-  content?: string
   webBrowsing?: MessageWebBrowsing
   reasoningContent?: string
   toolCalls?: MessageToolCalls
+  contentParts?: MessageContentParts
+  tokenCount?: number // 当前消息的 token 数量
+  tokensUsed?: number // 生成当前消息的 token 使用量
 }
 
 export type onResultChangeWithCancel = (data: ResultChange & { cancel?: () => void }) => void

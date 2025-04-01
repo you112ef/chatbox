@@ -20,7 +20,7 @@ import SmartToyIcon from '@mui/icons-material/SmartToy'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import { useCallback, useState } from 'react'
-
+import { getMessageText } from '@/utils/message'
 const MessageEdit = NiceModal.create((props: { sessionId: string; msg: Message }) => {
   const modal = useModal()
   const { t } = useTranslation()
@@ -65,7 +65,7 @@ const MessageEdit = NiceModal.create((props: { sessionId: string; msg: Message }
       return
     }
     setMsg({
-      content: e.target.value,
+      contentParts: [{ type: 'text', text: e.target.value }], // FIXME: 这里需要考虑其他parts被覆盖的情况
     })
   }
   const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -127,7 +127,7 @@ const MessageEdit = NiceModal.create((props: { sessionId: string; msg: Message }
           minRows={5}
           maxRows={15}
           placeholder="prompt"
-          value={msg.content}
+          value={getMessageText(msg)}
           onChange={onContentInput}
           id={msg.id + 'input'}
           onKeyDown={onKeyDown}

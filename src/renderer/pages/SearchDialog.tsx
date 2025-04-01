@@ -12,7 +12,7 @@ import * as atoms from '@/stores/atoms'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import Message from '@/components/Message'
 import Mark from '@/components/Mark'
-
+import { getMessageText } from '@/utils/message'
 interface Props {}
 
 export default function SearchDialog(props: Props) {
@@ -55,7 +55,7 @@ export default function SearchDialog(props: Props) {
       const matchedMessages: MessageType[] = []
       for (let i = session.messages.length - 1; i >= 0; i--) {
         const message = session.messages[i]
-        if (regexp.test(message.content)) {
+        if (regexp.test(getMessageText(message))) {
           matchedMessages.push(message)
         }
       }
@@ -65,7 +65,7 @@ export default function SearchDialog(props: Props) {
           const thread = session.threads[i]
           for (let j = thread.messages.length - 1; j >= 0; j--) {
             const message = thread.messages[j]
-            if (regexp.test(message.content)) {
+            if (regexp.test(getMessageText(message))) {
               matchedMessages.push(message)
             }
           }

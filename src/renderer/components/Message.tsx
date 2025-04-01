@@ -64,7 +64,8 @@ import NiceModal from '@ebay/nice-modal-react'
 import { useNavigate } from '@tanstack/react-router'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import Loading from './icons/Loading'
-
+import { getMessageText } from '@/utils/message'
+import { isEmpty } from 'lodash'
 export interface Props {
   id?: string
   sessionId: string
@@ -79,10 +80,7 @@ export interface Props {
 
 function _Message(props: Props) {
   const { msg, className, collapseThreshold, hiddenButtonGroup, small, preferCollapsedCodeBlock } = props
-  // 防止为 undefined 或 null，在部分情况下可能引入 null 脏数据，如果这里不处理将导致白屏
-  if (!msg.content && msg.content !== '') {
-    msg.content = ''
-  }
+
   const navigate = useNavigate()
   const { t } = useTranslation()
   const theme = useTheme()
@@ -107,12 +105,15 @@ function _Message(props: Props) {
   const autoCollapseCodeBlock = useAtomValue(autoCollapseCodeBlockAtom)
 
   const [previewArtifact, setPreviewArtifact] = useState(autoPreviewArtifacts)
+  const contentLength = useMemo(() => {
+    return getMessageText(msg).length
+  }, [msg.contentParts])
 
   const needCollapse =
     collapseThreshold &&
     props.sessionType !== 'picture' && // 绘图会话不折叠
-    JSON.stringify(msg.content).length > collapseThreshold &&
-    JSON.stringify(msg.content).length - collapseThreshold > 50 // 只有折叠有明显效果才折叠，为了更好的用户体验
+    contentLength > collapseThreshold &&
+    contentLength - collapseThreshold > 50 // 只有折叠有明显效果才折叠，为了更好的用户体验
   const [isCollapsed, setIsCollapsed] = useState(needCollapse)
   const [isCollapsedReasoning, setIsCollapsedReasoning] = useState(false) // 推理内容是否折叠
   const ref = useRef<HTMLDivElement>(null)
@@ -130,7 +131,7 @@ function _Message(props: Props) {
   }
 
   const quoteMsg = () => {
-    let input = msg.content
+    let input = getMessageText(msg)
       .split('\n')
       .map((line: any) => `> ${line}`)
       .join('\n')
@@ -154,7 +155,7 @@ function _Message(props: Props) {
   }
 
   const onCopyMsg = () => {
-    copyToClipboard(msg.content)
+    copyToClipboard(getMessageText(msg))
     toastActions.add(t('copied to clipboard'))
     setAnchorEl(null)
   }
@@ -170,7 +171,7 @@ function _Message(props: Props) {
 
   const onReport = () => {
     setAnchorEl(null)
-    NiceModal.show('report-content', { contentId: msg.content || msg.id })
+    NiceModal.show('report-content', { contentId: getMessageText(msg) || msg.id })
   }
 
   const setMsg = (updated: Message) => {
@@ -189,7 +190,7 @@ function _Message(props: Props) {
   if (props.sessionType === 'chat' || !props.sessionType) {
     if (showWordCount && !msg.generating) {
       // 兼容旧版本没有提前计算的消息
-      tips.push(`word count: ${msg.wordCount !== undefined ? msg.wordCount : countWord(msg.content)}`)
+      tips.push(`word count: ${msg.wordCount !== undefined ? msg.wordCount : countWord(getMessageText(msg))}`)
     }
     if (showTokenCount && !msg.generating) {
       // 兼容旧版本没有提前计算的消息
@@ -268,8 +269,8 @@ function _Message(props: Props) {
     if (msg.role !== 'assistant') {
       return false
     }
-    return isContainRenderableCode(msg.content)
-  }, [msg.content, msg.role])
+    return isContainRenderableCode(getMessageText(msg))
+  }, [msg.contentParts, msg.role])
 
   // 消息生成中自动跟踪滚动
   useEffect(() => {
@@ -301,12 +302,9 @@ function _Message(props: Props) {
         scrollActions.tickAutoScroll(autoScrollId)
       }
     }
-  }, [msg.content, msg.reasoningContent, needArtifact])
+  }, [msg.contentParts, msg.reasoningContent, needArtifact])
 
-  let content = msg.content // 消息正文
-  if (typeof msg.content !== 'string') {
-    content = JSON.stringify(msg.content)
-  }
+  let contentParts = msg.contentParts
 
   const CollapseButton = (
     <span
@@ -319,6 +317,23 @@ function _Message(props: Props) {
 
   const onClickAssistantAvatar = () => {
     NiceModal.show('session-settings', { chatConfigDialogSessionId: props.sessionId })
+  }
+
+  function showPicture(storageKey: string) {
+    setPictureShow({
+      picture: {
+        storageKey,
+      },
+      extraButtons:
+        msg.role === 'assistant' && platform.type === 'mobile'
+          ? [
+              {
+                onClick: onReport,
+                icon: <ReportIcon />,
+              },
+            ]
+          : undefined,
+    })
   }
 
   return (
@@ -493,6 +508,7 @@ function _Message(props: Props) {
                           marginLeft: 'auto',
                         }}
                         onClick={onCopyReasoningContent}
+                        href="#"
                       >
                         <ContentCopyIcon
                           sx={{
@@ -518,59 +534,83 @@ function _Message(props: Props) {
                 {
                   // 这里的空行仅仅是为了在只发送文件时消息气泡的美观
                   // 正常情况下，应该考虑优化 msg-content 的样式。现在这里是一个临时的偷懒方式。
-                  msg.content.trim() === '' && <p></p>
+                  getMessageText(msg).trim() === '' && <p></p>
                 }
-                {enableMarkdownRendering && !isCollapsed ? (
-                  <Markdown
-                    enableLaTeXRendering={enableLaTeXRendering}
-                    enableMermaidRendering={enableMermaidRendering}
-                    generating={msg.generating}
-                    preferCollapsedCodeBlock={
-                      autoCollapseCodeBlock && (preferCollapsedCodeBlock || msg.role !== 'assistant' || previewArtifact)
-                    }
-                  >
-                    {content}
-                  </Markdown>
-                ) : (
-                  <div style={{ whiteSpace: 'pre-line' }}>
-                    {content}
-                    {needCollapse && isCollapsed && CollapseButton}
+                {contentParts && contentParts.length > 0 && (
+                  <div>
+                    {contentParts.map((item, index) =>
+                      item.type === 'text' ? (
+                        <div key={index}>
+                          {enableMarkdownRendering && !isCollapsed ? (
+                            <Markdown
+                              enableLaTeXRendering={enableLaTeXRendering}
+                              enableMermaidRendering={enableMermaidRendering}
+                              generating={msg.generating}
+                              preferCollapsedCodeBlock={
+                                autoCollapseCodeBlock &&
+                                (preferCollapsedCodeBlock || msg.role !== 'assistant' || previewArtifact)
+                              }
+                            >
+                              {item.text || ''}
+                            </Markdown>
+                          ) : (
+                            <div style={{ whiteSpace: 'pre-line' }}>
+                              {needCollapse && isCollapsed ? item.text.slice(0, collapseThreshold) + '...' : item.text}
+                              {needCollapse && isCollapsed && CollapseButton}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        props.sessionType !== 'picture' && (
+                          <div key={index}>
+                            <div
+                              className="w-[100px] min-w-[100px] h-[100px] min-h-[100px]
+                                                    md:w-[200px] md:min-w-[200px] md:h-[200px] md:min-h-[200px]
+                                                    inline-flex items-center justify-center                                                                                                                                                  
+                                                    hover:cursor-pointer hover:border-slate-800/20 transition-all duration-200"
+                              onClick={() => showPicture(item.storageKey)}
+                            >
+                              {item.storageKey && <ImageInStorage storageKey={item.storageKey} className="w-full" />}
+                            </div>
+                          </div>
+                        )
+                      )
+                    )}
                   </div>
                 )}
               </Box>
-              {msg.pictures && (
+              {props.sessionType === 'picture' && (
                 <div className="flex flex-row items-start justify-start overflow-x-auto overflow-y-hidden">
-                  {msg.pictures.map((pic, index) => (
-                    <div
-                      key={index}
-                      className="w-[100px] min-w-[100px] h-[100px] min-h-[100px]
+                  {msg.contentParts
+                    .filter((p) => p.type === 'image')
+                    .map((pic, index) => (
+                      <div
+                        key={index}
+                        className="w-[100px] min-w-[100px] h-[100px] min-h-[100px]
                                                     md:w-[200px] md:min-w-[200px] md:h-[200px] md:min-h-[200px]
                                                     p-1.5 mr-2 mb-2 inline-flex items-center justify-center
                                                     bg-white dark:bg-slate-800
                                                     border-solid border-slate-400/20 rounded-md
                                                     hover:cursor-pointer hover:border-slate-800/20 transition-all duration-200"
-                      onClick={() => {
-                        setPictureShow({
-                          picture: pic,
-                          extraButtons:
-                            msg.role === 'assistant' && platform.type === 'mobile'
-                              ? [
-                                  {
-                                    onClick: onReport,
-                                    icon: <ReportIcon />,
-                                  },
-                                ]
-                              : undefined,
-                        })
-                      }}
-                    >
-                      {pic.loading && !pic.storageKey && !pic.url && (
-                        <CircularProgress className="block max-w-full max-h-full" color="secondary" />
-                      )}
-                      {pic.storageKey && <ImageInStorage className="w-full" storageKey={pic.storageKey} />}
-                      {pic.url && <Img src={pic.url} className="w-full" />}
-                    </div>
-                  ))}
+                        onClick={() => {
+                          setPictureShow({
+                            picture: pic,
+                            extraButtons:
+                              msg.role === 'assistant' && platform.type === 'mobile'
+                                ? [
+                                    {
+                                      onClick: onReport,
+                                      icon: <ReportIcon />,
+                                    },
+                                  ]
+                                : undefined,
+                          })
+                        }}
+                      >
+                        {pic.storageKey && <ImageInStorage className="w-full" storageKey={pic.storageKey} />}
+                        {'url' in pic && <Img src={pic.url as string} className="w-full" />}
+                      </div>
+                    ))}
                 </div>
               )}
               {(msg.files || msg.links) && (
@@ -589,7 +629,7 @@ function _Message(props: Props) {
                 <MessageArtifact
                   sessionId={props.sessionId}
                   messageId={msg.id}
-                  messageContent={msg.content}
+                  messageContent={getMessageText(msg)}
                   preview={previewArtifact}
                   setPreview={setPreviewArtifact}
                 />
@@ -673,6 +713,10 @@ function _Message(props: Props) {
                               aria-label="edit"
                               color={props.sessionType === 'picture' ? 'secondary' : 'primary'}
                               onClick={onEditClick}
+                              disabled={
+                                // 图文消息暂时不让编辑
+                                !isEmpty(msg.contentParts) && !msg.contentParts!.every((c) => c.type === 'text')
+                              }
                             >
                               <EditIcon fontSize="small" />
                             </IconButton>

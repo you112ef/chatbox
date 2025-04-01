@@ -1,45 +1,42 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import React, { useState, useEffect } from 'react'
-import {
-  Button,
-  Avatar,
-  useTheme,
-  IconButton,
-  Tabs,
-  Tab,
-  Divider,
-  Dialog,
-  DialogContent,
-  DialogActions,
-  DialogTitle,
-  TextField,
-  FormGroup,
-  FormControlLabel,
-  Switch,
-  MenuItem,
-  Typography,
-  Box,
-  ButtonGroup,
-} from '@mui/material'
-import { CopilotDetail, Message } from '../../shared/types'
-import { useTranslation } from 'react-i18next'
-import EditIcon from '@mui/icons-material/Edit'
-import StyledMenu from '@/components/StyledMenu'
-import StarIcon from '@mui/icons-material/Star'
-import StarOutlineIcon from '@mui/icons-material/StarOutline'
-import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined'
-import { useMyCopilots, useRemoteCopilots } from '@/hooks/useCopilots'
-import * as remote from '@/packages/remote'
-import { v4 as uuidv4 } from 'uuid'
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
-import * as atoms from '@/stores/atoms'
-import * as sessionActions from '@/stores/sessionActions'
-import { useAtom, useAtomValue } from 'jotai'
-import { useIsSmallScreen } from '@/hooks/useScreenChange'
-import platform from '@/platform'
-import { trackingEvent } from '@/packages/event'
 import { ConfirmDeleteMenuItem } from '@/components/ConfirmDeleteButton'
 import Page from '@/components/Page'
+import StyledMenu from '@/components/StyledMenu'
+import { useMyCopilots, useRemoteCopilots } from '@/hooks/useCopilots'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import { trackingEvent } from '@/packages/event'
+import * as remote from '@/packages/remote'
+import platform from '@/platform'
+import * as atoms from '@/stores/atoms'
+import * as sessionActions from '@/stores/sessionActions'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import EditIcon from '@mui/icons-material/Edit'
+import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined'
+import StarIcon from '@mui/icons-material/Star'
+import StarOutlineIcon from '@mui/icons-material/StarOutline'
+import {
+  Avatar,
+  Box,
+  Button,
+  ButtonGroup,
+  Divider,
+  FormControlLabel,
+  FormGroup,
+  IconButton,
+  MenuItem,
+  Switch,
+  Tab,
+  Tabs,
+  TextField,
+  Typography,
+  useTheme,
+} from '@mui/material'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useAtom, useAtomValue } from 'jotai'
+import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { v4 as uuidv4 } from 'uuid'
+import { CopilotDetail, Message } from '../../shared/types'
+import { createSession } from '@/stores/session-store'
 
 export const Route = createFileRoute('/copilots')({
   component: Copilots,
@@ -57,23 +54,22 @@ function Copilots() {
 
   const createChatSessionWithCopilot = (copilot: CopilotDetail) => {
     const msgs: Message[] = []
-    msgs.push({ id: uuidv4(), role: 'system', content: copilot.prompt })
+    msgs.push({ id: uuidv4(), role: 'system', contentParts: [{ type: 'text', text: copilot.prompt }] })
     if (copilot.demoQuestion) {
       msgs.push({
         id: uuidv4(),
         role: 'user',
-        content: copilot.demoQuestion,
+        contentParts: [{ type: 'text', text: copilot.demoQuestion }],
       })
     }
     if (copilot.demoAnswer) {
       msgs.push({
         id: uuidv4(),
         role: 'assistant',
-        content: copilot.demoAnswer,
+        contentParts: [{ type: 'text', text: copilot.demoAnswer }],
       })
     }
-    const newSession = sessionActions.create({
-      id: uuidv4(),
+    const newSession = createSession({
       name: copilot.name,
       type: 'chat',
       picUrl: copilot.picUrl,

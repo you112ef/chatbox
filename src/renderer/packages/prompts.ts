@@ -1,3 +1,4 @@
+import { getMessageText } from '@/utils/message'
 import { Message } from '../../shared/types'
 
 export function nameConversation(msgs: Message[], language: string): Message[] {
@@ -6,7 +7,10 @@ export function nameConversation(msgs: Message[], language: string): Message[] {
     {
       id: '1',
       role: 'user',
-      content: `Based on the chat history, give this conversation a name.
+      contentParts: [
+        {
+          type: 'text',
+          text: `Based on the chat history, give this conversation a name.
 Keep it short - 10 characters max, no quotes.
 Use ${language}.
 Just provide the name, nothing else.
@@ -15,7 +19,7 @@ Here's the conversation:
 
 \`\`\`
 ${
-  format(msgs.slice(0, 5).map((msg) => msg.content.slice(0, 100))) // 限制长度以节省 tokens
+  format(msgs.slice(0, 5).map((msg) => getMessageText(msg).slice(0, 100))) // 限制长度以节省 tokens
 }
 \`\`\`
 
@@ -24,6 +28,8 @@ Use ${language}.
 Only give the name, nothing else.
 
 The name is:`,
+        },
+      ],
     },
   ]
 }

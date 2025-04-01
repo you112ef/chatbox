@@ -19,6 +19,7 @@ import { ImageInStorage } from '@/components/Image'
 import { ConfirmDeleteMenuItem } from './ConfirmDeleteButton'
 import { useNavigate } from '@tanstack/react-router'
 import NiceModal from '@ebay/nice-modal-react'
+import { saveSession, removeSession } from '@/stores/session-store'
 
 export interface Props {
   session: Session
@@ -134,8 +135,8 @@ function _SessionItem(props: Props) {
         <MenuItem
           key={session.id + 'star'}
           onClick={() => {
-            sessionActions.modify({
-              ...session,
+            saveSession({
+              id: session.id,
               starred: !session.starred,
             })
             handleMenuClose()
@@ -160,7 +161,7 @@ function _SessionItem(props: Props) {
           onDelete={() => {
             setAnchorEl(null)
             handleMenuClose()
-            sessionActions.remove(session)
+            removeSession(session.id)
           }}
         />
       </StyledMenu>

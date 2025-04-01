@@ -62,34 +62,3 @@ export function normalizeOpenAIApiHostAndPath(options: { apiHost?: string; apiPa
   }
   return { apiHost, apiPath }
 }
-
-// 避免同一个角色的消息连续出现，如果连续出现则合并内容
-export function fixMessageRoleSequence(messages: Message[]): Message[] {
-  let result: Message[] = []
-  if (messages.length <= 1) {
-    result = messages
-  } else {
-    // 如果同一个角色的消息连续出现，则合并内容
-    let currentMessage = { ...messages[0] } // 复制，避免后续修改导致的引用问题
-    for (let i = 1; i < messages.length; i++) {
-      const message = messages[i]
-      if (message.role === currentMessage.role) {
-        currentMessage.content += '\n\n' + message.content
-      } else {
-        result.push(currentMessage)
-        currentMessage = { ...message }
-      }
-    }
-    result.push(currentMessage)
-  }
-  // 如果顺序中的第一条 assistant 消息前面不是 user 消息，则插入一个 user 消息
-  const firstAssistantIndex = result.findIndex((m) => m.role === 'assistant')
-  if (firstAssistantIndex !== -1 && result[firstAssistantIndex - 1]?.role !== 'user') {
-    result = [
-      ...result.slice(0, firstAssistantIndex),
-      { role: 'user', content: 'OK.', id: 'user_before_assistant_id' },
-      ...result.slice(firstAssistantIndex),
-    ]
-  }
-  return result
-}

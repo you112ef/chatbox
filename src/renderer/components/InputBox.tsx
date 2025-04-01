@@ -24,6 +24,8 @@ import platform from '@/platform'
 import { useDropzone } from 'react-dropzone'
 import * as picUtils from '@/packages/pic_utils'
 import NiceModal from '@ebay/nice-modal-react'
+import { getMessageText } from '@/utils/message'
+import { StorageKeyGenerator } from '@/storage/StoreStorage'
 
 export default function InputBox(props: { disableSubmit?: boolean }) {
   const theme = useTheme()
@@ -76,7 +78,7 @@ export default function InputBox(props: { disableSubmit?: boolean }) {
     }
     const newMessage = createMessage('user', messageInput)
     if (pictureKeys.length > 0) {
-      newMessage.pictures = pictureKeys.map((k) => ({ storageKey: k }))
+      newMessage.contentParts.push(...pictureKeys.map((k) => ({ type: 'image' as const, storageKey: k })))
     }
     sessionActions.submitNewUserMessage({
       currentSessionId: currentSessionId,
@@ -173,8 +175,8 @@ export default function InputBox(props: { disableSubmit?: boolean }) {
       if (!previousMessageQuickInputMark) {
         if (event.key === 'ArrowUp') {
           const msg = historyMessages[historyMessages.length - 1]
-          setMessageInput(msg.content)
-          setPictureKeys(msg.pictures ? _.compact(msg.pictures.map((p) => p.storageKey)) : [])
+          setMessageInput(getMessageText(msg, false))
+          setPictureKeys(msg.contentParts.filter((p) => p.type === 'image').map((p) => p.storageKey))
           setPreviousMessageQuickInputMark(msg.id)
           setTimeout(() => inputRef.current?.select(), 10)
           return
@@ -188,8 +190,8 @@ export default function InputBox(props: { disableSubmit?: boolean }) {
         }
         const msg = event.key === 'ArrowUp' ? historyMessages[ix - 1] : historyMessages[ix + 1]
         if (msg) {
-          setMessageInput(msg.content)
-          setPictureKeys(msg.pictures ? _.compact(msg.pictures.map((p) => p.storageKey)) : [])
+          setMessageInput(getMessageText(msg, false))
+          setPictureKeys(msg.contentParts.filter((p) => p.type === 'image').map((p) => p.storageKey))
           setPreviousMessageQuickInputMark(msg.id)
           setTimeout(() => inputRef.current?.select(), 10)
         }
@@ -231,7 +233,7 @@ export default function InputBox(props: { disableSubmit?: boolean }) {
       // 文件和图片插入方法复用，会导致 svg、gif 这类不支持的图片也被插入，但暂时没看到有什么问题
       if (file.type.startsWith('image/')) {
         const base64 = await picUtils.getImageBase64AndResize(file)
-        const key = `picture:input-box:${uuidv4()}`
+        const key = StorageKeyGenerator.picture('input-box')
         await storage.setBlob(key, base64)
         setPictureKeys((keys) => [...keys, key].slice(-8)) // 最多插入 8 个图片
       } else {

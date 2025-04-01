@@ -3,6 +3,7 @@ import { SessionThread } from '../../shared/types'
 import ReactDOMServer from 'react-dom/server'
 import storage from '@/storage'
 import * as base64 from '@/packages/base64'
+import { getMessageText } from '@/utils/message'
 
 export function formatChatAsMarkdown(sessionName: string, threads: SessionThread[]) {
   let content = `# ${sessionName}\n\n`
@@ -11,7 +12,7 @@ export function formatChatAsMarkdown(sessionName: string, threads: SessionThread
     content += `## ${i + 1}. ${thread.name}\n\n`
     for (const msg of thread.messages) {
       content += `**${msg.role}**: \n\n`
-      content += '```\n' + msg.content.replaceAll(/```\w*/g, '') + '\n```\n\n'
+      content += '```\n' + getMessageText(msg).replaceAll(/```\w*/g, '') + '\n```\n\n'
     }
     content += '\n\n'
   }
@@ -32,7 +33,7 @@ export function formatChatAsTxt(sessionName: string, threads: SessionThread[]) {
     content += `\n\n------------------------------ [${i + 1}. ${thread.name}] ------------------------------\n\n`
     for (const msg of thread.messages) {
       content += `▶ ${msg.role.toUpperCase()}: \n\n`
-      content += msg.content + '\n\n\n'
+      content += getMessageText(msg) + '\n\n\n'
     }
     content += '\n\n\n\n'
   }
@@ -53,22 +54,25 @@ export async function formatChatAsHtml(sessionName: string, threads: SessionThre
       } else {
         content += `<p class="text-blue-500 text-lg"><b>${msg.role.toUpperCase()}: </b></p>\n`
       }
-      content += ReactDOMServer.renderToStaticMarkup(<Markdown hiddenCodeCopyButton>{msg.content}</Markdown>)
-      for (const pic of msg.pictures || []) {
-        let url = pic.url
-        if (pic.storageKey) {
-          const b64 = await storage.getBlob(pic.storageKey)
-          if (b64) {
-            let { type, data } = base64.parseImage(b64)
-            if (type === '') {
-              type = 'image/png'
-              data = b64
+      for (const p of msg.contentParts) {
+        if (p.type === 'text') {
+          content += ReactDOMServer.renderToStaticMarkup(<Markdown hiddenCodeCopyButton>{p.text}</Markdown>)
+        } else if (p.type === 'image') {
+          if (p.storageKey) {
+            let url = ''
+            const b64 = await storage.getBlob(p.storageKey)
+            if (b64) {
+              let { type, data } = base64.parseImage(b64)
+              if (type === '') {
+                type = 'image/png'
+                data = b64
+              }
+              url = `data:${type};base64,${data}`
+            } else if ('url' in p) {
+              url = p.url as string
             }
-            url = `data:${type};base64,${data}`
+            content += `<img src="${url}" class="my-2" />\n`
           }
-        }
-        if (url) {
-          content += `<img src="${url}" class="my-2" />\n`
         }
       }
       content += '</div>\n'

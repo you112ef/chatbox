@@ -1,12 +1,4 @@
-import { MutableRefObject } from 'react'
-import SessionItem from './SessionItem'
-import * as atoms from '../stores/atoms'
-import { useAtomValue, useSetAtom } from 'jotai'
 import type { DragEndEvent } from '@dnd-kit/core'
-import { MenuList, IconButton, ListSubheader } from '@mui/material'
-import { useTranslation } from 'react-i18next'
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
 import {
   DndContext,
   KeyboardSensor,
@@ -16,10 +8,23 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
-import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import NiceModal from '@ebay/nice-modal-react'
+import { IconButton, ListSubheader, MenuList } from '@mui/material'
 import { useRouterState } from '@tanstack/react-router'
+import { useAtomValue } from 'jotai'
+import { MutableRefObject } from 'react'
+import { useTranslation } from 'react-i18next'
+import * as atoms from '../stores/atoms'
+import { reorderSessions } from '../stores/session-store'
+import SessionItem from './SessionItem'
 
 export interface Props {
   sessionListRef: MutableRefObject<HTMLDivElement | null>
@@ -27,7 +32,6 @@ export interface Props {
 
 export default function SessionList(props: Props) {
   const sortedSessions = useAtomValue(atoms.sortedSessionsAtom)
-  const setSessions = useSetAtom(atoms.sessionsAtom)
   const sensors = useSensors(
     useSensor(TouchSensor, {
       activationConstraint: {
@@ -53,8 +57,7 @@ export default function SessionList(props: Props) {
     if (activeId !== overId) {
       const oldIndex = sortedSessions.findIndex((s) => s.id === activeId)
       const newIndex = sortedSessions.findIndex((s) => s.id === overId)
-      const newReversed = arrayMove(sortedSessions, oldIndex, newIndex)
-      setSessions(atoms.sortSessions(newReversed))
+      reorderSessions(oldIndex, newIndex)
     }
   }
   const routerState = useRouterState()

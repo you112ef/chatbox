@@ -1,7 +1,7 @@
 import * as settingActions from '@/stores/settingActions'
 import { apiRequest } from '@/utils/request'
 import { handleSSE } from '@/utils/stream'
-import { Message } from 'src/shared/types'
+import { Message, StreamTextResult } from 'src/shared/types'
 import Base, { CallChatCompletionOptions, ModelHelpers } from './base'
 import { ApiError } from './errors'
 import {
@@ -50,7 +50,10 @@ export default class AzureOpenAI extends Base {
     return settingActions.getSettings().azureApiVersion
   }
 
-  protected async callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<string> {
+  protected async callChatCompletion(
+    rawMessages: Message[],
+    options: CallChatCompletionOptions
+  ): Promise<StreamTextResult> {
     if (this.options.injectDefaultMetadata) {
       rawMessages = injectModelSystemPrompt(this.options.azureDeploymentName, rawMessages)
     }
@@ -84,8 +87,8 @@ export default class AzureOpenAI extends Base {
         throw new ApiError(`Error from Azure OpenAI: ${JSON.stringify(json)}`)
       }
       const content: string = json.choices[0].message.content || ''
-      options.onResultChange?.({ content })
-      return content
+      options.onResultChange?.({ contentParts: [{ type: 'text', text: content }] })
+      return { contentParts: [{ type: 'text', text: content }] }
     } else {
       let result = ''
       await handleSSE(response, (message) => {
@@ -99,10 +102,10 @@ export default class AzureOpenAI extends Base {
         const text = data.choices[0]?.delta?.content
         if (text !== undefined) {
           result += text
-          options.onResultChange?.({ content: result })
+          options.onResultChange?.({ contentParts: [{ type: 'text', text: result }] })
         }
       })
-      return result
+      return { contentParts: [{ type: 'text', text: result }] }
     }
   }
 

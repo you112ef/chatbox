@@ -1,21 +1,19 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Drawer, Typography, useTheme } from '@mui/material'
-import * as atoms from '../stores/atoms'
-import { useAtomValue } from 'jotai'
-import { Sparkles, ChevronsUpDown } from 'lucide-react'
-import MiniButton from './MiniButton'
-import _ from 'lodash'
-import MenuItem from '@mui/material/MenuItem'
-import StyledMenu from './StyledMenu'
-import * as sessionActions from '@/stores/sessionActions'
-import { getModelSettingUtil } from '@/packages/model-setting-utils'
-import { useIsSmallScreen } from '@/hooks/useScreenChange'
-import Divider from '@mui/material/Divider'
 import useModelConfig from '@/hooks/useModelConfig'
-import { chatboxAIModelLabelHash } from './model-select/ChatboxAIModelSelect'
-import { ModelProvider } from '../../shared/types'
-import { ChevronDown, ChevronRight } from 'lucide-react'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import { getModelSettingUtil } from '@/packages/model-setting-utils'
+import { getSession, saveSession } from '@/stores/session-store'
+import { Box, Drawer, Typography, useTheme } from '@mui/material'
+import Divider from '@mui/material/Divider'
+import MenuItem from '@mui/material/MenuItem'
+import { useAtomValue } from 'jotai'
+import { ChevronDown, ChevronRight, ChevronsUpDown } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { ModelProvider } from '../../shared/types'
+import * as atoms from '../stores/atoms'
+import MiniButton from './MiniButton'
+import { chatboxAIModelLabelHash } from './model-select/ChatboxAIModelSelect'
+import StyledMenu from './StyledMenu'
 
 export function ChatModelSelector(props: {}) {
   const { t } = useTranslation()
@@ -45,14 +43,14 @@ export function ChatModelSelector(props: {}) {
     setAnchorEl(null)
   }
   const handleMenuItemSelect = (option: string) => {
-    const currentSession = sessionActions.getSession(currentSessionId)
+    const currentSession = getSession(currentSessionId)
     if (!currentSession) {
       return
     }
     // currentSession.settigns 需要更新对象指针，以触发 atom 变化
     currentSession.settings = modelSettingUtil.selectSessionModel(currentSession.settings, option)
 
-    sessionActions.modify({ ...currentSession })
+    saveSession({ ...currentSession })
     handleMenuClose()
   }
 

@@ -1,7 +1,8 @@
 import { apiRequest } from '@/utils/request'
-import { Message } from 'src/shared/types'
+import { Message, StreamTextResult } from 'src/shared/types'
 import Base, { CallChatCompletionOptions, ModelHelpers } from './base'
 import { ApiError } from './errors'
+import { getMessageText } from '@/utils/message'
 
 const helpers: ModelHelpers = {
   isModelSupportVision: (model: string) => {
@@ -28,7 +29,10 @@ export default class ChatGLM extends Base {
     return false
   }
 
-  protected async callChatCompletion(messages: Message[], options: CallChatCompletionOptions): Promise<string> {
+  protected async callChatCompletion(
+    messages: Message[],
+    options: CallChatCompletionOptions
+  ): Promise<StreamTextResult> {
     let prompt = ''
     const history: [string, string][] = []
     let userTmp = ''
@@ -36,8 +40,8 @@ export default class ChatGLM extends Base {
     for (const msg of messages) {
       switch (msg.role) {
         case 'system':
-          history.push([msg.content, '好的，我照做，一切都听你的'])
-          prompt = msg.content
+          history.push([getMessageText(msg), '好的，我照做，一切都听你的'])
+          prompt = getMessageText(msg)
           break
         case 'user':
           if (assistantTmp) {
@@ -46,17 +50,17 @@ export default class ChatGLM extends Base {
             assistantTmp = ''
           }
           if (userTmp) {
-            userTmp += '\n' + msg.content
+            userTmp += '\n' + getMessageText(msg)
           } else {
-            userTmp = msg.content
+            userTmp = getMessageText(msg)
           }
-          prompt = msg.content
+          prompt = getMessageText(msg)
           break
         case 'assistant':
           if (assistantTmp) {
-            assistantTmp += '\n' + msg.content
+            assistantTmp += '\n' + getMessageText(msg)
           } else {
-            assistantTmp = msg.content
+            assistantTmp = getMessageText(msg)
           }
           break
       }
@@ -81,7 +85,9 @@ export default class ChatGLM extends Base {
       throw new ApiError(JSON.stringify(json))
     }
     const str: string = typeof json.response === 'string' ? json.response : JSON.stringify(json.response)
-    options.onResultChange?.({ content: str })
-    return str
+    options.onResultChange?.({ contentParts: [{ type: 'text', text: str }] })
+    return {
+      contentParts: [{ type: 'text', text: str }],
+    }
   }
 }

@@ -10,16 +10,15 @@ import MessageList from '@/components/MessageList'
 import * as scrollActions from '@/stores/scrollActions'
 import Header from '@/components/Header'
 import ThreadHistoryDrawer from '@/components/ThreadHistoryDrawer'
-
+import { getSession } from '@/stores/session-store'
 export const Route = createFileRoute('/session/$sessionId')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
   const navigate = useNavigate()
-  const sessions = useAtomValue(atoms.sessionsAtom)
   const { sessionId: currentSessionId } = Route.useParams()
-  const currentSession = sessions.find((s) => s.id === currentSessionId)
+  const currentSession = useAtomValue(atoms.currentSessionAtom)
   const disableSubmit = useMemo(() => {
     if (currentSession?.messages.length) {
       if (currentSession.messages[currentSession.messages.length - 1].generating) {

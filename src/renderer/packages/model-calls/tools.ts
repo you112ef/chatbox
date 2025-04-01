@@ -1,11 +1,10 @@
 import * as promptFormat from '@/packages/prompts'
 import * as settingActions from '@/stores/settingActions'
-import { sequenceMessages } from '@/utils/message'
 import { last } from 'lodash'
-import { Message } from '../../../shared/types'
 import { ModelInterface } from '../models/base'
 import { webSearchExecutor } from '../web-search'
-
+import { sequenceMessages, getMessageText } from '@/utils/message'
+import { Message } from 'src/shared/types'
 export async function callTool(name: string, args: any, { signal }: { signal?: AbortSignal }) {
   if (name === 'web_search') {
     return webSearchExecutor(args, { abortSignal: signal })
@@ -15,12 +14,12 @@ export async function callTool(name: string, args: any, { signal }: { signal?: A
 export async function searchByPromptEngineering(model: ModelInterface, messages: Message[], signal?: AbortSignal) {
   const language = settingActions.getLanguage()
   const systemPrompt = promptFormat.contructSearchAction(language)
-  const queryResponse = await model.chat(
+  const result = await model.chat(
     sequenceMessages([
       {
         id: '',
         role: 'system',
-        content: systemPrompt,
+        contentParts: [{ type: 'text', text: systemPrompt }],
       },
       ...messages,
     ]),
@@ -28,7 +27,10 @@ export async function searchByPromptEngineering(model: ModelInterface, messages:
   )
   // extract json from response
   const regex = /{(?:[^{}]|{(?:[^{}]|{[^{}]*})*})*}/g
-  const match = queryResponse.match(regex)
+  if (result.contentParts[0].type !== 'text') {
+    return { query: '', searchResults: [] }
+  }
+  const match = result.contentParts[0].text.match(regex)
   if (match) {
     for (const jsonString of match) {
       const jsonObject = JSON.parse(jsonString) as {
@@ -61,14 +63,16 @@ Content: ${it.snippet}
   return sequenceMessages([
     {
       id: '',
-      role: 'system' as const,
-      content: systemPrompt,
+      role: 'system',
+      contentParts: [{ type: 'text', text: systemPrompt }],
     },
     ...messages.slice(0, -1), // 最新一条用户消息和搜索结果放在一起了
     {
       id: '',
-      role: 'user' as const,
-      content: `${formattedSearchResults}\nUser Message:\n${last(messages)!.content}`,
+      role: 'user',
+      contentParts: [
+        { type: 'text', text: `${formattedSearchResults}\nUser Message:\n${getMessageText(last(messages)!)}` },
+      ],
     },
   ])
 }

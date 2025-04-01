@@ -1,12 +1,12 @@
 import * as base64 from '@/packages/base64'
 import storage from '@/storage'
-import { sequenceMessages } from '@/utils/message'
 import { apiRequest } from '@/utils/request'
 import { handleSSE } from '@/utils/stream'
 import { get } from 'lodash'
-import { Message, ModelMeta } from 'src/shared/types'
+import { Message, ModelMeta, StreamTextResult } from 'src/shared/types'
 import Base, { CallChatCompletionOptions, ModelHelpers } from './base'
 import { ApiError } from './errors'
+import { sequenceMessages, getMessageText } from '@/utils/message'
 
 // 官方 SDK 明确声明用于 Node.js，在浏览器中会导致页面白屏。
 // import Anthropic from '@anthropic-ai/sdk'
@@ -97,7 +97,7 @@ export default class Claude extends Base {
     return helpers.isModelSupportToolUse(this.options.claudeModel)
   }
 
-  async callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<string> {
+  async callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<StreamTextResult> {
     // 经过测试，Bedrock Claude 3 的消息必须以 user 角色开始，并且 user 和 assistant 角色必须交替出现，否则都会出现回答异常
     rawMessages = sequenceMessages(rawMessages)
 
@@ -106,43 +106,50 @@ export default class Claude extends Base {
     for (const msg of rawMessages) {
       if (msg.role === 'system') {
         // 系统消息追加到 prompt 中
-        prompt += msg.content + '\n'
+        prompt += getMessageText(msg) + '\n'
       } else {
         // 用户消息追加到 messages 中
         const newMessage: ClaudeMessage = { role: msg.role === 'tool' ? 'user' : msg.role, content: [] }
-        // 构造图片
-        for (const [i, pic] of Object.entries(msg.pictures || [])) {
-          if (!pic.storageKey) {
-            continue
+        let imageIndex = 0
+        for (const p of msg.contentParts) {
+          if (p.type === 'image') {
+            if (!p.storageKey) {
+              continue
+            }
+            const picBase64 = await storage.getBlob(p.storageKey)
+            if (!picBase64) {
+              continue
+            }
+            const picData = base64.parseImage(picBase64)
+            if (!picData.type || !picData.data) {
+              continue
+            }
+            // 先图片后文字可提高 claude 的识别效果；使用 Image-No. 的 prompt 技巧区分图片
+            // https://docs.anthropic.com/claude/docs/vision#image-best-practices
+            // https://docs.anthropic.com/claude/docs/vision#3-example-multiple-images-with-a-system-prompt
+            newMessage.content.push({
+              type: 'text',
+              text: `Image ${imageIndex + 1}:`,
+            })
+            newMessage.content.push({
+              type: 'image',
+              source: {
+                type: 'base64',
+                media_type: picData.type,
+                data: picData.data,
+              },
+            })
+          } else if (p.type === 'text') {
+            newMessage.content.push({
+              type: 'text',
+              text: p.text,
+            })
           }
-          const picBase64 = await storage.getBlob(pic.storageKey)
-          if (!picBase64) {
-            continue
-          }
-          const picData = base64.parseImage(picBase64)
-          if (!picData.type || !picData.data) {
-            continue
-          }
-          // 先图片后文字可提高 claude 的识别效果；使用 Image-No. 的 prompt 技巧区分图片
-          // https://docs.anthropic.com/claude/docs/vision#image-best-practices
-          // https://docs.anthropic.com/claude/docs/vision#3-example-multiple-images-with-a-system-prompt
-          newMessage.content.push({
-            type: 'text',
-            text: `Image ${parseInt(i) + 1}:`,
-          })
-          newMessage.content.push({
-            type: 'image',
-            source: {
-              type: 'base64',
-              media_type: picData.type,
-              data: picData.data,
-            },
-          })
         }
+
         // 构造文本
-        if (msg.content) {
-          newMessage.content.push({ type: 'text', text: msg.content })
-        }
+        newMessage.content.push({ type: 'text', text: getMessageText(msg) })
+
         messages.push(newMessage)
       }
     }
@@ -174,10 +181,10 @@ export default class Claude extends Base {
       const word: string = get(data, 'delta.text', '')
       if (word) {
         result += word
-        options.onResultChange?.({ content: result })
+        options.onResultChange?.({ contentParts: [{ type: 'text', text: result }] })
       }
     })
-    return result
+    return { contentParts: [{ type: 'text', text: result }] }
   }
 
   getHeaders() {

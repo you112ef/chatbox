@@ -4,11 +4,12 @@ import * as settingActions from '@/stores/settingActions'
 import { apiRequest } from '@/utils/request'
 import { handleSSE } from '@/utils/stream'
 import { isEmpty } from 'lodash'
-import { Message, MessageToolCalls } from 'src/shared/types'
+import { Message, MessageToolCalls, StreamTextResult } from 'src/shared/types'
 import { webSearchTool } from '../web-search'
 import Base, { CallChatCompletionOptions, ModelHelpers, onResultChange } from './base'
 import { ApiError, ChatboxAIAPIError } from './errors'
 import { normalizeOpenAIApiHostAndPath } from './llm_utils'
+import { cloneMessage, getMessageText } from '@/utils/message'
 
 const helpers: ModelHelpers = {
   isModelSupportVision: (model: string) => {
@@ -52,7 +53,7 @@ export default class OpenAI extends Base {
     return this.options.openaiCustomModel ?? this.options.model
   }
 
-  async callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<string> {
+  async callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<StreamTextResult> {
     try {
       return await this._callChatCompletion(rawMessages, options)
     } catch (e) {
@@ -73,7 +74,7 @@ export default class OpenAI extends Base {
     }
   }
 
-  async _callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<string> {
+  async _callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<StreamTextResult> {
     const model = this.options.model === 'custom-model' ? this.options.openaiCustomModel || '' : this.options.model
     if (this.options.injectDefaultMetadata) {
       rawMessages = injectModelSystemPrompt(model, rawMessages)
@@ -111,7 +112,7 @@ export default class OpenAI extends Base {
     requestBody: Record<string, any>,
     signal?: AbortSignal,
     onResultChange?: onResultChange
-  ): Promise<string> {
+  ): Promise<StreamTextResult> {
     const response = await apiRequest.post(
       `${this.options.apiHost}${this.options.apiPath}`,
       this.getHeaders(),
@@ -146,7 +147,11 @@ export default class OpenAI extends Base {
           finalToolCalls[index].function.arguments += toolCall.function.arguments
         }
         if (onResultChange) {
-          onResultChange({ content: result, reasoningContent, toolCalls: finalToolCalls })
+          onResultChange({
+            contentParts: [{ type: 'text', text: result }],
+            reasoningContent,
+            toolCalls: finalToolCalls,
+          })
         }
       }
 
@@ -154,7 +159,11 @@ export default class OpenAI extends Base {
       if (typeof part === 'string') {
         result += part
         if (onResultChange) {
-          onResultChange({ content: result, reasoningContent, toolCalls: finalToolCalls })
+          onResultChange({
+            contentParts: [{ type: 'text', text: result }],
+            reasoningContent,
+            toolCalls: finalToolCalls,
+          })
         }
       }
       // 支持 deepseek r1 的思考链
@@ -165,7 +174,11 @@ export default class OpenAI extends Base {
         }
         reasoningContent += reasoningContentPart
         if (onResultChange) {
-          onResultChange({ content: result, reasoningContent, toolCalls: finalToolCalls })
+          onResultChange({
+            contentParts: [{ type: 'text', text: result }],
+            reasoningContent,
+            toolCalls: finalToolCalls,
+          })
         }
       }
       // 处理一些本地部署或三方的 deepseek-r1 返回中的 <think>...</think> 思考链
@@ -180,17 +193,17 @@ export default class OpenAI extends Base {
         result = result.slice(index + 8)
       }
       if (onResultChange) {
-        onResultChange({ content: result, reasoningContent, toolCalls: finalToolCalls })
+        onResultChange({ contentParts: [{ type: 'text', text: result }], reasoningContent, toolCalls: finalToolCalls })
       }
     })
-    return result
+    return { contentParts: [{ type: 'text', text: result }] }
   }
 
   async requestChatCompletionsNotStream(
     requestBody: Record<string, any>,
     signal?: AbortSignal,
     onResultChange?: onResultChange
-  ): Promise<string> {
+  ): Promise<StreamTextResult> {
     const response = await apiRequest.post(
       `${this.options.apiHost}${this.options.apiPath}`,
       this.getHeaders(),
@@ -206,9 +219,9 @@ export default class OpenAI extends Base {
     }
     const content: string = json.choices[0].message.content || ''
     if (onResultChange) {
-      onResultChange({ content })
+      onResultChange({ contentParts: [{ type: 'text', text: content }] })
     }
-    return content
+    return { contentParts: [{ type: 'text', text: content }] }
   }
 
   async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
@@ -423,7 +436,7 @@ export async function populateGPTMessage(
   rawMessages: Message[],
   model: OpenAIModel | 'custom-model'
 ): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
-  if (isSupportVision(model) && rawMessages.some((m) => m.pictures && m.pictures.length > 0)) {
+  if (isSupportVision(model) && rawMessages.some((m) => m.contentParts.some((p) => p.type === 'image'))) {
     return populateOpenAIMessageVision(rawMessages)
   } else {
     return populateOpenAIMessageText(rawMessages)
@@ -435,7 +448,7 @@ export async function populateOSeriesMessage(
   model: string
 ): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
   let messages =
-    isSupportVision(model) && rawMessages.some((m) => m.pictures && m.pictures.length > 0)
+    isSupportVision(model) && rawMessages.some((m) => m.contentParts.some((p) => p.type === 'image'))
       ? await populateOpenAIMessageVision(rawMessages)
       : await populateOpenAIMessageText(rawMessages)
   for (const [i, m] of messages.entries()) {
@@ -450,7 +463,7 @@ export async function populateOpenAIMessageText(rawMessages: Message[]): Promise
   const messages: OpenAIMessage[] = rawMessages.map((m) => ({
     tool_call_id: m.role === 'tool' ? m.id : undefined,
     role: m.role,
-    content: m.content,
+    content: getMessageText(m),
     tool_calls: isEmpty(m.toolCalls) ? undefined : Object.values(m.toolCalls),
   }))
   return messages
@@ -459,19 +472,21 @@ export async function populateOpenAIMessageText(rawMessages: Message[]): Promise
 export async function populateOpenAIMessageVision(rawMessages: Message[]): Promise<OpenAIMessageVision[]> {
   const messages: OpenAIMessageVision[] = []
   for (const m of rawMessages) {
-    const content: OpenAIMessageVision['content'] = [{ type: 'text', text: m.content }]
-    for (const pic of m.pictures || []) {
-      if (!pic.storageKey) {
-        continue
+    const content: OpenAIMessageVision['content'] = [{ type: 'text', text: getMessageText(m) }]
+    for (const p of m.contentParts) {
+      if (p.type === 'image') {
+        if (!p.storageKey) {
+          continue
+        }
+        const picBase64 = await storage.getBlob(p.storageKey)
+        if (!picBase64) {
+          continue
+        }
+        content.push({
+          type: 'image_url',
+          image_url: { url: picBase64 },
+        })
       }
-      const picBase64 = await storage.getBlob(pic.storageKey)
-      if (!picBase64) {
-        continue
-      }
-      content.push({
-        type: 'image_url',
-        image_url: { url: picBase64 },
-      })
     }
     messages.push({ role: m.role, content } as OpenAIMessageVision)
   }
@@ -489,8 +504,8 @@ export function injectModelSystemPrompt(model: string, messages: Message[]) {
   let hasInjected = false
   return messages.map((m) => {
     if (m.role === 'system' && !hasInjected) {
-      m = { ...m } // 复制，防止原始数据在其他地方被直接渲染使用
-      m.content = metadataPrompt + m.content
+      m = cloneMessage(m) // 复制，防止原始数据在其他地方被直接渲染使用
+      m.contentParts = [{ type: 'text', text: metadataPrompt + getMessageText(m) }]
       hasInjected = true
     }
     return m

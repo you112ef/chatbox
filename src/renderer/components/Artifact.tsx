@@ -1,18 +1,16 @@
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import { cn } from '@/lib/utils'
+import { getMessageText } from '@/utils/message'
+import * as sessionActions from '@/stores/sessionActions'
+import NiceModal from '@ebay/nice-modal-react'
+import ReplayOutlinedIcon from '@mui/icons-material/ReplayOutlined'
+import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined'
 import { ButtonGroup, IconButton } from '@mui/material'
 import { debounce } from 'lodash'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import ReplayOutlinedIcon from '@mui/icons-material/ReplayOutlined'
-import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined'
-import { useIsSmallScreen } from '@/hooks/useScreenChange'
-import { cn } from '@/lib/utils'
 import { useTranslation } from 'react-i18next'
-import * as sessionActions from '@/stores/sessionActions'
-import { useAtomValue, useSetAtom } from 'jotai'
-import * as atoms from '@/stores/atoms'
-import FullscreenIcon from './icons/FullscreenIcon'
 import ArrowRightIcon from './icons/ArrowRightIcon'
-import NiceModal from '@ebay/nice-modal-react'
-
+import FullscreenIcon from './icons/FullscreenIcon'
 const RENDERABLE_CODE_LANGUAGES = ['html'] as const
 export type RenderableCodeLanguage = (typeof RENDERABLE_CODE_LANGUAGES)[number]
 
@@ -47,7 +45,7 @@ export function MessageArtifact(props: {
     return messageList.slice(0, index)
   }, [sessionId, messageId])
   const htmlCode = useMemo(() => {
-    return generateHtml([...contextMessages.map((m) => m.content), messageContent])
+    return generateHtml([...contextMessages.map((m) => getMessageText(m)), messageContent])
   }, [contextMessages, messageContent])
   return <ArtifactWithButtons htmlCode={htmlCode} preview={preview} setPreview={setPreview} />
 }

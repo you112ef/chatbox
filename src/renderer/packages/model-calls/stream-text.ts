@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash'
-import { Message, MessageToolCalls } from '../../../shared/types'
+import { Message, MessageToolCalls, StreamTextResult } from '../../../shared/types'
 import { ModelInterface, OnResultChange, onResultChangeWithCancel } from '../models/base'
 import { callTool, constructMessagesWithSearchResults, searchByPromptEngineering } from './tools'
 import { ChatboxAIAPIError } from '../models/errors'
@@ -35,7 +35,7 @@ async function handleToolCalls(
       id: toolCall.id, // store tool_call_id in id field
       role: 'tool',
       name: toolCall.function.name,
-      content: toolResult ? JSON.stringify(toolResult) : '',
+      contentParts: toolResult ? [{ type: 'text', text: JSON.stringify(toolResult) }] : [],
     })
   }
   return messages
@@ -52,13 +52,18 @@ export async function streamText(
   const controller = new AbortController()
   const cancel = () => controller.abort()
 
-  let result = ''
+  let result: StreamTextResult = {
+    contentParts: [],
+  }
   let toolCalls: MessageToolCalls | undefined
 
   try {
-    params.onResultChangeWithCancel({ content: result, cancel }) // 这里先传递 cancel 方法
+    params.onResultChangeWithCancel({ cancel }) // 这里先传递 cancel 方法
     const onResultChange: OnResultChange = (data) => {
-      result = data.content ?? result
+      result = {
+        ...result,
+        ...data,
+      }
       toolCalls = data.toolCalls
       params.onResultChangeWithCancel({ ...data, cancel })
     }
@@ -95,8 +100,8 @@ export async function streamText(
       params.messages.push({
         id: '',
         role: 'assistant',
-        content: result,
         toolCalls,
+        contentParts: result.contentParts,
       })
       const messages = await handleToolCalls(params.messages, toolCalls, { onResultChange, signal: controller.signal })
       result = await model.chat(messages, { onResultChange, signal: controller.signal })

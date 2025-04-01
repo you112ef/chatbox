@@ -1,9 +1,10 @@
 import { apiRequest } from '@/utils/request'
 import { handleSSE } from '@/utils/stream'
-import { Message } from 'src/shared/types'
+import { StreamTextResult } from 'src/shared/types'
 import Base, { CallChatCompletionOptions, ModelHelpers } from './base'
 import { ApiError } from './errors'
 import { populateOpenAIMessageText } from './openai'
+import { Message } from 'src/shared/types'
 
 // https://console.groq.com/docs/models
 export const modelConfig = {
@@ -81,7 +82,7 @@ export default class Groq extends Base {
     return helpers.isModelSupportToolUse(this.options.groqModel)
   }
 
-  async callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<string> {
+  async callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<StreamTextResult> {
     const messages = await populateOpenAIMessageText(rawMessages)
     const temperature =
       this.options.temperature === 0
@@ -110,10 +111,10 @@ export default class Groq extends Base {
       const text = data.choices[0]?.delta?.content
       if (text !== undefined) {
         result += text
-        options.onResultChange?.({ content: result })
+        options.onResultChange?.({ contentParts: [{ type: 'text', text: result }] })
       }
     })
-    return result
+    return { contentParts: [{ type: 'text', text: result }] }
   }
 
   getHeaders() {

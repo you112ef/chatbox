@@ -1,26 +1,25 @@
+import EditableAvatar from '@/components/EditableAvatar'
+import { ImageInStorage, handleImageInputAndSave } from '@/components/Image'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import { StorageKeyGenerator } from '@/storage/StoreStorage'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
+import PersonIcon from '@mui/icons-material/Person'
+import SmartToyIcon from '@mui/icons-material/SmartToy'
 import {
-  Button,
-  TextField,
   Box,
+  Button,
   FormControlLabel,
-  Switch,
   FormGroup,
   Grid,
   Stack,
-  useTheme,
+  Switch,
+  TextField,
   Tooltip,
+  useTheme,
 } from '@mui/material'
-import { Settings } from '../../../shared/types'
 import { useTranslation } from 'react-i18next'
 import * as defaults from '../../../shared/defaults'
-import { useIsSmallScreen } from '@/hooks/useScreenChange'
-import { v4 as uuidv4 } from 'uuid'
-import PersonIcon from '@mui/icons-material/Person'
-import EditableAvatar from '@/components/EditableAvatar'
-import SmartToyIcon from '@mui/icons-material/SmartToy'
-import { ImageInStorage, handleImageInputAndSave } from '@/components/Image'
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
-
+import { Settings } from '../../../shared/types'
 export default function ChatSettingTab(props: {
   settingsEdit: Settings
   setSettingsEdit: (settings: Settings) => void
@@ -47,7 +46,7 @@ export default function ChatSettingTab(props: {
                 <Box>
                   <EditableAvatar
                     onChange={(event) => {
-                      const key = `picture:user-avatar:${uuidv4()}`
+                      const key = StorageKeyGenerator.picture('user-avatar')
                       handleImageInputAndSave(event, key, () =>
                         setSettingsEdit({ ...settingsEdit, userAvatarKey: key })
                       )
@@ -82,7 +81,7 @@ export default function ChatSettingTab(props: {
                 <Box>
                   <EditableAvatar
                     onChange={(event) => {
-                      const key = `picture:default-assistant-avatar:${uuidv4()}`
+                      const key = StorageKeyGenerator.picture('default-assistant-avatar')
                       handleImageInputAndSave(event, key, () =>
                         setSettingsEdit({ ...settingsEdit, defaultAssistantAvatarKey: key })
                       )

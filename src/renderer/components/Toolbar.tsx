@@ -18,7 +18,7 @@ import { useIsLargeScreen, useIsSmallScreen } from '@/hooks/useScreenChange'
 import * as sessionActions from '@/stores/sessionActions'
 import { ConfirmDeleteMenuItem } from './ConfirmDeleteButton'
 import NiceModal from '@ebay/nice-modal-react'
-
+import { removeSession } from '@/stores/session-store'
 /**
  * 顶部标题工具栏（右侧）
  * @returns
@@ -54,7 +54,7 @@ export default function Toolbar() {
     handleMoreMenuClose()
   }
   const handleSessionDelete = () => {
-    sessionActions.remove(currentSession)
+    removeSession(currentSession.id)
     handleMoreMenuClose()
   }
 

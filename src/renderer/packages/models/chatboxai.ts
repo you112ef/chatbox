@@ -2,11 +2,11 @@ import { parseJsonOrEmpty } from '@/lib/utils'
 import storage from '@/storage'
 import { apiRequest } from '@/utils/request'
 import { handleSSE } from '@/utils/stream'
-import { ChatboxAILicenseDetail, ChatboxAIModel, Message, MessageRole } from 'src/shared/types'
+import { ChatboxAILicenseDetail, ChatboxAIModel, Message, MessageRole, StreamTextResult } from 'src/shared/types'
 import * as remote from '../remote'
 import Base, { CallChatCompletionOptions, ModelHelpers } from './base'
 import { ApiError, BaseError, ChatboxAIAPIError, NetworkError } from './errors'
-
+import { getMessageText } from '@/utils/message'
 export const chatboxAIModels: ChatboxAIModel[] = ['chatboxai-3.5', 'chatboxai-4']
 
 const helpers: ModelHelpers = {
@@ -63,7 +63,10 @@ export default class ChatboxAI extends Base {
     return json['data'][0]['b64_json']
   }
 
-  protected async callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<string> {
+  protected async callChatCompletion(
+    rawMessages: Message[],
+    options: CallChatCompletionOptions
+  ): Promise<StreamTextResult> {
     const messages = await populateChatboxAIMessage(rawMessages)
 
     let webBrowsingResult: Awaited<ReturnType<typeof remote.webBrowsing>> | undefined = undefined
@@ -114,11 +117,11 @@ export default class ChatboxAI extends Base {
           reasoningContent = ''
         }
         reasoningContent += reasoningContentPart
-        options.onResultChange?.({ content: result, reasoningContent })
+        options.onResultChange?.({ reasoningContent })
       }
       if (word !== undefined) {
         result += word
-        options.onResultChange?.({ content: result, reasoningContent })
+        options.onResultChange?.({ contentParts: [{ type: 'text', text: result }], reasoningContent })
       }
     })
 
@@ -126,7 +129,7 @@ export default class ChatboxAI extends Base {
     // 后续聊天中，服务端会根据 uuid 填充搜索结果
     if (webBrowsingResult) {
       options.onResultChange?.({
-        content: result,
+        contentParts: [{ type: 'text', text: result }],
         webBrowsing: {
           chatboxAIWebBrowsingUUID: webBrowsingResult.uuid,
           query: webBrowsingResult.query,
@@ -135,7 +138,10 @@ export default class ChatboxAI extends Base {
       })
     }
 
-    return result
+    return {
+      contentParts: [{ type: 'text', text: result }],
+      reasoningContent,
+    }
   }
 
   getHeaders() {
@@ -269,21 +275,24 @@ export async function populateChatboxAIMessage(rawMessages: Message[]): Promise<
   for (const raw of rawMessages) {
     const newMessage: ChatboxAIMessage = {
       role: raw.role,
-      content: raw.content,
+      content: getMessageText(raw),
     }
-    for (const p of raw.pictures || []) {
-      if (!p.storageKey) {
-        continue
+    for (const p of raw.contentParts) {
+      if (p.type === 'image') {
+        if (!p.storageKey) {
+          continue
+        }
+        const base64 = await storage.getBlob(p.storageKey)
+        if (!base64) {
+          continue
+        }
+        if (!newMessage.pictures) {
+          newMessage.pictures = []
+        }
+        newMessage.pictures.push({ base64 })
       }
-      const base64 = await storage.getBlob(p.storageKey)
-      if (!base64) {
-        continue
-      }
-      if (!newMessage.pictures) {
-        newMessage.pictures = []
-      }
-      newMessage.pictures.push({ base64 })
     }
+
     for (const file of raw.files || []) {
       if (!file.chatboxAIFileUUID) {
         continue

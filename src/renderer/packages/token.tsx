@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/react'
 import { Tiktoken } from 'js-tiktoken/lite'
 // @ts-ignore
 import cl100k_base from 'js-tiktoken/ranks/cl100k_base'
-
+import { getMessageText } from '@/utils/message'
 import { Message } from '../../shared/types'
 
 const encoding = new Tiktoken(cl100k_base)
@@ -21,7 +21,7 @@ export function estimateTokensFromMessages(messages: Message[]) {
     let ret = 0
     for (const msg of messages) {
       ret += tokensPerMessage
-      ret += estimateTokens(msg.content)
+      ret += estimateTokens(getMessageText(msg))
       ret += estimateTokens(msg.role)
       if (msg.name) {
         ret += estimateTokens(msg.name)

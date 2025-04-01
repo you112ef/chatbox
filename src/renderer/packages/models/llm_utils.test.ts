@@ -1,6 +1,6 @@
-import { normalizeOpenAIApiHostAndPath } from './llm_utils'
-import { fixMessageRoleSequence } from './llm_utils'
 import { Message } from 'src/shared/types'
+import { normalizeOpenAIApiHostAndPath } from './llm_utils'
+import { fixMessageRoleSequence } from '@/utils/message'
 
 describe('normalizeOpenAIApiHostAndPath', () => {
   it('默认值', () => {
@@ -119,88 +119,96 @@ describe('fixMessageRoleSequence', () => {
   })
 
   it('应该处理单条消息', () => {
-    const messages: Message[] = [{ id: '', role: 'user', content: '你好' }]
-    expect(fixMessageRoleSequence(messages)).toEqual([{ id: '', role: 'user', content: '你好' }])
+    const messages: Message[] = [{ id: '', role: 'user', contentParts: [{ type: 'text', text: '你好' }] }]
+    expect(fixMessageRoleSequence(messages)).toEqual([
+      { id: '', role: 'user', contentParts: [{ type: 'text', text: '你好' }] },
+    ])
   })
 
   it('应该合并连续的相同角色消息', () => {
     const messages: Message[] = [
-      { id: '', role: 'user', content: '你好' },
-      { id: '', role: 'user', content: '请问一下' },
+      { id: '', role: 'user', contentParts: [{ type: 'text', text: '你好' }] },
+      { id: '', role: 'user', contentParts: [{ type: 'text', text: '请问一下' }] },
     ]
-    expect(fixMessageRoleSequence(messages)).toEqual([{ id: '', role: 'user', content: '你好\n\n请问一下' }])
+    expect(fixMessageRoleSequence(messages)).toEqual([
+      { id: '', role: 'user', contentParts: [{ type: 'text', text: '你好\n\n请问一下' }] },
+    ])
   })
 
   it('应该正确处理交替的角色消息', () => {
     const messages: Message[] = [
-      { id: '', role: 'user', content: '你好' },
-      { id: '', role: 'assistant', content: '你好！有什么可以帮你的？' },
-      { id: '', role: 'user', content: '请问一下' },
+      { id: '', role: 'user', contentParts: [{ type: 'text', text: '你好' }] },
+      { id: '', role: 'assistant', contentParts: [{ type: 'text', text: '你好！有什么可以帮你的？' }] },
+      { id: '', role: 'user', contentParts: [{ type: 'text', text: '请问一下' }] },
     ]
     expect(fixMessageRoleSequence(messages)).toEqual([
-      { id: '', role: 'user', content: '你好' },
-      { id: '', role: 'assistant', content: '你好！有什么可以帮你的？' },
-      { id: '', role: 'user', content: '请问一下' },
+      { id: '', role: 'user', contentParts: [{ type: 'text', text: '你好' }] },
+      { id: '', role: 'assistant', contentParts: [{ type: 'text', text: '你好！有什么可以帮你的？' }] },
+      { id: '', role: 'user', contentParts: [{ type: 'text', text: '请问一下' }] },
     ])
   })
 
   it('应该处理多个连续相同角色的消息', () => {
     const messages: Message[] = [
-      { id: '', role: 'user', content: '你好' },
-      { id: '', role: 'assistant', content: '你好！' },
-      { id: '', role: 'assistant', content: '有什么可以帮你的？' },
-      { id: '', role: 'assistant', content: '请随时告诉我' },
-      { id: '', role: 'user', content: '谢谢' },
+      { id: '', role: 'user', contentParts: [{ type: 'text', text: '你好' }] },
+      { id: '', role: 'assistant', contentParts: [{ type: 'text', text: '你好！' }] },
+      { id: '', role: 'assistant', contentParts: [{ type: 'text', text: '有什么可以帮你的？' }] },
+      { id: '', role: 'assistant', contentParts: [{ type: 'text', text: '请随时告诉我' }] },
+      { id: '', role: 'user', contentParts: [{ type: 'text', text: '谢谢' }] },
     ]
     expect(fixMessageRoleSequence(messages)).toEqual([
-      { id: '', role: 'user', content: '你好' },
-      { id: '', role: 'assistant', content: '你好！\n\n有什么可以帮你的？\n\n请随时告诉我' },
-      { id: '', role: 'user', content: '谢谢' },
+      { id: '', role: 'user', contentParts: [{ type: 'text', text: '你好' }] },
+      {
+        id: '',
+        role: 'assistant',
+        contentParts: [{ type: 'text', text: '你好！\n\n有什么可以帮你的？\n\n请随时告诉我' }],
+      },
+      { id: '', role: 'user', contentParts: [{ type: 'text', text: '谢谢' }] },
     ])
   })
 
   it('应该在第一条 assistant 消息前添加 user 消息', () => {
     const messages: Message[] = [
-      { role: 'system', content: 'System prompt', id: '1' },
-      { role: 'assistant', content: 'Hello', id: '2' },
+      { id: '', role: 'system', contentParts: [{ type: 'text', text: 'System prompt' }] },
+      { id: '', role: 'assistant', contentParts: [{ type: 'text', text: 'Hello' }] },
     ]
     const expected: Message[] = [
-      { role: 'system', content: 'System prompt', id: '1' },
-      { role: 'user', content: 'OK.', id: 'user_before_assistant_id' },
-      { role: 'assistant', content: 'Hello', id: '2' },
+      { id: '', role: 'system', contentParts: [{ type: 'text', text: 'System prompt' }] },
+      { id: '', role: 'user', contentParts: [{ type: 'text', text: 'OK.' }] },
+      { id: '', role: 'assistant', contentParts: [{ type: 'text', text: 'Hello' }] },
     ]
     expect(fixMessageRoleSequence(messages)).toEqual(expected)
   })
   it('应该在第一条 assistant 消息前添加 user 消息', () => {
-    const messages: Message[] = [{ role: 'assistant', content: 'Hello', id: '2' }]
+    const messages: Message[] = [{ id: '', role: 'assistant', contentParts: [{ type: 'text', text: 'Hello' }] }]
     const expected: Message[] = [
-      { role: 'user', content: 'OK.', id: 'user_before_assistant_id' },
-      { role: 'assistant', content: 'Hello', id: '2' },
+      { id: '', role: 'user', contentParts: [{ type: 'text', text: 'OK.' }] },
+      { id: '', role: 'assistant', contentParts: [{ type: 'text', text: 'Hello' }] },
     ]
     expect(fixMessageRoleSequence(messages)).toEqual(expected)
   })
 
   it('不应该在已有 user 消息后的 assistant 消息前添加新的 user 消息', () => {
     const messages: Message[] = [
-      { role: 'user', content: 'Hello', id: '1' },
-      { role: 'assistant', content: 'Hi', id: '2' },
+      { id: '', role: 'user', contentParts: [{ type: 'text', text: 'Hello' }] },
+      { id: '', role: 'assistant', contentParts: [{ type: 'text', text: 'Hi' }] },
     ]
     expect(fixMessageRoleSequence(messages)).toEqual(messages)
   })
 
   it('应该正确处理多组对话', () => {
     const messages: Message[] = [
-      { role: 'system', content: 'System prompt', id: '1' },
-      { role: 'user', content: 'Hello', id: '2' },
-      { role: 'assistant', content: 'Hi', id: '3' },
-      { role: 'assistant', content: 'How are you?', id: '4' },
-      { role: 'user', content: 'Good', id: '5' },
+      { id: '', role: 'system', contentParts: [{ type: 'text', text: 'System prompt' }] },
+      { id: '', role: 'user', contentParts: [{ type: 'text', text: 'Hello' }] },
+      { id: '', role: 'assistant', contentParts: [{ type: 'text', text: 'Hi' }] },
+      { id: '', role: 'assistant', contentParts: [{ type: 'text', text: 'How are you?' }] },
+      { id: '', role: 'user', contentParts: [{ type: 'text', text: 'Good' }] },
     ]
     const expected: Message[] = [
-      { role: 'system', content: 'System prompt', id: '1' },
-      { role: 'user', content: 'Hello', id: '2' },
-      { role: 'assistant', content: 'Hi\n\nHow are you?', id: '3' },
-      { role: 'user', content: 'Good', id: '5' },
+      { id: '', role: 'system', contentParts: [{ type: 'text', text: 'System prompt' }] },
+      { id: '', role: 'user', contentParts: [{ type: 'text', text: 'Hello' }] },
+      { id: '', role: 'assistant', contentParts: [{ type: 'text', text: 'Hi\n\nHow are you?' }] },
+      { id: '', role: 'user', contentParts: [{ type: 'text', text: 'Good' }] },
     ]
     expect(fixMessageRoleSequence(messages)).toEqual(expected)
   })

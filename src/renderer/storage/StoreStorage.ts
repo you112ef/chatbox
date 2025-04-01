@@ -2,6 +2,7 @@ import BaseStorage from './BaseStorage'
 import { defaultSessionsForEN, defaultSessionsForCN } from '../packages/initial_data'
 import platform from '@/platform'
 import { debounce } from 'lodash'
+import { v4 as uuidv4 } from 'uuid'
 
 export enum StorageKey {
   ChatSessions = 'chat-sessions',
@@ -10,6 +11,16 @@ export enum StorageKey {
   MyCopilots = 'myCopilots',
   ConfigVersion = 'configVersion',
   RemoteConfig = 'remoteConfig',
+  ChatSessionsList = 'chat-sessions-list',
+}
+
+export const StorageKeyGenerator = {
+  picture(category: string) {
+    return `picture:${category}:${uuidv4()}`
+  },
+  file(sessionId: string, msgId: string) {
+    return `file:${sessionId}:${msgId}:${uuidv4()}`
+  },
 }
 
 export default class StoreStorage extends BaseStorage {
