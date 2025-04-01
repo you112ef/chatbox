@@ -66,6 +66,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import Loading from './icons/Loading'
 import { getMessageText } from '@/utils/message'
 import { isEmpty } from 'lodash'
+
 export interface Props {
   id?: string
   sessionId: string
@@ -115,7 +116,14 @@ function _Message(props: Props) {
     contentLength > collapseThreshold &&
     contentLength - collapseThreshold > 50 // 只有折叠有明显效果才折叠，为了更好的用户体验
   const [isCollapsed, setIsCollapsed] = useState(needCollapse)
-  const [isCollapsedReasoning, setIsCollapsedReasoning] = useState(false) // 推理内容是否折叠
+
+  const [_isCollapsedReasoning, setIsCollapsedReasoning] = useState<boolean>() // 推理内容是否折叠
+  // 如果设置了 _isCollapsedReasoning 则使用 _isCollapsedReasoning，否则当 msg 的 content 不为空时折叠 reasoning
+  const isCollapsedReasoning = useMemo(
+    () => (typeof _isCollapsedReasoning === 'boolean' ? _isCollapsedReasoning : !!getMessageText(msg)),
+    [_isCollapsedReasoning, msg]
+  )
+
   const ref = useRef<HTMLDivElement>(null)
 
   const [autoScrollId, setAutoScrollId] = useState<null | string>(null)
