@@ -7,6 +7,7 @@ import {
   CoreMessage,
   CoreSystemMessage,
   FilePart,
+  ImagePart,
   jsonSchema,
   LanguageModelV1,
   streamText,
@@ -22,7 +23,7 @@ import {
   MessageTextPart,
   MessageToolCalls,
   MessageWebBrowsing,
-  StreamTextResult,
+  StreamTextResult
 } from 'src/shared/types'
 import { webSearchTool as rawWebSearchTool } from '../web-search'
 import { CallChatCompletionOptions, ModelInterface } from './base'
@@ -105,7 +106,7 @@ export default abstract class AbstractAISDKModel implements ModelInterface {
     const result = streamText({
       model,
       maxSteps: 1,
-      messages: await transformMessages(messages),
+      messages: await convertToCoreMessages(messages),
       tools: options?.webBrowsing ? { web_search: webSearchTool } : undefined,
       abortSignal: options.signal,
       ...this.getCallSettings(options),
@@ -182,18 +183,22 @@ export default abstract class AbstractAISDKModel implements ModelInterface {
   }
 }
 
-async function transformContentParts(contentParts: MessageContentParts): Promise<Array<TextPart | FilePart>> {
+async function convertContentParts<T extends TextPart | ImagePart | FilePart>(
+  contentParts: MessageContentParts,
+  imageType: 'image' | 'file'
+): Promise<T[]> {
   return compact(
     await Promise.all(
       contentParts.map(async (c) => {
         if (c.type === 'text') {
-          return { type: 'text', text: c.text! } as TextPart
+          return { type: 'text', text: c.text! } as T
         } else if (c.type === 'image') {
+          const imageData = (await storage.getBlob(c.storageKey))?.replace(/^data:image\/[^;]+;base64,/, '')
           return {
-            type: 'file',
-            data: (await storage.getBlob(c.storageKey))?.replace(/^data:image\/[^;]+;base64,/, ''),
+            type: imageType,
+            ...(imageType === 'image' ? { image: imageData } : { data: imageData }),
             mimeType: 'image/png',
-          } as FilePart
+          } as T
         }
         return null
       })
@@ -201,14 +206,22 @@ async function transformContentParts(contentParts: MessageContentParts): Promise
   )
 }
 
-async function transformMessages(messages: Message[]): Promise<CoreMessage[]> {
+async function convertUserContentParts(contentParts: MessageContentParts): Promise<Array<TextPart | ImagePart>> {
+  return convertContentParts<TextPart | ImagePart>(contentParts, 'image')
+}
+
+async function convertAssistantContentParts(contentParts: MessageContentParts): Promise<Array<TextPart | FilePart>> {
+  return convertContentParts<TextPart | FilePart>(contentParts, 'file')
+}
+
+async function convertToCoreMessages(messages: Message[]): Promise<CoreMessage[]> {
   return Promise.all(
     messages.map(async (m) => {
       switch (m.role) {
         case 'system':
           return { role: 'system', content: getMessageText(m) }
         case 'user': {
-          const contentParts = await transformContentParts(m.contentParts || [])
+          const contentParts = await convertUserContentParts(m.contentParts || [])
           return {
             role: 'user',
             content: contentParts,
@@ -217,7 +230,7 @@ async function transformMessages(messages: Message[]): Promise<CoreMessage[]> {
         case 'assistant':
           return {
             role: 'assistant',
-            content: await transformContentParts(m.contentParts || []),
+            content: await convertAssistantContentParts(m.contentParts || []),
           }
         case 'tool':
           return {
