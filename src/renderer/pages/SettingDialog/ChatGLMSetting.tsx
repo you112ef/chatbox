@@ -1,11 +1,13 @@
-import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
+import MaxContextMessageCountSlider, {
+  toBeRemoved_getContextMessageCount,
+} from '@/components/MaxContextMessageCountSlider'
 import TemperatureSlider from '@/components/TemperatureSlider'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import { Stack, TextField, Typography } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
-import { ModelSettings } from '../../../shared/types'
-import { Accordion, AccordionDetails, AccordionSummary } from '../../components/Accordion'
-import platform from '../../platform'
+import { ModelSettings } from '@/../shared/types'
+import { Accordion, AccordionDetails, AccordionSummary } from '@/components/Accordion'
+import platform from '@/platform'
 
 interface ModelConfigProps {
   settingsEdit: ModelSettings
@@ -57,8 +59,11 @@ export default function ChatGLM6BSetting(props: ModelConfigProps) {
         </AccordionSummary>
         <AccordionDetails>
           <MaxContextMessageCountSlider
-            value={settingsEdit.openaiMaxContextMessageCount}
-            onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
+            value={toBeRemoved_getContextMessageCount(
+              settingsEdit.openaiMaxContextMessageCount,
+              settingsEdit.maxContextMessageCount
+            )}
+            onChange={(v) => setSettingsEdit({ ...settingsEdit, maxContextMessageCount: v })}
           />
           <TemperatureSlider
             value={settingsEdit.temperature}

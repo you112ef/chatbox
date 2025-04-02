@@ -1,5 +1,7 @@
 import CreatableSelect from '@/components/CreatableSelect'
-import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
+import MaxContextMessageCountSlider, {
+  toBeRemoved_getContextMessageCount,
+} from '@/components/MaxContextMessageCountSlider'
 import PasswordTextField from '@/components/PasswordTextField'
 import TemperatureSlider from '@/components/TemperatureSlider'
 import TextFieldReset from '@/components/TextFieldReset'
@@ -19,7 +21,7 @@ import {
   Typography,
 } from '@mui/material'
 import { Trans, useTranslation } from 'react-i18next'
-import { CustomProvider, ModelProvider, ModelSettings } from '../../../shared/types'
+import { CustomProvider, ModelProvider, ModelSettings } from '@/../shared/types'
 
 interface ModelConfigProps {
   settingsEdit: ModelSettings
@@ -155,8 +157,11 @@ export default function CustomProviderSetting(props: ModelConfigProps) {
         onUpdateOptions={(v) => setCustomProvider({ ...customProvider, modelOptions: v })}
       />
       <MaxContextMessageCountSlider
-        value={settingsEdit.openaiMaxContextMessageCount}
-        onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
+        value={toBeRemoved_getContextMessageCount(
+          settingsEdit.openaiMaxContextMessageCount,
+          settingsEdit.maxContextMessageCount
+        )}
+        onChange={(v) => setSettingsEdit({ ...settingsEdit, maxContextMessageCount: v })}
       />
       <TemperatureSlider
         value={settingsEdit.temperature}

@@ -178,6 +178,7 @@ export function settings2SessionSettings(settings: ModelSettings) {
 
     'chatboxAIModel',
     'openaiMaxContextMessageCount',
+    'maxContextMessageCount',
     'temperature',
     'topP',
     'dalleStyle',
@@ -325,6 +326,7 @@ export interface ModelSettings {
   // openaiMaxTokens: number // 生成消息的最大限制，是传入 OpenAI 接口的参数。0 代表不限制（不传递）
   // openaiMaxContextTokens: number // 聊天消息上下文的tokens限制。
   openaiMaxContextMessageCount: number // 聊天消息上下文的消息数量限制。超过20表示不限制
+  maxContextMessageCount?: number
   // maxContextSize: string 弃用，字段名永远不在使用，避免老版本报错
   // maxTokens: string 弃用，字段名永远不在使用，避免老版本报错
 }

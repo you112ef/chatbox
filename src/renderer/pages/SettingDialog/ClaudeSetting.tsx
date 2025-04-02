@@ -1,12 +1,14 @@
 import { Box, Typography, Alert, Stack } from '@mui/material'
-import { ModelSettings, ModelProvider } from '../../../shared/types'
+import { ModelSettings, ModelProvider } from '@/../shared/types'
 import { useTranslation, Trans } from 'react-i18next'
-import TemperatureSlider from '../../components/TemperatureSlider'
-import PasswordTextField from '../../components/PasswordTextField'
-import MaxContextMessageCountSlider from '../../components/MaxContextMessageCountSlider'
-import ClaudeModelSelect from '../../components/model-select/ClaudeModelSelect'
+import TemperatureSlider from '@/components/TemperatureSlider'
+import PasswordTextField from '@/components/PasswordTextField'
+import MaxContextMessageCountSlider, {
+  toBeRemoved_getContextMessageCount,
+} from '@/components/MaxContextMessageCountSlider'
+import ClaudeModelSelect from '@/components/model-select/ClaudeModelSelect'
 import TextFieldReset from '@/components/TextFieldReset'
-import { Accordion, AccordionSummary, AccordionDetails } from '../../components/Accordion'
+import { Accordion, AccordionSummary, AccordionDetails } from '@/components/Accordion'
 import { remoteConfigAtom } from '@/stores/atoms'
 import { useAtomValue } from 'jotai'
 
@@ -73,8 +75,11 @@ export default function ClaudeSetting(props: ModelConfigProps) {
         </AccordionSummary>
         <AccordionDetails>
           <MaxContextMessageCountSlider
-            value={settingsEdit.openaiMaxContextMessageCount}
-            onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
+            value={toBeRemoved_getContextMessageCount(
+              settingsEdit.openaiMaxContextMessageCount,
+              settingsEdit.maxContextMessageCount
+            )}
+            onChange={(v) => setSettingsEdit({ ...settingsEdit, maxContextMessageCount: v })}
           />
           <TemperatureSlider
             value={settingsEdit.temperature}

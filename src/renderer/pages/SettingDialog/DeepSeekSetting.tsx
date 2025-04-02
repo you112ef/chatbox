@@ -1,11 +1,13 @@
 import DeepSeekModelSelect from '@/components/model-select/DeepSeekModelSelect'
-import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
+import MaxContextMessageCountSlider, {
+  toBeRemoved_getContextMessageCount,
+} from '@/components/MaxContextMessageCountSlider'
 import PasswordTextField from '@/components/PasswordTextField'
 import TemperatureSlider from '@/components/TemperatureSlider'
 import { Stack, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import { ModelSettings } from '../../../shared/types'
-import { Accordion, AccordionDetails, AccordionSummary } from '../../components/Accordion'
+import { ModelSettings } from '@/../shared/types'
+import { Accordion, AccordionDetails, AccordionSummary } from '@/components/Accordion'
 
 interface ModelConfigProps {
   settingsEdit: ModelSettings
@@ -39,8 +41,11 @@ export default function DeepSeekSetting(props: ModelConfigProps) {
         </AccordionSummary>
         <AccordionDetails>
           <MaxContextMessageCountSlider
-            value={settingsEdit.openaiMaxContextMessageCount}
-            onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
+            value={toBeRemoved_getContextMessageCount(
+              settingsEdit.openaiMaxContextMessageCount,
+              settingsEdit.maxContextMessageCount
+            )}
+            onChange={(v) => setSettingsEdit({ ...settingsEdit, maxContextMessageCount: v })}
           />
           <TemperatureSlider
             value={settingsEdit.temperature}

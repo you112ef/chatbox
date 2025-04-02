@@ -1,13 +1,15 @@
 import { Box, Link, Alert, Typography, Stack } from '@mui/material'
-import { Accordion, AccordionSummary, AccordionDetails } from '../../components/Accordion'
-import { ModelSettings, ModelProvider } from '../../../shared/types'
+import { Accordion, AccordionSummary, AccordionDetails } from '@/components/Accordion'
+import { ModelSettings, ModelProvider } from '@/../shared/types'
 import { useTranslation, Trans } from 'react-i18next'
 import PasswordTextField from '@/components/PasswordTextField'
 import TemperatureSlider from '@/components/TemperatureSlider'
 import platform from '@/platform'
 import TextFieldReset from '@/components/TextFieldReset'
 import GeminiModelSelect from '@/components/model-select/GeminiModelSelect'
-import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
+import MaxContextMessageCountSlider, {
+  toBeRemoved_getContextMessageCount,
+} from '@/components/MaxContextMessageCountSlider'
 import { remoteConfigAtom } from '@/stores/atoms'
 import { useAtomValue } from 'jotai'
 
@@ -80,8 +82,11 @@ export default function GeminiSetting(props: ModelConfigProps) {
         </AccordionSummary>
         <AccordionDetails>
           <MaxContextMessageCountSlider
-            value={settingsEdit.openaiMaxContextMessageCount}
-            onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
+            value={toBeRemoved_getContextMessageCount(
+              settingsEdit.openaiMaxContextMessageCount,
+              settingsEdit.maxContextMessageCount
+            )}
+            onChange={(v) => setSettingsEdit({ ...settingsEdit, maxContextMessageCount: v })}
           />
           <TemperatureSlider
             value={settingsEdit.temperature}

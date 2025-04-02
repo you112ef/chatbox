@@ -13,7 +13,9 @@ import EditableAvatar from '@/components/EditableAvatar'
 import { ImageInStorage, handleImageInputAndSave } from '@/components/Image'
 import ImageCountSlider from '@/components/ImageCountSlider'
 import ImageStyleSelect from '@/components/ImageStyleSelect'
-import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
+import MaxContextMessageCountSlider, {
+  toBeRemoved_getContextMessageCount,
+} from '@/components/MaxContextMessageCountSlider'
 import ChatboxAIModelSelect from '@/components/model-select/ChatboxAIModelSelect'
 import ClaudeModelSelect from '@/components/model-select/ClaudeModelSelect'
 import DeepSeekModelSelect from '@/components/model-select/DeepSeekModelSelect'
@@ -450,9 +452,17 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
         </>
       )}
       <MaxContextMessageCountSlider
-        value={mergedSettings.openaiMaxContextMessageCount}
-        onChange={(v) => updateSettingsEdit({ openaiMaxContextMessageCount: v })}
-        className={specificSettings.openaiMaxContextMessageCount === undefined ? 'opacity-50' : ''}
+        value={toBeRemoved_getContextMessageCount(
+          mergedSettings.openaiMaxContextMessageCount,
+          mergedSettings.maxContextMessageCount
+        )}
+        onChange={(v) => updateSettingsEdit({ maxContextMessageCount: v })}
+        className={
+          specificSettings.maxContextMessageCount === undefined &&
+          specificSettings.openaiMaxContextMessageCount === undefined
+            ? 'opacity-50'
+            : ''
+        }
       />
       <TemperatureSlider
         value={mergedSettings.temperature}

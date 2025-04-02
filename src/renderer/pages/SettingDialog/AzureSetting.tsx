@@ -7,7 +7,9 @@ import TemperatureSlider from '../../components/TemperatureSlider'
 import TopPSlider from '../../components/TopPSlider'
 // import TokenConfig from './TokenConfig'
 import CreatableSelect from '@/components/CreatableSelect'
-import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
+import MaxContextMessageCountSlider, {
+  toBeRemoved_getContextMessageCount,
+} from '@/components/MaxContextMessageCountSlider'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 
 interface ModelConfigProps {
@@ -86,8 +88,11 @@ export default function AzureSetting(props: ModelConfigProps) {
         </AccordionSummary>
         <AccordionDetails>
           <MaxContextMessageCountSlider
-            value={settingsEdit.openaiMaxContextMessageCount}
-            onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
+            value={toBeRemoved_getContextMessageCount(
+              settingsEdit.openaiMaxContextMessageCount,
+              settingsEdit.maxContextMessageCount
+            )}
+            onChange={(v) => setSettingsEdit({ ...settingsEdit, maxContextMessageCount: v })}
           />
           <TemperatureSlider
             value={settingsEdit.temperature}

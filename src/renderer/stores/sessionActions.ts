@@ -49,6 +49,7 @@ import { createSession, getSession, saveSession, copySession } from './session-s
 import { cloneMessage, countMessageWords, getMessageText, mergeMessages } from '../utils/message'
 import * as settingActions from './settingActions'
 import { StorageKeyGenerator } from '@/storage/StoreStorage'
+import { toBeRemoved_getContextMessageCount } from '@/components/MaxContextMessageCountSlider'
 
 /**
  * 创建一个新的会话
@@ -932,6 +933,7 @@ async function genMessageContext(settings: Settings, msgs: Message[]) {
   const {
     // openaiMaxContextTokens,
     openaiMaxContextMessageCount,
+    maxContextMessageCount,
   } = settings
   if (msgs.length === 0) {
     throw new Error('No messages to replay')
@@ -956,8 +958,9 @@ async function genMessageContext(settings: Settings, msgs: Message[]) {
       // }
     }
     if (
-      openaiMaxContextMessageCount <= 20 && // 超过20表示不再限制
-      prompts.length >= openaiMaxContextMessageCount + 1 // +1是为了保留用户最后一条输入消息
+      toBeRemoved_getContextMessageCount(openaiMaxContextMessageCount, maxContextMessageCount) ===
+        Number.MAX_SAFE_INTEGER ||
+      prompts.length >= toBeRemoved_getContextMessageCount(openaiMaxContextMessageCount, maxContextMessageCount) + 1 // +1是为了保留用户最后一条输入消息
     ) {
       break
     }
