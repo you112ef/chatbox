@@ -958,8 +958,8 @@ async function genMessageContext(settings: Settings, msgs: Message[]) {
       // }
     }
     if (
-      toBeRemoved_getContextMessageCount(openaiMaxContextMessageCount, maxContextMessageCount) ===
-        Number.MAX_SAFE_INTEGER ||
+      toBeRemoved_getContextMessageCount(openaiMaxContextMessageCount, maxContextMessageCount) <
+        Number.MAX_SAFE_INTEGER &&
       prompts.length >= toBeRemoved_getContextMessageCount(openaiMaxContextMessageCount, maxContextMessageCount) + 1 // +1是为了保留用户最后一条输入消息
     ) {
       break
