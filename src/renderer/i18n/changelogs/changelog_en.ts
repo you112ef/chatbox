@@ -1,5 +1,5 @@
 const changelog = `
-### v1.11.6-beta.3 - 2025.04.02
+### v1.11.6-beta.4 - 2025.04.03
 1. Support Gemini multi-modal output
 2. Support more message context limit options
 3. Reasoning content auto collapse
