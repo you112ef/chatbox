@@ -36,7 +36,7 @@ const configuration: webpack.Configuration = {
   output: {
     path: webpackPaths.distRendererPath,
     publicPath: process.env.CHATBOX_BUILD_PLATFORM === 'web' ? '/' : './',
-    filename: 'renderer.[contenthash].js',
+    filename: 'assets/js/[name].[contenthash].js', // JS文件放在assets/js目录下
     library: {
       type: 'umd',
     },
@@ -69,11 +69,17 @@ const configuration: webpack.Configuration = {
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/i,
         type: 'asset/resource',
+        generator: {
+          filename: 'assets/fonts/[name].[hash][ext]', // 字体资源放在assets/fonts目录下
+        },
       },
       // Images
       {
         test: /\.(png|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
+        generator: {
+          filename: 'assets/images/[name].[hash][ext]', // 图片资源放在assets/images目录下
+        },
       },
       // SVG
       {
@@ -125,7 +131,7 @@ const configuration: webpack.Configuration = {
     }),
 
     new MiniCssExtractPlugin({
-      filename: 'style.[contenthash].css',
+      filename: 'assets/css/[name].[contenthash].css', // CSS文件放在assets/css目录下
     }),
 
     new BundleAnalyzerPlugin({

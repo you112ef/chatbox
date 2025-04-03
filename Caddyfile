@@ -2,9 +2,18 @@
     root * /usr/share/caddy # 将此处替换为你的静态文件路径
     file_server
 
-    # 设置 gzip 压缩
-    encode gzip
+    # 支持 History API 路由模式
+    try_files {path} /index.html
 
     # 设置缓存控制头
     header Cache-Control "public, max-age=3600"
+
+    # 添加缓存控制（可选，优化静态资源加载性能）
+    @staticFiles {
+        path_regexp static \.(ico|css|js|gif|jpe?g|png|woff2?|eot|ttf|svg)$
+    }
+    header @staticFiles Cache-Control "public, max-age=31536000"
+
+    # 设置 gzip 压缩
+    encode gzip
 }
