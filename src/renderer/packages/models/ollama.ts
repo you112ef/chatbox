@@ -3,10 +3,35 @@ import OpenAICompatible from './openai-compatible'
 
 const helpers: ModelHelpers = {
   isModelSupportVision: (model: string) => {
-    return false
+    return [
+      'gemma3',
+      'llava',
+      'llama3.2-vision',
+      'llava-llama3',
+      'moondream',
+      'bakllava',
+      'llava-phi3',
+      'granite3.2-vision',
+    ].some((m) => model.startsWith(m))
   },
   isModelSupportToolUse: (model: string) => {
-    return false
+    return [
+      'qwq',
+      'llama3.3',
+      'llama3.2',
+      'llama3.1',
+      'mistral',
+      'qwen2.5',
+      'qwen2.5-coder',
+      'qwen2',
+      'mistral-nemo',
+      'mixtral',
+      'smollm2',
+      'mistral-small',
+      'command-r',
+      'hermes3',
+      'mistral-large',
+    ].some((m) => model.startsWith(m))
   },
 }
 
