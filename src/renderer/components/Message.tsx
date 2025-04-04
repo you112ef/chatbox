@@ -568,7 +568,7 @@ function _Message(props: Props) {
                             </div>
                           )}
                         </div>
-                      ) : (
+                      ) : item.type === 'image' ? (
                         props.sessionType !== 'picture' && (
                           <div key={index}>
                             <div
@@ -582,7 +582,7 @@ function _Message(props: Props) {
                             </div>
                           </div>
                         )
-                      )
+                      ) : null // 还有 tool-call 类型，这类消息是中间产物，暂时不会持久化到 session 中
                     )}
                   </div>
                 )}

@@ -13,9 +13,10 @@ import {
   streamText,
   TextPart,
   tool,
+  ToolCallPart,
   ToolSet,
 } from 'ai'
-import { compact } from 'lodash'
+import { compact, isEmpty } from 'lodash'
 import {
   Message,
   MessageContentParts,
@@ -23,7 +24,7 @@ import {
   MessageTextPart,
   MessageToolCalls,
   MessageWebBrowsing,
-  StreamTextResult
+  StreamTextResult,
 } from 'src/shared/types'
 import { webSearchTool as rawWebSearchTool } from '../web-search'
 import { CallChatCompletionOptions, ModelInterface } from './base'
@@ -102,14 +103,14 @@ export default abstract class AbstractAISDKModel implements ModelInterface {
     }
 
     const messages = sequenceMessages(rawMessages)
-
+    const coreMessages = await convertToCoreMessages(messages)
     const result = streamText({
       model,
       maxSteps: 1,
-      messages: await convertToCoreMessages(messages),
+      messages: coreMessages,
       tools: options?.webBrowsing ? { web_search: webSearchTool } : undefined,
       abortSignal: options.signal,
-      ...this.getCallSettings(options),
+      ...this.getCallSettings(options),     
     })
 
     let blockIndex = 0
@@ -183,7 +184,7 @@ export default abstract class AbstractAISDKModel implements ModelInterface {
   }
 }
 
-async function convertContentParts<T extends TextPart | ImagePart | FilePart>(
+async function convertContentParts<T extends TextPart | ImagePart | FilePart | ToolCallPart>(
   contentParts: MessageContentParts,
   imageType: 'image' | 'file'
 ): Promise<T[]> {
@@ -198,6 +199,13 @@ async function convertContentParts<T extends TextPart | ImagePart | FilePart>(
             type: imageType,
             ...(imageType === 'image' ? { image: imageData } : { data: imageData }),
             mimeType: 'image/png',
+          } as T
+        } else if (c.type === 'tool-call') {
+          return {
+            type: 'tool-call',
+            toolCallId: c.toolCallId,
+            toolName: c.toolName,
+            args: c.args,
           } as T
         }
         return null
@@ -227,11 +235,23 @@ async function convertToCoreMessages(messages: Message[]): Promise<CoreMessage[]
             content: contentParts,
           }
         }
-        case 'assistant':
+        case 'assistant': {
+          const contentParts = m.contentParts || []
+          if (!isEmpty(m.toolCalls)) {
+            for (const toolCall of Object.values(m.toolCalls)) {
+              contentParts.push({
+                type: 'tool-call',
+                toolCallId: toolCall.id,
+                toolName: toolCall.function.name,
+                args: toolCall.function.arguments,
+              })
+            }
+          }
           return {
             role: 'assistant',
-            content: await convertAssistantContentParts(m.contentParts || []),
+            content: await convertAssistantContentParts(contentParts),
           }
+        }
         case 'tool':
           return {
             role: 'tool',

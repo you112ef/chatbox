@@ -57,7 +57,8 @@ export type MessageRole = (typeof MessageRoleEnum)[keyof typeof MessageRoleEnum]
 
 export type MessageTextPart = { type: 'text'; text: string }
 export type MessageImagePart = { type: 'image'; storageKey: string }
-export type MessageContentParts = (MessageTextPart | MessageImagePart)[]
+export type MessageToolCallPart = { type: 'tool-call'; toolCallId: string; toolName: string; args: unknown }
+export type MessageContentParts = (MessageTextPart | MessageImagePart | MessageToolCallPart)[]
 export type StreamTextResult = {
   contentParts: MessageContentParts
   reasoningContent?: string
