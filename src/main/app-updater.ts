@@ -25,7 +25,15 @@ export class AppUpdater {
     })
     const settings = getSettings()
     if (settings.autoUpdate) {
+      // 立即检查一次更新
       this.tryUpdate()
+
+      // 设置定时器，每小时检查一次更新
+      setInterval(() => {
+        this.tryUpdate()
+      }, 1000 * 60 * 60) // 每小时检查一次
+
+      log.info('Update timer started, checking every hour')
     }
   }
 
