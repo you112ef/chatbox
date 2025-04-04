@@ -1,10 +1,12 @@
 const changelog = `
-### v1.11.6-beta.5 - 2025.04.04
+### v1.11.7 - 2025.04.04
+
 1. Support Gemini multi-modal output
 2. Support more message context limit options
 3. Reasoning content auto collapse
 4. Check updates periodically instead of checking on startup
 5. Fixed model tool use issue for some providers
+6. Fixed image understanding with ollama
 
 ### v1.11.5 - 2025.03.28
 
