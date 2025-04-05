@@ -84,6 +84,7 @@ export default class Gemeni extends AbstractAISDKModel {
   protected getChatModel(options: CallChatCompletionOptions): LanguageModelV1 {
     const provider = createGoogleGenerativeAI({
       apiKey: this.options.geminiAPIKey,
+      baseURL: `${this.options.geminiAPIHost}/v1beta` || undefined,
     })
 
     return provider.chat(this.options.geminiModel, {
