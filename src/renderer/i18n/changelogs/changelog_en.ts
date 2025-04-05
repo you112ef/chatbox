@@ -1,4 +1,8 @@
 const changelog = `
+### v1.11.8 - 2025.04.05
+
+1. Fixed an issue with custom Gemini API host
+
 ### v1.11.7 - 2025.04.04
 
 1. Added support for Gemini multimodal output

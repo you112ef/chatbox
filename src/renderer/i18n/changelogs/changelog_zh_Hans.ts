@@ -1,4 +1,8 @@
 const changelog = `
+### v1.11.8 - 2025.04.05
+
+1. 修复自定义 Gemini API Host 的问题
+
 ### v1.11.7 - 2025.04.04
 
 1. 支持 Gemini 多模态输出
