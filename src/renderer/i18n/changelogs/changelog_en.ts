@@ -2,8 +2,8 @@ const changelog = `
 ### v1.11.7 - 2025.04.04
 
 1. Added support for Gemini multimodal output
-2. Increased context window size for more messages
-3. Auto-collapse chain-of-thought content
+2. Added more context window size options
+3. Auto-collapse deep thought output content
 4. Adjusted auto-update check frequency
 5. Fixed some model tool calling issues
 6. Fixed ollama image understanding support
