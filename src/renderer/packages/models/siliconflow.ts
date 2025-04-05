@@ -41,15 +41,21 @@ export default class SiliconFlow extends OpenAICompatible {
 
 // Ref: https://siliconflow.cn/zh-cn/models
 const modelMeta: ModelMeta = {
-  'deepseek-ai/DeepSeek-R1': { contextWindow: ContextWindowSize.t64k, reasoning: true },
-  'deepseek-ai/DeepSeek-V3': { contextWindow: ContextWindowSize.t64k, functionCalling: false }, // model respond with malformed json, so disable it
+  'deepseek-ai/DeepSeek-R1': { contextWindow: ContextWindowSize.t64k, reasoning: true, functionCalling: true },
+  'deepseek-ai/DeepSeek-V3': { contextWindow: ContextWindowSize.t64k, functionCalling: true },
 
-  'Pro/deepseek-ai/DeepSeek-R1': { contextWindow: ContextWindowSize.t64k, reasoning: true },
+  'Pro/deepseek-ai/DeepSeek-R1': { contextWindow: ContextWindowSize.t64k, reasoning: true, functionCalling: true },
   'Pro/deepseek-ai/DeepSeek-V3': { contextWindow: ContextWindowSize.t64k, functionCalling: true },
 
-  'Qwen/Qwen2.5-72B-Instruct': { contextWindow: ContextWindowSize.t32k },
-  'Qwen/Qwen2.5-VL-72B-Instruct': { contextWindow: ContextWindowSize.t128k },
-  'Qwen/QwQ-32B': { contextWindow: ContextWindowSize.t32k },
+  'Qwen/Qwen2.5-7B-Instruct': { contextWindow: ContextWindowSize.t32k, functionCalling: true },
+  'Qwen/Qwen2.5-14B-Instruct': { contextWindow: ContextWindowSize.t32k, functionCalling: true },
+  'Qwen/Qwen2.5-32B-Instruct': { contextWindow: ContextWindowSize.t32k, functionCalling: true },
+  'Qwen/Qwen2.5-72B-Instruct': { contextWindow: ContextWindowSize.t32k, functionCalling: true },
+  'Qwen/Qwen2.5-VL-32B-Instruct': { contextWindow: ContextWindowSize.t128k, vision: true },
+  'Qwen/Qwen2.5-VL-72B-Instruct': { contextWindow: ContextWindowSize.t128k, vision: true },
+  'Qwen/QVQ-72B-Preview': { contextWindow: ContextWindowSize.t128k, vision: true },
+  'Qwen/QwQ-32B': { contextWindow: ContextWindowSize.t32k, functionCalling: true },
+  'Pro/Qwen/Qwen2.5-VL-7B-Instruct': { contextWindow: ContextWindowSize.t32k, vision: true },
 }
 
 export const siliconFlowModels = Array.from(Object.keys(modelMeta)).sort()
