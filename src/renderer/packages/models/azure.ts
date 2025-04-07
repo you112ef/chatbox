@@ -1,24 +1,13 @@
-import * as settingActions from '@/stores/settingActions'
-import { apiRequest } from '@/utils/request'
-import { handleSSE } from '@/utils/stream'
-import { Message, StreamTextResult } from 'src/shared/types'
-import Base, { CallChatCompletionOptions, ModelHelpers } from './base'
-import { ApiError } from './errors'
-import {
-  injectModelSystemPrompt,
-  isOSeriesModel,
-  openaiModelConfigs,
-  populateGPTMessage,
-  populateOSeriesMessage,
-} from './openai'
+import { createAzure } from '@ai-sdk/azure'
+import AbstractAISDKModel from './abstract-ai-sdk'
+import { ModelHelpers } from './base'
 
 const helpers: ModelHelpers = {
   isModelSupportVision: (model: string) => {
-    const list = ['gpt-4-vision-preview', 'gpt-4o', 'gpt-4o-mini']
-    return list.includes(model) || list.includes(model.toLowerCase())
+    return true
   },
   isModelSupportToolUse: (model: string) => {
-    return false
+    return true
   },
 }
 
@@ -27,6 +16,7 @@ interface Options {
   azureDeploymentName: string
   azureDalleDeploymentName: string // dall-e-3 的部署名称
   azureApikey: string
+  azureApiVersion: string
 
   // openaiMaxTokens: number
   temperature: number
@@ -38,7 +28,7 @@ interface Options {
   injectDefaultMetadata: boolean
 }
 
-export default class AzureOpenAI extends Base {
+export default class AzureOpenAI extends AbstractAISDKModel {
   public name = 'Azure OpenAI'
   public static helpers = helpers
 
@@ -46,96 +36,26 @@ export default class AzureOpenAI extends Base {
     super()
   }
 
-  private getApiVersion() {
-    return settingActions.getSettings().azureApiVersion
+  private getProvider() {
+    const origin = new URL(this.options.azureEndpoint.trim()).origin
+    return createAzure({
+      apiKey: this.options.azureApikey,
+      apiVersion: this.options.azureApiVersion,
+      baseURL: origin + '/openai/deployments',
+    })
   }
 
-  protected async callChatCompletion(
-    rawMessages: Message[],
-    options: CallChatCompletionOptions
-  ): Promise<StreamTextResult> {
-    if (this.options.injectDefaultMetadata) {
-      rawMessages = injectModelSystemPrompt(this.options.azureDeploymentName, rawMessages)
-    }
-
-    const isOSeries = isOSeriesModel((this.options.azureDeploymentName || '').toLowerCase())
-    const params = isOSeries
-      ? {
-          messages: await populateOSeriesMessage(rawMessages, (this.options.azureDeploymentName || '').toLowerCase()),
-          model: this.options.azureDeploymentName,
-        }
-      : {
-          messages: await populateGPTMessage(rawMessages, this.options.azureDeploymentName as any),
-          model: this.options.azureDeploymentName,
-          // vision 模型的默认 max_tokens 极低，基本很难回答完整，因此手动设置为模型最大值
-          max_tokens:
-            this.options.azureDalleDeploymentName.toLowerCase() === 'gpt-4-vision-preview'
-              ? openaiModelConfigs['gpt-4-vision-preview'].maxTokens
-              : undefined,
-          temperature: this.options.temperature,
-          top_p: this.options.topP,
-          stream: true,
-        }
-
-    const origin = new URL((this.options.azureEndpoint || '').trim()).origin
-    const apiVersion = this.getApiVersion()
-    const url = `${origin}/openai/deployments/${this.options.azureDeploymentName}/chat/completions?api-version=${apiVersion}`
-    const response = await apiRequest.post(url, this.getHeaders(), params, { signal: options.signal })
-    if (isOSeries) {
-      const json = await response.json()
-      if (json.error) {
-        throw new ApiError(`Error from Azure OpenAI: ${JSON.stringify(json)}`)
-      }
-      const content: string = json.choices[0].message.content || ''
-      options.onResultChange?.({ contentParts: [{ type: 'text', text: content }] })
-      return { contentParts: [{ type: 'text', text: content }] }
-    } else {
-      let result = ''
-      await handleSSE(response, (message) => {
-        if (message === '[DONE]') {
-          return
-        }
-        const data = JSON.parse(message)
-        if (data.error) {
-          throw new ApiError(`Error from Azure OpenAI: ${JSON.stringify(data)}`)
-        }
-        const text = data.choices[0]?.delta?.content
-        if (text !== undefined) {
-          result += text
-          options.onResultChange?.({ contentParts: [{ type: 'text', text: result }] })
-        }
-      })
-      return { contentParts: [{ type: 'text', text: result }] }
-    }
+  protected getChatModel() {
+    const provider = this.getProvider()
+    return provider.chat(this.options.azureDeploymentName)
   }
 
-  async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
-    const origin = new URL((this.options.azureEndpoint || '').trim()).origin
-    const apiVersion = this.getApiVersion()
-    const url = `${origin}/openai/deployments/${this.options.azureDalleDeploymentName}/images/generations?api-version=${apiVersion}`
-    const res = await apiRequest.post(
-      url,
-      this.getHeaders(),
-      {
-        prompt,
-        response_format: 'b64_json',
-        model: 'dall-e-3',
-        style: this.options.dalleStyle,
-      },
-      { signal }
-    )
-    const json = await res.json()
-    return json['data'][0]['b64_json']
+  protected getImageModel() {
+    const provider = this.getProvider()
+    return provider.imageModel(this.options.azureDalleDeploymentName)
   }
 
-  getHeaders() {
-    return {
-      'api-key': this.options.azureApikey,
-      'Content-Type': 'application/json',
-    }
-  }
-
-  isSupportToolUse() {
+  public isSupportToolUse() {
     return helpers.isModelSupportToolUse(this.options.azureDeploymentName)
   }
 }

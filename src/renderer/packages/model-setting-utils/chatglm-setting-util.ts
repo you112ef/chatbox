@@ -1,19 +1,19 @@
 import { ModelSettings, Session, SessionType, Settings } from 'src/shared/types'
-import { ModelSettingUtil } from './interface'
+import ChatGLM, { chatglmModels } from '../models/chatglm'
 import BaseConfig from './base-config'
-import ChatGLM from '../models/chatglm'
+import { ModelSettingUtil } from './interface'
 
 export default class ChatGLMSettingUtil extends BaseConfig implements ModelSettingUtil {
   async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
-    return 'ChatGLM API'
+    return settings.chatglmModel
   }
 
   getCurrentModelOptionValue(settings: Settings) {
-    return 'ChatGLM'
+    return settings.chatglmModel
   }
 
   public getLocalOptionGroups(settings: ModelSettings) {
-    return [{ options: [{ label: 'ChatGLM', value: 'ChatGLM' }] }]
+    return [{ options: chatglmModels.map((model) => ({ label: model, value: model })) }]
   }
 
   protected async listProviderModels(settings: ModelSettings) {
@@ -21,14 +21,17 @@ export default class ChatGLMSettingUtil extends BaseConfig implements ModelSetti
   }
 
   selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {
-    return settings
+    return {
+      ...settings,
+      chatglmModel: selected,
+    }
   }
 
   public isCurrentModelSupportImageInput(settings: ModelSettings) {
-    return ChatGLM.helpers.isModelSupportVision('ChatGLM')
+    return ChatGLM.helpers.isModelSupportVision(settings.chatglmModel)
   }
 
   public isCurrentModelSupportToolUse(settings: ModelSettings) {
-    return ChatGLM.helpers.isModelSupportToolUse('ChatGLM')
+    return ChatGLM.helpers.isModelSupportToolUse(settings.chatglmModel)
   }
 }

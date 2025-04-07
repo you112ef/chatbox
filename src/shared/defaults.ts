@@ -16,7 +16,11 @@ export function settings(): Settings {
     azureDalleDeploymentName: 'dall-e-3',
     azureEndpoint: '',
     azureApiVersion: '2024-05-01-preview',
-    chatglm6bUrl: '',
+
+    chatglm6bUrl: '', // deprecated
+    chatglmApiKey: '',
+    chatglmModel: '',
+
     model: 'gpt-4o',
     openaiCustomModelOptions: [],
     temperature: 0.7,

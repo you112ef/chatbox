@@ -7,6 +7,7 @@ import {
   CoreMessage,
   CoreSystemMessage,
   FilePart,
+  ImageModel,
   ImagePart,
   jsonSchema,
   LanguageModelV1,
@@ -15,6 +16,7 @@ import {
   tool,
   ToolCallPart,
   ToolSet,
+  experimental_generateImage as generateImage,
 } from 'ai'
 import { compact, isEmpty } from 'lodash'
 import {
@@ -48,8 +50,12 @@ export default abstract class AbstractAISDKModel implements ModelInterface {
   public name = 'AI SDK Model'
   public injectDefaultMetadata = true
 
-  protected abstract getChatModel(options: CallChatCompletionOptions): LanguageModelV1
   public abstract isSupportToolUse(): boolean
+  protected abstract getChatModel(options: CallChatCompletionOptions): LanguageModelV1
+
+  protected getImageModel(): ImageModel | null {
+    return null
+  }
 
   public isSupportSystemMessage() {
     return true
@@ -86,7 +92,21 @@ export default abstract class AbstractAISDKModel implements ModelInterface {
     callback?: (picBase64: string) => any,
     signal?: AbortSignal
   ): Promise<string[]> {
-    throw new Error('Not implemented')
+    const imageModel = this.getImageModel()
+    if (!imageModel) {
+      throw new ApiError('Provider doesnt support image generation')
+    }
+    const result = await generateImage({
+      model: imageModel,
+      prompt,
+      n: num,
+      abortSignal: signal,
+    })
+    const dataUrls = result.images.map((image) => `data:${image.mimeType};base64,${image.base64}`)
+    for (const dataUrl of dataUrls) {
+      callback?.(dataUrl)
+    }
+    return dataUrls
   }
 
   private async _callChatCompletion(

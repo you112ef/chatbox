@@ -1,9 +1,9 @@
 import { GeminiModel } from '@/packages/models/gemini'
-import { GroqModel } from '@/packages/models/groq'
 import { LanguageModelUsage } from 'ai'
 import pick from 'lodash/pick'
 import { v4 as uuidv4 } from 'uuid'
 import { OpenAIModel } from '../renderer/packages/models/openai'
+
 export interface MessageFile {
   id: string
   name: string
@@ -193,6 +193,8 @@ export function settings2SessionSettings(settings: ModelSettings) {
     'azureDeploymentName',
     'azureDalleDeploymentName',
 
+    'chatglmModel',
+
     'claudeModel',
 
     'ollamaHost',
@@ -269,8 +271,10 @@ export interface ModelSettings {
   azureApikey: string
   azureApiVersion: string
 
-  // chatglm-6b
-  chatglm6bUrl: string
+  // chatglm
+  chatglm6bUrl: string // deprecated
+  chatglmApiKey: string
+  chatglmModel: string
 
   // chatbox-ai
   licenseKey?: string
@@ -296,7 +300,7 @@ export interface ModelSettings {
 
   // groq
   groqAPIKey: string
-  groqModel: GroqModel
+  groqModel: string
 
   // deepseek
   deepseekAPIKey: string

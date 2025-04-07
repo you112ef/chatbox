@@ -30,7 +30,7 @@ export function needEditSetting() {
   ) {
     return true
   }
-  if (settings.aiProvider === 'chatglm-6b' && settings.chatglm6bUrl === '') {
+  if (settings.aiProvider === 'chatglm-6b' && !settings.chatglmApiKey) {
     return true
   }
   if (settings.aiProvider === 'claude' && !settings.claudeApiKey) {

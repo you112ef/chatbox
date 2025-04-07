@@ -1,93 +1,65 @@
-import { apiRequest } from '@/utils/request'
-import { Message, StreamTextResult } from 'src/shared/types'
-import Base, { CallChatCompletionOptions, ModelHelpers } from './base'
-import { ApiError } from './errors'
-import { getMessageText } from '@/utils/message'
+import { ModelMeta } from 'src/shared/types'
+import { ModelHelpers } from './base'
+import OpenAICompatible from './openai-compatible'
+
+const modelConfig: ModelMeta = {
+  'glm-4-plus': {
+    contextWindow: 128_000,
+    functionCalling: true,
+    vision: false,
+  },
+  'glm-4-air': {
+    contextWindow: 128_000,
+    functionCalling: true,
+    vision: false,
+  },
+  'glm-4-flash': {
+    contextWindow: 128_000,
+    functionCalling: true,
+  },
+  'glm-4v-plus-0111': {
+    contextWindow: 16_000,
+    vision: true,
+  },
+  'glm-4v-flash': {
+    contextWindow: 16_000,
+    vision: true,
+  },
+}
+
+export const chatglmModels = Object.keys(modelConfig)
 
 const helpers: ModelHelpers = {
   isModelSupportVision: (model: string) => {
-    return false
+    return modelConfig[model]?.vision ?? false
   },
   isModelSupportToolUse: (model: string) => {
-    return false
+    return modelConfig[model]?.functionCalling ?? false
   },
 }
 
 interface Options {
-  chatglm6bUrl: string
+  chatglmApiKey: string
+  chatglmModel: string
 }
 
-export default class ChatGLM extends Base {
+export default class ChatGLM extends OpenAICompatible {
   public name = 'ChatGLM'
   public static helpers = helpers
 
   constructor(public options: Options) {
-    super()
+    super({
+      apiKey: options.chatglmApiKey,
+      apiHost: 'https://open.bigmodel.cn/api/paas/v4/',
+      model: options.chatglmModel,
+    })
   }
 
   isSupportToolUse() {
-    return false
+    return helpers.isModelSupportToolUse(this.options.chatglmModel)
   }
 
-  protected async callChatCompletion(
-    messages: Message[],
-    options: CallChatCompletionOptions
-  ): Promise<StreamTextResult> {
-    let prompt = ''
-    const history: [string, string][] = []
-    let userTmp = ''
-    let assistantTmp = ''
-    for (const msg of messages) {
-      switch (msg.role) {
-        case 'system':
-          history.push([getMessageText(msg), '好的，我照做，一切都听你的'])
-          prompt = getMessageText(msg)
-          break
-        case 'user':
-          if (assistantTmp) {
-            history.push([userTmp, assistantTmp])
-            userTmp = ''
-            assistantTmp = ''
-          }
-          if (userTmp) {
-            userTmp += '\n' + getMessageText(msg)
-          } else {
-            userTmp = getMessageText(msg)
-          }
-          prompt = getMessageText(msg)
-          break
-        case 'assistant':
-          if (assistantTmp) {
-            assistantTmp += '\n' + getMessageText(msg)
-          } else {
-            assistantTmp = getMessageText(msg)
-          }
-          break
-      }
-    }
-    if (assistantTmp) {
-      history.push([userTmp, assistantTmp])
-    }
-    const res = await apiRequest.post(
-      this.options.chatglm6bUrl,
-      {
-        'Content-Type': 'application/json',
-      },
-      {
-        prompt,
-        history,
-        // temperature,
-      },
-      { signal: options.signal }
-    )
-    const json = await res.json()
-    if (json.status !== 200) {
-      throw new ApiError(JSON.stringify(json))
-    }
-    const str: string = typeof json.response === 'string' ? json.response : JSON.stringify(json.response)
-    options.onResultChange?.({ contentParts: [{ type: 'text', text: str }] })
-    return {
-      contentParts: [{ type: 'text', text: str }],
-    }
+  protected async listRemoteModels() {
+    return []
   }
 }

@@ -17,6 +17,7 @@ import MaxContextMessageCountSlider, {
   toBeRemoved_getContextMessageCount,
 } from '@/components/MaxContextMessageCountSlider'
 import ChatboxAIModelSelect from '@/components/model-select/ChatboxAIModelSelect'
+import ChatGLMModelSelect from '@/components/model-select/ChatGLMModelSelect'
 import ClaudeModelSelect from '@/components/model-select/ClaudeModelSelect'
 import DeepSeekModelSelect from '@/components/model-select/DeepSeekModelSelect'
 import GeminiModelSelect from '@/components/model-select/GeminiModelSelect'
@@ -333,7 +334,15 @@ function ChatConfig(props: { dataEdit: Session; setDataEdit: (data: Session) => 
           />
         </>
       )}
-      {mergedSettings.aiProvider === ModelProvider.ChatGLM6B && <></>}
+      {mergedSettings.aiProvider === ModelProvider.ChatGLM6B && (
+        <>
+          <ChatGLMModelSelect
+            settingsEdit={mergedSettings}
+            setSettingsEdit={updateSettingsEdit}
+            className={specificSettings.chatglmModel === undefined ? 'opacity-50' : ''}
+          />
+        </>
+      )}
       {mergedSettings.aiProvider === ModelProvider.Claude && (
         <>
           <ClaudeModelSelect

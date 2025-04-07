@@ -1,8 +1,7 @@
 import { ModelSettings, Session, SessionType, Settings } from 'src/shared/types'
-import { ModelSettingUtil } from './interface'
-import { GroqModel, groqModels } from '../models/groq'
-import BaseConfig from './base-config'
 import Groq from '../models/groq'
+import BaseConfig from './base-config'
+import { ModelSettingUtil } from './interface'
 
 export default class GroqSettingUtil extends BaseConfig implements ModelSettingUtil {
   async getCurrentModelDisplayName(settings: Settings, sessionType: SessionType): Promise<string> {
@@ -14,16 +13,7 @@ export default class GroqSettingUtil extends BaseConfig implements ModelSettingU
   }
 
   public getLocalOptionGroups(settings: ModelSettings) {
-    return [
-      {
-        options: [...groqModels].sort().map((value) => {
-          return {
-            label: value,
-            value: value,
-          }
-        }),
-      },
-    ]
+    return []
   }
 
   protected async listProviderModels(settings: ModelSettings) {
@@ -34,7 +24,7 @@ export default class GroqSettingUtil extends BaseConfig implements ModelSettingU
   selectSessionModel(settings: Session['settings'], selected: string): Session['settings'] {
     return {
       ...settings,
-      groqModel: selected as GroqModel,
+      groqModel: selected,
     }
   }
 
