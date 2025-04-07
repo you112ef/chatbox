@@ -52,6 +52,7 @@ export class AppUpdater {
 
         if (settings.betaUpdate) {
           autoUpdater.channel = 'beta'
+          autoUpdater.allowDowngrade = false
         }
         const result = await autoUpdater.checkForUpdatesAndNotify()
         if (result) {
