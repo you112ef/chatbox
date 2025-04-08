@@ -545,17 +545,6 @@ export async function submitNewUserMessage(params: {
   }
 
   try {
-    // 如果本次发送消息携带了图片，检查当前模型是否支持
-    if (newUserMsg.contentParts.some((p) => p.type === 'image')) {
-      if (!isModelSupportImageInput(settings)) {
-        // 根据当前 IP，判断是否在错误中推荐 Chatbox AI 4
-        if (remoteConfig.setting_chatboxai_first) {
-          throw ChatboxAIAPIError.fromCodeName('model_not_support_image', 'model_not_support_image')
-        } else {
-          throw ChatboxAIAPIError.fromCodeName('model_not_support_image', 'model_not_support_image_2')
-        }
-      }
-    }
 
     // 如果本次消息开启了联网问答，需要检查当前模型是否支持
     // 桌面版&手机端总是支持联网问答，不再需要检查模型是否支持
