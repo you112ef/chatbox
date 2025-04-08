@@ -1,292 +1,91 @@
-import dayjs from 'dayjs'
-import storage from '@/storage'
-import * as settingActions from '@/stores/settingActions'
-import { apiRequest } from '@/utils/request'
-import { handleSSE } from '@/utils/stream'
-import { isEmpty } from 'lodash'
-import { Message, MessageToolCalls, StreamTextResult } from 'src/shared/types'
-import { webSearchTool } from '../web-search'
-import Base, { CallChatCompletionOptions, ModelHelpers, onResultChange } from './base'
-import { ApiError, ChatboxAIAPIError } from './errors'
+import { fetchWithProxy } from '@/utils/request'
+import { createOpenAI } from '@ai-sdk/openai'
+import { extractReasoningMiddleware, wrapLanguageModel } from 'ai'
+import AbstractAISDKModel from './abstract-ai-sdk'
+import { ModelHelpers } from './base'
 import { normalizeOpenAIApiHostAndPath } from './llm_utils'
-import { cloneMessage, getMessageText } from '@/utils/message'
+import { fetchRemoteModels } from './openai-compatible'
 
 const helpers: ModelHelpers = {
   isModelSupportVision: (model: string) => {
-    return isSupportVision(model)
+    return openaiModelConfigs[model as OpenAIModel]?.vision !== false
   },
   isModelSupportToolUse: (model: string) => {
-    return model !== 'custom-model'
+    return true
   },
 }
 
 interface Options {
-  openaiKey: string
+  apiKey: string
   apiHost: string
-  apiPath?: string
-  model: OpenAIModel | 'custom-model'
+  model: OpenAIModel | string
   dalleStyle: 'vivid' | 'natural'
-  openaiCustomModel?: string // OpenAI 自定义模型的 ID
-  // openaiMaxTokens: number
   temperature: number
   topP?: number
   injectDefaultMetadata: boolean
-  openaiUseProxy: boolean
+  useProxy: boolean
 }
 
-export default class OpenAI extends Base {
+export default class OpenAI extends AbstractAISDKModel {
   public name = 'OpenAI'
   public static helpers = helpers
+  public options: Options
 
-  constructor(public options: Options) {
+  constructor(options: Options) {
     super()
-    const { apiHost, apiPath } = normalizeOpenAIApiHostAndPath(this.options)
-    this.options.apiHost = apiHost
-    this.options.apiPath = apiPath
+    const { apiHost } = normalizeOpenAIApiHostAndPath(options)
+    this.options = { ...options, apiHost }
   }
 
-  isSupportToolUse() {
-    return helpers.isModelSupportToolUse(this.options.openaiCustomModel ?? this.options.model)
+  public isSupportToolUse() {
+    return helpers.isModelSupportToolUse(this.options.model)
   }
 
-  protected get webSearchModel(): string {
-    return this.options.openaiCustomModel ?? this.options.model
-  }
-
-  async callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<StreamTextResult> {
-    try {
-      return await this._callChatCompletion(rawMessages, options)
-    } catch (e) {
-      // 如果当前模型不支持图片输入，抛出对应的错误
-      if (
-        e instanceof ApiError &&
-        e.message.includes('Invalid content type. image_url is only supported by certain models.')
-      ) {
-        // 根据当前 IP，判断是否在错误中推荐 Chatbox AI 4
-        const remoteConfig = settingActions.getRemoteConfig()
-        if (remoteConfig.setting_chatboxai_first) {
-          throw ChatboxAIAPIError.fromCodeName('model_not_support_image', 'model_not_support_image')
-        } else {
-          throw ChatboxAIAPIError.fromCodeName('model_not_support_image', 'model_not_support_image_2')
-        }
-      }
-      throw e
-    }
-  }
-
-  async _callChatCompletion(rawMessages: Message[], options: CallChatCompletionOptions): Promise<StreamTextResult> {
-    const model = this.options.model === 'custom-model' ? this.options.openaiCustomModel || '' : this.options.model
-    if (this.options.injectDefaultMetadata) {
-      rawMessages = injectModelSystemPrompt(model, rawMessages)
-    }
-    if (isOSeriesModel(model)) {
-      const messages = await populateOSeriesMessage(rawMessages, model)
-      return this.requestChatCompletionsNotStream({ model, messages }, options.signal, options.onResultChange)
-    }
-    const messages = await populateGPTMessage(rawMessages, this.options.model)
-    const requestBody = {
-      messages,
-      model,
-      // vision 模型的默认 max_tokens 极低，基本很难回答完整，因此手动设置为模型最大值
-      max_tokens:
-        this.options.model === 'gpt-4-vision-preview'
-          ? openaiModelConfigs['gpt-4-vision-preview'].maxTokens
-          : undefined,
-      temperature: this.options.temperature,
-      top_p: this.options.topP,
-      stream: true,
-      tools: options?.webBrowsing ? [webSearchTool] : undefined,
-    }
-    const proceed = () => this.requestChatCompletionsStream(requestBody, options.signal, options.onResultChange)
-
-    if (!options?.webBrowsing || this.isSupportToolUse()) {
-      return proceed()
-    }
-
-    // 正常不应该走到这里，在base里会进入通用搜索
-    requestBody.tools = undefined
-    return proceed()
-  }
-
-  async requestChatCompletionsStream(
-    requestBody: Record<string, any>,
-    signal?: AbortSignal,
-    onResultChange?: onResultChange
-  ): Promise<StreamTextResult> {
-    const response = await apiRequest.post(
-      `${this.options.apiHost}${this.options.apiPath}`,
-      this.getHeaders(),
-      requestBody,
-      {
-        signal,
-        useProxy: this.options.openaiUseProxy,
-      }
-    )
-    let result = ''
-    let reasoningContent = ''
-    const finalToolCalls: MessageToolCalls = {}
-    await handleSSE(response, (message) => {
-      if (message === '[DONE]') {
-        return
-      }
-      const data = JSON.parse(message)
-      if (data.error) {
-        throw new ApiError(`Error from ${this.name}: ${JSON.stringify(data)}`)
-      }
-
-      // model decide to use tools
-      if (data.choices[0]?.delta?.tool_calls) {
-        const toolCalls = data.choices[0].delta.tool_calls || []
-        for (const toolCall of toolCalls) {
-          const { index } = toolCall
-
-          if (!finalToolCalls[index]) {
-            finalToolCalls[index] = toolCall
+  private getProvider() {
+    return createOpenAI({
+      apiKey: this.options.apiKey,
+      baseURL: this.options.apiHost,
+      fetch: this.options.useProxy ? fetchWithProxy : undefined,
+      headers: this.options.apiHost.includes('openrouter.ai')
+        ? {
+            'HTTP-Referer': 'https://chatboxai.app',
+            'X-Title': 'Chatbox AI',
           }
-
-          finalToolCalls[index].function.arguments += toolCall.function.arguments
-        }
-        if (onResultChange) {
-          onResultChange({
-            contentParts: [{ type: 'text', text: result }],
-            reasoningContent,
-            toolCalls: finalToolCalls,
-          })
-        }
-      }
-
-      const part = data.choices[0]?.delta?.content
-      if (typeof part === 'string') {
-        result += part
-        if (onResultChange) {
-          onResultChange({
-            contentParts: [{ type: 'text', text: result }],
-            reasoningContent,
-            toolCalls: finalToolCalls,
-          })
-        }
-      }
-      // 支持 deepseek r1 的思考链
-      const reasoningContentPart = data.choices[0]?.delta?.reasoning_content || data.choices[0]?.delta?.reasoning
-      if (typeof reasoningContentPart === 'string') {
-        if (!reasoningContent) {
-          reasoningContent = ''
-        }
-        reasoningContent += reasoningContentPart
-        if (onResultChange) {
-          onResultChange({
-            contentParts: [{ type: 'text', text: result }],
-            reasoningContent,
-            toolCalls: finalToolCalls,
-          })
-        }
-      }
-      // 处理一些本地部署或三方的 deepseek-r1 返回中的 <think>...</think> 思考链
-      if (
-        !reasoningContent &&
-        this.options.model.includes('deepseek-r') &&
-        result.includes('<think>') &&
-        result.includes('</think>')
-      ) {
-        const index = result.lastIndexOf('</think>')
-        reasoningContent = result.slice(0, index + 8)
-        result = result.slice(index + 8)
-      }
-      if (onResultChange) {
-        onResultChange({ contentParts: [{ type: 'text', text: result }], reasoningContent, toolCalls: finalToolCalls })
-      }
+        : undefined,
     })
-    return { contentParts: [{ type: 'text', text: result }] }
   }
 
-  async requestChatCompletionsNotStream(
-    requestBody: Record<string, any>,
-    signal?: AbortSignal,
-    onResultChange?: onResultChange
-  ): Promise<StreamTextResult> {
-    const response = await apiRequest.post(
-      `${this.options.apiHost}${this.options.apiPath}`,
-      this.getHeaders(),
-      requestBody,
-      {
-        signal,
-        useProxy: this.options.openaiUseProxy,
-      }
-    )
-    const json = await response.json()
-    if (json.error) {
-      throw new ApiError(`Error from OpenAI: ${JSON.stringify(json)}`)
-    }
-    const content: string = json.choices[0].message.content || ''
-    if (onResultChange) {
-      onResultChange({ contentParts: [{ type: 'text', text: content }] })
-    }
-    return { contentParts: [{ type: 'text', text: content }] }
+  protected getChatModel() {
+    const provider = this.getProvider()
+    return wrapLanguageModel({
+      model: provider.chat(this.options.model),
+      middleware: extractReasoningMiddleware({ tagName: 'think' }),
+    })
   }
 
-  async callImageGeneration(prompt: string, signal?: AbortSignal): Promise<string> {
-    const res = await apiRequest.post(
-      `${this.options.apiHost}/images/generations`,
-      this.getHeaders(),
-      {
-        prompt,
-        response_format: 'b64_json',
-        model: 'dall-e-3',
-        style: this.options.dalleStyle,
-      },
-      { signal }
-    )
-    const json = await res.json()
-    return json['data'][0]['b64_json']
+  protected getImageModel() {
+    const provider = this.getProvider()
+    return provider.image('dall-e-3')
   }
 
-  getHeaders() {
-    const headers: Record<string, string> = {
-      Authorization: `Bearer ${this.options.openaiKey}`,
-      'Content-Type': 'application/json',
+  protected getCallSettings() {
+    return {
+      temperature: this.options.temperature,
+      topP: this.options.topP,
     }
-    if (this.options.apiHost.includes('openrouter.ai')) {
-      // 希望可以得到 https://openrouter.ai/ 的排名
-      headers['HTTP-Referer'] = 'https://chatboxai.app'
-      headers['X-Title'] = 'Chatbox AI'
-    }
-    return headers
+  }
+
+  public listModels() {
+    return fetchRemoteModels({
+      apiHost: this.options.apiHost,
+      apiKey: this.options.apiKey,
+      useProxy: this.options.useProxy,
+    })
   }
 }
 
 // Ref: https://platform.openai.com/docs/models/gpt-4
 export const openaiModelConfigs = {
-  'gpt-3.5-turbo': {
-    maxTokens: 4096, // 模型支持最大的token数
-    maxContextTokens: 16_385,
-    vision: false,
-  },
-  'gpt-3.5-turbo-16k': {
-    maxTokens: 4096,
-    maxContextTokens: 16_385,
-    vision: false,
-  },
-  'gpt-3.5-turbo-1106': {
-    maxTokens: 4096,
-    maxContextTokens: 16_385,
-    vision: false,
-  },
-  'gpt-3.5-turbo-0125': {
-    maxTokens: 4096,
-    maxContextTokens: 16_385,
-    vision: false,
-  },
-  'gpt-3.5-turbo-0613': {
-    maxTokens: 4096,
-    maxContextTokens: 4_096,
-    vision: false,
-  },
-  'gpt-3.5-turbo-16k-0613': {
-    maxTokens: 4096,
-    maxContextTokens: 16_385,
-    vision: false,
-  },
-
   'gpt-4o-mini': {
     maxTokens: 4_096,
     maxContextTokens: 128_000,
@@ -418,125 +217,3 @@ export const openaiModelConfigs = {
 }
 
 export type OpenAIModel = keyof typeof openaiModelConfigs
-export const models = Array.from(Object.keys(openaiModelConfigs)).sort() as OpenAIModel[]
-
-export function isOSeriesModel(model: string): boolean {
-  return /o\d+/.test(model)
-}
-
-function isSupportVision(model: OpenAIModel | 'custom-model' | string): boolean {
-  // 因为历史原因，有些用户会在 openai 提供商的设置中使用其他厂商的模型
-  return (
-    model === 'custom-model' ||
-    (openaiModelConfigs[model as OpenAIModel] && openaiModelConfigs[model as OpenAIModel].vision)
-  )
-}
-
-export async function populateGPTMessage(
-  rawMessages: Message[],
-  model: OpenAIModel | 'custom-model'
-): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
-  if (isSupportVision(model) && rawMessages.some((m) => m.contentParts.some((p) => p.type === 'image'))) {
-    return populateOpenAIMessageVision(rawMessages)
-  } else {
-    return populateOpenAIMessageText(rawMessages)
-  }
-}
-
-export async function populateOSeriesMessage(
-  rawMessages: Message[],
-  model: string
-): Promise<OpenAIMessage[] | OpenAIMessageVision[]> {
-  let messages =
-    isSupportVision(model) && rawMessages.some((m) => m.contentParts.some((p) => p.type === 'image'))
-      ? await populateOpenAIMessageVision(rawMessages)
-      : await populateOpenAIMessageText(rawMessages)
-  for (const [i, m] of messages.entries()) {
-    if (messages[i].role === 'system') {
-      messages[i].role = 'user'
-    }
-  }
-  return messages
-}
-
-export async function populateOpenAIMessageText(rawMessages: Message[]): Promise<OpenAIMessage[]> {
-  const messages: OpenAIMessage[] = rawMessages.map((m) => ({
-    tool_call_id: m.role === 'tool' ? m.id : undefined,
-    role: m.role,
-    content: getMessageText(m),
-    tool_calls: isEmpty(m.toolCalls) ? undefined : Object.values(m.toolCalls),
-  }))
-  return messages
-}
-
-export async function populateOpenAIMessageVision(rawMessages: Message[]): Promise<OpenAIMessageVision[]> {
-  const messages: OpenAIMessageVision[] = []
-  for (const m of rawMessages) {
-    const content: OpenAIMessageVision['content'] = [{ type: 'text', text: getMessageText(m) }]
-    for (const p of m.contentParts) {
-      if (p.type === 'image') {
-        if (!p.storageKey) {
-          continue
-        }
-        const picBase64 = await storage.getBlob(p.storageKey)
-        if (!picBase64) {
-          continue
-        }
-        content.push({
-          type: 'image_url',
-          image_url: { url: picBase64 },
-        })
-      }
-    }
-    messages.push({ role: m.role, content } as OpenAIMessageVision)
-  }
-  return messages
-}
-
-/**
- * 在 system prompt 中注入模型信息
- * @param model
- * @param messages
- * @returns
- */
-export function injectModelSystemPrompt(model: string, messages: Message[]) {
-  const metadataPrompt = `Current model: ${model}\nCurrent date: ${dayjs().format('YYYY-MM-DD')}\n`
-  let hasInjected = false
-  return messages.map((m) => {
-    if (m.role === 'system' && !hasInjected) {
-      m = cloneMessage(m) // 复制，防止原始数据在其他地方被直接渲染使用
-      m.contentParts = [{ type: 'text', text: metadataPrompt + getMessageText(m) }]
-      hasInjected = true
-    }
-    return m
-  })
-}
-
-// OpenAIMessage OpenAI API 消息类型。（对于业务追加的字段，应该放到 Message 中）
-export interface OpenAIMessage {
-  role: 'system' | 'user' | 'assistant' | 'tool'
-  content: string
-  name?: string
-}
-
-// vision 版本的 OpenAI 消息类型
-export interface OpenAIMessageVision {
-  role: 'system' | 'user' | 'assistant' | 'tool'
-  content:
-    | string
-    | (
-        | {
-            type: 'text'
-            text: string
-          }
-        | {
-            type: 'image_url'
-            image_url: {
-              // 可以是 url，也可以是 base64
-              // data:image/jpeg;base64,{base64_image}
-              url: string
-              detail?: 'auto' | 'low' | 'high' // default: auto
-            }
-          }
-      )[]
-}

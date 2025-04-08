@@ -59,7 +59,7 @@ export default class ChatGLM extends OpenAICompatible {
     return helpers.isModelSupportToolUse(this.options.chatglmModel)
   }
 
-  protected async listRemoteModels() {
+  public async listModels() {
     return []
   }
 }

@@ -1,5 +1,3 @@
-import { Message } from 'src/shared/types'
-
 export function normalizeOpenAIApiHostAndPath(options: { apiHost?: string; apiPath?: string }) {
   let { apiHost, apiPath } = options
   if (apiHost) {

@@ -1,12 +1,13 @@
 import storage from '@/storage'
 import * as settingActions from '@/stores/settingActions'
 import { saveImage } from '@/utils/image'
-import { getMessageText, sequenceMessages } from '@/utils/message'
+import { cloneMessage, getMessageText, sequenceMessages } from '@/utils/message'
 import { GoogleGenerativeAIProviderMetadata } from '@ai-sdk/google'
 import {
   CoreMessage,
   CoreSystemMessage,
   FilePart,
+  experimental_generateImage as generateImage,
   ImageModel,
   ImagePart,
   jsonSchema,
@@ -16,8 +17,8 @@ import {
   tool,
   ToolCallPart,
   ToolSet,
-  experimental_generateImage as generateImage,
 } from 'ai'
+import dayjs from 'dayjs'
 import { compact, isEmpty } from 'lodash'
 import {
   Message,
@@ -31,7 +32,6 @@ import {
 import { webSearchTool as rawWebSearchTool } from '../web-search'
 import { CallChatCompletionOptions, ModelInterface } from './base'
 import { ApiError, ChatboxAIAPIError } from './errors'
-import { injectModelSystemPrompt } from './openai'
 
 const webSearchTool = tool({
   description: rawWebSearchTool.function.description,
@@ -130,7 +130,7 @@ export default abstract class AbstractAISDKModel implements ModelInterface {
       messages: coreMessages,
       tools: options?.webBrowsing ? { web_search: webSearchTool } : undefined,
       abortSignal: options.signal,
-      ...this.getCallSettings(options),     
+      ...this.getCallSettings(options),
     })
 
     let blockIndex = 0
@@ -290,4 +290,23 @@ async function convertToCoreMessages(messages: Message[]): Promise<CoreMessage[]
       }
     })
   )
+}
+
+/**
+ * 在 system prompt 中注入模型信息
+ * @param model
+ * @param messages
+ * @returns
+ */
+function injectModelSystemPrompt(model: string, messages: Message[]) {
+  const metadataPrompt = `Current model: ${model}\nCurrent date: ${dayjs().format('YYYY-MM-DD')}\n`
+  let hasInjected = false
+  return messages.map((m) => {
+    if (m.role === 'system' && !hasInjected) {
+      m = cloneMessage(m) // 复制，防止原始数据在其他地方被直接渲染使用
+      m.contentParts = [{ type: 'text', text: metadataPrompt + getMessageText(m) }]
+      hasInjected = true
+    }
+    return m
+  })
 }

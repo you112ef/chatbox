@@ -13,13 +13,23 @@ import SiliconFlow from './siliconflow'
 import Perplexity from './perplexity'
 import XAI from './xai'
 import type { ModelInterface } from './base'
+import CustomOpenAI from './custom-openai'
 
 export function getModel(setting: Settings, config: Config): ModelInterface {
   switch (setting.aiProvider) {
     case ModelProvider.ChatboxAI:
       return new ChatboxAI(setting, config)
     case ModelProvider.OpenAI:
-      return new OpenAI({ ...setting, apiPath: undefined }) // 因为 OpenAI 会修改传入的 option，如果不复制可能导致状态异常
+      return new OpenAI({
+        apiKey: setting.openaiKey,
+        apiHost: setting.apiHost,
+        model: (setting.model === 'custom-model' && setting.openaiCustomModel) || setting.model,
+        dalleStyle: setting.dalleStyle,
+        temperature: setting.temperature,
+        topP: setting.topP,
+        injectDefaultMetadata: setting.injectDefaultMetadata,
+        useProxy: setting.openaiUseProxy,
+      })
     case ModelProvider.Azure:
       return new AzureOpenAI(setting)
     case ModelProvider.ChatGLM6B:
@@ -49,18 +59,14 @@ export function getModel(setting: Settings, config: Config): ModelInterface {
       if (!customProvider) {
         throw new Error('Cannot find the custom provider')
       }
-      return new OpenAI({
-        openaiKey: customProvider.key,
+      return new CustomOpenAI({
+        apiKey: customProvider.key,
         apiHost: customProvider.host,
         apiPath: customProvider.path,
-        model: 'custom-model',
-        openaiCustomModel: customProvider.model,
-        dalleStyle: 'vivid',
-        // openaiMaxTokens: number
+        model: customProvider.model,
         temperature: setting.temperature,
         topP: setting.topP,
-        injectDefaultMetadata: setting.injectDefaultMetadata,
-        openaiUseProxy: customProvider.useProxy || false,
+        useProxy: customProvider.useProxy,
       })
     default:
       throw new Error('Cannot find model with provider: ' + setting.aiProvider)

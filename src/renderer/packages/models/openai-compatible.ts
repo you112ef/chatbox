@@ -39,29 +39,19 @@ export default abstract class OpenAICompatible extends AbstractAISDKModel implem
 
   public abstract isSupportToolUse(): boolean
 
-  protected async listRemoteModels(): Promise<string[]> {
-    const response = await apiRequest.get(
-      `${this.settings.apiHost}/models`,
-      {
-        Authorization: `Bearer ${this.settings.apiKey}`,
-      },
-      {
-        useProxy: this.settings.useProxy,
-      }
-    )
-    const json: ListModelsResponse = await response.json()
-    if (!json.data) {
-      throw new ApiError(JSON.stringify(json))
-    }
-    return json.data.map((item) => item.id)
-  }
-
   public async listModels(): Promise<string[]> {
-    return this.listRemoteModels().catch(() => [])
+    return fetchRemoteModels({
+      apiHost: this.settings.apiHost,
+      apiKey: this.settings.apiKey,
+      useProxy: this.settings.useProxy,
+    }).catch((err) => {
+      console.error(err)
+      return []
+    })
   }
 }
 
-export interface ListModelsResponse {
+interface ListModelsResponse {
   object: 'list'
   data: {
     id: string
@@ -69,4 +59,21 @@ export interface ListModelsResponse {
     created: number
     owned_by: string
   }[]
+}
+
+export async function fetchRemoteModels(params: { apiHost: string; apiKey: string; useProxy?: boolean }) {
+  const response = await apiRequest.get(
+    `${params.apiHost}/models`,
+    {
+      Authorization: `Bearer ${params.apiKey}`,
+    },
+    {
+      useProxy: params.useProxy,
+    }
+  )
+  const json: ListModelsResponse = await response.json()
+  if (!json.data) {
+    throw new ApiError(JSON.stringify(json))
+  }
+  return json.data.map((item) => item.id)
 }
