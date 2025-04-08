@@ -15,10 +15,10 @@ if (platform.type !== 'desktop') {
 
 export async function tickStorageTask() {
   const allBlobKeys = await storage.getBlobKeys()
-  const storageKeys = [
-    ...allBlobKeys.filter((key) => key.startsWith('picture:')),
-    ...allBlobKeys.filter((key) => key.startsWith('file:')),
-  ]
+  const prefixes = ['picture:', 'file:', 'parseUrl-', 'parseFile-']
+  const storageKeys = allBlobKeys.filter((key) => 
+    prefixes.some(prefix => key.startsWith(prefix))
+  )
   if (storageKeys.length === 0) {
     return
   }
@@ -43,6 +43,11 @@ export async function tickStorageTask() {
       for (const part of msg.contentParts || []) {
         if (part.type === 'image' && part.storageKey) {
           needDeletedSet.delete(part.storageKey)
+        }
+      }
+      for (const link of msg.links || []) {
+        if (link.storageKey) {
+          needDeletedSet.delete(link.storageKey)
         }
       }
       if (needDeletedSet.size === 0) {
