@@ -77,9 +77,7 @@ function Copilots() {
       starred: false,
       copilotId: copilot.id,
     })
-    navigate({
-      to: `/session/${newSession.id}`,
-    })
+    sessionActions.switchCurrentSession(newSession.id)
     trackingEvent('create_copilot_conversation', { event_category: 'user' })
   }
   const handleClose = () => {

@@ -90,11 +90,7 @@ export function createEmpty(type: 'chat' | 'picture') {
     default:
       throw new Error(`Unknown session type: ${type}`)
   }
-
-  router.navigate({
-    to: `/session/${newSession.id}`,
-  })
-
+  switchCurrentSession(newSession.id)
   return newSession
 }
 

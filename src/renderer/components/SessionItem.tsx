@@ -28,7 +28,6 @@ export interface Props {
 
 function _SessionItem(props: Props) {
   const { session, selected } = props
-  const navigate = useNavigate()
   const { t } = useTranslation()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
@@ -42,9 +41,6 @@ function _SessionItem(props: Props) {
   }
   const onClick = () => {
     sessionActions.switchCurrentSession(session.id)
-    navigate({
-      to: `/session/${session.id}`,
-    })
   }
   const theme = useTheme()
   const medianSize = theme.typography.pxToRem(24)
