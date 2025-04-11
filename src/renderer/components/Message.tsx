@@ -148,8 +148,8 @@ function _Message(props: Props) {
   }
 
   const handleStop = () => {
-    sessionActions.modifyMessage(props.sessionId, { ...msg, generating: false }, true)
     msg?.cancel?.()
+    sessionActions.modifyMessage(props.sessionId, { ...msg, generating: false }, true)
   }
 
   const handleRefresh = () => {
@@ -546,43 +546,46 @@ function _Message(props: Props) {
                 }
                 {contentParts && contentParts.length > 0 && (
                   <div>
-                    {contentParts.map((item, index) =>
-                      item.type === 'text' ? (
-                        <div key={index}>
-                          {enableMarkdownRendering && !isCollapsed ? (
-                            <Markdown
-                              enableLaTeXRendering={enableLaTeXRendering}
-                              enableMermaidRendering={enableMermaidRendering}
-                              generating={msg.generating}
-                              preferCollapsedCodeBlock={
-                                autoCollapseCodeBlock &&
-                                (preferCollapsedCodeBlock || msg.role !== 'assistant' || previewArtifact)
-                              }
-                            >
-                              {item.text || ''}
-                            </Markdown>
-                          ) : (
-                            <div style={{ whiteSpace: 'pre-line' }}>
-                              {needCollapse && isCollapsed ? item.text.slice(0, collapseThreshold) + '...' : item.text}
-                              {needCollapse && isCollapsed && CollapseButton}
-                            </div>
-                          )}
-                        </div>
-                      ) : item.type === 'image' ? (
-                        props.sessionType !== 'picture' && (
+                    {contentParts.map(
+                      (item, index) =>
+                        item.type === 'text' ? (
                           <div key={index}>
-                            <div
-                              className="w-[100px] min-w-[100px] h-[100px] min-h-[100px]
+                            {enableMarkdownRendering && !isCollapsed ? (
+                              <Markdown
+                                enableLaTeXRendering={enableLaTeXRendering}
+                                enableMermaidRendering={enableMermaidRendering}
+                                generating={msg.generating}
+                                preferCollapsedCodeBlock={
+                                  autoCollapseCodeBlock &&
+                                  (preferCollapsedCodeBlock || msg.role !== 'assistant' || previewArtifact)
+                                }
+                              >
+                                {item.text || ''}
+                              </Markdown>
+                            ) : (
+                              <div style={{ whiteSpace: 'pre-line' }}>
+                                {needCollapse && isCollapsed
+                                  ? item.text.slice(0, collapseThreshold) + '...'
+                                  : item.text}
+                                {needCollapse && isCollapsed && CollapseButton}
+                              </div>
+                            )}
+                          </div>
+                        ) : item.type === 'image' ? (
+                          props.sessionType !== 'picture' && (
+                            <div key={index}>
+                              <div
+                                className="w-[100px] min-w-[100px] h-[100px] min-h-[100px]
                                                     md:w-[200px] md:min-w-[200px] md:h-[200px] md:min-h-[200px]
                                                     inline-flex items-center justify-center                                                                                                                                                  
                                                     hover:cursor-pointer hover:border-slate-800/20 transition-all duration-200"
-                              onClick={() => showPicture(item.storageKey)}
-                            >
-                              {item.storageKey && <ImageInStorage storageKey={item.storageKey} className="w-full" />}
+                                onClick={() => showPicture(item.storageKey)}
+                              >
+                                {item.storageKey && <ImageInStorage storageKey={item.storageKey} className="w-full" />}
+                              </div>
                             </div>
-                          </div>
-                        )
-                      ) : null // 还有 tool-call 类型，这类消息是中间产物，暂时不会持久化到 session 中
+                          )
+                        ) : null // 还有 tool-call 类型，这类消息是中间产物，暂时不会持久化到 session 中
                     )}
                   </div>
                 )}
