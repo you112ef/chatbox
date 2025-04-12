@@ -32,6 +32,7 @@ import { AppUpdater } from './app-updater'
 import { ShortcutSetting } from 'src/shared/types'
 import { parseFile } from './file-parser'
 import { v4 as uuidv4 } from 'uuid'
+import { autoUpdater } from 'electron'
 // import { readability } from './readability'
 
 // 这行代码是解决 Windows 通知的标题和图标不正确的问题，标题会错误显示成 electron.app.Chatbox
@@ -357,7 +358,7 @@ if (!gotTheLock) {
       ensureTray()
       // Remove this if your app does not use auto updates
       // eslint-disable-next-line
-      new AppUpdater()
+      new AppUpdater(() => mainWindow?.webContents.send('update-downloaded', {}))
       app.on('activate', () => {
         // On macOS it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
@@ -548,4 +549,8 @@ ipcMain.handle('setFullscreen', (event, enable: boolean) => {
     }
     mainWindow.hide()
   }
+})
+
+ipcMain.handle('install-update', () => {
+  autoUpdater.quitAndInstall()
 })

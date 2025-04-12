@@ -1,27 +1,15 @@
-import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
-import Locale from './locales'
-import { dialog } from 'electron'
+import { autoUpdater } from 'electron-updater'
 import { getSettings } from './store-node'
 
 export class AppUpdater {
-  constructor() {
+  constructor(onUpdateDownloaded: () => void) {
     log.transports.file.level = 'info'
-    const locale = new Locale()
-
     autoUpdater.logger = log
+
     autoUpdater.once('update-downloaded', (event) => {
-      dialog
-        .showMessageBox({
-          type: 'info',
-          buttons: [locale.t('Restart'), locale.t('Later')],
-          title: locale.t('App_Update'),
-          message: event.releaseName || locale.t('New_Version'),
-          detail: locale.t('New_Version_Downloaded'),
-        })
-        .then((returnValue) => {
-          if (returnValue.response === 0) autoUpdater.quitAndInstall()
-        })
+      // Notify renderer process about the update
+      onUpdateDownloaded()
     })
     const settings = getSettings()
     if (settings.autoUpdate) {
