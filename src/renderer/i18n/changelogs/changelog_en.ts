@@ -1,4 +1,8 @@
 const changelog = `
+### v1.11.11 - 2025.04.15
+
+1. Fixed issue with web browsing
+
 ### v1.11.10 - 2025.04.15
 
 1. Improved update checking experience
