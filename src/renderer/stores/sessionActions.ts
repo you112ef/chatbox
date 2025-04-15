@@ -541,7 +541,6 @@ export async function submitNewUserMessage(params: {
   }
 
   try {
-
     // 如果本次消息开启了联网问答，需要检查当前模型是否支持
     // 桌面版&手机端总是支持联网问答，不再需要检查模型是否支持
     if (webBrowsing && platform.type === 'web' && !isModelSupportToolUse(settings)) {
@@ -820,6 +819,7 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
       errorExtra: {
         aiProvider: settings.aiProvider,
         host: err['host'],
+        responseBody: err.responseBody,
       },
       status: [],
     }
