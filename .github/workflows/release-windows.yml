@@ -2,7 +2,7 @@ name: Release Windows
 
 on:
   push:
-    tags: [v\d+\.\d+\.\d+, v\d+\.\d+\.\d+-beta\.\d+]
+    tags: [v\d+\.\d+\.\d+, v\d+\.\d+\.\d+-alpha\.\d+, v\d+\.\d+\.\d+-beta\.\d+]
 
 jobs:
   publish:
@@ -17,6 +17,9 @@ jobs:
         run: |
           if ($env:github_ref_name -match '-beta\.\d+$') {
               echo "UPDATE_CHANNEL=beta" | Out-File -FilePath $env:GITHUB_ENV -Append
+          }
+          if ($env:github_ref_name -match '-alpha\.\d+$') {
+              echo "UPDATE_CHANNEL=alpha" | Out-File -FilePath $env:GITHUB_ENV -Append
           }
 
       - name: Checkout git repo
