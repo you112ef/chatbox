@@ -15,7 +15,7 @@ export class TavilySearch extends WebSearch {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`,
+          Authorization: `Bearer ${this.apiKey}`,
         },
         body: {
           query,
@@ -29,7 +29,7 @@ export class TavilySearch extends WebSearch {
       const items = (response.results || []).map((result: any) => ({
         title: result.title,
         link: result.url,
-        abstract: result.content,
+        snippet: result.content,
       }))
 
       return { items }
@@ -38,4 +38,4 @@ export class TavilySearch extends WebSearch {
       return { items: [] }
     }
   }
-} 
+}
