@@ -32,7 +32,7 @@ import { AppUpdater } from './app-updater'
 import { ShortcutSetting } from 'src/shared/types'
 import { parseFile } from './file-parser'
 import { v4 as uuidv4 } from 'uuid'
-import { autoUpdater } from 'electron'
+import { autoUpdater } from 'electron-updater'
 // import { readability } from './readability'
 
 // 这行代码是解决 Windows 通知的标题和图标不正确的问题，标题会错误显示成 electron.app.Chatbox
