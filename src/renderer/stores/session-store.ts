@@ -5,7 +5,11 @@ import { copyMessage, copyThreads, Session } from 'src/shared/types'
 import { v4 as uuidv4 } from 'uuid'
 import { arrayMove } from '@dnd-kit/sortable'
 import { omit } from 'lodash'
-
+import { StorageKey } from '@/storage/StoreStorage'
+import { defaultSessionsForCN } from '@/packages/initial_data'
+import { defaultSessionsForEN } from '@/packages/initial_data'
+import platform from '@/platform'
+import storage from '@/storage'
 // session 的读写都放到这里，统一管理
 
 export function getSession(sessionId: string) {
@@ -64,4 +68,20 @@ export function copySession(source: Session): Session {
     messageForksHash: undefined, // 不复制分叉数据
   }
   return createSession(newSession, source.id)
+}
+
+export async function initSessionsIfNeeded() {
+  const sessions = await storage.getItem(StorageKey.ChatSessions, [])
+  if (sessions.length > 0) {
+    return
+  }
+  let value: Session[] = []
+  const lang = await platform.getLocale().catch((e) => 'en')
+  if (lang.startsWith('zh')) {
+    value = defaultSessionsForCN
+  } else {
+    value = defaultSessionsForEN
+  }
+  console.log('initSessionsIfNeeded', value)
+  await storage.setItemNow(StorageKey.ChatSessions, value)
 }

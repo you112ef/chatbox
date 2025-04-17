@@ -14,12 +14,7 @@ import WebPlatform from '@/platform/web_platform'
 import storage, { StorageKey } from '@/storage'
 import oldStore from 'store'
 
-export function migrate() {
-  // 通过定时器延迟启动，防止处理状态底层存储的异步加载前错误的初始数据（水合阶段）
-  setTimeout(_migrate, 2000)
-}
-
-async function _migrate() {
+export async function migrate() {
   let configVersion = await storage.getItem(StorageKey.ConfigVersion, 0)
   if (configVersion < 1) {
     await migrate_0_to_1()
