@@ -139,24 +139,69 @@ export function needBackup() {
 }
 
 /**
- * 清理备份文件，仅保留最近50个备份
+ * 清理备份文件：
+ * 1. 对于今天和昨天，每小时保留最后一份备份。
+ * 2. 对于昨天之前的 28 天内（即 3 天前到 30 天前），每天保留最后一份备份。
+ * 3. 删除 30 天前的所有备份。
  */
 export async function clearBackups() {
-  const limit = 50
-  const backups = getBackups()
-  if (backups.length < limit) {
+  const backups = getBackups() // Already sorted ascending by dateMs
+  if (backups.length === 0) {
     return
   }
-  const needDelete = backups.slice(0, backups.length - limit)
-  try {
-    await Promise.all(
-      needDelete.map(async (backup) => {
-        await fs.remove(backup.filepath)
-        log.info('store-node: clear backup:', backup.filename)
-      })
-    )
-  } catch (err) {
-    log.error('store-node: Failed to clear backups:', err)
+
+  const now = new Date()
+  const todayStartMs = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+  const yesterdayStartMs = todayStartMs - 24 * 60 * 60 * 1000
+  const thirtyDaysAgoStartMs = todayStartMs - 30 * 24 * 60 * 60 * 1000
+
+  const backupsToDelete: { filename: string; filepath: string }[] = []
+  const keptHourlyBackups: { [hourKey: string]: { filename: string; filepath: string } } = {} // Key: YYYY-MM-DD-HH
+  const keptDailyBackups: { [dateKey: string]: { filename: string; filepath: string } } = {} // Key: YYYY-MM-DD
+
+  for (const backup of backups) {
+    const backupDate = new Date(backup.dateMs)
+    const dateKey = backupDate.toISOString().slice(0, 10) // YYYY-MM-DD
+    const hourKey = `${dateKey}-${backupDate.toISOString().slice(11, 13)}` // YYYY-MM-DD-HH
+
+    if (backup.dateMs < thirtyDaysAgoStartMs) {
+      // Older than 30 days: mark for deletion
+      backupsToDelete.push({ filename: backup.filename, filepath: backup.filepath })
+    } else if (backup.dateMs < yesterdayStartMs) {
+      // Between 30 days ago and yesterday (exclusive): keep latest per day
+      const existingKept = keptDailyBackups[dateKey]
+      if (existingKept) {
+        // A backup for this day was already kept; mark the older one for deletion
+        backupsToDelete.push(existingKept)
+      }
+      // Keep the current one (it's the latest encountered for this day so far)
+      keptDailyBackups[dateKey] = { filename: backup.filename, filepath: backup.filepath }
+    } else {
+      // Today or yesterday: keep latest per hour
+      const existingKept = keptHourlyBackups[hourKey]
+      if (existingKept) {
+        // A backup for this hour was already kept; mark the older one for deletion
+        backupsToDelete.push(existingKept)
+      }
+      // Keep the current one (it's the latest encountered for this hour so far)
+      keptHourlyBackups[hourKey] = { filename: backup.filename, filepath: backup.filepath }
+    }
+  }
+
+  // Perform the actual deletions
+  if (backupsToDelete.length > 0) {
+    log.info(`store-node: Clearing ${backupsToDelete.length} old backup(s)...`)
+    try {
+      await Promise.all(
+        backupsToDelete.map(async (backup) => {
+          await fs.remove(backup.filepath)
+          // log.info('store-node: clear backup:', backup.filename) // Log per file might be too verbose
+        })
+      )
+      log.info('store-node: Finished clearing old backups.')
+    } catch (err) {
+      log.error('store-node: Failed to clear some backups:', err)
+    }
   }
 }
 
