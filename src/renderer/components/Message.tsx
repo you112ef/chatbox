@@ -36,7 +36,7 @@ import {
   showFirstTokenLatencyAtom,
   inputBoxWebBrowsingModeAtom,
 } from '../stores/atoms'
-import { currsentSessionPicUrlAtom, showTokenUsedAtom } from '../stores/atoms'
+import { currentSessionPicUrlAtom, showTokenUsedAtom } from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
 import * as toastActions from '../stores/toastActions'
 import * as scrollActions from '../stores/scrollActions'
@@ -98,7 +98,7 @@ const Message: FC<Props> = (props) => {
   const enableMarkdownRendering = useAtomValue(enableMarkdownRenderingAtom)
   const enableLaTeXRendering = useAtomValue(enableLaTeXRenderingAtom)
   const enableMermaidRendering = useAtomValue(enableMermaidRenderingAtom)
-  const currentSessionPicUrl = useAtomValue(currsentSessionPicUrlAtom)
+  const currentSessionPicUrl = useAtomValue(currentSessionPicUrlAtom)
   const messageScrollingScrollPosition = useAtomValue(messageScrollingScrollPositionAtom)
   const setPictureShow = useSetAtom(pictureShowAtom)
   const setOpenSettingWindow = useSetAtom(openSettingDialogAtom)
