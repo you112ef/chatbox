@@ -1,11 +1,12 @@
 const changelog = `
-### v1.12.0-beta.1 - 2025.04.22
+### v1.12.0-beta.2 - 2025.04.23
 
 1. Chatbox AI supports Gemini multimodal output
 2. Fixed issue where the web browsing switch was not synchronized when regenerating messages
 3. Improved desktop UI, removing native titlebar
 4. Optimized mobile storage performance
 5. Import backups now merge conversation lists instead of overwriting
+6. Update new thread icon
 
 ### v1.11.12 - 2025.04.15
 
