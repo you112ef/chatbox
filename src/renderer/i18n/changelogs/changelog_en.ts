@@ -1,5 +1,5 @@
 const changelog = `
-### v1.12.2-beta.2 - 2025.04.29
+### v1.12.2 - 2025.04.29
 
 1. Fixed initialization data migration performance issue
 
