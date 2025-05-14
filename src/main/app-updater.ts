@@ -1,6 +1,8 @@
-import log from 'electron-log/main'
 import { autoUpdater } from 'electron-updater'
 import { getSettings } from './store-node'
+import { getLogger } from './util'
+
+const log = getLogger('app-updater')
 
 export class AppUpdater {
   constructor(onUpdateDownloaded: () => void) {

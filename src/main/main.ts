@@ -8,32 +8,30 @@
  * When running `npm run build` or `npm run build:main`, this file is compiled to
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
+import { app, BrowserWindow, globalShortcut, ipcMain, Menu, nativeTheme, session, shell, Tray } from 'electron'
+import log from 'electron-log/main'
+import { autoUpdater } from 'electron-updater'
 import os from 'os'
 import path from 'path'
-import { app, BrowserWindow, globalShortcut, shell, ipcMain, nativeTheme, session, Tray, Menu } from 'electron'
-import log from 'electron-log/main'
-import MenuBuilder from './menu'
-import { resolveHtmlPath } from './util'
+import { ShortcutSetting } from 'src/shared/types'
+import * as analystic from './analystic-node'
+import { AppUpdater } from './app-updater'
+import * as autoLauncher from './autoLauncher'
+import { parseFile } from './file-parser'
 import Locale from './locales'
+import MenuBuilder from './menu'
+import * as proxy from './proxy'
 import {
-  store,
+  delStoreBlob,
   getConfig,
   getSettings,
-  delStoreBlob,
-  setStoreBlob,
-  listStoreBlobKeys,
   getStoreBlob,
+  listStoreBlobKeys,
+  setStoreBlob,
+  store,
 } from './store-node'
-import * as proxy from './proxy'
+import { resolveHtmlPath } from './util'
 import * as windowState from './window_state'
-import * as analystic from './analystic-node'
-import * as autoLauncher from './autoLauncher'
-import { AppUpdater } from './app-updater'
-import { ShortcutSetting } from 'src/shared/types'
-import { parseFile } from './file-parser'
-import { v4 as uuidv4 } from 'uuid'
-import { autoUpdater } from 'electron-updater'
-// import { readability } from './readability'
 
 // 这行代码是解决 Windows 通知的标题和图标不正确的问题，标题会错误显示成 electron.app.Chatbox
 // 参考：https://stackoverflow.com/questions/65859634/notification-from-electron-shows-electron-app-electron
@@ -428,7 +426,7 @@ ipcMain.handle('getAllStoreValues', (event) => {
 })
 ipcMain.handle('setAllStoreValues', (event, dataJson) => {
   const data = JSON.parse(dataJson)
-  store.store = data
+  store.store = { ...store.store, ...data }
 })
 
 ipcMain.handle('getStoreBlob', async (event, key) => {

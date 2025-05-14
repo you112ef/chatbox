@@ -61,4 +61,4 @@ jobs:
         run: |
           curl ${{ secrets.JKDPY_WEBHOOK_URL }} \
             -u ${{ secrets.JKDPY_WEBHOOK_USERNAME }}:${{ secrets.JKDPY_WEBHOOK_PASSWORD }} \
-            -d 'image_name=${{ fromJSON(steps.meta.outputs.json).tags[1] }}&branch_name=${{ github.ref_name }}&service_name=${{ env.PROJECT_NAME }}&commit_message="${{ github.event.head_commit.message }}"'
+            -d 'image_name=${{ fromJSON(steps.meta.outputs.json).tags[0] }}&branch_name=${{ github.ref_name }}&service_name=${{ env.PROJECT_NAME }}&commit_message="${{ github.event.head_commit.message }}"'

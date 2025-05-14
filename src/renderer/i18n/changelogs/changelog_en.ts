@@ -1,4 +1,20 @@
 const changelog = `
+### v1.12.3 - 2025.05.08
+
+1. Fixed issue where data was lost when upgrading from 1.9.x version on mobile
+2. Mac: Use Command key instead of Ctrl key for shortcut functions
+
+### v1.12.2 - 2025.04.29
+
+1. Fixed initialization data migration performance issue
+
+### v1.12.1 - 2025.04.28
+
+1. Fixed Latex rendering issue
+2. Fixed left sidebar top drag issue
+3. Fixed ChatboxAI error message display
+4. Added initialization process log display
+
 ### v1.12.0 - 2025.04.24
 
 1. Chatbox AI supports Gemini multimodal output

@@ -77,22 +77,16 @@ export default function Sidebar(props: {}) {
         <div className="ToolBar h-full">
           <Stack
             // 在 Mac 上给窗口控制按钮留出空间, 更完善的话切换到全屏时不需要留空间，但需要监听全屏状态变化，暂时不考虑
-            className={cn('pl-2 pr-1', needRoomForMacWindowControls ? 'pt-12' : 'pt-3')}
+            className={cn('pl-2 pr-1')}
             sx={{
               height: '100%',
             }}
           >
-            <Box
-              className={cn(
-                'flex justify-between items-center p-0 m-0 mx-2 mb-2',
-                'controls cursor-pointer'
-              )}
-            >
-              <Box>
-                <a href="https://chatboxai.app" target="_blank">
-                  <img src={icon} className="w-6 h-6 mr-2 align-middle inline-block" />
-                  <span className="text-xl font-semibold align-middle inline-block opacity-75">Chatbox</span>
-                </a>
+            <Box className={cn('flex title-bar items-center', needRoomForMacWindowControls ? 'pt-12' : 'pt-3')}></Box>
+            <Box className={cn('flex justify-between items-center p-0 m-0 mx-2 mb-2')}>
+              <Box className="title-bar">
+                <img src={icon} className="w-6 h-6 mr-2 align-middle inline-block" />
+                <span className="text-xl font-semibold align-middle inline-block opacity-75">Chatbox</span>
               </Box>
               <Box onClick={() => setShowSidebar(!showSidebar)}>
                 <IconButton
@@ -150,7 +144,7 @@ function SidebarButtons(props: { sessionListRef: React.RefObject<HTMLDivElement>
   return (
     <MenuList>
       <Box className="flex flex-col m-1 mb-2 gap-2">
-        <Button variant="contained" className="w-full gap-2" size="large" onClick={handleCreateNewSession}>
+        <Button variant="outlined" className="w-full gap-2" size="large" onClick={handleCreateNewSession}>
           <AddIcon fontSize="small" />
           <span className="flex flex-col normal-case">
             <span>{t('new chat')}</span>
