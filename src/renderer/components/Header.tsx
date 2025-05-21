@@ -125,6 +125,7 @@ export default function Header(props: Props) {
             flex: 1,
             overflow: 'hidden',
             textOverflow: 'ellipsis',
+            mr: 1,
           }}
           className="flex items-center w-0"
         >
