@@ -115,7 +115,7 @@ export default function Header(props: Props) {
           </IconButton>
         </Box>
       )}
-      <div className={cn('w-full mx-auto flex flex-row', 'pt-2 pb-2')}>
+      <div className={cn('w-full flex flex-row flex-grow pt-2 pb-2')}>
         <Typography
           variant="h6"
           color="inherit"
@@ -126,9 +126,9 @@ export default function Header(props: Props) {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
           }}
-          className="flex items-center"
+          className="flex items-center w-0"
         >
-          <div className={cn('controls flex flex-row items-center')}>
+          <div className={cn('controls flex flex-row items-center shrink w-full')}>
             <Typography
               variant="h6"
               noWrap

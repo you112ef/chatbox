@@ -21,7 +21,8 @@ const ProviderSelector = NiceModal.create(() => {
         modal.resolve()
         modal.hide()
       }}
-      maxWidth="sm"
+      maxWidth="xs"
+      fullWidth
     >
       <DialogContent>
         <Box sx={{ textAlign: 'center', mb: 2 }}>
@@ -29,7 +30,7 @@ const ProviderSelector = NiceModal.create(() => {
             {t('Select and configure an AI model provider')}
           </p>
         </Box>
-        <List sx={{ width: '100%', minWidth: 360 }}>
+        <List sx={{ width: '100%' }}>
           {AIModelProviderMenuOptionList.map((provider) => (
             <ListItem key={provider.value} disablePadding>
               <ListItemButton
