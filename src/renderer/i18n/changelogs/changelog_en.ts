@@ -1,9 +1,10 @@
 const changelog = `
-### v1.13.0-beta.1 - 2025.05.16
+### v1.13.0-beta.2 - 2025.05.22
 
 1. Refactor settings UI
 2. Quick switch to different model provider in chat session
 3. Fix a bug in moving thread to session
+4. Fix a bug in conversation search
 
 ### v1.12.3 - 2025.05.08
 
