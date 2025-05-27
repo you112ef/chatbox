@@ -6,13 +6,21 @@ import { ModelHelpers } from './types'
 import { ApiError } from './errors'
 import { normalizeClaudeHost } from './llm_utils'
 
-// https://docs.anthropic.com/claude/docs/models-overview
+// https://docs.anthropic.com/en/docs/about-claude/models/overview
 const modelConfig: ModelMeta = {
+  'claude-opus-4-0': {
+    contextWindow: 200_000,
+    maxOutput: 32_000,
+    vision: true,
+    functionCalling: true,
+    reasoning: true,
+  },
   'claude-sonnet-4-0': {
     contextWindow: 200_000,
     maxOutput: 64_000,
     vision: true,
     functionCalling: true,
+    reasoning: true,
   },
   'claude-3-7-sonnet-latest': {
     contextWindow: 200_000,
