@@ -8,9 +8,15 @@ import { normalizeClaudeHost } from './llm_utils'
 
 // https://docs.anthropic.com/claude/docs/models-overview
 const modelConfig: ModelMeta = {
+  'claude-sonnet-4-0': {
+    contextWindow: 200_000,
+    maxOutput: 64_000,
+    vision: true,
+    functionCalling: true,
+  },
   'claude-3-7-sonnet-latest': {
     contextWindow: 200_000,
-    maxOutput: 8192,
+    maxOutput: 64_000,
     vision: true,
     functionCalling: true,
   },
@@ -22,6 +28,12 @@ const modelConfig: ModelMeta = {
   'claude-3-5-haiku-latest': {
     contextWindow: 200_000,
     vision: true,
+  },
+  'claude-opus-4-0': {
+    contextWindow: 200_000,
+    maxOutput: 32_000,
+    vision: true,
+    functionCalling: true,
   },
   'claude-3-opus-latest': {
     contextWindow: 200_000,
