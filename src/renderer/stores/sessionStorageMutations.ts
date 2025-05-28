@@ -3,7 +3,7 @@ import { defaultSessionsForCN, defaultSessionsForEN } from '@/packages/initial_d
 import platform from '@/platform'
 import storage from '@/storage'
 import { StorageKey, StorageKeyGenerator } from '@/storage/StoreStorage'
-import { getMessageText } from '@/utils/message'
+import { getMessageText, migrateMessage } from '@/utils/message'
 import { arrayMove } from '@dnd-kit/sortable'
 import { getDefaultStore } from 'jotai'
 import { omit, pick } from 'lodash'
@@ -28,9 +28,18 @@ export function getSession(sessionId: string) {
 }
 
 export async function createSession(session: Omit<Session, 'id'>, previousId?: string) {
-  const s = { ...session, id: uuidv4() }
-  const sMeta = getSessionMeta(s)
   const store = getDefaultStore()
+  const chatSessionSettings = store.get(atoms.chatSessionSettingsAtom)
+  const pictureSessionSettings = store.get(atoms.pictureSessionSettingsAtom)
+  const s = {
+    ...session,
+    id: uuidv4(),
+    settings: {
+      ...(session.type === 'picture' ? pictureSessionSettings : chatSessionSettings),
+      ...session.settings,
+    },
+  }
+  const sMeta = getSessionMeta(s)
   // 直接写入 storage, 因为动态创建的 atom 无法立即写入
   await storage.setItemNow(StorageKeyGenerator.session(s.id), s)
 
@@ -166,7 +175,7 @@ function _searchSessions(regexp: RegExp, session: Session) {
       }
     }
   }
-  return matchedMessages
+  return matchedMessages.map((m) => migrateMessage(m))
 }
 
 export async function searchSessions(searchInput: string, sessionId?: string, onResult?: (result: Session[]) => void) {
