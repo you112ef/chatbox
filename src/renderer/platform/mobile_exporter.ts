@@ -1,12 +1,29 @@
 import { CHATBOX_BUILD_PLATFORM } from '@/variables'
 import { Exporter } from './interfaces'
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem'
+import { Filesystem, Directory, Encoding, WriteFileResult, WriteFileOptions } from '@capacitor/filesystem'
 import { Share } from '@capacitor/share'
 import { Toast } from '@capacitor/toast'
 import * as base64 from '@/packages/base64'
+import i18n from '@/i18n'
 
 export default class MobileExporter implements Exporter {
   constructor() {}
+
+  async writeFileAutoRenameOnConflict(options: WriteFileOptions): Promise<WriteFileResult> {
+    try {
+      await Filesystem.stat(options)
+      const ext = options.path.split('.').pop() || ''
+      const baseName = options.path.split('.').slice(0, -1).join('.')
+      const newFilename = `${baseName}_1${ext ? '.' + ext : ''}`
+      return await this.writeFileAutoRenameOnConflict({
+        ...options,
+        path: newFilename,
+      })
+    } catch (e) {
+      // 文件不存在，可以正常写入
+      return await Filesystem.writeFile(options)
+    }
+  }
 
   async exportBlob(filename: string, blob: Blob, encoding?: 'utf8' | 'ascii' | 'utf16') {
     const data = await blob.text()
@@ -19,21 +36,21 @@ export default class MobileExporter implements Exporter {
         encoding: encoding as Encoding,
       })
       await Share.share({
-        title: 'Share File',
-        text: 'Share File',
+        title: i18n.t('Share File') || 'Share File',
+        text: i18n.t('Share File') || 'Share File',
         url: result.uri,
-        dialogTitle: 'Share File',
+        dialogTitle: i18n.t('Share File') || 'Share File',
       })
     } else {
       await this.checkOrRequestPermission()
-      const file = await Filesystem.writeFile({
+      const file = await this.writeFileAutoRenameOnConflict({
         path: 'chatbox_ai_exports/' + filename,
         data: data,
         directory: Directory.Documents,
         recursive: true,
         encoding: encoding as Encoding,
       })
-      await Toast.show({ text: `Saved to ${file.uri}` })
+      await Toast.show({ text: i18n.t('File saved to {{uri}}', { uri: file.uri }) })
     }
   }
 
@@ -46,21 +63,27 @@ export default class MobileExporter implements Exporter {
         encoding: Encoding.UTF8,
       })
       await Share.share({
-        title: 'Share File',
-        text: 'Share File',
+        title: i18n.t('Share File') || 'Share File',
+        text: i18n.t('Share File') || 'Share File',
         url: result.uri,
-        dialogTitle: 'Share File',
+        dialogTitle: i18n.t('Share File') || 'Share File',
       })
     } else {
-      await this.checkOrRequestPermission()
-      const file = await Filesystem.writeFile({
-        path: `chatbox_ai_exports/${filename}`,
-        data: content,
-        directory: Directory.Documents,
-        encoding: Encoding.UTF8,
-        recursive: true,
-      })
-      await Toast.show({ text: `Saved to ${file.uri}` })
+      try {
+        await this.checkOrRequestPermission()
+        const file = await this.writeFileAutoRenameOnConflict({
+          path: `chatbox_ai_exports/${filename}`,
+          data: content,
+          directory: Directory.Documents,
+          encoding: Encoding.UTF8,
+          recursive: true,
+        })
+        await Toast.show({ text: i18n.t('File saved to {{uri}}', { uri: file.uri }) })
+      } catch (e) {
+        await Toast.show({
+          text: i18n.t('Failed to save file: {{error}}', { error: e }),
+        })
+      }
     }
   }
 
@@ -81,20 +104,20 @@ export default class MobileExporter implements Exporter {
         directory: Directory.Cache, // 只有 Cache 才能分享
       })
       await Share.share({
-        title: 'Share File',
-        text: 'Share File',
+        title: i18n.t('Share File') || 'Share File',
+        text: i18n.t('Share File') || 'Share File',
         url: result.uri,
-        dialogTitle: 'Share File',
+        dialogTitle: i18n.t('Share File') || 'Share File',
       })
     } else {
       await this.checkOrRequestPermission()
-      const file = await Filesystem.writeFile({
+      const file = await this.writeFileAutoRenameOnConflict({
         path: 'chatbox_ai_exports/' + filename,
         data: data,
         directory: Directory.Documents,
         recursive: true,
       })
-      await Toast.show({ text: `Saved to ${file.uri}` })
+      await Toast.show({ text: i18n.t('File saved to {{uri}}', { uri: file.uri }) })
     }
   }
 
@@ -106,10 +129,10 @@ export default class MobileExporter implements Exporter {
         directory: Directory.Cache,
       })
       await Share.share({
-        title: 'Share File',
-        text: 'Share File',
+        title: i18n.t('Share File') || 'Share File',
+        text: i18n.t('Share File') || 'Share File',
         url: file.path,
-        dialogTitle: 'Share File',
+        dialogTitle: i18n.t('Share File') || 'Share File',
       })
     } else {
       await this.checkOrRequestPermission()
@@ -125,7 +148,7 @@ export default class MobileExporter implements Exporter {
         directory: Directory.Documents,
         recursive: true,
       })
-      await Toast.show({ text: `Saved to ${file.path}` })
+      await Toast.show({ text: i18n.t('File saved to {{uri}}', { uri: file.path }) })
     }
   }
 
@@ -137,7 +160,7 @@ export default class MobileExporter implements Exporter {
     }
     result = await Filesystem.requestPermissions()
     if (result.publicStorage === 'denied') {
-      await Toast.show({ text: 'No permission to write file' })
+      await Toast.show({ text: i18n.t('No permission to write file') })
     }
   }
 }
