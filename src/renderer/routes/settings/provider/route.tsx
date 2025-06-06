@@ -2,6 +2,7 @@ import CustomProviderIcon from '@/components/CustomProviderIcon'
 import { useProviders } from '@/hooks/useProviders'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import { useSettings } from '@/hooks/useSettings'
+import useVersion from '@/hooks/useVersion'
 import { Box, Flex, Stack, Text, Image, Button, Modal, TextInput, Select, Indicator } from '@mantine/core'
 import { IconChevronRight, IconPlus } from '@tabler/icons-react'
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from '@tanstack/react-router'
@@ -29,8 +30,15 @@ function RouteComponent() {
   const routerState = useRouterState()
   const providerId = routerState.location.pathname.split('/')[3]
   const { settings, setSettings } = useSettings()
+  const { isExceeded } = useVersion()
 
-  const providers = useMemo(() => [...SystemProviders, ...(settings.customProviders || [])], [settings.customProviders])
+  const providers = useMemo(
+    () => [
+      ...SystemProviders.filter((p) => !(isExceeded && p.name.toLocaleLowerCase().match(/openai|claude|gemini/i))),
+      ...(settings.customProviders || []),
+    ],
+    [settings.customProviders, isExceeded]
+  )
 
   const { providers: availableProviders } = useProviders()
 
