@@ -14,6 +14,7 @@ import { afetch, uploadFile } from './request'
 import * as cache from './cache'
 import { uniq } from 'lodash'
 import platform from '@/platform'
+import { getOS } from './navigator'
 
 // ========== API ORIGIN 根据可用性维护 ==========
 
@@ -21,8 +22,23 @@ import platform from '@/platform'
 
 export let API_ORIGIN = 'https://api.chatboxai.app'
 
+const POOL = [
+  'https://api.chatboxai.app',
+  'https://chatboxai.app',
+  'https://api.ai-chatbox.com',
+  'https://api.chatboxapp.xyz',
+]
+
 export function isChatboxAPI(url: RequestInfo | URL) {
-  return url.toString().startsWith(API_ORIGIN)
+  return POOL.some((origin) => url.toString().startsWith(origin)) || url.toString().startsWith(API_ORIGIN)
+}
+
+const getChatboxHeaders = async () => {
+  return {
+    'CHATBOX-PLATFORM-TYPE': platform.type,
+    'CHATBOX-PLATFORM': await platform.getPlatform(),
+    'CHATBOX-OS': getOS(),
+  }
 }
 /**
  * 按顺序测试 API 的可用性，只要有一个 API 域名可用，就终止测试并切换所有流量到该域名。
@@ -32,12 +48,7 @@ async function testApiOrigins() {
   // 从缓存中获取已知的 API 域名列表
   let pool = await cache.store.getItem<string[] | null>('api_origins').catch(() => null)
   if (!pool) {
-    pool = [
-      'https://api.chatboxai.app',
-      'https://chatboxai.app',
-      'https://api.ai-chatbox.com',
-      'https://api.chatboxapp.xyz',
-    ]
+    pool = POOL
   }
   // 按顺序测试 API 的可用性
   let i = 0
@@ -161,6 +172,7 @@ export async function getRemoteConfig(config: keyof RemoteConfig) {
   }
   const res = await ofetch<Response>(`${API_ORIGIN}/api/remote_config/${config}`, {
     retry: 3,
+    headers: await getChatboxHeaders(),
   })
   return res['data']
 }
@@ -178,6 +190,7 @@ export async function getDialogConfig(params: { uuid: string; language: string; 
     method: 'POST',
     retry: 3,
     body: params,
+    headers: await getChatboxHeaders(),
   })
   return res['data'] || null
 }
@@ -190,6 +203,7 @@ export async function getLicenseDetail(params: { licenseKey: string }) {
     retry: 3,
     headers: {
       Authorization: params.licenseKey,
+      ...(await getChatboxHeaders()),
     },
   })
   return res['data'] || null
@@ -203,6 +217,7 @@ export async function getLicenseDetailRealtime(params: { licenseKey: string }) {
     retry: 5,
     headers: {
       Authorization: params.licenseKey,
+      ...(await getChatboxHeaders()),
     },
   })
   return res['data'] || null
@@ -222,6 +237,7 @@ export async function generateUploadUrl(params: { licenseKey: string; filename: 
       headers: {
         Authorization: params.licenseKey,
         'Content-Type': 'application/json',
+        ...(await getChatboxHeaders()),
       },
       body: JSON.stringify(params),
     },
@@ -250,6 +266,7 @@ export async function createUserFile<T extends boolean>(params: {
       headers: {
         Authorization: params.licenseKey,
         'Content-Type': 'application/json',
+        ...(await getChatboxHeaders()),
       },
       body: JSON.stringify(params),
     },
@@ -292,6 +309,7 @@ export async function parseUserLinkPro(params: { licenseKey: string; url: string
       headers: {
         Authorization: params.licenseKey,
         'Content-Type': 'application/json',
+        ...(await getChatboxHeaders()),
       },
       body: JSON.stringify({
         ...params,
@@ -324,8 +342,6 @@ export async function parseUserLinkFree(params: { url: string }) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'CHATBOX-PLATFORM': platform.type,
-      'CHATBOX-VERSION': (await platform.getVersion()) || 'unknown',
     },
     body: JSON.stringify(params),
   })
@@ -352,6 +368,7 @@ export async function webBrowsing(params: { licenseKey: string; query: string })
       headers: {
         Authorization: params.licenseKey,
         'Content-Type': 'application/json',
+        ...(await getChatboxHeaders()),
       },
       body: JSON.stringify(params),
     },
@@ -378,6 +395,7 @@ export async function activateLicense(params: { licenseKey: string; instanceName
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...(await getChatboxHeaders()),
       },
       body: JSON.stringify(params),
     },
@@ -419,6 +437,7 @@ export async function validateLicense(params: { licenseKey: string; instanceId: 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...(await getChatboxHeaders()),
       },
       body: JSON.stringify(params),
     },
@@ -443,6 +462,7 @@ export async function getModelConfigs(params: { aiProvider: ModelProvider; licen
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...(await getChatboxHeaders()),
       },
       body: JSON.stringify({
         aiProvider: params.aiProvider,
@@ -475,7 +495,8 @@ export async function getModelManifest(params: { aiProvider: ModelProvider; lice
     {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json',     
+        ...(await getChatboxHeaders()),
       },
       body: JSON.stringify({
         aiProvider: params.aiProvider,
@@ -519,6 +540,7 @@ export async function reportContent(params: { id: string; type: string; details:
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...(await getChatboxHeaders()),
     },
     body: JSON.stringify(params),
   })

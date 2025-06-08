@@ -2,6 +2,7 @@ import { parseJsonOrEmpty } from '@/lib/utils'
 import platform from '@/platform'
 import { ApiError, BaseError, ChatboxAIAPIError, NetworkError } from './models/errors'
 import { isChatboxAPI } from './remote'
+import { getOS } from './navigator'
 
 // TODO: 尽可能在其他地方（llm）中复用这个函数
 export async function afetch(
@@ -21,7 +22,9 @@ export async function afetch(
           ...init,
           headers: {
             ...init?.headers,
-            'CHATBOX-PLATFORM': platform.type,
+            'CHATBOX-PLATFORM-TYPE': platform.type,
+            'CHATBOX-PLATFORM': await platform.getPlatform(),
+            'CHATBOX-OS': getOS(),
             'CHATBOX-VERSION': (await platform.getVersion()) || 'unknown',
           },
         }
