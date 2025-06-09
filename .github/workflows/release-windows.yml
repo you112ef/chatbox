@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [windows-2019]
+        os: [windows-2022]
 
     steps:
       - name: Set update channel
