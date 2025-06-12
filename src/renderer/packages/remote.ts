@@ -1,20 +1,20 @@
-import { USE_LOCAL_API, USE_BETA_API } from '@/variables'
+import platform from '@/platform'
+import { USE_BETA_API, USE_LOCAL_API } from '@/variables'
+import { uniq } from 'lodash'
+import { ofetch } from 'ofetch'
 import {
+  ChatboxAILicenseDetail,
   Config,
   CopilotDetail,
-  RemoteConfig,
-  ChatboxAILicenseDetail,
-  Settings,
-  ModelProvider,
   ModelOptionGroup,
-  Message,
+  ModelProvider,
+  ModelProviderEnum,
+  RemoteConfig,
+  Settings,
 } from '../../shared/types'
-import { ofetch } from 'ofetch'
-import { afetch, uploadFile } from './request'
 import * as cache from './cache'
-import { uniq } from 'lodash'
-import platform from '@/platform'
 import { getOS } from './navigator'
+import { afetch, uploadFile } from './request'
 
 // ========== API ORIGIN 根据可用性维护 ==========
 
@@ -495,7 +495,7 @@ export async function getModelManifest(params: { aiProvider: ModelProvider; lice
     {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',     
+        'Content-Type': 'application/json',
         ...(await getChatboxHeaders()),
       },
       body: JSON.stringify({
@@ -518,7 +518,10 @@ export async function getModelConfigsWithCache(params: {
   licenseKey?: string
   language?: string
 }) {
-  if (params.aiProvider === ModelProvider.Custom) {
+  if (
+    params.aiProvider === ModelProviderEnum.Custom ||
+    (typeof params.aiProvider === 'string' && params.aiProvider.startsWith('custom-provider'))
+  ) {
     return { option_groups: [] }
   }
   type ModelConfig = Awaited<ReturnType<typeof getModelConfigs>>
