@@ -1,9 +1,9 @@
-import { Theme, Config, Settings, ModelProvider, ModelProviderType, ProviderBaseInfo, SessionSettings } from './types'
 import { v4 as uuidv4 } from 'uuid'
+import { Config, ModelProviderEnum, ModelProviderType, ProviderBaseInfo, SessionSettings, Settings, Theme } from './types'
 
 export function settings(): Settings {
   return {
-    // aiProvider: ModelProvider.OpenAI,
+    // aiProvider: ModelProviderEnum.OpenAI,
     // openaiKey: '',
     // apiHost: 'https://api.openai.com',
     // dalleStyle: 'vivid',
@@ -138,7 +138,7 @@ export function getDefaultPrompt() {
 
 export function chatSessionSettings(): SessionSettings {
   return {
-    provider: ModelProvider.ChatboxAI,
+    provider: ModelProviderEnum.ChatboxAI,
     modelId: 'chatboxai-4',
     maxContextMessageCount: 6,
   }
@@ -146,7 +146,7 @@ export function chatSessionSettings(): SessionSettings {
 
 export function pictureSessionSettings(): SessionSettings {
   return {
-    provider: ModelProvider.ChatboxAI,
+    provider: ModelProviderEnum.ChatboxAI,
     modelId: 'DALL-E-3',
     imageGenerateNum: 3,
     dalleStyle: 'vivid',
@@ -155,12 +155,12 @@ export function pictureSessionSettings(): SessionSettings {
 
 export const SystemProviders: ProviderBaseInfo[] = [
   {
-    id: ModelProvider.ChatboxAI,
+    id: ModelProviderEnum.ChatboxAI,
     name: 'Chatbox AI',
     type: ModelProviderType.ChatboxAI,
   },
   {
-    id: ModelProvider.OpenAI,
+    id: ModelProviderEnum.OpenAI,
     name: 'OpenAI',
     type: ModelProviderType.OpenAI,
     urls: {
@@ -222,9 +222,9 @@ export const SystemProviders: ProviderBaseInfo[] = [
     },
   },
   {
-    id: ModelProvider.Claude,
+    id: ModelProviderEnum.Claude,
     name: 'Claude',
-    type: ModelProviderType.OpenAI,
+    type: ModelProviderType.Claude,
     urls: {
       website: 'https://www.anthropic.com',
     },
@@ -268,9 +268,9 @@ export const SystemProviders: ProviderBaseInfo[] = [
     },
   },
   {
-    id: ModelProvider.Gemini,
+    id: ModelProviderEnum.Gemini,
     name: 'Gemini',
-    type: ModelProviderType.OpenAI,
+    type: ModelProviderType.Gemini,
     urls: {
       website: 'https://gemini.google.com/',
     },
@@ -325,7 +325,7 @@ export const SystemProviders: ProviderBaseInfo[] = [
     },
   },
   {
-    id: ModelProvider.Ollama,
+    id: ModelProviderEnum.Ollama,
     name: 'Ollama',
     type: ModelProviderType.OpenAI,
     defaultSettings: {
@@ -333,7 +333,7 @@ export const SystemProviders: ProviderBaseInfo[] = [
     },
   },
   {
-    id: ModelProvider.LMStudio,
+    id: ModelProviderEnum.LMStudio,
     name: 'LM Studio',
     type: ModelProviderType.OpenAI,
     defaultSettings: {
@@ -341,7 +341,7 @@ export const SystemProviders: ProviderBaseInfo[] = [
     },
   },
   {
-    id: ModelProvider.DeepSeek,
+    id: ModelProviderEnum.DeepSeek,
     name: 'DeepSeek',
     type: ModelProviderType.OpenAI,
     defaultSettings: {
@@ -364,7 +364,7 @@ export const SystemProviders: ProviderBaseInfo[] = [
     },
   },
   {
-    id: ModelProvider.SiliconFlow,
+    id: ModelProviderEnum.SiliconFlow,
     name: 'SiliconFlow',
     type: ModelProviderType.OpenAI,
     defaultSettings: {
@@ -440,7 +440,38 @@ export const SystemProviders: ProviderBaseInfo[] = [
     },
   },
   {
-    id: ModelProvider.Azure,
+    id: ModelProviderEnum.VolcEngine,
+    name: 'VolcEngine',
+    type: ModelProviderType.OpenAI,
+    defaultSettings: {
+      apiHost: 'https://ark.cn-beijing.volces.com',
+      apiPath: '/api/v3/chat/completions',
+      models: [
+        {
+          modelId: 'deepseek-v3-250324',
+          contextWindow: 64_000,
+          capabilities: ['tool_use', 'reasoning'],
+        },
+        {
+          modelId: 'deepseek-r1-250528',
+          contextWindow: 16_384,
+          capabilities: ['reasoning', 'tool_use'],
+        },
+        {
+          modelId: 'doubao-1-5-thinking-pro-250415',
+          contextWindow: 128_000,
+          capabilities: ['reasoning'],
+        },
+        {
+          modelId: 'doubao-1.5-vision-pro-250328',
+          contextWindow: 128_000,
+          capabilities: ['vision'],
+        },
+      ],
+    },
+  },
+  {
+    id: ModelProviderEnum.Azure,
     name: 'Azure OpenAI',
     type: ModelProviderType.OpenAI,
     defaultSettings: {
@@ -449,7 +480,7 @@ export const SystemProviders: ProviderBaseInfo[] = [
     },
   },
   {
-    id: ModelProvider.XAI,
+    id: ModelProviderEnum.XAI,
     name: 'xAI',
     type: ModelProviderType.OpenAI,
     defaultSettings: {
@@ -491,7 +522,7 @@ export const SystemProviders: ProviderBaseInfo[] = [
     },
   },
   {
-    id: ModelProvider.Perplexity,
+    id: ModelProviderEnum.Perplexity,
     name: 'Perplexity',
     type: ModelProviderType.OpenAI,
     defaultSettings: {
@@ -505,7 +536,7 @@ export const SystemProviders: ProviderBaseInfo[] = [
     },
   },
   {
-    id: ModelProvider.Groq,
+    id: ModelProviderEnum.Groq,
     name: 'Groq',
     type: ModelProviderType.OpenAI,
     defaultSettings: {
@@ -527,7 +558,7 @@ export const SystemProviders: ProviderBaseInfo[] = [
     },
   },
   {
-    id: ModelProvider.ChatGLM6B,
+    id: ModelProviderEnum.ChatGLM6B,
     name: 'ChatGLM6B',
     type: ModelProviderType.OpenAI,
     defaultSettings: {
