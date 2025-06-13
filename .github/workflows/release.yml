@@ -31,12 +31,6 @@ jobs:
           node-version: 18
           cache: npm
 
-      - name: Install and build
-        run: |
-          npm install
-          npm run postinstall
-          npm run build
-
       - name: Publish releases
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.IFTECH_CF_AWS_ACCESS_KEY_ID }}

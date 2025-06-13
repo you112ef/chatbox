@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [windows-2019]
+        os: [windows-2022]
 
     steps:
       - name: Set update channel
@@ -63,12 +63,6 @@ jobs:
         run: |
           smctl windows certsync
         shell: cmd
-
-      - name: Install and build
-        run: |
-          npm install
-          npm run postinstall
-          npm run build
 
       - name: Publish releases
         env:
