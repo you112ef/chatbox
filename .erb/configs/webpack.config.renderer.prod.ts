@@ -13,19 +13,14 @@ import TerserPlugin from 'terser-webpack-plugin'
 import baseConfig from './webpack.config.base'
 import webpackPaths from './webpack.paths'
 import checkNodeEnv from '../scripts/check-node-env'
-import deleteSourceMaps from '../scripts/delete-source-maps'
 import JavaScriptObfuscator from 'webpack-obfuscator'
 import { TanStackRouterWebpack } from '@tanstack/router-plugin/webpack'
+import { sentryWebpackPlugin } from '@sentry/webpack-plugin'
 
 checkNodeEnv('production')
 
-let enableSourceMap = false // 正式发布永远不能开启 sourceMap，否则代码会被轻易反编译。这个设置仅用于本地测试。
-if (!enableSourceMap) {
-  deleteSourceMaps()
-}
-
 const configuration: webpack.Configuration = {
-  devtool: enableSourceMap ? 'source-map' : false,
+  devtool: 'source-map',
 
   mode: 'production',
 
@@ -175,7 +170,13 @@ const configuration: webpack.Configuration = {
       // 迁移过程中，暂时关闭保护
       // domainLock: ['localhost', ".chatboxai.app", ".chatboxai.com", ".chatboxapp.xyz", "chatbox-pro.pages.dev"],
       // domainLockRedirectUrl: 'https://chatboxai.app',
-      sourceMap: enableSourceMap,
+      sourceMap: true,
+    }),
+    sentryWebpackPlugin({
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      org: 'sentry',
+      project: 'chatbox',
+      url: 'https://sentry.midway.run/',
     }),
   ],
 }
