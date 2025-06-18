@@ -6,6 +6,7 @@
     - [查看依赖大小](#查看依赖大小)
     - [性能瓶颈排查](#性能瓶颈排查)
     - [代码检查/格式化](#代码检查格式化)
+    - [VS Code 开发环境配置](#vs-code-开发环境配置)
     - [本地打包](#本地打包)
       - ["hdiutil exited with code" 问题](#hdiutil-exited-with-code-问题)
     - [提取软件包源码](#提取软件包源码)
@@ -99,10 +100,10 @@ npm run check
 2. 代码格式化
 
 ```shell
-npm run prettier
+npm run format
 ```
 
-3. 代码风格检查：仅作参考，不用全部遵守
+3. 代码风格检查
 
 ```shell
 npm run lint
@@ -113,6 +114,34 @@ npm run lint
 ```shell
 npm run test
 ```
+
+### VS Code 开发环境配置
+
+为了获得最佳的开发体验，强烈建议配置 VS Code 使用 Biome 进行代码格式化和检查。在项目根目录下配置 `.vscode/settings.json` 文件，包含以下推荐设置：
+
+```json
+{
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  }
+}
+```
+
+确保已安装 [Biome VS Code Extension](https://marketplace.visualstudio.com/items?itemName=biomejs.biome)。
 
 ### 本地打包
 
