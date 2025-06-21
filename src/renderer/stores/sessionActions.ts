@@ -1,3 +1,7 @@
+import * as Sentry from '@sentry/react'
+import { getDefaultStore } from 'jotai'
+import { identity, pickBy, throttle } from 'lodash'
+import { v4 as uuidv4 } from 'uuid'
 import * as dom from '@/hooks/dom'
 import { languageNameMap } from '@/i18n/locales'
 import { formatChatAsHtml, formatChatAsMarkdown, formatChatAsTxt } from '@/lib/format-chat'
@@ -18,27 +22,23 @@ import * as remote from '@/packages/remote'
 import { estimateTokensFromMessages } from '@/packages/token'
 import { router } from '@/router'
 import { StorageKeyGenerator } from '@/storage/StoreStorage'
-import * as Sentry from '@sentry/react'
-import { getDefaultStore } from 'jotai'
-import { identity, pickBy, throttle } from 'lodash'
-import { v4 as uuidv4 } from 'uuid'
 import * as defaults from '../../shared/defaults'
 import {
-  ExportChatFormat,
-  ExportChatScope,
-  Message,
-  MessageFile,
-  MessageImagePart,
-  MessageLink,
-  MessagePicture,
-  ModelProvider,
-  ModelProviderEnum,
-  Session,
-  SessionMeta,
-  SessionSettings,
-  SessionThread,
-  Settings,
   createMessage,
+  type ExportChatFormat,
+  type ExportChatScope,
+  type Message,
+  type MessageFile,
+  type MessageImagePart,
+  type MessageLink,
+  type MessagePicture,
+  type ModelProvider,
+  ModelProviderEnum,
+  type Session,
+  type SessionMeta,
+  type SessionSettings,
+  type SessionThread,
+  type Settings,
 } from '../../shared/types'
 import i18n from '../i18n'
 import * as promptFormat from '../packages/prompts'
@@ -492,7 +492,7 @@ export async function submitNewUserMessage(params: {
   webBrowsing?: boolean
 }) {
   const { currentSessionId, newUserMsg, needGenerating, attachments, links } = params
-  let { webBrowsing } = params
+  const { webBrowsing } = params
   // 如果存在附件，现在发送消息中构建空白的文件信息，用于占位，等待上传完成后再修改
   if (attachments && attachments.length > 0) {
     newUserMsg.files = attachments.map((f, ix) => ({
@@ -576,6 +576,12 @@ export async function submitNewUserMessage(params: {
           await new Promise((resolve) => setTimeout(resolve, 3000)) // 等待一段时间，方便显示提示
           const result = await platform.parseFileLocally(attachment, { tokenLimit: tokenLimitPerFile })
           if (!result.isSupported || !result.key) {
+            if (platform.type === 'mobile') {
+              throw ChatboxAIAPIError.fromCodeName(
+                'mobile_not_support_local_file_parsing',
+                'mobile_not_support_local_file_parsing'
+              )
+            }
             // 根据当前 IP，判断是否在错误中推荐 Chatbox AI
             if (remoteConfig.setting_chatboxai_first) {
               throw ChatboxAIAPIError.fromCodeName('model_not_support_file', 'model_not_support_file')
@@ -639,7 +645,7 @@ export async function submitNewUserMessage(params: {
     if (!(err instanceof ApiError || err instanceof NetworkError || err instanceof AIProviderNoImplementedPaintError)) {
       Sentry.captureException(err) // unexpected error should be reported
     }
-    let errorCode: number | undefined = undefined
+    let errorCode: number | undefined
     if (err instanceof BaseError) {
       errorCode = err.code
     }
@@ -729,9 +735,9 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
     switch (session.type) {
       // 对话消息生成
       case 'chat':
-      case undefined:
+      case undefined: {
         const startTime = Date.now()
-        let firstTokenLatency: number | undefined = undefined
+        let firstTokenLatency: number | undefined
         const promptMsgs = await genMessageContext(settings, messages.slice(0, targetMsgIx))
         const throttledModifyMessage = throttle<onResultChangeWithCancel>((updated) => {
           const text = getMessageText(targetMsg)
@@ -764,8 +770,9 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
         }
         modifyMessage(sessionId, targetMsg, true)
         break
+      }
       // 图片消息生成
-      case 'picture':
+      case 'picture': {
         // 取当前消息之前最近的一条用户消息作为 prompt
         let prompt = ''
         for (let i = targetMsgIx; i >= 0; i--) {
@@ -797,6 +804,7 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
         }
         modifyMessage(sessionId, targetMsg, true)
         break
+      }
       default:
         throw new Error(`Unknown session type: ${session.type}, generate failed`)
     }
@@ -808,7 +816,7 @@ export async function generate(sessionId: string, targetMsg: Message, options?: 
     if (!(err instanceof ApiError || err instanceof NetworkError || err instanceof AIProviderNoImplementedPaintError)) {
       Sentry.captureException(err) // unexpected error should be reported
     }
-    let errorCode: number | undefined = undefined
+    let errorCode: number | undefined
     if (err instanceof BaseError) {
       errorCode = err.code
     }
@@ -1247,7 +1255,7 @@ export async function createNewFork(forkMessageId: string) {
     return { data, updated: true }
   }
 
-  let { data, updated } = updateFn(currentSession.messages)
+  const { data, updated } = updateFn(currentSession.messages)
   if (updated) {
     saveSession({
       id: currentSession.id,
@@ -1305,7 +1313,7 @@ export async function switchFork(forkMessageId: string, direction: 'next' | 'pre
     return { data, updated: true }
   }
 
-  let { data, updated } = updateFn(currentSession.messages)
+  const { data, updated } = updateFn(currentSession.messages)
   if (updated) {
     saveSession({
       id: currentSession.id,
@@ -1369,7 +1377,7 @@ export async function deleteFork(forkMessageId: string) {
   }
 
   // 更新当前消息列表，如果没有找到消息则自动更新线程消息列表
-  let { data, updated } = updateFn(currentSession.messages)
+  const { data, updated } = updateFn(currentSession.messages)
   if (updated) {
     saveSession({
       id: currentSession.id,
@@ -1423,7 +1431,7 @@ export async function expandFork(forkMessageId: string) {
   }
 
   // 更新当前消息列表，如果没有找到消息则自动更新线程消息列表
-  let { data, updated } = updateFn(currentSession.messages)
+  const { data, updated } = updateFn(currentSession.messages)
   if (updated) {
     saveSession({
       id: currentSession.id,

@@ -209,6 +209,12 @@ export class ChatboxAIAPIError extends BaseError {
       i18nKey:
         'You have selected Tavily as the search provider, but an API key has not been entered yet. Please <OpenExtensionSettingButton>click here to open Settings</OpenExtensionSettingButton> and enter your API key, or choose a different search provider.',
     },
+    mobile_not_support_local_file_parsing: {
+      name: 'mobile_not_support_local_file_parsing',
+      code: 20026,
+      i18nKey:
+        'Mobile devices temporarily do not support local parsing of this file type. Please use text files (txt, markdown, etc.) or use <LinkToAdvancedFileProcessing>Chatbox AI Service</LinkToAdvancedFileProcessing> for cloud-based document analysis.',
+    },
   }
   static fromCodeName(response: string, codeName: string) {
     if (!codeName) {
