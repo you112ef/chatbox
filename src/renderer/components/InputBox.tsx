@@ -8,6 +8,7 @@ import storage from '@/storage'
 import { StorageKeyGenerator } from '@/storage/StoreStorage'
 import { scrollToMessage } from '@/stores/scrollActions'
 import { saveSession } from '@/stores/sessionStorageMutations'
+import { featureFlags } from '@/utils/feature-flags'
 import { getMessageText } from '@/utils/message'
 import NiceModal from '@ebay/nice-modal-react'
 import { Box, Text, Tooltip } from '@mantine/core'
@@ -17,23 +18,34 @@ import { IconSelector } from '@tabler/icons-react'
 import autosize from 'autosize'
 import { clsx } from 'clsx'
 import { useAtom, useAtomValue } from 'jotai'
-import _ from 'lodash'
-import { FilePen, FolderClosed, Gavel, Globe, Image, Link, SendHorizontal, Settings2, Undo2 } from 'lucide-react'
+import _, { pick } from 'lodash'
+import {
+  BookIcon,
+  FilePen,
+  FolderClosed,
+  Gavel,
+  Globe,
+  Image,
+  Link,
+  SendHorizontal,
+  Settings2,
+  Undo2,
+} from 'lucide-react'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useTranslation } from 'react-i18next'
-import { createMessage, ModelProvider, ShortcutSendValue } from '../../shared/types'
+import { createMessage, KnowledgeBase, ModelProvider, ShortcutSendValue } from '../../shared/types'
 import * as dom from '../hooks/dom'
 import icon from '../static/icon.png'
 import * as atoms from '../stores/atoms'
 import * as sessionActions from '../stores/sessionActions'
 import { FileMiniCard, ImageMiniCard, LinkMiniCard } from './Attachments'
 import ImageModelSelect from './ImageModelSelect'
+import KnowledgeBaseMenu from './knowledge-base/KnowledgeBaseMenu'
 import MCPMenu from './mcp/MCPMenu'
 import MiniButton from './MiniButton'
 import ModelSelector from './ModelSelectorNew'
 import { Keys } from './Shortcut'
-import { featureFlags } from '@/utils/feature-flags'
 
 export default function InputBox() {
   const theme = useTheme()
@@ -47,6 +59,9 @@ export default function InputBox() {
   const [attachments, setAttachments] = useState<File[]>([])
   const [webBrowsingMode, setWebBrowsingMode] = useAtom(atoms.inputBoxWebBrowsingModeAtom)
   const [links, setLinks] = useAtom(atoms.inputBoxLinksAtom)
+  const [selectedKnowledgeBase, setSelectedKnowledgeBase] = useState<KnowledgeBase | null>(null)
+  const [knowledgeBase, setKnowledgeBase] = useAtom(atoms.inputBoxKnowledgeBaseAtom)
+
   const pictureInputRef = useRef<HTMLInputElement | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [showRollbackThreadButton, setShowRollbackThreadButton] = useState(false)
@@ -57,6 +72,8 @@ export default function InputBox() {
   const shortcuts = useAtomValue(atoms.shortcutsAtom)
 
   const { min: minTextareaHeight, max: maxTextareaHeight } = useInputBoxHeight()
+
+  const [showKnowledgeBaseMenu, setShowKnowledgeBaseMenu] = useState(false)
 
   useEffect(() => {
     if (quote !== '') {
@@ -122,6 +139,7 @@ export default function InputBox() {
       attachments,
       links,
       webBrowsing: webBrowsingMode,
+      knowledgeBase,
     })
     setMessageInput('')
     setPictureKeys([])
@@ -373,7 +391,7 @@ export default function InputBox() {
     })`
   }, [providers, currentSession])
   const [showSelectModelErrorTip, setShowSelectModelErrorTip] = useState(false)
-  const handleSelectModel = (provider: ModelProvider, modelId: string) => {
+  const handleSelectModel = (provider: ModelProvider | string, modelId: string) => {
     if (!currentSession) {
       return
     }
@@ -381,11 +399,26 @@ export default function InputBox() {
       id: currentSession.id,
       settings: {
         ...(currentSession.settings || {}),
-        provider,
+        provider: provider as ModelProvider,
         modelId,
       },
     })
   }
+
+  const handleKnowledgeBaseSelect = (kb: KnowledgeBase | null) => {
+    if (!kb || kb.id === selectedKnowledgeBase?.id) {
+      setSelectedKnowledgeBase(null)
+    } else {
+      setSelectedKnowledgeBase(kb)
+    }
+  }
+  useEffect(() => {
+    if (selectedKnowledgeBase) {
+      setKnowledgeBase(pick(selectedKnowledgeBase, 'id', 'name'))
+    } else {
+      setKnowledgeBase(undefined)
+    }
+  }, [selectedKnowledgeBase])
 
   const sendOrStopButton = (
     <MiniButton
@@ -566,6 +599,29 @@ export default function InputBox() {
                   )
                 }
               </MCPMenu>
+            )}
+            {featureFlags.knowledgeBase && (
+              <>
+                <KnowledgeBaseMenu
+                  currentKnowledgeBaseId={selectedKnowledgeBase?.id}
+                  onSelect={handleKnowledgeBaseSelect}
+                  opened={showKnowledgeBaseMenu}
+                  setOpened={setShowKnowledgeBaseMenu}
+                >
+                  <MiniButton
+                    className="mr-1 sm:mr-2"
+                    style={{ color: theme.palette.text.primary }}
+                    tooltipTitle={showKnowledgeBaseMenu ? null : t('Knowledge Base')}
+                    tooltipPlacement="top"
+                  >
+                    <BookIcon
+                      size="22"
+                      strokeWidth={selectedKnowledgeBase ? 1.5 : 1}
+                      className={cn(selectedKnowledgeBase && 'text-[var(--mantine-color-chatbox-brand-filled)]')}
+                    />
+                  </MiniButton>
+                </KnowledgeBaseMenu>
+              </>
             )}
             {!isSmallScreen && (
               <MiniButton

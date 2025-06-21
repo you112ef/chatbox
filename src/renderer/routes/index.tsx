@@ -62,7 +62,6 @@ function Index() {
     pictureKeys = [],
     attachments = [],
     links = [],
-    webBrowsing = false,
   }: InputBoxPayload) => {
     const msgs: Message[] = []
 
@@ -112,7 +111,6 @@ function Index() {
       needGenerating,
       attachments,
       links,
-      webBrowsing,
     })
     return true
   }

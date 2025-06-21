@@ -1,72 +1,72 @@
-import React, { useEffect, useState, useRef, useMemo, MouseEventHandler, memo, FC } from 'react'
-import Box from '@mui/material/Box'
-import Avatar from '@mui/material/Avatar'
-import MenuItem from '@mui/material/MenuItem'
-import { CircularProgress, IconButton, Typography, Grid, Tooltip, ButtonGroup, useTheme } from '@mui/material'
-import PersonIcon from '@mui/icons-material/Person'
-import SmartToyIcon from '@mui/icons-material/SmartToy'
-import SettingsIcon from '@mui/icons-material/Settings'
-import EditIcon from '@mui/icons-material/Edit'
-import StopIcon from '@mui/icons-material/Stop'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import FormatQuoteIcon from '@mui/icons-material/FormatQuote'
-import { useTranslation } from 'react-i18next'
-import { Message, SessionType } from '../../shared/types'
-import ReplayIcon from '@mui/icons-material/Replay'
-import CopyAllIcon from '@mui/icons-material/CopyAll'
-import { useAtomValue, useSetAtom } from 'jotai'
-import {
-  messageScrollingScrollPositionAtom,
-  pictureShowAtom,
-  quoteAtom,
-  showMessageTimestampAtom,
-  showModelNameAtom,
-  showTokenCountAtom,
-  showWordCountAtom,
-  defaultAssistantAvatarKeyAtom,
-  userAvatarKeyAtom,
-  openSettingDialogAtom,
-  enableMarkdownRenderingAtom,
-  enableLaTeXRenderingAtom,
-  enableMermaidRenderingAtom,
-  currentSessionAssistantAvatarKeyAtom,
-  widthFullAtom,
-  autoPreviewArtifactsAtom,
-  autoCollapseCodeBlockAtom,
-  showFirstTokenLatencyAtom,
-  inputBoxWebBrowsingModeAtom,
-} from '../stores/atoms'
-import { currentSessionPicUrlAtom, showTokenUsedAtom } from '../stores/atoms'
-import * as sessionActions from '../stores/sessionActions'
-import * as toastActions from '../stores/toastActions'
-import * as scrollActions from '../stores/scrollActions'
 import Markdown from '@/components/Markdown'
-import '../static/Block.css'
-import { ImageInStorage, Img } from './Image'
-import SouthIcon from '@mui/icons-material/South'
-import ImageIcon from '@mui/icons-material/Image'
-import MessageErrTips from './MessageErrTips'
-import MessageStatuses from './MessageLoading'
-import { MessageAttachment } from './Attachments'
-import StyledMenu from './StyledMenu'
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import * as dom from '@/hooks/dom'
-import * as dateFns from 'date-fns'
 import { cn } from '@/lib/utils'
 import { copyToClipboard } from '@/packages/navigator'
 import { estimateTokensFromMessages } from '@/packages/token'
 import { countWord } from '@/packages/word-count'
-import { isContainRenderableCode, MessageArtifact } from './Artifact'
-import ReportIcon from '@mui/icons-material/Report'
-import { ConfirmDeleteMenuItem } from './ConfirmDeleteButton'
 import platform from '@/platform'
-import NiceModal from '@ebay/nice-modal-react'
-import { useNavigate } from '@tanstack/react-router'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import Loading from './icons/Loading'
 import { getMessageText } from '@/utils/message'
+import NiceModal from '@ebay/nice-modal-react'
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import CopyAllIcon from '@mui/icons-material/CopyAll'
+import EditIcon from '@mui/icons-material/Edit'
+import FormatQuoteIcon from '@mui/icons-material/FormatQuote'
+import ImageIcon from '@mui/icons-material/Image'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
+import PersonIcon from '@mui/icons-material/Person'
+import ReplayIcon from '@mui/icons-material/Replay'
+import ReportIcon from '@mui/icons-material/Report'
+import SettingsIcon from '@mui/icons-material/Settings'
+import SmartToyIcon from '@mui/icons-material/SmartToy'
+import SouthIcon from '@mui/icons-material/South'
+import StopIcon from '@mui/icons-material/Stop'
+import { ButtonGroup, Grid, IconButton, Tooltip, Typography, useTheme } from '@mui/material'
+import Avatar from '@mui/material/Avatar'
+import Box from '@mui/material/Box'
+import MenuItem from '@mui/material/MenuItem'
+import { useNavigate } from '@tanstack/react-router'
+import * as dateFns from 'date-fns'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { isEmpty } from 'lodash'
+import React, { FC, memo, MouseEventHandler, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Message, SessionType } from '../../shared/types'
+import '../static/Block.css'
+import {
+  autoCollapseCodeBlockAtom,
+  autoPreviewArtifactsAtom,
+  currentSessionAssistantAvatarKeyAtom,
+  currentSessionPicUrlAtom,
+  defaultAssistantAvatarKeyAtom,
+  enableLaTeXRenderingAtom,
+  enableMarkdownRenderingAtom,
+  enableMermaidRenderingAtom,
+  messageScrollingScrollPositionAtom,
+  openSettingDialogAtom,
+  pictureShowAtom,
+  quoteAtom,
+  showFirstTokenLatencyAtom,
+  showMessageTimestampAtom,
+  showModelNameAtom,
+  showTokenCountAtom,
+  showTokenUsedAtom,
+  showWordCountAtom,
+  userAvatarKeyAtom,
+  widthFullAtom,
+} from '../stores/atoms'
+import * as scrollActions from '../stores/scrollActions'
+import * as sessionActions from '../stores/sessionActions'
+import * as toastActions from '../stores/toastActions'
+import { isContainRenderableCode, MessageArtifact } from './Artifact'
+import { MessageAttachment } from './Attachments'
+import { ConfirmDeleteMenuItem } from './ConfirmDeleteButton'
+import Loading from './icons/Loading'
+import { ImageInStorage, Img } from './Image'
 import { ToolCallPartUI } from './message-parts/ToolCallPartUI'
+import MessageErrTips from './MessageErrTips'
+import MessageStatuses from './MessageLoading'
+import StyledMenu from './StyledMenu'
 
 interface Props {
   id?: string
@@ -105,7 +105,6 @@ const Message: FC<Props> = (props) => {
   const widthFull = useAtomValue(widthFullAtom)
   const autoPreviewArtifacts = useAtomValue(autoPreviewArtifactsAtom)
   const autoCollapseCodeBlock = useAtomValue(autoCollapseCodeBlockAtom)
-  const webBrowsingMode = useAtomValue(inputBoxWebBrowsingModeAtom)
 
   const [previewArtifact, setPreviewArtifact] = useState(autoPreviewArtifacts)
   const contentLength = useMemo(() => {
@@ -156,8 +155,7 @@ const Message: FC<Props> = (props) => {
 
   const handleRefresh = () => {
     handleStop()
-    sessionActions.regenerateInNewFork(props.sessionId, msg, { webBrowsing: webBrowsingMode })
-    // sessionActions.generate(props.sessionId, msg)
+    sessionActions.regenerateInNewFork(props.sessionId, msg)
   }
 
   const onGenerateMore = () => {
