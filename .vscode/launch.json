@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Main Process",
+      "type": "node",
+      "request": "attach",
+      "port": 5858,
+      "restart": true,
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/src/main/**/*.js", "${workspaceFolder}/.erb/scripts/**/*.js"],
+      "skipFiles": ["<node_internals>/**"],
+      "runtimeArgs": [],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    }
+  ]
+}
