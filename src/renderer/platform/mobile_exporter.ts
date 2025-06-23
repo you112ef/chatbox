@@ -1,166 +1,102 @@
-import { CHATBOX_BUILD_PLATFORM } from '@/variables'
-import { Exporter } from './interfaces'
-import { Filesystem, Directory, Encoding, WriteFileResult, WriteFileOptions } from '@capacitor/filesystem'
-import { Share } from '@capacitor/share'
+import type { WriteFileOptions, WriteFileResult } from '@capacitor/filesystem'
 import { Toast } from '@capacitor/toast'
-import * as base64 from '@/packages/base64'
 import i18n from '@/i18n'
+import { CHATBOX_BUILD_PLATFORM } from '@/variables'
+import { AndroidFilterWriter, type FilterWriter, IOSFilterWriter } from './filter_writer'
+import type { Exporter } from './interfaces'
 
 export default class MobileExporter implements Exporter {
-  constructor() {}
+  private writer: FilterWriter
+
+  constructor() {
+    this.writer = CHATBOX_BUILD_PLATFORM === 'ios' ? new IOSFilterWriter() : new AndroidFilterWriter()
+  }
 
   async writeFileAutoRenameOnConflict(options: WriteFileOptions): Promise<WriteFileResult> {
-    try {
-      await Filesystem.stat(options)
-      const ext = options.path.split('.').pop() || ''
-      const baseName = options.path.split('.').slice(0, -1).join('.')
-      const newFilename = `${baseName}_1${ext ? '.' + ext : ''}`
-      return await this.writeFileAutoRenameOnConflict({
-        ...options,
-        path: newFilename,
-      })
-    } catch (e) {
-      // 文件不存在，可以正常写入
-      return await Filesystem.writeFile(options)
-    }
+    return await this.writer.writeFileAutoRenameOnConflict(options)
   }
 
   async exportBlob(filename: string, blob: Blob, encoding?: 'utf8' | 'ascii' | 'utf16') {
-    const data = await blob.text()
-    // 保存
-    if (CHATBOX_BUILD_PLATFORM === 'ios') {
-      const result = await Filesystem.writeFile({
-        path: filename,
-        data: data,
-        directory: Directory.Cache, // 只有 Cache 才能分享
-        encoding: encoding as Encoding,
-      })
-      await Share.share({
-        title: i18n.t('Share File') || 'Share File',
-        text: i18n.t('Share File') || 'Share File',
-        url: result.uri,
-        dialogTitle: i18n.t('Share File') || 'Share File',
-      })
-    } else {
-      await this.checkOrRequestPermission()
-      const file = await this.writeFileAutoRenameOnConflict({
-        path: 'chatbox_ai_exports/' + filename,
-        data: data,
-        directory: Directory.Documents,
-        recursive: true,
-        encoding: encoding as Encoding,
-      })
-      await Toast.show({ text: i18n.t('File saved to {{uri}}', { uri: file.uri }) })
-    }
+    await this.writer.exportBlob(filename, blob, encoding)
   }
 
   async exportTextFile(filename: string, content: string) {
-    if (CHATBOX_BUILD_PLATFORM === 'ios') {
-      const result = await Filesystem.writeFile({
-        path: filename,
-        data: content,
-        directory: Directory.Cache, // 只有 Cache 才能分享
-        encoding: Encoding.UTF8,
-      })
-      await Share.share({
-        title: i18n.t('Share File') || 'Share File',
-        text: i18n.t('Share File') || 'Share File',
-        url: result.uri,
-        dialogTitle: i18n.t('Share File') || 'Share File',
-      })
-    } else {
-      try {
-        await this.checkOrRequestPermission()
-        const file = await this.writeFileAutoRenameOnConflict({
-          path: `chatbox_ai_exports/${filename}`,
-          data: content,
-          directory: Directory.Documents,
-          encoding: Encoding.UTF8,
-          recursive: true,
-        })
-        await Toast.show({ text: i18n.t('File saved to {{uri}}', { uri: file.uri }) })
-      } catch (e) {
-        await Toast.show({
-          text: i18n.t('Failed to save file: {{error}}', { error: e }),
-        })
-      }
-    }
+    await this.writer.exportTextFile(filename, content)
   }
 
   async exportImageFile(basename: string, base64Data: string) {
-    // 解析 base64 数据
-    let { type, data } = base64.parseImage(base64Data)
-    if (type === '') {
-      type = 'image/png'
-      data = base64Data
-    }
-    const ext = (type.split('/')[1] || 'png').split('+')[0] // 处理 svg+xml 的情况
-    const filename = basename + '.' + ext
-    // 保存
-    if (CHATBOX_BUILD_PLATFORM === 'ios') {
-      const result = await Filesystem.writeFile({
-        path: filename,
-        data: data, // 不声明 encoding 时，默认就是 base64 格式
-        directory: Directory.Cache, // 只有 Cache 才能分享
-      })
-      await Share.share({
-        title: i18n.t('Share File') || 'Share File',
-        text: i18n.t('Share File') || 'Share File',
-        url: result.uri,
-        dialogTitle: i18n.t('Share File') || 'Share File',
-      })
-    } else {
-      await this.checkOrRequestPermission()
-      const file = await this.writeFileAutoRenameOnConflict({
-        path: 'chatbox_ai_exports/' + filename,
-        data: data,
-        directory: Directory.Documents,
-        recursive: true,
-      })
-      await Toast.show({ text: i18n.t('File saved to {{uri}}', { uri: file.uri }) })
-    }
+    await this.writer.exportImageFile(basename, base64Data)
   }
 
   async exportByUrl(filename: string, url: string) {
-    if (CHATBOX_BUILD_PLATFORM === 'ios') {
-      const file = await Filesystem.downloadFile({
-        url: url,
-        path: filename,
-        directory: Directory.Cache,
+    await this.writer.exportByUrl(filename, url)
+  }
+
+  async exportStreamingJson(filename: string, dataCallback: () => AsyncGenerator<string, void, unknown>) {
+    try {
+      await this.writeStreamingContent(filename, dataCallback)
+    } catch (error) {
+      await Toast.show({
+        text: i18n.t('Failed to export file: {{error}}', { error: error }),
       })
-      await Share.share({
-        title: i18n.t('Share File') || 'Share File',
-        text: i18n.t('Share File') || 'Share File',
-        url: file.path,
-        dialogTitle: i18n.t('Share File') || 'Share File',
-      })
-    } else {
-      await this.checkOrRequestPermission()
-      await Filesystem.mkdir({
-        path: 'chatbox_ai_exports',
-        directory: Directory.Documents,
-        recursive: true,
-      })
-      // 测试下来，Filesystem.downloadFile 似乎不会自动创建文件夹
-      const file = await Filesystem.downloadFile({
-        url: url,
-        path: 'chatbox_ai_exports/' + filename,
-        directory: Directory.Documents,
-        recursive: true,
-      })
-      await Toast.show({ text: i18n.t('File saved to {{uri}}', { uri: file.path }) })
+      throw error
     }
   }
 
-  // 请求读/写权限。在Android上需要，仅在使用 Directory.Documents 或 Directory.ExternalStorage 时需要。
-  async checkOrRequestPermission() {
-    let result = await Filesystem.checkPermissions()
-    if (result.publicStorage === 'granted') {
-      return
+  private async writeStreamingContent(filename: string, dataCallback: () => AsyncGenerator<string, void, unknown>) {
+    let tempContent = ''
+    let isFirstWrite = true
+    const generator = dataCallback()
+    const CHUNK_SIZE = 1024 * 1024 // 1MB chunks
+
+    for await (const chunk of generator) {
+      tempContent += chunk
+      // 如果内容太长，分批写入文件
+      if (tempContent.length > CHUNK_SIZE) {
+        if (isFirstWrite) {
+          // 第一次写入创建文件
+          await this.writeFirstChunk(filename, tempContent)
+          isFirstWrite = false
+        } else {
+          // 后续写入追加内容
+          await this.appendChunk(filename, tempContent)
+        }
+        tempContent = ''
+      }
     }
-    result = await Filesystem.requestPermissions()
-    if (result.publicStorage === 'denied') {
-      await Toast.show({ text: i18n.t('No permission to write file') })
+
+    // 写入剩余内容
+    if (tempContent.length > 0) {
+      if (isFirstWrite) {
+        // 如果所有内容都小于1MB，直接创建完整文件
+        await this.writeCompleteFile(filename, tempContent)
+      } else {
+        // 追加最后一块内容并完成
+        await this.finishWriting(filename, tempContent)
+      }
+    } else if (!isFirstWrite) {
+      // 没有剩余内容但之前已经写入过，需要完成操作
+      await this.completeExport(filename)
     }
+  }
+
+  private async writeFirstChunk(filename: string, content: string) {
+    await this.writer.writeFirstChunk(filename, content)
+  }
+
+  private async appendChunk(filename: string, content: string) {
+    await this.writer.appendChunk(filename, content)
+  }
+
+  private async writeCompleteFile(filename: string, content: string) {
+    await this.writer.writeCompleteFile(filename, content)
+  }
+
+  private async finishWriting(filename: string, content: string) {
+    await this.writer.finishWriting(filename, content)
+  }
+
+  private async completeExport(filename: string) {
+    await this.writer.completeExport(filename)
   }
 }
