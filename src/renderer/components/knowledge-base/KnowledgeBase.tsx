@@ -12,6 +12,7 @@ import { useProviders } from '@/hooks/useProviders'
 import { useSettings } from '@/hooks/useSettings'
 import * as remote from '@/packages/remote'
 import platform from '@/platform'
+import { trackEvent } from '@/utils/track'
 import KnowledgeBaseDocuments from './KnowledgeBaseDocuments'
 import {
   KnowledgeBaseChatboxAIInfo,
@@ -252,6 +253,14 @@ const KnowledgeBasePage: React.FC = () => {
         embeddingModel: embeddingModel,
         rerankModel: rerankModel,
         visionModel: visionModel,
+      })
+
+      trackEvent('knowledge_base_created', {
+        provider_mode: newProviderMode,
+        embedding_model: embeddingModel,
+        rerank_model: rerankModel || null,
+        vision_model: visionModel || null,
+        knowledge_base_name: newKbName
       })
 
       // Reset form

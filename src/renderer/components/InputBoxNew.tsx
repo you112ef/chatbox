@@ -32,6 +32,7 @@ import storage from '@/storage'
 import { StorageKeyGenerator } from '@/storage/StoreStorage'
 import { delay } from '@/utils'
 import { featureFlags } from '@/utils/feature-flags'
+import { trackEvent } from '@/utils/track'
 import type { KnowledgeBase, SessionType, ShortcutSendValue } from '../../shared/types'
 import * as dom from '../hooks/dom'
 import * as atoms from '../stores/atoms'
@@ -422,8 +423,10 @@ const InputBox = forwardRef<InputBoxRef, InputBoxProps>(
       (kb: KnowledgeBase | null) => {
         if (!kb || kb.id === knowledgeBase?.id) {
           setKnowledgeBase(undefined)
+          trackEvent('knowledge_base_disabled', { knowledge_base_name: knowledgeBase?.name })
         } else {
           setKnowledgeBase(pick(kb, 'id', 'name'))
+          trackEvent('knowledge_base_enabled', { knowledge_base_name: kb.name })
         }
       },
       [knowledgeBase, setKnowledgeBase]

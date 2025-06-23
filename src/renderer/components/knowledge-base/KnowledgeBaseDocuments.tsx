@@ -34,6 +34,7 @@ import type { KnowledgeBase } from 'src/shared/types'
 import { useKnowledgeBaseFiles, useKnowledgeBaseFilesActions, useKnowledgeBaseFilesCount } from '@/hooks/knowledge-base'
 import { useChunksPreview } from '@/hooks/useChunksPreview'
 import platform from '@/platform'
+import { trackEvent } from '@/utils/track'
 import ChunksPreviewModal from './ChunksPreviewModal'
 
 interface KnowledgeBaseDocumentsProps {
@@ -148,6 +149,13 @@ const KnowledgeBaseDocuments: React.FC<KnowledgeBaseDocumentsProps> = ({ knowled
       )
 
       console.log(`[Upload] All files uploaded successfully.`)
+
+      trackEvent('knowledge_base_document_added', {
+        knowledge_base_id: knowledgeBase.id,
+        knowledge_base_name: knowledgeBase.name,
+        file_count: files.length,
+        file_types: Array.from(new Set(Array.from(files).map((f) => f.type || 'unknown'))),
+      })
 
       // Immediately refresh the data to show the new file
       await Promise.all([refetch(), refetchCount()])
