@@ -1,3 +1,9 @@
+import * as Sentry from '@sentry/react'
+import { getDefaultStore, useAtomValue } from 'jotai'
+import { identity, pickBy, throttle } from 'lodash'
+import { getModel } from 'src/shared/models'
+import type { onResultChangeWithCancel } from 'src/shared/models/types'
+import { v4 as uuidv4 } from 'uuid'
 import { createModelDependencies } from '@/adapters'
 import * as dom from '@/hooks/dom'
 import { languageNameMap } from '@/i18n/locales'
@@ -10,12 +16,6 @@ import * as remote from '@/packages/remote'
 import { estimateTokensFromMessages } from '@/packages/token'
 import { router } from '@/router'
 import { StorageKeyGenerator } from '@/storage/StoreStorage'
-import * as Sentry from '@sentry/react'
-import { getDefaultStore, useAtomValue } from 'jotai'
-import { identity, pickBy, throttle } from 'lodash'
-import { getModel } from 'src/shared/models'
-import { onResultChangeWithCancel } from 'src/shared/models/types'
-import { v4 as uuidv4 } from 'uuid'
 import * as defaults from '../../shared/defaults'
 import {
   AIProviderNoImplementedPaintError,
@@ -25,22 +25,22 @@ import {
   NetworkError,
 } from '../../shared/models/errors'
 import {
-  ExportChatFormat,
-  ExportChatScope,
-  KnowledgeBase,
-  Message,
-  MessageFile,
-  MessageImagePart,
-  MessageLink,
-  MessagePicture,
-  ModelProvider,
-  ModelProviderEnum,
-  Session,
-  SessionMeta,
-  SessionSettings,
-  SessionThread,
-  Settings,
   createMessage,
+  type ExportChatFormat,
+  type ExportChatScope,
+  KnowledgeBase,
+  type Message,
+  type MessageFile,
+  type MessageImagePart,
+  type MessageLink,
+  type MessagePicture,
+  type ModelProvider,
+  ModelProviderEnum,
+  type Session,
+  type SessionMeta,
+  type SessionSettings,
+  type SessionThread,
+  type Settings,
 } from '../../shared/types'
 import i18n from '../i18n'
 import * as promptFormat from '../packages/prompts'
@@ -558,10 +558,6 @@ export async function submitNewUserMessage(params: {
       }
     }
 
-    if (knowledgeBase && !model.isSupportToolUse()) {
-      throw ChatboxAIAPIError.fromCodeName('model_not_support_tool_use', 'model_not_support_tool_use')
-    }
-
     // 如果本次发送消息携带了附件，应该在这次发送中上传文件并构造文件信息(file uuid)
     if (attachments && attachments.length > 0) {
       if (isChatboxAI) {
@@ -649,7 +645,7 @@ export async function submitNewUserMessage(params: {
     if (!(err instanceof ApiError || err instanceof NetworkError || err instanceof AIProviderNoImplementedPaintError)) {
       Sentry.captureException(err) // unexpected error should be reported
     }
-    let errorCode: number | undefined = undefined
+    let errorCode: number | undefined
     if (err instanceof BaseError) {
       errorCode = err.code
     }
@@ -740,13 +736,13 @@ export async function generate(sessionId: string, targetMsg: Message) {
     switch (session.type) {
       // 对话消息生成
       case 'chat':
-      case undefined:
+      case undefined: {
         const startTime = Date.now()
-        let firstTokenLatency: number | undefined = undefined
+        let firstTokenLatency: number | undefined
         const promptMsgs = await genMessageContext(settings, messages.slice(0, targetMsgIx))
         const throttledModifyMessage = throttle<onResultChangeWithCancel>((updated) => {
           const text = getMessageText(targetMsg)
-          if (!firstTokenLatency && (text.length > 0 || updated.reasoningContent)) {
+          if (!firstTokenLatency && text.length > 0) {
             firstTokenLatency = Date.now() - startTime
           }
           targetMsg = {
@@ -774,8 +770,9 @@ export async function generate(sessionId: string, targetMsg: Message) {
         }
         modifyMessage(sessionId, targetMsg, true)
         break
+      }
       // 图片消息生成
-      case 'picture':
+      case 'picture': {
         // 取当前消息之前最近的一条用户消息作为 prompt
         let prompt = ''
         for (let i = targetMsgIx; i >= 0; i--) {
@@ -807,6 +804,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
         }
         modifyMessage(sessionId, targetMsg, true)
         break
+      }
       default:
         throw new Error(`Unknown session type: ${session.type}, generate failed`)
     }
@@ -818,7 +816,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
     if (!(err instanceof ApiError || err instanceof NetworkError || err instanceof AIProviderNoImplementedPaintError)) {
       Sentry.captureException(err) // unexpected error should be reported
     }
-    let errorCode: number | undefined = undefined
+    let errorCode: number | undefined
     if (err instanceof BaseError) {
       errorCode = err.code
     }
@@ -1258,7 +1256,7 @@ export async function createNewFork(forkMessageId: string) {
     return { data, updated: true }
   }
 
-  let { data, updated } = updateFn(currentSession.messages)
+  const { data, updated } = updateFn(currentSession.messages)
   if (updated) {
     saveSession({
       id: currentSession.id,
@@ -1316,7 +1314,7 @@ export async function switchFork(forkMessageId: string, direction: 'next' | 'pre
     return { data, updated: true }
   }
 
-  let { data, updated } = updateFn(currentSession.messages)
+  const { data, updated } = updateFn(currentSession.messages)
   if (updated) {
     saveSession({
       id: currentSession.id,
@@ -1380,7 +1378,7 @@ export async function deleteFork(forkMessageId: string) {
   }
 
   // 更新当前消息列表，如果没有找到消息则自动更新线程消息列表
-  let { data, updated } = updateFn(currentSession.messages)
+  const { data, updated } = updateFn(currentSession.messages)
   if (updated) {
     saveSession({
       id: currentSession.id,
@@ -1434,7 +1432,7 @@ export async function expandFork(forkMessageId: string) {
   }
 
   // 更新当前消息列表，如果没有找到消息则自动更新线程消息列表
-  let { data, updated } = updateFn(currentSession.messages)
+  const { data, updated } = updateFn(currentSession.messages)
   if (updated) {
     saveSession({
       id: currentSession.id,

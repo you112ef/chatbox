@@ -18,6 +18,7 @@ import {
   IconCheck,
   IconChevronDown,
   IconChevronRight,
+  IconCircleCheck,
   IconFile,
   IconLoader,
   IconPlayerPause,
@@ -28,6 +29,7 @@ import {
   IconUpload,
   IconX,
 } from '@tabler/icons-react'
+import { Block } from '@tanstack/react-router'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import type { KnowledgeBase } from 'src/shared/types'
@@ -350,7 +352,7 @@ const KnowledgeBaseDocuments: React.FC<KnowledgeBaseDocumentsProps> = ({ knowled
     switch (status) {
       case 'completed':
       case 'done':
-        return <IconCheck size={16} color="var(--mantine-color-green-6)" />
+        return <IconCircleCheck size={16} color="var(--mantine-color-green-6)" />
       case 'processing':
         return (
           <IconLoader
@@ -475,13 +477,13 @@ const KnowledgeBaseDocuments: React.FC<KnowledgeBaseDocumentsProps> = ({ knowled
               color="var(--mantine-color-chatbox-primary-text)"
               size="xs"
               fw={600}
-              leftSection={showUploadArea ? <IconX size={14} /> : <IconPlus size={14} />}
+              leftSection={showUploadArea ? <IconCheck size={14} /> : <IconPlus size={14} />}
               onClick={(e) => {
                 e.stopPropagation()
                 handleAddFile()
               }}
             >
-              {showUploadArea ? t('Cancel') : t('Add File')}
+              {showUploadArea ? t('Done') : t('Add File')}
             </Button>
           </Group>
 
@@ -491,7 +493,7 @@ const KnowledgeBaseDocuments: React.FC<KnowledgeBaseDocumentsProps> = ({ knowled
               <Box
                 p="md"
                 style={{
-                  borderBottom: allFiles.length > 0 ? '1px solid var(--mantine-color-gray-2)' : 'none',
+                  borderBottom: allFiles.length > 0 ? '1px solid var(--mantine-color-chatbox-gray)' : 'none',
                 }}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -505,7 +507,7 @@ const KnowledgeBaseDocuments: React.FC<KnowledgeBaseDocumentsProps> = ({ knowled
                     border: isDragOver
                       ? '2px dashed var(--mantine-color-blue-4)'
                       : '2px dashed var(--mantine-color-gray-3)',
-                    backgroundColor: isDragOver ? 'var(--mantine-color-blue-0)' : 'var(--mantine-color-gray-0)',
+                    backgroundColor: isDragOver ? 'var(--mantine-color-blue-0)' : 'var(--mantine-color-chatbox-gray)',
                     transition: 'all 0.2s ease',
                     cursor: 'pointer',
                   }}
@@ -548,7 +550,9 @@ const KnowledgeBaseDocuments: React.FC<KnowledgeBaseDocumentsProps> = ({ knowled
                           style={{
                             minHeight: 60,
                             borderBottom:
-                              index < allFiles.length - 1 ? '1px solid var(--mantine-color-gray-2)' : 'none',
+                              index < allFiles.length - 1
+                                ? '1px solid var(--mantine-color-chatbox-border-secondary-text)'
+                                : 'none',
                           }}
                         >
                           <Group gap="sm" align="center" style={{ flex: 1 }}>
@@ -607,7 +611,9 @@ const KnowledgeBaseDocuments: React.FC<KnowledgeBaseDocumentsProps> = ({ knowled
                           </Group>
 
                           <Group gap="sm" align="center">
-                            {getStatusIcon(doc.status, doc.error)}
+                            <Center w={20} h={20}>
+                              {getStatusIcon(doc.status, doc.error)}
+                            </Center>
                             {doc.status === 'failed' && (
                               <ActionIcon
                                 variant="subtle"

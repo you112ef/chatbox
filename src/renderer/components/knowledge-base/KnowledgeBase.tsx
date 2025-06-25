@@ -428,7 +428,7 @@ const KnowledgeBasePage: React.FC = () => {
         </Stack>
       </Modal>
       {!isUnsupportedPlatform && (
-        <Stack gap="xs">
+        <Stack gap="xl">
           {kbList.length === 0 ? (
             <Paper withBorder p="xl" style={{ textAlign: 'center' }}>
               <Stack gap="md" align="center">
@@ -454,7 +454,7 @@ const KnowledgeBasePage: React.FC = () => {
           ) : (
             kbList.map((kb) => (
               <Paper key={kb.id} withBorder p="md">
-                <Stack gap="xs">
+                <Stack gap="md">
                   <Stack gap="0">
                     <Group justify="space-between" align="center">
                       <Text fw={600} size="lg">

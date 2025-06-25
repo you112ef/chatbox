@@ -25,6 +25,7 @@ import { useTranslation } from 'react-i18next'
 import useInputBoxHistory from '@/hooks/useInputBoxHistory'
 import { useProviders } from '@/hooks/useProviders'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import { cn } from '@/lib/utils'
 import { trackingEvent } from '@/packages/event'
 import * as picUtils from '@/packages/pic_utils'
 import platform from '@/platform'
@@ -65,6 +66,7 @@ export type InputBoxProps = {
     provider: string
     modelId: string
   }
+  fullWidth?: boolean
   onSelectModel?(provider: string, model: string): void
   onSubmit?(payload: InputBoxPayload): Promise<boolean>
   onStopGenerating?(): boolean
@@ -80,6 +82,7 @@ const InputBox = forwardRef<InputBoxRef, InputBoxProps>(
       sessionType = 'chat',
       generating = false,
       model,
+      fullWidth = false,
       onSelectModel,
       onSubmit,
       onStopGenerating,
@@ -94,6 +97,7 @@ const InputBox = forwardRef<InputBoxRef, InputBoxProps>(
     const { height: viewportHeight } = useViewportSize()
     const pasteLongTextAsAFile = useAtomValue(atoms.pasteLongTextAsAFileAtom)
     const shortcuts = useAtomValue(atoms.shortcutsAtom)
+    const widthFull = useAtomValue(atoms.widthFullAtom) || fullWidth
 
     const [messageInput, setMessageInput] = useState('')
     const [pictureKeys, setPictureKeys] = useState<string[]>([])
@@ -434,15 +438,18 @@ const InputBox = forwardRef<InputBoxRef, InputBoxProps>(
 
     return (
       <Box
-        pt={isSmallScreen ? 0 : 'sm'}
+        pt={0}
         pb={isSmallScreen ? 'md' : 'sm'}
-        px={isSmallScreen ? 'xs' : 'sm'}
+        px={isSmallScreen ? '0.3rem' : '1rem'}
         id={dom.InputBoxID}
         {...getRootProps()}
       >
         <input className="hidden" {...getInputProps()} />
         <Stack
-          className="rounded-lg sm:rounded-md bg-[var(--mantine-color-chatbox-background-secondary-text)] border border-solid border-[var(--mantine-color-chatbox-border-primary-outline)]"
+          className={cn(
+            'rounded-lg sm:rounded-md bg-[var(--mantine-color-chatbox-background-secondary-text)] border border-solid border-[var(--mantine-color-chatbox-border-primary-outline)]',
+            widthFull ? 'w-full' : 'max-w-4xl mx-auto'
+          )}
           gap={0}
         >
           <Textarea

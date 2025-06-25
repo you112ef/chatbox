@@ -1,24 +1,24 @@
-import { chatSessionSettingsAtom } from '@/stores/atoms'
+import { ActionIcon, Avatar, Divider, Flex, Modal, ScrollArea, Stack, Text } from '@mantine/core'
+import { useDisclosure } from '@mantine/hooks'
+import { IconChevronLeft, IconChevronRight, IconX } from '@tabler/icons-react'
 import { createFileRoute, useRouterState } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import Page from '@/components/Page'
-import InputBox, { InputBoxPayload } from '@/components/InputBoxNew'
-import { ActionIcon, Avatar, Divider, Flex, Modal, ScrollArea, Stack, Text } from '@mantine/core'
-import * as sessionActions from '@/stores/sessionActions'
-import { CopilotDetail, createMessage, Message, SessionSettings } from 'src/shared/types'
-import { delay } from '@/utils'
 import { useTranslation } from 'react-i18next'
-import { useIsSmallScreen } from '@/hooks/useScreenChange'
-import { useMyCopilots, useRemoteCopilots } from '@/hooks/useCopilots'
+import { type CopilotDetail, createMessage, type Message, type SessionSettings } from 'src/shared/types'
 import { v4 as uuidv4 } from 'uuid'
-import { createSession } from '@/stores/sessionStorageMutations'
-import { IconChevronLeft, IconChevronRight, IconX } from '@tabler/icons-react'
-import { useDisclosure } from '@mantine/hooks'
-import { ChatConfig } from '@/modals/SessionSettings'
-import { initEmptyChatSession } from '@/stores/sessionActions'
+import InputBox, { type InputBoxPayload } from '@/components/InputBoxNew'
 import HomepageIcon from '@/components/icons/HomepageIcon'
+import Page from '@/components/Page'
+import { useMyCopilots, useRemoteCopilots } from '@/hooks/useCopilots'
+import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import { ChatConfig } from '@/modals/SessionSettings'
 import platform from '@/platform'
+import { chatSessionSettingsAtom } from '@/stores/atoms'
+import * as sessionActions from '@/stores/sessionActions'
+import { initEmptyChatSession } from '@/stores/sessionActions'
+import { createSession } from '@/stores/sessionStorageMutations'
+import { delay } from '@/utils'
 
 export const Route = createFileRoute('/')({
   component: Index,
@@ -153,6 +153,7 @@ function Index() {
             sessionType="chat"
             sessionId="new"
             model={selectedModel}
+            fullWidth
             onSelectModel={(p, m) =>
               setChatSessionSettings({
                 provider: p as any,
