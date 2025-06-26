@@ -33,6 +33,7 @@ export interface Platform {
   getStoreValue(key: string): Promise<any>
   delStoreValue(key: string): Promise<void>
   getAllStoreValues(): Promise<{ [key: string]: any }>
+  getAllStoreKeys(): Promise<string[]>
   setAllStoreValues(data: { [key: string]: any }): Promise<void>
 
   // Blob 存储
@@ -70,4 +71,5 @@ export interface Exporter {
   exportTextFile: (filename: string, content: string) => Promise<void>
   exportImageFile: (basename: string, base64: string) => Promise<void>
   exportByUrl: (filename: string, url: string) => Promise<void>
+  exportStreamingJson: (filename: string, dataCallback: () => AsyncGenerator<string, void, unknown>) => Promise<void>
 }

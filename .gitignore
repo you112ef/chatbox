@@ -168,7 +168,8 @@ dist
 
 electron-builder.env
 
-.vscode
+# Share VS Code settings
+# .vscode
 
 
 **/routeTree.gen.ts
