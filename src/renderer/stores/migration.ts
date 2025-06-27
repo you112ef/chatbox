@@ -51,7 +51,7 @@ type MigrateStore = {
   setBlob?: (key: string, value: string) => Promise<void>
 }
 
-export const CurrentVersion = 10
+export const CurrentVersion = 11
 
 export async function migrateOnData(dataStore: MigrateStore, canRelaunch = true) {
   let needRelaunch = false
