@@ -5,6 +5,9 @@ const changelog = `
 2. Added global model parameter settings
 3. Fixed some markdown and Latex display issues
 4. Fixed issue where some OpenRouter models didn't show thinking content
+5. Compatible with MCP environment variables containing = characterss
+
+Thanks to @jakub-nezasa for their contributions
 
 ### v1.14.2 - 2025.06.19
 
