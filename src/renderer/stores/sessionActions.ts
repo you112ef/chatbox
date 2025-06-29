@@ -26,7 +26,7 @@ function trackGenerateEvent(
   settings: Settings,
   globalSettings: Settings,
   sessionType: SessionType | undefined,
-  options?: { webBrowsing?: boolean; operationType?: 'send_message' | 'regenerate' }
+  options?: { operationType?: 'send_message' | 'regenerate' }
 ) {
   // 获取更有意义的 provider 标识
   let providerIdentifier = settings.provider
@@ -45,11 +45,14 @@ function trackGenerateEvent(
     }
   }
 
+  const store = getDefaultStore()
+  const webBrowsing = store.get(atoms.inputBoxWebBrowsingModeAtom)
+
   trackEvent('generate', {
     provider: providerIdentifier,
     model: settings.modelId || 'unknown',
     operation_type: options?.operationType || 'unknown',
-    web_browsing_enabled: options?.webBrowsing ? 'true' : 'false',
+    web_browsing_enabled: webBrowsing ? 'true' : 'false',
     session_type: sessionType || 'chat',
   })
 }
@@ -560,7 +563,6 @@ export async function submitNewUserMessage(params: {
   const { currentSessionId, newUserMsg, needGenerating, attachments, links } = params
   const store = getDefaultStore()
   const webBrowsing = store.get(atoms.inputBoxWebBrowsingModeAtom)
-  const knowledgeBase = store.get(atoms.inputBoxKnowledgeBaseAtom)
 
   // 如果存在附件，现在发送消息中构建空白的文件信息，用于占位，等待上传完成后再修改
   if (attachments && attachments.length > 0) {
@@ -747,7 +749,7 @@ export async function submitNewUserMessage(params: {
   }
   // 根据需要，生成这条回复消息
   if (needGenerating) {
-    return generate(currentSessionId, newAssistantMsg, { webBrowsing, operationType: 'send_message' })
+    return generate(currentSessionId, newAssistantMsg, { operationType: 'send_message' })
   }
 }
 
@@ -760,7 +762,7 @@ export async function submitNewUserMessage(params: {
 export async function generate(
   sessionId: string,
   targetMsg: Message,
-  options?: { webBrowsing?: boolean; operationType?: 'send_message' | 'regenerate' }
+  options?: { operationType?: 'send_message' | 'regenerate' }
 ) {
   // 获得依赖的数据
   const store = getDefaultStore()
@@ -819,6 +821,9 @@ export async function generate(
   try {
     const dependencies = await createModelDependencies()
     const model = getModel(settings, configs, dependencies)
+    const sessionKnowledgeBaseMap = store.get(atoms.sessionKnowledgeBaseMapAtom)
+    const knowledgeBase = sessionKnowledgeBaseMap[sessionId]
+    const webBrowsing = store.get(atoms.inputBoxWebBrowsingModeAtom)
     switch (session.type) {
       // 对话消息生成
       case 'chat':
@@ -846,6 +851,8 @@ export async function generate(
           messages: promptMsgs,
           onResultChangeWithCancel: throttledModifyMessage,
           providerOptions: settings.providerOptions,
+          knowledgeBase,
+          webBrowsing,
         })
         targetMsg = {
           ...targetMsg,

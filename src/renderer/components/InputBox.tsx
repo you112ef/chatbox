@@ -78,7 +78,7 @@ export type InputBoxProps = {
 const InputBox = forwardRef<InputBoxRef, InputBoxProps>(
   (
     {
-      // sessionId,
+      sessionId,
       sessionType = 'chat',
       generating = false,
       model,
@@ -103,7 +103,31 @@ const InputBox = forwardRef<InputBoxRef, InputBoxProps>(
     const [pictureKeys, setPictureKeys] = useState<string[]>([])
     const [attachments, setAttachments] = useState<File[]>([])
 
-    const [knowledgeBase, setKnowledgeBase] = useAtom(atoms.inputBoxKnowledgeBaseAtom)
+    const [sessionKnowledgeBaseMap, setSessionKnowledgeBaseMap] = useAtom(atoms.sessionKnowledgeBaseMapAtom)
+    const [newSessionState, setNewSessionState] = useAtom(atoms.newSessionStateAtom)
+    const currentSessionId = sessionId || 'default'
+    const isNewSession = currentSessionId === 'new'
+
+    const knowledgeBase = isNewSession ? newSessionState.knowledgeBase : sessionKnowledgeBaseMap[currentSessionId]
+    const setKnowledgeBase = useCallback(
+      (value: Pick<KnowledgeBase, 'id' | 'name'> | undefined) => {
+        if (isNewSession) {
+          setNewSessionState((prev) => ({ ...prev, knowledgeBase: value }))
+        } else {
+          setSessionKnowledgeBaseMap((prev) => {
+            if (value === undefined) {
+              const { [currentSessionId]: _, ...rest } = prev
+              return rest
+            }
+            return {
+              ...prev,
+              [currentSessionId]: value,
+            }
+          })
+        }
+      },
+      [currentSessionId, isNewSession, setSessionKnowledgeBaseMap, setNewSessionState]
+    )
     const [webBrowsingMode, setWebBrowsingMode] = useAtom(atoms.inputBoxWebBrowsingModeAtom)
 
     const [links, setLinks] = useAtom(atoms.inputBoxLinksAtom)

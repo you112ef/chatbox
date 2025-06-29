@@ -1,9 +1,9 @@
 import NiceModal from '@ebay/nice-modal-react'
-import { ActionIcon, Avatar, Button, Divider, Flex, ScrollArea, Stack, Text } from '@mantine/core'
+import { ActionIcon, Avatar, Divider, Flex, ScrollArea, Stack, Text } from '@mantine/core'
 import { IconChevronLeft, IconChevronRight, IconX } from '@tabler/icons-react'
 import { createFileRoute, useNavigate, useRouterState } from '@tanstack/react-router'
 import clsx from 'clsx'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { type CopilotDetail, createMessage, type Session } from 'src/shared/types'
@@ -15,7 +15,7 @@ import { useMyCopilots, useRemoteCopilots } from '@/hooks/useCopilots'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import { useSettings } from '@/hooks/useSettings'
 import platform from '@/platform'
-import { chatSessionSettingsAtom } from '@/stores/atoms'
+import { chatSessionSettingsAtom, newSessionStateAtom, sessionKnowledgeBaseMapAtom } from '@/stores/atoms'
 import * as sessionActions from '@/stores/sessionActions'
 import { initEmptyChatSession } from '@/stores/sessionActions'
 import { createSession } from '@/stores/sessionStorageMutations'
@@ -30,6 +30,8 @@ function Index() {
   const isSmallScreen = useIsSmallScreen()
 
   const [chatSessionSettings] = useAtom(chatSessionSettingsAtom)
+  const [newSessionState, setNewSessionState] = useAtom(newSessionStateAtom)
+  const [sessionKnowledgeBaseMap, setSessionKnowledgeBaseMap] = useAtom(sessionKnowledgeBaseMapAtom)
   const { settings } = useSettings()
 
   const [session, setSession] = useState<Session>({
@@ -117,6 +119,16 @@ function Index() {
       copilotId: session.copilotId,
       settings: session.settings,
     })
+
+    // Transfer knowledge base from newSessionState to the actual session
+    if (newSessionState.knowledgeBase) {
+      setSessionKnowledgeBaseMap({
+        ...sessionKnowledgeBaseMap,
+        [newSession.id]: newSessionState.knowledgeBase,
+      })
+      // Clear newSessionState after transfer
+      setNewSessionState({})
+    }
 
     sessionActions.switchCurrentSession(newSession.id)
 
