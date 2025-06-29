@@ -52,7 +52,11 @@ export default class OpenAI extends AbstractAISDKModel {
             'HTTP-Referer': 'https://chatboxai.app',
             'X-Title': 'Chatbox AI',
           }
-        : undefined,
+        : this.options.apiHost.includes('aihubmix.com')
+          ? {
+              'APP-Code': 'VAFU9221',
+            }
+          : undefined,
     })
   }
 

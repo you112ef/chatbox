@@ -1,7 +1,7 @@
-import fs from 'fs'
 import { faker } from '@faker-js/faker/locale/zh_CN'
+import fs from 'fs'
 import { keyBy, pick } from 'lodash'
-import { MessageRole, Session, SessionMeta } from 'src/shared/types'
+import type { MessageRole, Session, SessionMeta } from 'src/shared/types'
 
 function getSessionMeta(session: SessionMeta) {
   return pick(session, ['id', 'name', 'starred', 'assistantAvatarKey', 'picUrl', 'type'])
@@ -33,19 +33,21 @@ function main() {
       messages.push({
         id: faker.string.uuid(),
         role: faker.helpers.arrayElement(['user', 'assistant']) as MessageRole,
-        contentParts: [
+        ...(configVersion <= 7? {
+          content: faker.lorem.lines({ min: 1, max: 5 }),
+        } : {contentParts: [
           {
             type: 'text' as const,
             text: faker.lorem.lines({ min: 1, max: 5 }),
           },
-        ],
+        ]}),
       })
     }
     sessions.push({
       id: faker.string.uuid(),
       name: faker.lorem.word(),
       picUrl: faker.image.avatar(),
-      messages: messages,
+      messages: messages as any,
       starred: faker.datatype.boolean(),
     })
   }

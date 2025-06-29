@@ -538,6 +538,9 @@ export interface ChatboxAILicenseDetail {
   image_total_quota: number
   token_refreshed_time: string
   token_expire_time: string | null | undefined
+  remaining_quota_unified: number
+  expansion_pack_limit: number
+  expansion_pack_usage: number
 }
 
 export type ChatboxAIModel = 'chatboxai-3.5' | 'chatboxai-4' | string

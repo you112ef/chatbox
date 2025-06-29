@@ -314,7 +314,7 @@ const _Message: FC<Props> = (props) => {
     }
   }, [needArtifact, autoScrollId, msg.generating, msg.id])
 
-  const contentParts = msg.contentParts
+  const contentParts = msg.contentParts || []
 
   const CollapseButton = (
     <span

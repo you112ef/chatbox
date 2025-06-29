@@ -16,7 +16,43 @@ import * as remote from '@/packages/remote'
 import { estimateTokensFromMessages } from '@/packages/token'
 import { router } from '@/router'
 import { StorageKeyGenerator } from '@/storage/StoreStorage'
+import { trackEvent } from '@/utils/track'
 import * as defaults from '../../shared/defaults'
+
+/**
+ * 跟踪生成事件
+ */
+function trackGenerateEvent(
+  settings: Settings,
+  globalSettings: Settings,
+  sessionType: SessionType | undefined,
+  options?: { webBrowsing?: boolean; operationType?: 'send_message' | 'regenerate' }
+) {
+  // 获取更有意义的 provider 标识
+  let providerIdentifier = settings.provider
+  if (settings.provider?.startsWith('custom-provider-')) {
+    // 对于自定义 provider，使用 apiHost 作为标识
+    const providerSettings = globalSettings.providers?.[settings.provider]
+    if (providerSettings?.apiHost) {
+      try {
+        const url = new URL(providerSettings.apiHost)
+        providerIdentifier = `custom:${url.hostname}`
+      } catch {
+        providerIdentifier = `custom:${providerSettings.apiHost}`
+      }
+    } else {
+      providerIdentifier = 'custom:unknown'
+    }
+  }
+
+  trackEvent('generate', {
+    provider: providerIdentifier,
+    model: settings.modelId || 'unknown',
+    operation_type: options?.operationType || 'unknown',
+    web_browsing_enabled: options?.webBrowsing ? 'true' : 'false',
+    session_type: sessionType || 'chat',
+  })
+}
 import {
   AIProviderNoImplementedPaintError,
   ApiError,
@@ -39,6 +75,7 @@ import {
   type SessionMeta,
   type SessionSettings,
   type SessionThread,
+  type SessionType,
   type Settings,
 } from '../../shared/types'
 import i18n from '../i18n'
@@ -710,7 +747,7 @@ export async function submitNewUserMessage(params: {
   }
   // 根据需要，生成这条回复消息
   if (needGenerating) {
-    return generate(currentSessionId, newAssistantMsg)
+    return generate(currentSessionId, newAssistantMsg, { webBrowsing, operationType: 'send_message' })
   }
 }
 
@@ -720,7 +757,11 @@ export async function submitNewUserMessage(params: {
  * @param targetMsg
  * @returns
  */
-export async function generate(sessionId: string, targetMsg: Message) {
+export async function generate(
+  sessionId: string,
+  targetMsg: Message,
+  options?: { webBrowsing?: boolean; operationType?: 'send_message' | 'regenerate' }
+) {
   // 获得依赖的数据
   const store = getDefaultStore()
   const globalSettings = store.get(atoms.settingsAtom)
@@ -730,6 +771,9 @@ export async function generate(sessionId: string, targetMsg: Message) {
     return
   }
   const settings = session.settings ? mergeSettings(globalSettings, session.settings, session.type) : globalSettings
+
+  // 跟踪生成事件
+  trackGenerateEvent(settings, globalSettings, session.type, options)
 
   // 将消息的状态修改成初始状态
   targetMsg = {
@@ -827,7 +871,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
           targetMsg.contentParts.push(image)
           targetMsg.status = []
           modifyMessage(sessionId, targetMsg, true)
-        }      
+        }
         await generateImage(model, {
           prompt,
           num: settings.imageGenerateNum || 1,
@@ -895,7 +939,7 @@ export async function generate(sessionId: string, targetMsg: Message) {
 export async function generateMore(sessionId: string, msgId: string) {
   const newAssistantMsg = createMessage('assistant', '')
   insertMessageAfter(sessionId, newAssistantMsg, msgId)
-  await generate(sessionId, newAssistantMsg)
+  await generate(sessionId, newAssistantMsg, { operationType: 'regenerate' })
 }
 
 export async function generateMoreInNewFork(sessionId: string, msgId: string) {
@@ -909,7 +953,7 @@ export async function regenerateInNewFork(sessionId: string, msg: Message) {
   const previousMessageIndex = messageIndex - 1
   if (previousMessageIndex < 0) {
     // 如果目标消息是第一条消息，则直接重新生成
-    generate(sessionId, msg)
+    generate(sessionId, msg, { operationType: 'regenerate' })
     return
   }
   const forkMessage = messageList[previousMessageIndex]

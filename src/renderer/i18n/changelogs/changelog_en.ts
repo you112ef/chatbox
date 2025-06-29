@@ -1,4 +1,11 @@
 const changelog = `
+### v1.14.3 - 2025.06.28
+
+1. Fixed issue where exporting data on mobile would cause a crash
+2. Added global model parameter settings
+3. Fixed some markdown and Latex display issues
+4. Fixed issue where some OpenRouter models didn't show thinking content
+
 ### v1.14.2 - 2025.06.19
 
 1. Fixed issue where pressing Enter for a new line on mobile would send the message immediately

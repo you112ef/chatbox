@@ -19,7 +19,10 @@ interface Options {
 export default class CustomOpenAI extends AbstractAISDKModel {
   public name = 'Custom OpenAI'
 
-  constructor(public options: Options, dependencies: ModelDependencies) {
+  constructor(
+    public options: Options,
+    dependencies: ModelDependencies
+  ) {
     super(options, dependencies)
   }
 
@@ -50,6 +53,16 @@ export default class CustomOpenAI extends AbstractAISDKModel {
       apiKey: this.options.apiKey,
       baseURL: `${this.options.apiHost}${this.options.apiPath}`,
       fetch: this.createFetchWithProxy(),
+      headers: this.options.apiHost.includes('openrouter.ai')
+        ? {
+            'HTTP-Referer': 'https://chatboxai.app',
+            'X-Title': 'Chatbox AI',
+          }
+        : this.options.apiHost.includes('aihubmix.com')
+          ? {
+              'APP-Code': 'VAFU9221',
+            }
+          : undefined,
     })
   }
 
