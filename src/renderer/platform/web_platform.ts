@@ -96,6 +96,9 @@ export default class WebPlatform implements Platform {
     })
     return ret
   }
+  public async getAllStoreKeys(): Promise<string[]> {
+    return store.keys()
+  }
   public async setAllStoreValues(data: { [key: string]: any }): Promise<void> {
     for (const [key, value] of Object.entries(data)) {
       await store.setItem(key, JSON.stringify(value))

@@ -25,6 +25,9 @@ jobs:
         run: npm ci
 
       - name: Build web application
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          NODE_OPTIONS: --max-old-space-size=4096
         run: npm run build:web
 
       - name: Set up Docker Buildx

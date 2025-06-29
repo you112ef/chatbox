@@ -83,6 +83,9 @@ export default class DesktopPlatform implements Platform {
     const json = await this.ipc.invoke('getAllStoreValues')
     return JSON.parse(json)
   }
+  public async getAllStoreKeys(): Promise<string[]> {
+    return this.ipc.invoke('getAllStoreKeys')
+  }
   public async setAllStoreValues(data: { [key: string]: any }) {
     await this.ipc.invoke('setAllStoreValues', JSON.stringify(data))
   }

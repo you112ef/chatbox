@@ -130,6 +130,29 @@ class SQLiteStorage {
     }
   }
 
+  // 获取所有键
+  async getAllKeys(): Promise<string[]> {
+    await this.ensureInitialized()
+
+    try {
+      const query = `
+            SELECT key FROM key_value;
+          `
+      const result = await this.database.query(query)
+      // 提取所有key
+      const keys: string[] = []
+      if (result.values && result.values.length > 0) {
+        result.values.forEach((row) => {
+          keys.push(row.key)
+        })
+      }
+      return keys
+    } catch (error) {
+      console.error('Failed to get all keys', error)
+      throw error
+    }
+  }
+
   // 关闭数据库
   async closeDatabase(): Promise<void> {
     await this.ensureInitialized()
@@ -223,6 +246,9 @@ export default class MobilePlatform implements Platform {
       items[key] = items[key] && typeof items[key] === 'string' ? JSON.parse(items[key]) : items[key]
     }
     return items
+  }
+  public async getAllStoreKeys(): Promise<string[]> {
+    return this.sqliteStorage.getAllKeys()
   }
   public async setAllStoreValues(data: { [key: string]: any }): Promise<void> {
     for (const [key, value] of Object.entries(data)) {
