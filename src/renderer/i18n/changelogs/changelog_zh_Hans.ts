@@ -5,6 +5,9 @@ const changelog = `
 2. 添加全局模型参数设置
 3. 修复一些 markdown 和 Latex 的显示问题
 4. 修复 OpenRouter 部分模型思考内容不展示的问题
+5. 兼容 MCP 环境变量中包含=号字符的问题
+
+本次更新感谢 @jakub-nezasa 的贡献
 
 ### v1.14.2 - 2025.06.19
 
