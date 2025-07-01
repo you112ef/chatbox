@@ -75,7 +75,7 @@ jobs:
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           UPDATE_CHANNEL: ${{ env.UPDATE_CHANNEL }}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_AUTH_TOKEN: ${{ env.UPDATE_CHANNEL != 'alpha' && secrets.SENTRY_AUTH_TOKEN || '' }}
           NODE_OPTIONS: --max-old-space-size=4096
         run: |
           npm run release:win
