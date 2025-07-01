@@ -32,13 +32,13 @@ jobs:
           cache: npm
 
       - name: Setup Certificate
-        if: matrix.os == 'windows-2019'
+        if: ${{ matrix.os == 'windows-2022' && env.UPDATE_CHANNEL != 'alpha' }}
         run: |
           echo "${{ secrets.SM_CLIENT_CERT_FILE_BASE64 }}" | base64 --decode > /d/Certificate_pkcs12.p12
         shell: bash
 
       - name: Set variables
-        if: matrix.os == 'windows-2019'
+        if: ${{ matrix.os == 'windows-2022' && env.UPDATE_CHANNEL != 'alpha' }}
         run: |
           echo "SM_KEYPAIR_NAME=${{ secrets.SM_KEYPAIR_ALIAS }}" >> "$GITHUB_ENV"
           echo "SM_HOST=${{ secrets.SM_HOST }}" >> "$GITHUB_ENV"
@@ -51,7 +51,7 @@ jobs:
         shell: bash
 
       - name: Setting up the client tools
-        if: ${{ matrix.os == 'windows-2019' && env.SM_API_KEY != '' }}
+        if: ${{ matrix.os == 'windows-2022' && env.UPDATE_CHANNEL != 'alpha' && env.SM_API_KEY != '' }}
         run: |
           curl -X GET  https://one.digicert.com/signingmanager/api-ui/v1/releases/smtools-windows-x64.msi/download -H "x-api-key:%SM_API_KEY%" -o smtools-windows-x64.msi
           msiexec /i smtools-windows-x64.msi /quiet /qn
@@ -59,7 +59,7 @@ jobs:
         shell: cmd
 
       - name: Certificates Sync
-        if: ${{ matrix.os == 'windows-2019' && env.SM_API_KEY != '' }}
+        if: ${{ matrix.os == 'windows-2022' && env.UPDATE_CHANNEL != 'alpha' && env.SM_API_KEY != '' }}
         run: |
           smctl windows certsync
         shell: cmd
@@ -75,7 +75,7 @@ jobs:
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           UPDATE_CHANNEL: ${{ env.UPDATE_CHANNEL }}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          # SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           NODE_OPTIONS: --max-old-space-size=4096
         run: |
           npm run release:win

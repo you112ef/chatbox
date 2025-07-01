@@ -2,20 +2,20 @@
  * Build config for electron renderer process
  */
 
-import path from 'path'
-import webpack from 'webpack'
+import { sentryWebpackPlugin } from '@sentry/webpack-plugin'
+import { TanStackRouterWebpack } from '@tanstack/router-plugin/webpack'
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
-import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
-import { merge } from 'webpack-merge'
+import path from 'path'
 import TerserPlugin from 'terser-webpack-plugin'
+import webpack from 'webpack'
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import { merge } from 'webpack-merge'
+import JavaScriptObfuscator from 'webpack-obfuscator'
+import checkNodeEnv from '../scripts/check-node-env'
 import baseConfig from './webpack.config.base'
 import webpackPaths from './webpack.paths'
-import checkNodeEnv from '../scripts/check-node-env'
-import JavaScriptObfuscator from 'webpack-obfuscator'
-import { TanStackRouterWebpack } from '@tanstack/router-plugin/webpack'
-import { sentryWebpackPlugin } from '@sentry/webpack-plugin'
 
 checkNodeEnv('production')
 
@@ -172,7 +172,7 @@ const configuration: webpack.Configuration = {
       // domainLockRedirectUrl: 'https://chatboxai.app',
       sourceMap: true,
     }),
-    sentryWebpackPlugin({
+    process.env.SENTRY_AUTH_TOKEN && sentryWebpackPlugin({
       authToken: process.env.SENTRY_AUTH_TOKEN,
       org: 'sentry',
       project: 'chatbox',
