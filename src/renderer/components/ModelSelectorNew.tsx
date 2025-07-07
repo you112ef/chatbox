@@ -40,10 +40,11 @@ export const ModelSelector = forwardRef<HTMLDivElement, ModelSelectorProps>(
         providers.map((provider) => {
           const models = (provider.models || provider.defaultSettings?.models)?.filter(
             (model) =>
-              provider.id.includes(search) ||
-              provider.name.includes(search) ||
-              model.nickname?.includes(search) ||
-              model.modelId?.includes(search)
+              (!model.type || model.type === 'chat') &&
+              (provider.id.includes(search) ||
+                provider.name.includes(search) ||
+                model.nickname?.includes(search) ||
+                model.modelId?.includes(search))
           )
           return {
             ...provider,
@@ -70,10 +71,8 @@ export const ModelSelector = forwardRef<HTMLDivElement, ModelSelectorProps>(
     })
 
     const groups = filteredProviders.map((provider) => {
-      provider
       const options = provider.models?.map((model) => {
         const isFavorited = isFavoritedModel(provider.id, model.modelId)
-
         return (
           <ModelItem
             key={`${provider.id}/${model.modelId}`}

@@ -13,31 +13,35 @@ import {
   IconPhoto,
   IconPlayerStopFilled,
   IconSelector,
+  IconVocabulary,
   IconWorld,
 } from '@tabler/icons-react'
 import { useAtom, useAtomValue } from 'jotai'
-import _ from 'lodash'
+import _, { pick } from 'lodash'
 import type React from 'react'
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useTranslation } from 'react-i18next'
-import type { SessionType, ShortcutSendValue } from '@/../shared/types'
-import * as dom from '@/hooks/dom'
 import useInputBoxHistory from '@/hooks/useInputBoxHistory'
 import { useProviders } from '@/hooks/useProviders'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
+import { cn } from '@/lib/utils'
 import { trackingEvent } from '@/packages/event'
 import * as picUtils from '@/packages/pic_utils'
 import platform from '@/platform'
 import storage from '@/storage'
 import { StorageKeyGenerator } from '@/storage/StoreStorage'
-import * as atoms from '@/stores/atoms'
-import * as toastActions from '@/stores/toastActions'
 import { delay } from '@/utils'
 import { featureFlags } from '@/utils/feature-flags'
+import { trackEvent } from '@/utils/track'
+import type { KnowledgeBase, SessionType, ShortcutSendValue } from '../../shared/types'
+import * as dom from '../hooks/dom'
+import * as atoms from '../stores/atoms'
+import * as toastActions from '../stores/toastActions'
 import { FileMiniCard, ImageMiniCard, LinkMiniCard } from './Attachments'
 import ImageModelSelect from './ImageModelSelect'
 import ProviderImageIcon from './icons/ProviderImageIcon'
+import KnowledgeBaseMenu from './knowledge-base/KnowledgeBaseMenu'
 import ModelSelector from './ModelSelectorNew'
 import MCPMenu from './mcp/MCPMenu'
 import { Keys } from './Shortcut'
@@ -47,7 +51,6 @@ export type InputBoxPayload = {
   pictureKeys?: string[]
   attachments?: File[]
   links?: { url: string }[]
-  webBrowsing?: boolean
   needGenerating?: boolean
 }
 
@@ -63,6 +66,7 @@ export type InputBoxProps = {
     provider: string
     modelId: string
   }
+  fullWidth?: boolean
   onSelectModel?(provider: string, model: string): void
   onSubmit?(payload: InputBoxPayload): Promise<boolean>
   onStopGenerating?(): boolean
@@ -74,10 +78,11 @@ export type InputBoxProps = {
 const InputBox = forwardRef<InputBoxRef, InputBoxProps>(
   (
     {
-      // sessionId,
+      sessionId,
       sessionType = 'chat',
       generating = false,
       model,
+      fullWidth = false,
       onSelectModel,
       onSubmit,
       onStopGenerating,
@@ -92,11 +97,39 @@ const InputBox = forwardRef<InputBoxRef, InputBoxProps>(
     const { height: viewportHeight } = useViewportSize()
     const pasteLongTextAsAFile = useAtomValue(atoms.pasteLongTextAsAFileAtom)
     const shortcuts = useAtomValue(atoms.shortcutsAtom)
+    const widthFull = useAtomValue(atoms.widthFullAtom) || fullWidth
 
     const [messageInput, setMessageInput] = useState('')
     const [pictureKeys, setPictureKeys] = useState<string[]>([])
     const [attachments, setAttachments] = useState<File[]>([])
+
+    const [sessionKnowledgeBaseMap, setSessionKnowledgeBaseMap] = useAtom(atoms.sessionKnowledgeBaseMapAtom)
+    const [newSessionState, setNewSessionState] = useAtom(atoms.newSessionStateAtom)
+    const currentSessionId = sessionId || 'default'
+    const isNewSession = currentSessionId === 'new'
+
+    const knowledgeBase = isNewSession ? newSessionState.knowledgeBase : sessionKnowledgeBaseMap[currentSessionId]
+    const setKnowledgeBase = useCallback(
+      (value: Pick<KnowledgeBase, 'id' | 'name'> | undefined) => {
+        if (isNewSession) {
+          setNewSessionState((prev) => ({ ...prev, knowledgeBase: value }))
+        } else {
+          setSessionKnowledgeBaseMap((prev) => {
+            if (value === undefined) {
+              const { [currentSessionId]: _, ...rest } = prev
+              return rest
+            }
+            return {
+              ...prev,
+              [currentSessionId]: value,
+            }
+          })
+        }
+      },
+      [currentSessionId, isNewSession, setSessionKnowledgeBaseMap, setNewSessionState]
+    )
     const [webBrowsingMode, setWebBrowsingMode] = useAtom(atoms.inputBoxWebBrowsingModeAtom)
+
     const [links, setLinks] = useAtom(atoms.inputBoxLinksAtom)
     const pictureInputRef = useRef<HTMLInputElement | null>(null)
     const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -182,10 +215,8 @@ const InputBox = forwardRef<InputBoxRef, InputBoxProps>(
           pictureKeys,
           attachments,
           links,
-          webBrowsing: webBrowsingMode,
           needGenerating,
         })
-
         if (!res) {
           return
         }
@@ -416,17 +447,33 @@ const InputBox = forwardRef<InputBoxRef, InputBoxProps>(
       }
     }, [quote])
 
+    const handleKnowledgeBaseSelect = useCallback(
+      (kb: KnowledgeBase | null) => {
+        if (!kb || kb.id === knowledgeBase?.id) {
+          setKnowledgeBase(undefined)
+          trackEvent('knowledge_base_disabled', { knowledge_base_name: knowledgeBase?.name })
+        } else {
+          setKnowledgeBase(pick(kb, 'id', 'name'))
+          trackEvent('knowledge_base_enabled', { knowledge_base_name: kb.name })
+        }
+      },
+      [knowledgeBase, setKnowledgeBase]
+    )
+
     return (
       <Box
-        pt={isSmallScreen ? 0 : 'sm'}
+        pt={0}
         pb={isSmallScreen ? 'md' : 'sm'}
-        px={isSmallScreen ? 'xs' : 'sm'}
+        px={isSmallScreen ? '0.3rem' : '1rem'}
         id={dom.InputBoxID}
         {...getRootProps()}
       >
         <input className="hidden" {...getInputProps()} />
         <Stack
-          className="rounded-lg sm:rounded-md bg-[var(--mantine-color-chatbox-background-secondary-text)] border border-solid border-[var(--mantine-color-chatbox-border-primary-outline)]"
+          className={cn(
+            'rounded-lg sm:rounded-md bg-[var(--mantine-color-chatbox-background-secondary-text)] border border-solid border-[var(--mantine-color-chatbox-border-primary-outline)]',
+            widthFull ? 'w-full' : 'max-w-4xl mx-auto'
+          )}
           gap={0}
         >
           <Textarea
@@ -564,7 +611,6 @@ const InputBox = forwardRef<InputBoxRef, InputBoxProps>(
                       <IconWorld />
                     </ActionIcon>
                   </Tooltip>
-
                   {featureFlags.mcp && (
                     <MCPMenu>
                       {(enabledTools) =>
@@ -583,6 +629,15 @@ const InputBox = forwardRef<InputBoxRef, InputBoxProps>(
                       }
                     </MCPMenu>
                   )}
+                  {featureFlags.knowledgeBase && (
+                    <KnowledgeBaseMenu currentKnowledgeBaseId={knowledgeBase?.id} onSelect={handleKnowledgeBaseSelect}>
+                      <Tooltip label={t('Knowledge Base')} withArrow position="top">
+                        <ActionIcon variant="subtle" color={knowledgeBase ? 'chatbox-brand' : 'chatbox-secondary'}>
+                          <IconVocabulary />
+                        </ActionIcon>
+                      </Tooltip>
+                    </KnowledgeBaseMenu>
+                  )}
                 </>
               )}
 
@@ -596,7 +651,6 @@ const InputBox = forwardRef<InputBoxRef, InputBoxProps>(
                   <IconAdjustmentsHorizontal />
                 </ActionIcon>
               </Tooltip>
-
               {/* <ActionIcon variant="subtle" color="chatbox-secondary">
               <IconVocabulary />
             </ActionIcon> */}

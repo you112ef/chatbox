@@ -1,22 +1,40 @@
+import NiceModal from '@ebay/nice-modal-react'
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import CopyAllIcon from '@mui/icons-material/CopyAll'
 import EditIcon from '@mui/icons-material/Edit'
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote'
+import ImageIcon from '@mui/icons-material/Image'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import PersonIcon from '@mui/icons-material/Person'
 import ReplayIcon from '@mui/icons-material/Replay'
+import ReportIcon from '@mui/icons-material/Report'
 import SettingsIcon from '@mui/icons-material/Settings'
 import SmartToyIcon from '@mui/icons-material/SmartToy'
+import SouthIcon from '@mui/icons-material/South'
 import StopIcon from '@mui/icons-material/Stop'
-import { ButtonGroup, Grid, IconButton, Tooltip, Typography, useTheme } from '@mui/material'
+import { Alert, ButtonGroup, Grid, IconButton, Tooltip, Typography, useTheme } from '@mui/material'
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import MenuItem from '@mui/material/MenuItem'
+import { useNavigate } from '@tanstack/react-router'
+import * as dateFns from 'date-fns'
 import { useAtomValue, useSetAtom } from 'jotai'
+import { isEmpty } from 'lodash'
 import type React from 'react'
 import { type FC, type MouseEventHandler, memo, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Markdown from '@/components/Markdown'
+import * as dom from '@/hooks/dom'
+import { cn } from '@/lib/utils'
+import { copyToClipboard } from '@/packages/navigator'
+import { estimateTokensFromMessages } from '@/packages/token'
+import { countWord } from '@/packages/word-count'
+import platform from '@/platform'
+import { getMessageText } from '@/utils/message'
 import type { Message, SessionType } from '../../shared/types'
+import '../static/Block.css'
+
+import { IconInfoCircle } from '@tabler/icons-react'
 import {
   autoCollapseCodeBlockAtom,
   autoPreviewArtifactsAtom,
@@ -26,7 +44,6 @@ import {
   enableLaTeXRenderingAtom,
   enableMarkdownRenderingAtom,
   enableMermaidRenderingAtom,
-  inputBoxWebBrowsingModeAtom,
   messageScrollingScrollPositionAtom,
   openSettingDialogAtom,
   pictureShowAtom,
@@ -43,24 +60,6 @@ import {
 import * as scrollActions from '../stores/scrollActions'
 import * as sessionActions from '../stores/sessionActions'
 import * as toastActions from '../stores/toastActions'
-import '../static/Block.css'
-import NiceModal from '@ebay/nice-modal-react'
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import ImageIcon from '@mui/icons-material/Image'
-import ReportIcon from '@mui/icons-material/Report'
-import SouthIcon from '@mui/icons-material/South'
-import { useNavigate } from '@tanstack/react-router'
-import * as dateFns from 'date-fns'
-import { isEmpty } from 'lodash'
-import * as dom from '@/hooks/dom'
-import { cn } from '@/lib/utils'
-import { copyToClipboard } from '@/packages/navigator'
-import { estimateTokensFromMessages } from '@/packages/token'
-import { countWord } from '@/packages/word-count'
-import platform from '@/platform'
-import { getSession } from '@/stores/sessionStorageMutations'
-import { getMessageText } from '@/utils/message'
 import { isContainRenderableCode, MessageArtifact } from './Artifact'
 import { MessageAttachment } from './Attachments'
 import { ConfirmDeleteMenuItem } from './ConfirmDeleteButton'
@@ -68,7 +67,7 @@ import { ImageInStorage, Img } from './Image'
 import Loading from './icons/Loading'
 import MessageErrTips from './MessageErrTips'
 import MessageStatuses from './MessageLoading'
-import { ToolCallPartUI } from './message-parts/ToolCallPartUI'
+import { ReasoningContentUI, ToolCallPartUI } from './message-parts/ToolCallPartUI'
 import StyledMenu from './StyledMenu'
 
 interface Props {
@@ -83,7 +82,7 @@ interface Props {
   preferCollapsedCodeBlock?: boolean
 }
 
-const Message: FC<Props> = (props) => {
+const _Message: FC<Props> = (props) => {
   const { msg, className, collapseThreshold, hiddenButtonGroup, small, preferCollapsedCodeBlock } = props
 
   const navigate = useNavigate()
@@ -108,9 +107,9 @@ const Message: FC<Props> = (props) => {
   const widthFull = useAtomValue(widthFullAtom)
   const autoPreviewArtifacts = useAtomValue(autoPreviewArtifactsAtom)
   const autoCollapseCodeBlock = useAtomValue(autoCollapseCodeBlockAtom)
-  const webBrowsingMode = useAtomValue(inputBoxWebBrowsingModeAtom)
 
   const [previewArtifact, setPreviewArtifact] = useState(autoPreviewArtifacts)
+
   const contentLength = useMemo(() => {
     return getMessageText(msg).length
   }, [msg])
@@ -121,13 +120,6 @@ const Message: FC<Props> = (props) => {
     contentLength > collapseThreshold &&
     contentLength - collapseThreshold > 50 // 只有折叠有明显效果才折叠，为了更好的用户体验
   const [isCollapsed, setIsCollapsed] = useState(needCollapse)
-
-  const [_isCollapsedReasoning, setIsCollapsedReasoning] = useState<boolean>() // 推理内容是否折叠
-  // 如果设置了 _isCollapsedReasoning 则使用 _isCollapsedReasoning，否则当 msg 的 content 不为空时折叠 reasoning
-  const isCollapsedReasoning = useMemo(
-    () => (typeof _isCollapsedReasoning === 'boolean' ? _isCollapsedReasoning : !!getMessageText(msg)),
-    [_isCollapsedReasoning, msg]
-  )
 
   const ref = useRef<HTMLDivElement>(null)
 
@@ -159,8 +151,7 @@ const Message: FC<Props> = (props) => {
 
   const handleRefresh = () => {
     handleStop()
-    sessionActions.regenerateInNewFork(props.sessionId, msg, { webBrowsing: webBrowsingMode })
-    // sessionActions.generate(props.sessionId, msg)
+    sessionActions.regenerateInNewFork(props.sessionId, msg)
   }
 
   const onGenerateMore = () => {
@@ -173,14 +164,17 @@ const Message: FC<Props> = (props) => {
     setAnchorEl(null)
   }
 
-  const onCopyReasoningContent: MouseEventHandler<HTMLAnchorElement> = (e) => {
-    e.stopPropagation()
-    if (msg.reasoningContent) {
-      copyToClipboard(msg.reasoningContent)
-      toastActions.add(t('copied to clipboard'))
-      setAnchorEl(null)
+  // 复制特定 reasoning 内容
+  const onCopyReasoningContent =
+    (content: string): MouseEventHandler<HTMLButtonElement> =>
+    (e) => {
+      e.stopPropagation()
+      if (content) {
+        copyToClipboard(content)
+        toastActions.add(t('copied to clipboard'))
+        setAnchorEl(null)
+      }
     }
-  }
 
   const onReport = () => {
     setAnchorEl(null)
@@ -280,7 +274,7 @@ const Message: FC<Props> = (props) => {
       return false
     }
     return isContainRenderableCode(getMessageText(msg))
-  }, [msg])
+  }, [msg.contentParts, msg.role, msg])
 
   // 消息生成中自动跟踪滚动
   useEffect(() => {
@@ -294,7 +288,8 @@ const Message: FC<Props> = (props) => {
       }
       setAutoScrollId(null)
     }
-  }, [msg.generating])
+  }, [msg.generating, autoScrollId, msg.id])
+
   useEffect(() => {
     if (msg.generating && autoScrollId) {
       if (needArtifact) {
@@ -312,7 +307,7 @@ const Message: FC<Props> = (props) => {
         scrollActions.tickAutoScroll(autoScrollId)
       }
     }
-  }, [msg.contentParts, msg.reasoningContent, needArtifact])
+  }, [needArtifact, autoScrollId, msg.generating, msg.id])
 
   const contentParts = msg.contentParts || []
 
@@ -326,7 +321,7 @@ const Message: FC<Props> = (props) => {
   )
 
   const onClickAssistantAvatar = () => {
-    NiceModal.show('session-settings', { session: getSession(props.sessionId) })
+    NiceModal.show('session-settings', { chatConfigDialogSessionId: props.sessionId })
   }
 
   function showPicture(storageKey: string) {
@@ -492,55 +487,16 @@ const Message: FC<Props> = (props) => {
             <div
               className={cn(
                 'max-w-full inline-block',
-                msg.role !== 'assistant' ? 'bg-stone-400/10 dark:bg-blue-400/10 px-2 rounded ' : ''
+                msg.role !== 'assistant' ? 'bg-stone-400/10 dark:bg-blue-400/10 px-4 rounded-lg' : 'w-full'
               )}
             >
-              {msg.reasoningContent && (
-                <Box className="bg-stone-300/10 dark:bg-blue-300/10 rounded p-2 mb-2 ">
-                  <Box
-                    className="cursor-pointer select-none flex flex-row justify-start items-center gap-1"
-                    onClick={() => setIsCollapsedReasoning(!isCollapsedReasoning)}
-                  >
-                    <Typography variant="caption" color="text.secondary">
-                      {msg.generating ? t('Thinking') : t('Deeply thought')}
-                    </Typography>
-                    <SouthIcon
-                      sx={{
-                        fontSize: 12,
-                        transform: isCollapsedReasoning ? 'rotate(0deg)' : 'rotate(180deg)',
-                        transition: 'transform 0.2s',
-                      }}
-                    />
-
-                    {!msg.generating && (
-                      <IconButton
-                        sx={{
-                          marginLeft: 'auto',
-                        }}
-                        onClick={onCopyReasoningContent}
-                        href="#"
-                      >
-                        <ContentCopyIcon
-                          sx={{
-                            fontSize: 16,
-                          }}
-                        />
-                      </IconButton>
-                    )}
-                  </Box>
-                  {!isCollapsedReasoning && (
-                    <Box sx={{ mt: 1 }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-line' }}>
-                        {msg.reasoningContent}
-                      </Typography>
-                    </Box>
-                  )}
-                </Box>
-              )}
               <Box
                 className={cn('msg-content', { 'msg-content-small': small })}
                 sx={small ? { fontSize: theme.typography.body2.fontSize } : {}}
               >
+                {msg.reasoningContent && (
+                  <ReasoningContentUI message={msg} onCopyReasoningContent={onCopyReasoningContent} />
+                )}
                 {
                   // 这里的空行仅仅是为了在只发送文件时消息气泡的美观
                   // 正常情况下，应该考虑优化 msg-content 的样式。现在这里是一个临时的偷懒方式。
@@ -549,8 +505,16 @@ const Message: FC<Props> = (props) => {
                 {contentParts && contentParts.length > 0 && (
                   <div>
                     {contentParts.map((item, index) =>
-                      item.type === 'text' ? (
-                        <div key={index}>
+                      item.type === 'reasoning' ? (
+                        <div key={`reasoning-${msg.id}-${index}`}>
+                          <ReasoningContentUI
+                            message={msg}
+                            part={item}
+                            onCopyReasoningContent={onCopyReasoningContent}
+                          />
+                        </div>
+                      ) : item.type === 'text' ? (
+                        <div key={`text-${msg.id}-${index}`}>
                           {enableMarkdownRendering && !isCollapsed ? (
                             <Markdown
                               enableLaTeXRendering={enableLaTeXRendering}
@@ -570,9 +534,15 @@ const Message: FC<Props> = (props) => {
                             </div>
                           )}
                         </div>
+                      ) : item.type === 'info' ? (
+                        <div key={`info-${item.text}`} className="mb-2">
+                          <Alert color="info" icon={<IconInfoCircle />}>
+                            {item.text}
+                          </Alert>
+                        </div>
                       ) : item.type === 'image' ? (
                         props.sessionType !== 'picture' && (
-                          <div key={index}>
+                          <div key={`image-${item.storageKey}`}>
                             <div
                               className="w-[100px] min-w-[100px] h-[100px] min-h-[100px]
                                                     md:w-[200px] md:min-w-[200px] md:h-[200px] md:min-h-[200px]
@@ -595,9 +565,9 @@ const Message: FC<Props> = (props) => {
                 <div className="flex flex-row items-start justify-start overflow-x-auto overflow-y-hidden">
                   {msg.contentParts
                     .filter((p) => p.type === 'image')
-                    .map((pic, index) => (
+                    .map((pic) => (
                       <div
-                        key={index}
+                        key={pic.storageKey}
                         className="w-[100px] min-w-[100px] h-[100px] min-h-[100px]
                                                     md:w-[200px] md:min-w-[200px] md:h-[200px] md:min-h-[200px]
                                                     p-1.5 mr-2 mb-2 inline-flex items-center justify-center
@@ -627,11 +597,11 @@ const Message: FC<Props> = (props) => {
               )}
               {(msg.files || msg.links) && (
                 <div className="flex flex-row items-start justify-start overflow-x-auto overflow-y-hidden pb-1">
-                  {msg.files?.map((file, index) => (
-                    <MessageAttachment key={index} label={file.name} filename={file.name} />
+                  {msg.files?.map((file) => (
+                    <MessageAttachment key={file.name} label={file.name} filename={file.name} />
                   ))}
-                  {msg.links?.map((link, index) => (
-                    <MessageAttachment key={index} label={link.title} url={link.url} />
+                  {msg.links?.map((link) => (
+                    <MessageAttachment key={link.url} label={link.title} url={link.url} />
                   ))}
                 </div>
               )}
@@ -726,7 +696,7 @@ const Message: FC<Props> = (props) => {
                               onClick={onEditClick}
                               disabled={
                                 // 图文消息暂时不让编辑
-                                !isEmpty(msg.contentParts) && !msg.contentParts!.every((c) => c.type === 'text')
+                                !isEmpty(msg.contentParts) && !msg.contentParts.every((c) => c.type === 'text')
                               }
                             >
                               <EditIcon fontSize="small" />
@@ -796,4 +766,4 @@ const Message: FC<Props> = (props) => {
   )
 }
 
-export default memo(Message)
+export default memo(_Message)
