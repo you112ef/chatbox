@@ -18,6 +18,7 @@ interface Options {
   temperature?: number
   topP?: number
   maxTokens?: number
+  stream?: boolean
 }
 
 interface Config {
@@ -34,6 +35,7 @@ export default class ChatboxAI extends AbstractAISDKModel implements ModelInterf
     public config: Config,
     dependencies: ModelDependencies
   ) {
+    options.stream = true
     super(options, dependencies)
   }
 
