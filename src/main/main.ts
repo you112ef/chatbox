@@ -17,6 +17,7 @@ import type { ShortcutSetting } from 'src/shared/types'
 import * as analystic from './analystic-node'
 import { AppUpdater } from './app-updater'
 import * as autoLauncher from './autoLauncher'
+import { handleDeepLink } from './deeplinks'
 import { parseFile } from './file-parser'
 import Locale from './locales'
 import * as mcpIpc from './mcp/ipc-stdio-transport'
@@ -51,6 +52,14 @@ const RESOURCES_PATH = app.isPackaged
 
 const getAssetPath = (...paths: string[]): string => {
   return path.join(RESOURCES_PATH, ...paths)
+}
+
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient('chatbox', process.execPath, [path.resolve(process.argv[1])])
+  }
+} else {
+  app.setAsDefaultProtocolClient('chatbox')
 }
 
 // --------- 全局变量 ---------
@@ -357,8 +366,13 @@ const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {
   app.quit()
 } else {
-  app.on('second-instance', (event, commandLine, workingDirectory) => {
-    showOrHideWindow()
+  app.on('second-instance', async (event, commandLine, workingDirectory) => {
+    await showOrHideWindow()
+    // on windows and linux, the deep link is passed in the command line
+    const url = commandLine.find((arg) => arg.startsWith('chatbox://'))
+    if (url && mainWindow) {
+      handleDeepLink(mainWindow, url)
+    }
   })
 
   app.on('window-all-closed', () => {
@@ -414,6 +428,13 @@ if (!gotTheLock) {
     })
     .catch(console.log)
 }
+
+// macos uses this event to handle deep links
+app.on('open-url', (_event, url) => {
+  if (mainWindow) {
+    handleDeepLink(mainWindow, url)
+  }
+})
 
 // --------- IPC 监听 ---------
 
