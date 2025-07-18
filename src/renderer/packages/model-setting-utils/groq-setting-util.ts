@@ -25,7 +25,7 @@ export default class GroqSettingUtil extends BaseConfig implements ModelSettingU
     const dependencies = await createModelDependencies()
     const groq = new Groq(
       {
-        groqAPIKey: settings.apiKey!,
+        apiKey: settings.apiKey!,
         model,
         temperature: 0,
       },
