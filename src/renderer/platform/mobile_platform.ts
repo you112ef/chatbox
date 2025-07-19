@@ -170,8 +170,51 @@ export default class MobilePlatform implements Platform {
   public exporter = new MobileExporter()
 
   private sqliteStorage = new SQLiteStorage()
+  private navigationCallback: ((path: string) => void) | null = null
 
-  constructor() {}
+  constructor() {
+    // 监听深度链接 (Deep Links)
+    App.addListener('appUrlOpen', (event) => {
+      console.log('App URL opened:', event.url)
+      this.handleDeepLink(event.url)
+    })
+  }
+
+  // 处理深度链接
+  private handleDeepLink(url: string): void {
+    try {
+      const parsedUrl = new URL(url)
+
+      // 处理 provider 导入链接: chatbox://provider/import?config=<base64-encoded-config>
+      if (parsedUrl.hostname === 'provider' && parsedUrl.pathname === '/import') {
+        const encodedConfig = parsedUrl.searchParams.get('config') || ''
+        const path = `/settings/provider?import=${encodeURIComponent(encodedConfig)}`
+        this.triggerNavigation(path)
+        return
+      }
+
+      console.log('Unhandled deep link:', url)
+    } catch (error) {
+      console.error('Failed to handle deep link:', error)
+    }
+  }
+
+  // 触发导航
+  private triggerNavigation(path: string): void {
+    if (this.navigationCallback) {
+      this.navigationCallback(path)
+    } else {
+      console.log('Navigation callback not set, path:', path)
+    }
+  }
+
+  // 设置导航回调（类似 electronAPI.onNavigate）
+  public onNavigate(callback: (path: string) => void): () => void {
+    this.navigationCallback = callback
+    return () => {
+      this.navigationCallback = null
+    }
+  }
 
   public async getVersion(): Promise<string> {
     return (await App.getInfo()).version
@@ -320,7 +363,7 @@ export default class MobilePlatform implements Platform {
     if (options?.tokenLimit) {
       result.text = sliceTextByTokenLimit(result.text, options.tokenLimit)
     }
-    const key = `parseFile-` + uuidv4()
+    const key = `parseFile-${uuidv4()}`
     await this.setStoreBlob(key, result.text)
     return { key, isSupported: true }
   }
