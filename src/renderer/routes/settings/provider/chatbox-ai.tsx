@@ -29,7 +29,7 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { type ModelProvider, ModelProviderEnum } from 'src/shared/types'
 import useChatboxAIModels from '@/hooks/useChatboxAIModels'
@@ -68,6 +68,7 @@ function RouteComponent() {
   const { settings } = useSettings()
 
   const [licenseKey, setLicenseKey] = useState(settings.licenseKey || '')
+  const [isDeactivating, setIsDeactivating] = useState(false)
 
   const activated = premiumActions.useAutoValidate()
   const [activating, setActivating] = useState(false)
@@ -88,7 +89,7 @@ function RouteComponent() {
     })
   }
 
-  const activate = async () => {
+  const activate = useCallback(async () => {
     try {
       setActivating(true)
       setActivateError(undefined)
@@ -101,11 +102,12 @@ function RouteComponent() {
     } finally {
       setActivating(false)
     }
-  }
+  }, [licenseKey])
 
   // 自动激活
   useEffect(() => {
     if (
+      !isDeactivating &&
       licenseKey &&
       licenseKey.length >= 36 &&
       !settings.licenseInstances?.[licenseKey] // 仅当 license key 还没激活
@@ -113,7 +115,7 @@ function RouteComponent() {
       console.log('auto activate')
       activate()
     }
-  }, [licenseKey])
+  }, [licenseKey, activate, settings.licenseInstances, isDeactivating])
 
   const [showFetchedModels, setShowFetchedModels] = useState(false)
   const handleFetchModels = () => {
@@ -173,8 +175,10 @@ function RouteComponent() {
               ) : (
                 <Button
                   onClick={async () => {
+                    setIsDeactivating(true)
                     await premiumActions.deactivate()
                     setLicenseKey('')
+                    setIsDeactivating(false)
                     trackingEvent('click_deactivate_license_button', { event_category: 'user' })
                   }}
                 >
@@ -257,7 +261,7 @@ function RouteComponent() {
                           {text}
                         </Text>
                       </Flex>
-                      <Progress value={val} />
+                      <Progress value={Number(val)} />
                     </Stack>
                   ))}
 
@@ -449,6 +453,8 @@ function RouteComponent() {
                 )}
 
                 <Flex flex="0 0 auto" gap="xs" align="center">
+                  {model.type && model.type !== 'chat' && <Badge color="blue">{t(model.type)}</Badge>}
+
                   {model.capabilities?.includes('reasoning') && (
                     <Tooltip label={t('Reasoning')}>
                       <Text span c="chatbox-warning" className="flex items-center">

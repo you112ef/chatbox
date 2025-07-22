@@ -16,6 +16,12 @@
     - [发布的常见问题](#发布的常见问题)
     - [（已弃用）本地打包与发布正式版](#已弃用本地打包与发布正式版)
     - [网页版部署](#网页版部署)
+  - [Electron应用打包流程](#electron应用打包流程)
+    - [打包架构设计](#打包架构设计)
+    - [打包相关脚本](#打包相关脚本)
+    - [打包流程详解](#打包流程详解)
+    - [原生依赖处理机制](#原生依赖处理机制)
+    - [electron-builder 配置亮点](#electron-builder-配置亮点)
 - [移动端开发（iOS/Android）](#移动端开发iosandroid)
   - [安装依赖](#安装依赖-1)
     - [1. 安装 Xcode](#1-安装-xcode)
@@ -33,9 +39,9 @@
       - [iOS 调试](#ios-调试)
   - [生产部署](#生产部署)
 - [配置与日志路径](#配置与日志路径)
-    - [配置文件](#配置文件)
-      - [数据恢复的方法](#数据恢复的方法)
-    - [主进程的日志文件](#主进程的日志文件)
+  - [配置文件](#配置文件)
+    - [数据恢复的方法](#数据恢复的方法)
+  - [主进程的日志文件](#主进程的日志文件)
 
 # 项目结构
 
@@ -232,6 +238,82 @@ npm run build:renderer
 ```shell
 npm run serve:web
 ```
+
+
+# Electron应用打包流程
+
+## 打包架构设计
+这个项目采用了标准的 Electron 分离式依赖管理 架构：
+根目录 package.json: 包含开发依赖和渲染进程依赖
+release/app/package.json: 包含主进程的生产依赖（特别是原生模块）
+
+## 打包相关脚本
+
+```
+# 单平台打包
+npm run package
+
+# 全平台打包  
+npm run package:all
+
+# 发布版本（各平台）
+npm run electron:publish-mac
+npm run electron:publish-linux  
+npm run electron:publish-win
+```
+### 3. 打包流程详解
+标准打包流程：
+```
+npm run package
+```
+具体步骤：
+1. 清理: ts-node ./.erb/scripts/clean.js dist - 清理构建目录
+2. 构建: npm run build - 构建主进程和渲染进程代码
+3. 打包: electron-builder build --publish never - 使用 electron-builder 打包
+发布流程：
+```
+npm run electron:publish-mac
+```
+步骤：
+1. 清理: 清理构建目录
+2. 安装: npm install - 重新安装依赖
+3. 初始化: npm run postinstall - 处理原生依赖
+4. 构建: npm run build - 构建代码
+5. 发布: electron-builder build --publish always --mac - 构建并发布
+
+## 原生依赖处理机制
+是否需要 node-gyp-rebuild？
+不直接使用 node-gyp-rebuild，而是使用更智能的方案：
+原生依赖检查:
+```
+// .erb/scripts/check-native-dep.js
+// 检查是否有 binding.gyp 文件的依赖
+const nativeDeps = fs
+    .readdirSync('node_modules')
+    .filter((folder) => fs.existsSync(`node_modules/${folder}/binding.gyp`))
+```
+依赖分离:
+原生依赖必须安装在 release/app/ 目录下
+如果在根目录发现原生依赖，会给出详细的迁移指导
+自动重建:
+```
+// .erb/scripts/electron-rebuild.js
+const electronRebuildCmd = 
+    '../../node_modules/.bin/electron-rebuild --force --types prod,dev,optional --module-dir .'
+```
+使用 electron-rebuild 的优势：
+更精确: 只重建必要的原生模块
+跨平台: 自动处理 Windows/Mac/Linux 的路径差异
+类型完整: 包含 prod,dev,optional 所有类型的依赖
+智能检测: 只在有原生依赖时才执行重建
+
+## electron-builder 配置亮点
+```
+# electron-builder.yml
+asarUnpack: "**\\*.{node,dll}"  # 不打包原生模块到 asar
+```
+这确保原生模块（.node 文件）和动态链接库（.dll 文件）不会被打包到 asar 归档中，避免运行时加载问题。
+
 
 # 移动端开发（iOS/Android）
 

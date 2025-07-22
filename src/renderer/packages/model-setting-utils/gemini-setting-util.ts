@@ -1,7 +1,8 @@
-import { ModelProvider, ModelProviderEnum, ProviderSettings, SessionType } from 'src/shared/types'
-import Gemini from '../models/gemini'
+import Gemini from 'src/shared/models/gemini'
+import { type ModelProvider, ModelProviderEnum, type ProviderSettings, type SessionType } from 'src/shared/types'
+import { createModelDependencies } from '@/adapters'
 import BaseConfig from './base-config'
-import { ModelSettingUtil } from './interface'
+import type { ModelSettingUtil } from './interface'
 
 export default class GeminiSettingUtil extends BaseConfig implements ModelSettingUtil {
   public provider: ModelProvider = ModelProviderEnum.Gemini
@@ -18,16 +19,17 @@ export default class GeminiSettingUtil extends BaseConfig implements ModelSettin
   }
 
   protected async listProviderModels(settings: ProviderSettings) {
-    const model = settings.models?.[0]
-    if (!model) {
-      return []
-    }
-    const gemini = new Gemini({
-      geminiAPIHost: settings.apiHost!,
-      geminiAPIKey: settings.apiKey!,
-      model,
-      temperature: 0,
-    })
+    const model = settings.models?.[0] || { modelId: 'gemini-2.0-flash' }
+    const dependencies = await createModelDependencies()
+    const gemini = new Gemini(
+      {
+        geminiAPIHost: settings.apiHost!,
+        geminiAPIKey: settings.apiKey!,
+        model,
+        temperature: 0,
+      },
+      dependencies
+    )
     return gemini.listModels()
   }
 }

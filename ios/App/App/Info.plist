@@ -27,6 +27,7 @@
 			<string>chatbox</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>chatbox</string>
 				<string>chatboxai</string>
 			</array>
 		</dict>

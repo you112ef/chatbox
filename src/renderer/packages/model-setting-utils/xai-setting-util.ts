@@ -1,7 +1,8 @@
-import { ModelProvider, ModelProviderEnum, ProviderSettings, SessionType } from 'src/shared/types'
-import XAI from '../models/xai'
+import XAI from 'src/shared/models/xai'
+import { type ModelProvider, ModelProviderEnum, type ProviderSettings, type SessionType } from 'src/shared/types'
+import { createModelDependencies } from '@/adapters'
 import BaseConfig from './base-config'
-import { ModelSettingUtil } from './interface'
+import type { ModelSettingUtil } from './interface'
 
 export default class XAISettingUtil extends BaseConfig implements ModelSettingUtil {
   public provider: ModelProvider = ModelProviderEnum.XAI
@@ -14,7 +15,8 @@ export default class XAISettingUtil extends BaseConfig implements ModelSettingUt
   }
 
   protected async listProviderModels(settings: ProviderSettings) {
-    const xai = new XAI({ xAIKey: settings.apiKey!, model: { modelId: '', capabilities: [] } })
+    const dependencies = await createModelDependencies()
+    const xai = new XAI({ apiKey: settings.apiKey!, model: { modelId: '', capabilities: [] } }, dependencies)
     return xai.listModels()
   }
 }

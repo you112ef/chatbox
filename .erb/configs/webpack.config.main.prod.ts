@@ -2,16 +2,16 @@
  * Webpack config for production electron main process
  */
 
+import { sentryWebpackPlugin } from '@sentry/webpack-plugin'
 import path from 'path'
-import webpack from 'webpack'
-import { merge } from 'webpack-merge'
 import TerserPlugin from 'terser-webpack-plugin'
+import webpack from 'webpack'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import { merge } from 'webpack-merge'
+import JavaScriptObfuscator from 'webpack-obfuscator'
+import checkNodeEnv from '../scripts/check-node-env'
 import baseConfig from './webpack.config.base'
 import webpackPaths from './webpack.paths'
-import checkNodeEnv from '../scripts/check-node-env'
-import JavaScriptObfuscator from 'webpack-obfuscator'
-import { sentryWebpackPlugin } from '@sentry/webpack-plugin'
 
 checkNodeEnv('production')
 
@@ -75,7 +75,7 @@ const configuration: webpack.Configuration = {
       identifierNamesGenerator: 'mangled-shuffled',
       sourceMap: true,
     }),
-    sentryWebpackPlugin({
+    process.env.SENTRY_AUTH_TOKEN && sentryWebpackPlugin({
       authToken: process.env.SENTRY_AUTH_TOKEN,
       org: 'sentry',
       project: 'chatbox',

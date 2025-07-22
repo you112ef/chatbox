@@ -1,7 +1,8 @@
-import { ModelProvider, ModelProviderEnum, ProviderSettings, SessionType } from 'src/shared/types'
-import LMStudio from '../models/lmstudio'
+import LMStudio from 'src/shared/models/lmstudio'
+import { type ModelProvider, ModelProviderEnum, type ProviderSettings, type SessionType } from 'src/shared/types'
+import { createModelDependencies } from '@/adapters'
 import BaseConfig from './base-config'
-import { ModelSettingUtil } from './interface'
+import type { ModelSettingUtil } from './interface'
 
 export default class LMStudioSettingUtil extends BaseConfig implements ModelSettingUtil {
   public provider: ModelProvider = ModelProviderEnum.LMStudio
@@ -14,13 +15,17 @@ export default class LMStudioSettingUtil extends BaseConfig implements ModelSett
   }
 
   protected async listProviderModels(settings: ProviderSettings) {
-    const lmStudio = new LMStudio({
-      lmStudioHost: settings.apiHost!,
+    const dependencies = await createModelDependencies()
+    const lmStudio = new LMStudio(
+      {
+        apiHost: settings.apiHost!,
         model: {
-        modelId: '',
-        capabilities: [],
+          modelId: '',
+          capabilities: [],
+        },
       },
-    })
+      dependencies
+    )
     return lmStudio.listModels()
   }
 }

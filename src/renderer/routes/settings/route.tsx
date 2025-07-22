@@ -6,6 +6,7 @@ import { Box, Flex, Stack, Text } from '@mantine/core'
 import { IconButton, Box as MuiBox, useTheme } from '@mui/material'
 import {
   IconAdjustmentsHorizontal,
+  IconBook,
   IconBox,
   IconCategory,
   IconChevronRight,
@@ -42,6 +43,15 @@ const ITEMS = [
           key: 'mcp',
           label: 'MCP',
           icon: <IconCircleDottedLetterM className="w-full h-full" />,
+        },
+      ]
+    : []),
+  ...(featureFlags.knowledgeBase
+    ? [
+        {
+          key: 'knowledge-base',
+          label: 'Knowledge Base',
+          icon: <IconBook className="w-full h-full" />,
         },
       ]
     : []),

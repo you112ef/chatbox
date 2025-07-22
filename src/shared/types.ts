@@ -1,6 +1,6 @@
 import type { LanguageModelUsage } from 'ai'
 import { v4 as uuidv4 } from 'uuid'
-import type { MCPServerConfig } from '@/packages/mcp/types'
+import type { MCPServerConfig } from './types/mcp'
 
 export interface SearchResultItem {
   title: string
@@ -45,7 +45,9 @@ export const MessageRoleEnum = {
 export type MessageRole = (typeof MessageRoleEnum)[keyof typeof MessageRoleEnum]
 
 export type MessageTextPart = { type: 'text'; text: string }
-export type MessageImagePart = { type: 'image'; storageKey: string }
+export type MessageImagePart = { type: 'image'; storageKey: string; ocrResult?: string }
+export type MessageInfoPart = { type: 'info'; text: string; values?: Record<string, unknown> }
+export type MessageReasoningPart = { type: 'reasoning'; text: string }
 export type MessageToolCallPart<Args = unknown, Result = unknown> = {
   type: 'tool-call'
   state: 'call' | 'result' | 'error'
@@ -55,7 +57,13 @@ export type MessageToolCallPart<Args = unknown, Result = unknown> = {
   result?: Result
 }
 
-export type MessageContentParts = (MessageTextPart | MessageImagePart | MessageToolCallPart)[]
+export type MessageContentParts = (
+  | MessageTextPart
+  | MessageImagePart
+  | MessageInfoPart
+  | MessageToolCallPart
+  | MessageReasoningPart
+)[]
 export type StreamTextResult = {
   contentParts: MessageContentParts
   reasoningContent?: string
@@ -92,7 +100,7 @@ export interface Message {
   errorCode?: number
   error?: string
   errorExtra?: {
-    [key: string]: any
+    [key: string]: unknown
   }
   status?: (
     | {
@@ -156,6 +164,8 @@ export type SessionSettings = Partial<{
   maxContextMessageCount: number
   temperature: number
   topP: number
+  maxTokens?: number
+  stream: boolean
   dalleStyle: 'vivid' | 'natural'
   imageGenerateNum: number // 生成图片的数量
   providerOptions?: ProviderOptions
@@ -210,9 +220,11 @@ export function createMessage(role: MessageRole = MessageRoleEnum.User, content:
     id: uuidv4(),
     contentParts: content ? [{ type: 'text', text: content }] : [], // 防止为 undefined 或 null
     role: role,
-    timestamp: new Date().getTime(),
+    timestamp: Date.now(),
   }
 }
+
+export type ToolUseScope = 'web-browsing' | 'knowledge-base'
 
 export enum ModelProviderEnum {
   ChatboxAI = 'chatbox-ai',
@@ -235,9 +247,10 @@ export type ModelProvider = ModelProviderEnum | string
 
 export type ProviderModelInfo = {
   modelId: string
+  type?: 'chat' | 'embedding' | 'rerank' // 模型类型，chat/embedding/rerank
   nickname?: string
   labels?: string[]
-  capabilities?: ('vision' | 'reasoning' | 'tool_use')[]
+  capabilities?: ('vision' | 'reasoning' | 'tool_use' | 'web_search')[]
   contextWindow?: number
   maxOutput?: number
 }
@@ -258,6 +271,7 @@ export type BuiltinProviderBaseInfo = {
 
 export type CustomProviderBaseInfo = Omit<BuiltinProviderBaseInfo, 'id' | 'isCustom'> & {
   id: string
+  iconUrl?: string
   isCustom: true
 }
 
@@ -314,6 +328,18 @@ export interface ExtensionSettings {
     provider: 'build-in' | 'bing' | 'tavily' // 搜索提供方
     tavilyApiKey?: string // Tavily API 密钥
   }
+  knowledgeBase?: {
+    models: {
+      embedding?: {
+        modelId: string
+        providerId: string
+      } | null
+      rerank?: {
+        modelId: string
+        providerId: string
+      } | null
+    }
+  }
 }
 
 export interface MCPSettings {
@@ -346,6 +372,10 @@ export interface Settings extends SessionSettings {
     provider: ModelProvider | string
     model: string
   }
+  ocrModel?: {
+    provider: ModelProvider | string
+    model: string
+  }
 
   // chatboxai
   licenseKey?: string
@@ -367,7 +397,7 @@ export interface Settings extends SessionSettings {
   fontSize: number
   spellCheck: boolean
 
-  startupPage: 'home' | 'session' // 启动页
+  startupPage?: 'home' | 'session' // 启动页
 
   // disableQuickToggleShortcut?: boolean // 是否关闭快捷键切换窗口显隐（弃用，为了兼容历史数据，这个字段永远不要使用）
 
@@ -497,6 +527,11 @@ export enum Theme {
 export interface RemoteConfig {
   setting_chatboxai_first: boolean
   product_ids: number[]
+  knowledge_base_models?: {
+    embedding: string
+    vision: string
+    rerank: string
+  }
 }
 
 export interface ChatboxAILicenseDetail {
@@ -546,4 +581,45 @@ export function copyThreads(source?: SessionThread[]): SessionThread[] | undefin
     createdAt: Date.now(),
     id: uuidv4(),
   }))
+}
+
+// RAG 相关
+export interface KnowledgeBase {
+  id: number
+  name: string
+  embeddingModel: string
+  rerankModel: string
+  visionModel?: string
+  createdAt: number
+}
+
+export interface KnowledgeBaseFile {
+  id: number
+  kb_id: number
+  filename: string
+  filepath: string
+  mime_type: string
+  file_size: number
+  chunk_count: number
+  total_chunks: number
+  status: string
+  error: string
+  createdAt: number
+}
+
+export interface KnowledgeBaseSearchResult {
+  id: number
+  score: number
+  text: string
+  fileId: number
+  filename: string
+  mimeType: string
+  chunkIndex: number
+}
+
+export type FileMeta = {
+  name: string
+  path: string
+  type: string
+  size: number
 }

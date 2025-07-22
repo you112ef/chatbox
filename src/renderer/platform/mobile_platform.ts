@@ -1,16 +1,17 @@
-import { Config, Settings, ShortcutSetting } from 'src/shared/types'
-import * as defaults from 'src/shared/defaults'
-import { Platform, PlatformType } from './interfaces'
-import { getOS, getBrowser } from '../packages/navigator'
-import { parseLocale } from '@/i18n/parser'
+import { App } from '@capacitor/app'
+import { CapacitorSQLite, SQLiteConnection, type SQLiteDBConnection } from '@capacitor-community/sqlite'
 import localforage from 'localforage'
-import MobileExporter from './mobile_exporter'
-import { parseTextFileLocally } from './web_platform_utils'
+import * as defaults from 'src/shared/defaults'
+import type { Config, Settings, ShortcutSetting } from 'src/shared/types'
 import { v4 as uuidv4 } from 'uuid'
+import { parseLocale } from '@/i18n/parser'
 import { sliceTextByTokenLimit } from '@/packages/token'
 import { CHATBOX_BUILD_PLATFORM } from '@/variables'
-import { CapacitorSQLite, SQLiteConnection, SQLiteDBConnection } from '@capacitor-community/sqlite'
-import { App } from '@capacitor/app'
+import { getBrowser, getOS } from '../packages/navigator'
+import type { Platform, PlatformType } from './interfaces'
+import type { KnowledgeBaseController } from './knowledge-base/interface'
+import MobileExporter from './mobile_exporter'
+import { parseTextFileLocally } from './web_platform_utils'
 
 class SQLiteStorage {
   private sqlite: SQLiteConnection
@@ -169,14 +170,60 @@ export default class MobilePlatform implements Platform {
   public exporter = new MobileExporter()
 
   private sqliteStorage = new SQLiteStorage()
+  private navigationCallback: ((path: string) => void) | null = null
 
-  constructor() {}
+  constructor() {
+    // 监听深度链接 (Deep Links)
+    App.addListener('appUrlOpen', (event) => {
+      console.log('App URL opened:', event.url)
+      this.handleDeepLink(event.url)
+    })
+  }
+
+  // 处理深度链接
+  private handleDeepLink(url: string): void {
+    try {
+      const parsedUrl = new URL(url)
+
+      // 处理 provider 导入链接: chatbox://provider/import?config=<base64-encoded-config>
+      if (parsedUrl.hostname === 'provider' && parsedUrl.pathname === '/import') {
+        const encodedConfig = parsedUrl.searchParams.get('config') || ''
+        const path = `/settings/provider?import=${encodeURIComponent(encodedConfig)}`
+        this.triggerNavigation(path)
+        return
+      }
+
+      console.log('Unhandled deep link:', url)
+    } catch (error) {
+      console.error('Failed to handle deep link:', error)
+    }
+  }
+
+  // 触发导航
+  private triggerNavigation(path: string): void {
+    if (this.navigationCallback) {
+      this.navigationCallback(path)
+    } else {
+      console.log('Navigation callback not set, path:', path)
+    }
+  }
+
+  // 设置导航回调（类似 electronAPI.onNavigate）
+  public onNavigate(callback: (path: string) => void): () => void {
+    this.navigationCallback = callback
+    return () => {
+      this.navigationCallback = null
+    }
+  }
 
   public async getVersion(): Promise<string> {
     return (await App.getInfo()).version
   }
   public async getPlatform(): Promise<string> {
     return CHATBOX_BUILD_PLATFORM
+  }
+  public async getArch(): Promise<string> {
+    return 'arm64'
   }
   public async shouldUseDarkColors(): Promise<boolean> {
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -316,7 +363,7 @@ export default class MobilePlatform implements Platform {
     if (options?.tokenLimit) {
       result.text = sliceTextByTokenLimit(result.text, options.tokenLimit)
     }
-    const key = `parseFile-` + uuidv4()
+    const key = `parseFile-${uuidv4()}`
     await this.setStoreBlob(key, result.text)
     return { key, isSupported: true }
   }
@@ -334,6 +381,10 @@ export default class MobilePlatform implements Platform {
   }
 
   installUpdate(): Promise<void> {
+    throw new Error('Method not implemented.')
+  }
+
+  public getKnowledgeBaseController(): KnowledgeBaseController {
     throw new Error('Method not implemented.')
   }
 }

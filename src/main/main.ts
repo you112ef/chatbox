@@ -13,12 +13,14 @@ import log from 'electron-log/main'
 import { autoUpdater } from 'electron-updater'
 import os from 'os'
 import path from 'path'
-import { ShortcutSetting } from 'src/shared/types'
+import type { ShortcutSetting } from 'src/shared/types'
 import * as analystic from './analystic-node'
 import { AppUpdater } from './app-updater'
 import * as autoLauncher from './autoLauncher'
+import { handleDeepLink } from './deeplinks'
 import { parseFile } from './file-parser'
 import Locale from './locales'
+import * as mcpIpc from './mcp/ipc-stdio-transport'
 import MenuBuilder from './menu'
 import * as proxy from './proxy'
 import {
@@ -32,7 +34,11 @@ import {
 } from './store-node'
 import { resolveHtmlPath } from './util'
 import * as windowState from './window_state'
-import * as mcpIpc from './mcp/ipc-stdio-transport'
+
+// Only import knowledge-base module if not on win32 arm64 (libsql doesn't support win32 arm64)
+if (!(process.platform === 'win32' && process.arch === 'arm64')) {
+  import('./knowledge-base')
+}
 
 // 这行代码是解决 Windows 通知的标题和图标不正确的问题，标题会错误显示成 electron.app.Chatbox
 // 参考：https://stackoverflow.com/questions/65859634/notification-from-electron-shows-electron-app-electron
@@ -46,6 +52,14 @@ const RESOURCES_PATH = app.isPackaged
 
 const getAssetPath = (...paths: string[]): string => {
   return path.join(RESOURCES_PATH, ...paths)
+}
+
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient('chatbox', process.execPath, [path.resolve(process.argv[1])])
+  }
+} else {
+  app.setAsDefaultProtocolClient('chatbox')
 }
 
 // --------- 全局变量 ---------
@@ -352,8 +366,13 @@ const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {
   app.quit()
 } else {
-  app.on('second-instance', (event, commandLine, workingDirectory) => {
-    showOrHideWindow()
+  app.on('second-instance', async (event, commandLine, workingDirectory) => {
+    await showOrHideWindow()
+    // on windows and linux, the deep link is passed in the command line
+    const url = commandLine.find((arg) => arg.startsWith('chatbox://'))
+    if (url && mainWindow) {
+      handleDeepLink(mainWindow, url)
+    }
   })
 
   app.on('window-all-closed', () => {
@@ -410,6 +429,13 @@ if (!gotTheLock) {
     .catch(console.log)
 }
 
+// macos uses this event to handle deep links
+app.on('open-url', (_event, url) => {
+  if (mainWindow) {
+    handleDeepLink(mainWindow, url)
+  }
+})
+
 // --------- IPC 监听 ---------
 
 ipcMain.handle('getStoreValue', (event, key) => {
@@ -452,6 +478,9 @@ ipcMain.handle('getVersion', () => {
 })
 ipcMain.handle('getPlatform', () => {
   return process.platform
+})
+ipcMain.handle('getArch', () => {
+  return process.arch
 })
 ipcMain.handle('getHostname', () => {
   return os.hostname()

@@ -1,7 +1,14 @@
-import { ModelProvider, ModelProviderEnum, ProviderModelInfo, ProviderSettings, SessionType } from 'src/shared/types'
-import Groq from '../models/groq'
+import Groq from 'src/shared/models/groq'
+import {
+  type ModelProvider,
+  ModelProviderEnum,
+  type ProviderModelInfo,
+  type ProviderSettings,
+  type SessionType,
+} from 'src/shared/types'
+import { createModelDependencies } from '@/adapters'
 import BaseConfig from './base-config'
-import { ModelSettingUtil } from './interface'
+import type { ModelSettingUtil } from './interface'
 
 export default class GroqSettingUtil extends BaseConfig implements ModelSettingUtil {
   public provider: ModelProvider = ModelProviderEnum.Groq
@@ -14,15 +21,16 @@ export default class GroqSettingUtil extends BaseConfig implements ModelSettingU
   }
 
   protected async listProviderModels(settings: ProviderSettings) {
-    const model: ProviderModelInfo | undefined = settings.models?.[0]
-    if (!model) {
-      return []
-    }
-    const groq = new Groq({
-      groqAPIKey: settings.apiKey!,
-      model,
-      temperature: 0,
-    })
+    const model: ProviderModelInfo = settings.models?.[0] || { modelId: 'llama3-8b-8192' }
+    const dependencies = await createModelDependencies()
+    const groq = new Groq(
+      {
+        apiKey: settings.apiKey!,
+        model,
+        temperature: 0,
+      },
+      dependencies
+    )
     return groq.listModels()
   }
 }

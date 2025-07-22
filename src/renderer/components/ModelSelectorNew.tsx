@@ -14,7 +14,7 @@ import {
   useState,
 } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { ModelProvider, ProviderModelInfo } from 'src/shared/types'
+import type { ModelProvider, ProviderBaseInfo, ProviderModelInfo } from 'src/shared/types'
 import { useProviders } from '@/hooks/useProviders'
 import { useIsSmallScreen } from '@/hooks/useScreenChange'
 import ProviderIcon from './icons/ProviderIcon'
@@ -25,11 +25,12 @@ export type ModelSelectorProps = PropsWithChildren<
     autoText?: string
     onSelect?: (provider: ModelProvider | string, model: string) => void
     onDropdownOpen?: () => void
+    modelFilter?: (model: ProviderModelInfo) => boolean
   } & ComboboxProps
 >
 
 export const ModelSelector = forwardRef<HTMLDivElement, ModelSelectorProps>(
-  ({ showAuto, autoText, onSelect, onDropdownOpen, children, ...comboboxProps }, ref) => {
+  ({ showAuto, autoText, onSelect, onDropdownOpen, children, modelFilter, ...comboboxProps }, ref) => {
     const { t } = useTranslation()
     const navigate = useNavigate()
     const { providers, favoritedModels, favoriteModel, unfavoriteModel, isFavoritedModel } = useProviders()
@@ -38,19 +39,21 @@ export const ModelSelector = forwardRef<HTMLDivElement, ModelSelectorProps>(
     const filteredProviders = useMemo(
       () =>
         providers.map((provider) => {
-          const models = (provider.models || provider.defaultSettings?.models)?.filter(
+          const models = provider.models?.filter(
             (model) =>
-              provider.id.includes(search) ||
-              provider.name.includes(search) ||
-              model.nickname?.includes(search) ||
-              model.modelId?.includes(search)
+              (!model.type || model.type === 'chat') &&
+              (provider.id.includes(search) ||
+                provider.name.includes(search) ||
+                model.nickname?.includes(search) ||
+                model.modelId?.includes(search)) &&
+              (!modelFilter || modelFilter(model))
           )
           return {
             ...provider,
             models,
           }
         }),
-      [providers, search]
+      [providers, search, modelFilter]
     )
     const isEmpty = useMemo(
       () => filteredProviders.reduce((pre, cur) => pre + (cur.models?.length || 0), 0) === 0,
@@ -70,10 +73,8 @@ export const ModelSelector = forwardRef<HTMLDivElement, ModelSelectorProps>(
     })
 
     const groups = filteredProviders.map((provider) => {
-      provider
       const options = provider.models?.map((model) => {
         const isFavorited = isFavoritedModel(provider.id, model.modelId)
-
         return (
           <ModelItem
             key={`${provider.id}/${model.modelId}`}

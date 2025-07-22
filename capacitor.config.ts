@@ -1,4 +1,4 @@
-import { CapacitorConfig } from '@capacitor/cli'
+import type { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
   appId: 'xyz.chatboxapp.chatbox',
@@ -35,6 +35,16 @@ const config: CapacitorConfig = {
       electronWindowsLocation: 'C:\\ProgramData\\CapacitorDatabases',
       electronMacLocation: '/Volumes/Development_Lacie/Development/Databases',
       electronLinuxLocation: 'Databases',
+    },
+    SplashScreen: {
+      launchAutoHide: false,
+      androidSplashResourceName: 'splash',
+      androidScaleType: 'FIT_CENTER',
+      showSpinner: false,
+      splashFullScreen: true,
+      splashImmersive: true,
+      layoutName: 'launch_screen',
+      useDialog: true,
     },
   },
 }

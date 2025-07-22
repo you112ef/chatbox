@@ -1,7 +1,8 @@
-import { ModelProvider, ModelProviderEnum, ProviderSettings, SessionType } from 'src/shared/types'
-import DeepSeek from '../models/deepseek'
+import DeepSeek from 'src/shared/models/deepseek'
+import { type ModelProvider, ModelProviderEnum, type ProviderSettings, type SessionType } from 'src/shared/types'
+import { createModelDependencies } from '@/adapters'
 import BaseConfig from './base-config'
-import { ModelSettingUtil } from './interface'
+import type { ModelSettingUtil } from './interface'
 
 export default class DeepSeekSettingUtil extends BaseConfig implements ModelSettingUtil {
   public provider: ModelProvider = ModelProviderEnum.DeepSeek
@@ -14,13 +15,17 @@ export default class DeepSeekSettingUtil extends BaseConfig implements ModelSett
   }
 
   protected async listProviderModels(settings: ProviderSettings) {
-    const deepSeek = new DeepSeek({
-      deepseekAPIKey: settings.apiKey!,
-      model: {
-        modelId: '',
-        capabilities: [],
+    const dependencies = await createModelDependencies()
+    const deepSeek = new DeepSeek(
+      {
+        apiKey: settings.apiKey!,
+        model: {
+          modelId: '',
+          capabilities: [],
+        },
       },
-    })
+      dependencies
+    )
     return deepSeek.listModels()
   }
 }

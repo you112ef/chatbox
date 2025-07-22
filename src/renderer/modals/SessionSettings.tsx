@@ -1,5 +1,5 @@
 import NiceModal, { muiDialogV5, useModal } from '@ebay/nice-modal-react'
-import { Flex, Stack, Text, Tooltip } from '@mantine/core'
+import { Flex, Stack, Switch, Text, Tooltip } from '@mantine/core'
 import ImageIcon from '@mui/icons-material/Image'
 import SmartToyIcon from '@mui/icons-material/SmartToy'
 import {
@@ -18,12 +18,21 @@ import { useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { chatSessionSettings, pictureSessionSettings } from 'src/shared/defaults'
-import { createMessage, isChatSession, isPictureSession, type Session, type SessionSettings } from '@/../shared/types'
+import {
+  createMessage,
+  isChatSession,
+  isPictureSession,
+  ModelProviderEnum,
+  type Session,
+  type SessionSettings,
+  type Settings,
+} from '@/../shared/types'
 import { Accordion, AccordionDetails, AccordionSummary } from '@/components/Accordion'
 import EditableAvatar from '@/components/EditableAvatar'
 import { handleImageInputAndSave, ImageInStorage } from '@/components/Image'
 import ImageCountSlider from '@/components/ImageCountSlider'
 import ImageStyleSelect from '@/components/ImageStyleSelect'
+import LazyNumberInput from '@/components/LazyNumberInput'
 import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
 import SegmentedControl from '@/components/SegmentedControl'
 import SliderWithInput from '@/components/SliderWithInput'
@@ -231,6 +240,7 @@ const SessionSettingsModal = NiceModal.create(
               {isChatSession(session) && (
                 <ChatConfig
                   settings={editingData.settings}
+                  globalSettings={globalSettings}
                   onSettingsChange={(d) =>
                     setEditingData((_data) => {
                       if (_data) {
@@ -316,7 +326,7 @@ function ThinkingBudgetConfig({
         setUserSelectedCustom(false)
       }
     }
-  }, [isEnabled, currentBudgetTokens, PRESET_VALUES])
+  }, [isEnabled, currentBudgetTokens, PRESET_VALUES, isCustomMode, userSelectedCustom])
 
   // Determine current segment value
   const getCurrentSegmentValue = useCallback(() => {
@@ -531,8 +541,10 @@ function GoogleProviderConfig({
 export function ChatConfig({
   settings,
   onSettingsChange,
+  globalSettings,
 }: {
   settings: Session['settings']
+  globalSettings: Settings
   onSettingsChange: (data: Session['settings']) => void
 }) {
   const { t } = useTranslation()
@@ -585,27 +597,64 @@ export function ChatConfig({
           </Tooltip>
         </Flex>
 
-        <SliderWithInput value={settings?.topP} onChange={(v) => onSettingsChange({ topP: v })} max={2} />
+        <SliderWithInput value={settings?.topP} onChange={(v) => onSettingsChange({ topP: v })} max={1} />
       </Stack>
 
+      <Flex justify="space-between" align="center">
+        <Flex align="center" gap="xs">
+          <Text size="sm" fw="600">
+            {t('Max Output Tokens')}
+          </Text>
+          <Tooltip
+            label={t(
+              'Set the maximum number of tokens for model output. Please set it within the acceptable range of the model, otherwise errors may occur.'
+            )}
+            withArrow={true}
+            maw={320}
+            className="!whitespace-normal"
+            zIndex={3000}
+            events={{ hover: true, focus: true, touch: true }}
+          >
+            <IconInfoCircle size={20} className="text-[var(--mantine-color-chatbox-tertiary-text)]" />
+          </Tooltip>
+        </Flex>
+
+        <LazyNumberInput
+          width={96}
+          value={settings?.maxTokens}
+          onChange={(v) => onSettingsChange({ maxTokens: typeof v === 'number' ? v : undefined })}
+          min={0}
+          step={1024}
+          allowDecimal={false}
+          placeholder={t('Not set') || ''}
+        />
+      </Flex>
+
+      {settings?.provider !== ModelProviderEnum.ChatboxAI && (
+        <Stack gap="xs" py="xs">
+          <Flex align="center" justify="space-between" gap="xs">
+            <Text size="sm" fw="600">
+              {t('Stream output')}
+            </Text>
+            <Switch
+              checked={settings?.stream ?? globalSettings?.stream ?? true}
+              onChange={(v) => onSettingsChange({ stream: v.target.checked })}
+            />
+          </Flex>
+        </Stack>
+      )}
+
       <Stack>
-        {settings && settings.provider === 'claude' && (
+        {settings?.provider === ModelProviderEnum.Claude && (
           <ClaudeProviderConfig settings={settings} onSettingsChange={onSettingsChange} />
         )}
-        {settings && settings.provider === 'openai' && (
+        {settings?.provider === ModelProviderEnum.OpenAI && (
           <OpenAIProviderConfig settings={settings} onSettingsChange={onSettingsChange} />
         )}
-        {settings && settings.provider === 'gemini' && (
+        {settings?.provider === ModelProviderEnum.Gemini && (
           <GoogleProviderConfig settings={settings} onSettingsChange={onSettingsChange} />
         )}
       </Stack>
-      {/* <Stack gap="xs">
-        <Text size="sm" fw="600">
-          {t('Top P')}
-        </Text>
-
-        <SliderWithInput value={settings?.topP ?? 0} onChange={(v) => onSettingsChange({ topP: v })} />
-      </Stack> */}
     </Stack>
   )
 }

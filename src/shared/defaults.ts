@@ -1,5 +1,13 @@
 import { v4 as uuidv4 } from 'uuid'
-import { Config, ModelProviderEnum, ModelProviderType, ProviderBaseInfo, SessionSettings, Settings, Theme } from './types'
+import {
+  type Config,
+  ModelProviderEnum,
+  ModelProviderType,
+  type ProviderBaseInfo,
+  type SessionSettings,
+  type Settings,
+  Theme,
+} from './types'
 
 export function settings(): Settings {
   return {
@@ -120,6 +128,12 @@ export function settings(): Settings {
         provider: 'build-in',
         tavilyApiKey: '',
       },
+      knowledgeBase: {
+        models: {
+          embedding: undefined,
+          rerank: undefined,
+        },
+      },
     },
     mcp: {
       servers: [],
@@ -177,6 +191,18 @@ export const SystemProviders: ProviderBaseInfo[] = [
           maxOutput: 32_768,
         },
         {
+          modelId: 'gpt-4.1-mini',
+          capabilities: ['vision', 'tool_use'],
+          contextWindow: 1_047_576,
+          maxOutput: 32_768,
+        },
+        {
+          modelId: 'gpt-4.1-nano',
+          capabilities: ['vision', 'tool_use'],
+          contextWindow: 1_047_576,
+          maxOutput: 32_768,
+        },
+        {
           modelId: 'gpt-4o',
           capabilities: ['vision', 'tool_use'],
           contextWindow: 128_000,
@@ -217,6 +243,10 @@ export const SystemProviders: ProviderBaseInfo[] = [
           capabilities: ['vision', 'tool_use', 'reasoning'],
           contextWindow: 200_000,
           maxOutput: 100_000,
+        },
+        {
+          modelId: 'text-embedding-3-small',
+          type: 'embedding',
         },
       ],
     },
@@ -436,6 +466,10 @@ export const SystemProviders: ProviderBaseInfo[] = [
           capabilities: ['vision'],
           contextWindow: 32_000,
         },
+        { modelId: 'BAAI/bge-m3', type: 'embedding' },
+        { modelId: 'BAAI/bge-large-zh-v1.5', type: 'embedding' },
+        { modelId: 'Pro/BAAI/bge-m3', type: 'embedding' },
+        { modelId: 'BAAI/bge-reranker-v2-m3', type: 'rerank' },
       ],
     },
   },
@@ -467,6 +501,7 @@ export const SystemProviders: ProviderBaseInfo[] = [
           contextWindow: 128_000,
           capabilities: ['vision'],
         },
+        { modelId: 'doubao-embedding-text-240715', type: 'embedding' },
       ],
     },
   },
@@ -487,14 +522,24 @@ export const SystemProviders: ProviderBaseInfo[] = [
       apiHost: 'https://api.x.ai',
       models: [
         {
-          modelId: 'grok-3-beta',
-          contextWindow: 128_000,
-          capabilities: ['vision', 'tool_use'],
+          modelId: 'grok-4-0709',
+          contextWindow: 256_000,
+          capabilities: ['vision', 'tool_use', 'reasoning'],
         },
         {
-          modelId: 'grok-3-mini-beta',
-          contextWindow: 128_000,
-          capabilities: ['vision', 'tool_use'],
+          modelId: 'grok-3',
+          contextWindow: 131_072,
+          capabilities: ['tool_use'],
+        },
+        {
+          modelId: 'grok-3-mini',
+          contextWindow: 131_072,
+          capabilities: ['tool_use', 'reasoning'],
+        },
+        {
+          modelId: 'grok-3-fast',
+          contextWindow: 131_072,
+          capabilities: ['tool_use'],
         },
         {
           modelId: 'grok-2-vision-1212',
@@ -543,16 +588,22 @@ export const SystemProviders: ProviderBaseInfo[] = [
       apiHost: 'https://api.groq.com/openai',
       models: [
         {
-          modelId: 'llama-3.2-1b-preview',
+          modelId: 'llama-3.3-70b-versatile',
+          contextWindow: 131_072,
+          maxOutput: 32_768,
+          capabilities: ['tool_use'],
         },
         {
-          modelId: 'llama-3.2-3b-preview',
+          modelId: 'moonshotai/kimi-k2-instruct',
+          contextWindow: 131_072,
+          maxOutput: 16_384,
+          capabilities: ['tool_use'],
         },
         {
-          modelId: 'llama-3.2-11b-text-preview',
-        },
-        {
-          modelId: 'llama-3.2-90b-text-preview',
+          modelId: 'qwen/qwen3-32b',
+          contextWindow: 131_072,
+          maxOutput: 40_960,
+          capabilities: ['tool_use'],
         },
       ],
     },

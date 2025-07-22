@@ -1,11 +1,13 @@
-import { ElectronIPC } from 'src/shared/electron-types'
-import { Platform, PlatformType } from './interfaces'
-import { Config, Settings, ShortcutSetting } from 'src/shared/types'
-import { getOS } from '../packages/navigator'
-import { parseLocale } from '@/i18n/parser'
-import WebExporter from './web_exporter'
+import type { ElectronIPC } from 'src/shared/electron-types'
+import type { Config, Settings, ShortcutSetting } from 'src/shared/types'
 import { v4 as uuidv4 } from 'uuid'
+import { parseLocale } from '@/i18n/parser'
 import { sliceTextByTokenLimit } from '@/packages/token'
+import { cache } from '../packages/cache'
+import { getOS } from '../packages/navigator'
+import type { Platform, PlatformType } from './interfaces'
+import DesktopKnowledgeBaseController from './knowledge-base/desktop-controller'
+import WebExporter from './web_exporter'
 import { parseTextFileLocally } from './web_platform_utils'
 
 export default class DesktopPlatform implements Platform {
@@ -13,16 +15,21 @@ export default class DesktopPlatform implements Platform {
 
   public exporter = new WebExporter()
 
+  private _kbController?: DesktopKnowledgeBaseController
+
   public ipc: ElectronIPC
   constructor(ipc: ElectronIPC) {
     this.ipc = ipc
   }
 
   public async getVersion() {
-    return this.ipc.invoke('getVersion')
+    return cache('ipc:getVersion', () => this.ipc.invoke('getVersion'), { ttl: 5 * 60 * 1000 })
   }
   public async getPlatform() {
-    return this.ipc.invoke('getPlatform')
+    return cache('ipc:getPlatform', () => this.ipc.invoke('getPlatform'), { ttl: 5 * 60 * 1000 })
+  }
+  public async getArch() {
+    return cache('ipc:getArch', () => this.ipc.invoke('getArch'), { ttl: 5 * 60 * 1000 })
   }
   public async shouldUseDarkColors(): Promise<boolean> {
     return await this.ipc.invoke('shouldUseDarkColors')
@@ -36,15 +43,18 @@ export default class DesktopPlatform implements Platform {
   public onUpdateDownloaded(callback: () => void): () => void {
     return this.ipc.onUpdateDownloaded(callback)
   }
+  public onNavigate(callback: (path: string) => void): () => void {
+    return window.electronAPI.onNavigate(callback)
+  }
   public async openLink(url: string): Promise<void> {
     return this.ipc.invoke('openLink', url)
   }
   public async getInstanceName(): Promise<string> {
-    const hostname = await this.ipc.invoke('getHostname')
+    const hostname = await cache('ipc:getHostname', () => this.ipc.invoke('getHostname'), { ttl: 5 * 60 * 1000 })
     return `${hostname} / ${getOS()}`
   }
   public async getLocale() {
-    const locale = await this.ipc.invoke('getLocale')
+    const locale = await cache('ipc:getLocale', () => this.ipc.invoke('getLocale'), { ttl: 5 * 60 * 1000 })
     return parseLocale(locale)
   }
   public async ensureShortcutConfig(config: ShortcutSetting): Promise<void> {
@@ -114,7 +124,9 @@ export default class DesktopPlatform implements Platform {
   }
 
   public async shouldShowAboutDialogWhenStartUp(): Promise<boolean> {
-    return this.ipc.invoke('shouldShowAboutDialogWhenStartUp')
+    return cache('ipc:shouldShowAboutDialogWhenStartUp', () => this.ipc.invoke('shouldShowAboutDialogWhenStartUp'), {
+      ttl: 30 * 1000,
+    })
   }
 
   public async appLog(level: string, message: string) {
@@ -167,5 +179,12 @@ export default class DesktopPlatform implements Platform {
 
   public async switchTheme(theme: 'dark' | 'light') {
     return this.ipc.invoke('switch-theme', theme)
+  }
+
+  public getKnowledgeBaseController() {
+    if (!this._kbController) {
+      this._kbController = new DesktopKnowledgeBaseController(this.ipc)
+    }
+    return this._kbController
   }
 }

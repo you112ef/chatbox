@@ -1,4 +1,5 @@
-import { Config, Language, Settings, ShortcutSetting } from 'src/shared/types'
+import type { Config, Language, Settings, ShortcutSetting } from 'src/shared/types'
+import type { KnowledgeBaseController } from './knowledge-base/interface'
 
 export type PlatformType = 'web' | 'desktop' | 'mobile'
 
@@ -11,10 +12,12 @@ export interface Platform {
 
   getVersion(): Promise<string>
   getPlatform(): Promise<string>
+  getArch(): Promise<string>
   shouldUseDarkColors(): Promise<boolean>
   onSystemThemeChange(callback: () => void): () => void
   onWindowShow(callback: () => void): () => void
   onUpdateDownloaded(callback: () => void): () => void
+  onNavigate?(callback: (path: string) => void): () => void
   openLink(url: string): Promise<void>
   getInstanceName(): Promise<string>
   getLocale(): Promise<Language>
@@ -60,6 +63,8 @@ export interface Platform {
   isFullscreen(): Promise<boolean>
   setFullscreen(enabled: boolean): Promise<void>
   installUpdate(): Promise<void>
+
+  getKnowledgeBaseController(): KnowledgeBaseController
 }
 
 export interface Exporter {

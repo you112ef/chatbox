@@ -1,17 +1,17 @@
-import React from 'react'
+import { Link } from '@mui/material'
 import Alert from '@mui/material/Alert'
+import { useNavigate } from '@tanstack/react-router'
+import { useSetAtom } from 'jotai'
+import type React from 'react'
 import { Trans } from 'react-i18next'
-import { Message } from '../../shared/types'
-import { aiProviderNameHash } from '../packages/models'
+import { trackingEvent } from '@/packages/event'
+import platform from '@/platform'
+import { aiProviderNameHash } from '../../shared/models'
+import { ChatboxAIAPIError } from '../../shared/models/errors'
+import type { Message } from '../../shared/types'
 import * as atoms from '../stores/atoms'
 import * as settingActions from '../stores/settingActions'
-import { useSetAtom } from 'jotai'
-import { Link } from '@mui/material'
-import { ChatboxAIAPIError } from '@/packages/models/errors'
-import platform from '@/platform'
-import { trackingEvent } from '@/packages/event'
 import LinkTargetBlank from './Link'
-import { useNavigate } from '@tanstack/react-router'
 
 export default function MessageErrTips(props: { msg: Message }) {
   const { msg } = props
@@ -91,6 +91,7 @@ export default function MessageErrTips(props: { msg: Message }) {
         }}
         components={[
           <Link
+            key="0"
             className="cursor-pointer font-bold"
             onClick={() => {
               setOpenSettingDialogAtom('ai')
@@ -163,7 +164,11 @@ export default function MessageErrTips(props: { msg: Message }) {
       <Trans
         i18nKey="unknown error tips"
         components={[
-          <a href={`https://chatboxai.app/redirect_app/faqs/${settingActions.getLanguage()}`} target="_blank"></a>,
+          <a
+            key="0"
+            href={`https://chatboxai.app/redirect_app/faqs/${settingActions.getLanguage()}`}
+            target="_blank"
+          ></a>,
         ]}
       />
     )
@@ -171,11 +176,9 @@ export default function MessageErrTips(props: { msg: Message }) {
   return (
     <Alert icon={false} severity="error" className="message-error-tips">
       {tips.map((tip, i) => (
-        <b key={i}>{tip}</b>
+        <b key={`${i}-${tip}`}>{tip}</b>
       ))}
-      {onlyShowTips ? (
-        <></>
-      ) : (
+      {onlyShowTips ? null : (
         <>
           <br />
           <br />

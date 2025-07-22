@@ -1,42 +1,40 @@
-import { useEffect, useRef, useMemo, useState, useCallback } from 'react'
-import SwipeableDrawer from '@mui/material/SwipeableDrawer'
+import AddIcon from '@mui/icons-material/AddCircleOutline'
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
+import SettingsIcon from '@mui/icons-material/Settings'
+import SmartToyIcon from '@mui/icons-material/SmartToy'
 import {
   Box,
-  Badge,
-  ListItemText,
-  MenuList,
-  IconButton,
-  Stack,
-  MenuItem,
-  ListItemIcon,
-  Typography,
-  Divider,
-  useTheme,
   Button,
+  Divider,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  MenuList,
+  Stack,
+  Typography,
+  useTheme,
 } from '@mui/material'
-import SettingsIcon from '@mui/icons-material/Settings'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-import { useTranslation } from 'react-i18next'
-import icon from './static/icon.png'
-import SmartToyIcon from '@mui/icons-material/SmartToy'
-import AddIcon from '@mui/icons-material/AddCircleOutline'
-import useVersion from './hooks/useVersion'
-import SessionList from './components/SessionList'
-import * as sessionActions from './stores/sessionActions'
-import { useAtomValue, useAtom } from 'jotai'
-import * as atoms from './stores/atoms'
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
-import { useIsSmallScreen, useSidebarWidth } from './hooks/useScreenChange'
-import { trackingEvent } from './packages/event'
-import { PanelLeftClose } from 'lucide-react'
+import SwipeableDrawer from '@mui/material/SwipeableDrawer'
 import { useNavigate, useRouterState } from '@tanstack/react-router'
-import { cn } from './lib/utils'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { PanelLeftClose } from 'lucide-react'
+import { useCallback, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
+import SessionList from './components/SessionList'
 import useNeedRoomForMacWinControls from './hooks/useNeedRoomForWinControls'
+import { useIsSmallScreen, useSidebarWidth } from './hooks/useScreenChange'
+import useVersion from './hooks/useVersion'
+import { cn } from './lib/utils'
+import { trackingEvent } from './packages/event'
+import icon from './static/icon.png'
+import * as atoms from './stores/atoms'
+import * as sessionActions from './stores/sessionActions'
 
-export default function Sidebar(props: {}) {
+export default function Sidebar() {
   const language = useAtomValue(atoms.languageAtom)
   const [showSidebar, setShowSidebar] = useAtom(atoms.showSidebarAtom)
-  const routerState = useRouterState()
 
   const sessionListRef = useRef<HTMLDivElement>(null)
 
@@ -48,11 +46,11 @@ export default function Sidebar(props: {}) {
     if (isSmallScreen) {
       setShowSidebar(false)
     }
-  }, [isSmallScreen, routerState.location.pathname])
+  }, [isSmallScreen, setShowSidebar])
 
   const theme = useTheme()
 
-  const { needRoomForMacWindowControls, needRoomForWindowsWindowControls } = useNeedRoomForMacWinControls()
+  const { needRoomForMacWindowControls } = useNeedRoomForMacWinControls()
 
   return (
     <div>
@@ -125,7 +123,7 @@ function SidebarButtons(props: { sessionListRef: React.RefObject<HTMLDivElement>
   const versionHook = useVersion()
   const routerState = useRouterState()
   const navigate = useNavigate()
-  const [showSidebar, setShowSidebar] = useAtom(atoms.showSidebarAtom)
+  const setShowSidebar = useSetAtom(atoms.showSidebarAtom)
   const isSmallScreen = useIsSmallScreen()
 
   const handleCreateNewSession = useCallback(() => {
@@ -138,16 +136,19 @@ function SidebarButtons(props: { sessionListRef: React.RefObject<HTMLDivElement>
     // On small screen, when click create new session happens
     // while path does not change, automatic hide sidebar won't take effect.
     // So trigger by ourself.
-    if (isSmallScreen && routerState.location.pathname === '/') {
+    if (isSmallScreen) {
       setShowSidebar(false)
     }
     trackingEvent('create_new_conversation', { event_category: 'user' })
-  }, [navigate, setShowSidebar, isSmallScreen, routerState.location.pathname])
+  }, [navigate, setShowSidebar, isSmallScreen])
 
   const handleCreateNewPictureSession = () => {
     sessionActions.createEmpty('picture')
     if (sessionListRef.current) {
       sessionListRef.current.scrollTo(0, 0)
+    }
+    if (isSmallScreen) {
+      setShowSidebar(false)
     }
     trackingEvent('create_new_picture_conversation', { event_category: 'user' })
   }
@@ -199,6 +200,9 @@ function SidebarButtons(props: { sessionListRef: React.RefObject<HTMLDivElement>
           navigate({
             to: '/copilots',
           })
+          if (isSmallScreen) {
+            setShowSidebar(false)
+          }
         }}
         selected={routerState.location.pathname === '/copilots'}
         sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}
@@ -221,6 +225,9 @@ function SidebarButtons(props: { sessionListRef: React.RefObject<HTMLDivElement>
               to: '/settings',
             })
           }
+          if (isSmallScreen) {
+            setShowSidebar(false)
+          }
         }}
         selected={routerState.location.pathname.startsWith('/settings')}
         sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}
@@ -241,6 +248,9 @@ function SidebarButtons(props: { sessionListRef: React.RefObject<HTMLDivElement>
           navigate({
             to: '/about',
           })
+          if (isSmallScreen) {
+            setShowSidebar(false)
+          }
         }}
         selected={routerState.location.pathname === '/about'}
         sx={{ padding: '0.2rem 0.1rem', margin: '0.1rem' }}
