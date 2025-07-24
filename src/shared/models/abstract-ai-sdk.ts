@@ -438,8 +438,8 @@ export default abstract class AbstractAISDKModel implements ModelInterface {
       tools: options.tools,
       abortSignal: options.signal,
       experimental_transform: smoothStream({
-        delayInMs: 20, // optional: defaults to 10ms
-        chunking: 'line', // optional: defaults to 'word'
+        delayInMs: 10, // optional: defaults to 10ms
+        chunking: 'word', // optional: defaults to 'word'
       }),
       ...callSettings,
     })
