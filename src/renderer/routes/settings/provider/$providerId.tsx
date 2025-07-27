@@ -453,6 +453,19 @@ function ProviderSettings({ providerId }: { providerId: string }) {
           </>
         )}
 
+        {/* useProxy for Ollama */}
+        {baseInfo.id === ModelProviderEnum.Ollama && (
+          <Switch
+            label={t('Improve Network Compatibility')}
+            checked={providerSettings?.useProxy || false}
+            onChange={(e) =>
+              setProviderSettings({
+                useProxy: e.currentTarget.checked,
+              })
+            }
+          />
+        )}
+
         {baseInfo.id === ModelProviderEnum.Azure && (
           <>
             {/* Azure Endpoint */}

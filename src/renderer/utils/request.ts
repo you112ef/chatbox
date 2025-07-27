@@ -53,7 +53,7 @@ async function doRequest(
   }
 
   // For mobile platform and local hosts, use CapacitorHttp to bypass CORS
-  if (platform.type === 'mobile' && isLocalHost(url)) {
+  if (platform.type === 'mobile' && useProxy) {
     return retryRequest(
       async () => {
         console.debug('capacitor request', url, method, headers, body)

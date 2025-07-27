@@ -162,6 +162,7 @@ export function getModel(setting: Settings, config: Config, dependencies: ModelD
           topP: setting.topP,
           maxTokens: setting.maxTokens,
           stream: setting.stream,
+          useProxy: providerSetting.useProxy,
         },
         dependencies
       )
