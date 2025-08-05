@@ -1,4 +1,5 @@
 import { ofetch } from 'ofetch'
+import * as cache from 'src/shared/utils/cache'
 import platform from '@/platform'
 import { USE_BETA_API, USE_LOCAL_API } from '@/variables'
 import * as chatboxaiAPI from '../../shared/request/chatboxai_pool'
@@ -13,7 +14,6 @@ import {
   type RemoteConfig,
   type Settings,
 } from '../../shared/types'
-import * as cache from 'src/shared/utils/cache'
 import { getOS } from './navigator'
 
 let _afetch: ReturnType<typeof createAfetch> | null = null
@@ -472,6 +472,7 @@ export async function getModelManifest(params: { aiProvider: ModelProvider; lice
         labels: string[]
         type?: 'chat' | 'embedding' | 'rerank'
         capabilities?: ('vision' | 'tool_use' | 'reasoning')[]
+        apiStyle?: 'google' | 'openai' | 'anthropic'
       }[]
     }
   }
