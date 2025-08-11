@@ -18,12 +18,14 @@ PODS:
     - Capacitor
   - CapacitorSplashScreen (6.0.3):
     - Capacitor
+  - CapacitorStreamHttp (0.0.1):
+    - Capacitor
   - CapacitorToast (6.0.1):
     - Capacitor
-  - SQLCipher (4.6.1):
-    - SQLCipher/standard (= 4.6.1)
-  - SQLCipher/common (4.6.1)
-  - SQLCipher/standard (4.6.1):
+  - SQLCipher (4.10.0):
+    - SQLCipher/standard (= 4.10.0)
+  - SQLCipher/common (4.10.0)
+  - SQLCipher/standard (4.10.0):
     - SQLCipher/common
   - ZIPFoundation (0.9.19)
 
@@ -37,6 +39,7 @@ DEPENDENCIES:
   - CapacitorPluginSafeArea (from `../../node_modules/capacitor-plugin-safe-area`)
   - "CapacitorShare (from `../../node_modules/@capacitor/share`)"
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
+  - CapacitorStreamHttp (from `../../node_modules/capacitor-stream-http`)
   - "CapacitorToast (from `../../node_modules/@capacitor/toast`)"
 
 SPEC REPOS:
@@ -63,6 +66,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/share"
   CapacitorSplashScreen:
     :path: "../../node_modules/@capacitor/splash-screen"
+  CapacitorStreamHttp:
+    :path: "../../node_modules/capacitor-stream-http"
   CapacitorToast:
     :path: "../../node_modules/@capacitor/toast"
 
@@ -76,10 +81,11 @@ SPEC CHECKSUMS:
   CapacitorPluginSafeArea: 09c1240d762edf866b073fa6929621caf153d7cc
   CapacitorShare: ec1bcbc16696696133740ac876192c0480ca3018
   CapacitorSplashScreen: fd8bf1bf9081d9aa8817b7cd37d740d1bdaf2fb2
+  CapacitorStreamHttp: 8d6304bc0262bd44efed7fb6f2170215f317594d
   CapacitorToast: 68d2bdc194efa69e83b6b7fe5c8c64ef91a8a7fa
-  SQLCipher: 77fbe633cd84db04b07876dd50766b4924b57d61
+  SQLCipher: eb79c64049cb002b4e9fcb30edb7979bf4706dfc
   ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
-PODFILE CHECKSUM: ba2eb508576f7d8c244f6eb5211a9612771d25e1
+PODFILE CHECKSUM: 8581ab91097e4b129f38f9188e4d8b4d73db1b46
 
 COCOAPODS: 1.16.2
