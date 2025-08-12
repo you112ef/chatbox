@@ -31,7 +31,7 @@ import {
 } from '@tabler/icons-react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { capitalize } from 'lodash'
-import { type ChangeEvent, useState, useMemo } from 'react'
+import { type ChangeEvent, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SystemProviders } from 'src/shared/defaults'
 import { getModel } from 'src/shared/models'
@@ -456,12 +456,6 @@ function ProviderSettings({ providerId }: { providerId: string }) {
                 })
               }
             />
-
-            <Stack gap="xs">
-              <Text span fw="600" className=" whitespace-nowrap">
-                {t('Improve Network Compatibility')}
-              </Text>
-            </Stack>
           </>
         )}
 
