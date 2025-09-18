@@ -1,0 +1,169 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main, cursor/integrate-open-router-with-ai-models-and-providers-cc37 ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [ published ]
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: |
+        npm ci
+        npm install --legacy-peer-deps
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
+    - name: Cache Gradle packages
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
+
+    - name: Build with Gradle
+      run: |
+        ./gradlew assembleRelease
+      env:
+        ANDROID_HOME: ${{ env.ANDROID_SDK_ROOT }}
+        ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
+
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-apk
+        path: app/build/outputs/apk/release/app-release.apk
+        retention-days: 30
+
+    - name: Create Release
+      if: github.event_name == 'release'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: app/build/outputs/apk/release/app-release.apk
+        name: Android APK v${{ github.event.release.tag_name }}
+        body: |
+          ## 🤖 Android APK Release
+          
+          ### 🚀 Features
+          - **30+ AI Models** - GPT-4, Claude 3.5, Gemini Pro, Llama 3.1, DALL-E 3
+          - **Production Chat Interface** - Real AI conversations
+          - **Live Performance Monitoring** - Real-time metrics
+          - **Health Monitoring** - System health checks
+          - **Usage Analytics** - Cost and usage tracking
+          
+          ### 📱 Installation
+          1. Download the APK file
+          2. Enable "Install from unknown sources" in Android settings
+          3. Install the APK
+          4. Get your OpenRouter API key from https://openrouter.ai/
+          5. Start chatting with AI models!
+          
+          ### 🔧 Requirements
+          - Android 7.0 (API level 24) or higher
+          - Internet connection for AI model access
+          - OpenRouter API key for full functionality
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-electron:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: |
+        npm ci
+        npm install --legacy-peer-deps
+
+    - name: Build Electron app
+      run: |
+        npm run build:main
+        npm run build:renderer
+
+    - name: Package Electron app
+      run: |
+        npm run dist
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload Electron artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: electron-${{ matrix.os }}
+        path: dist/
+        retention-days: 30
+
+  test-production:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: |
+        npm ci
+        npm install --legacy-peer-deps
+
+    - name: Run production tests
+      run: |
+        node test-production-simple.js
+
+    - name: Run build test
+      run: |
+        npm run build:main
+        echo "Main process build successful"
+
+    - name: Test TypeScript compilation
+      run: |
+        npx tsc --noEmit --project tsconfig.json
+        echo "TypeScript compilation successful"
