@@ -51,13 +51,30 @@ jobs:
     - name: Make gradlew executable
       run: chmod +x android/gradlew
 
+    - name: Create local.properties
+      run: |
+        cd android
+        echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+
     - name: Build with Gradle
       run: |
         cd android
-        ./gradlew assembleDebug
+        ./gradlew assembleDebug --stacktrace --info
       env:
         ANDROID_HOME: ${{ env.ANDROID_SDK_ROOT }}
         ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
+        GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
+
+    - name: Check APK exists
+      run: |
+        if [ -f "android/app/build/outputs/apk/debug/app-debug.apk" ]; then
+          echo "✅ APK built successfully!"
+          ls -la android/app/build/outputs/apk/debug/
+        else
+          echo "❌ APK not found!"
+          find android/app/build -name "*.apk" -type f
+          exit 1
+        fi
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
