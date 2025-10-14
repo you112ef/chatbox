@@ -717,21 +717,33 @@ export const SystemProviders: ProviderBaseInfo[] = [
     defaultSettings: {
       apiHost: 'https://openrouter.ai/api/v1',
       models: [
-        // OpenAI Models
+        // OpenAI Models - Latest
         {
           modelId: 'openai/gpt-4o',
-          capabilities: ['vision', 'tool_use'],
+          capabilities: ['vision', 'tool_use', 'reasoning'],
           contextWindow: 128_000,
           maxOutput: 4_096,
         },
         {
           modelId: 'openai/gpt-4o-mini',
-          capabilities: ['vision', 'tool_use'],
+          capabilities: ['vision', 'tool_use', 'reasoning'],
           contextWindow: 128_000,
           maxOutput: 4_096,
         },
         {
           modelId: 'openai/gpt-4-turbo',
+          capabilities: ['vision', 'tool_use', 'reasoning'],
+          contextWindow: 128_000,
+          maxOutput: 4_096,
+        },
+        {
+          modelId: 'openai/gpt-4-turbo-preview',
+          capabilities: ['vision', 'tool_use', 'reasoning'],
+          contextWindow: 128_000,
+          maxOutput: 4_096,
+        },
+        {
+          modelId: 'openai/gpt-4-vision-preview',
           capabilities: ['vision', 'tool_use'],
           contextWindow: 128_000,
           maxOutput: 4_096,
@@ -742,61 +754,109 @@ export const SystemProviders: ProviderBaseInfo[] = [
           contextWindow: 16_385,
           maxOutput: 4_096,
         },
-        // Anthropic Models
+        {
+          modelId: 'openai/gpt-3.5-turbo-16k',
+          capabilities: ['tool_use'],
+          contextWindow: 16_385,
+          maxOutput: 4_096,
+        },
+        // Anthropic Models - Latest
         {
           modelId: 'anthropic/claude-3.5-sonnet',
-          capabilities: ['vision', 'tool_use'],
+          capabilities: ['vision', 'tool_use', 'reasoning'],
           contextWindow: 200_000,
           maxOutput: 8_192,
         },
         {
           modelId: 'anthropic/claude-3.5-haiku',
-          capabilities: ['vision', 'tool_use'],
+          capabilities: ['vision', 'tool_use', 'reasoning'],
           contextWindow: 200_000,
           maxOutput: 4_096,
         },
         {
           modelId: 'anthropic/claude-3-opus',
+          capabilities: ['vision', 'tool_use', 'reasoning'],
+          contextWindow: 200_000,
+          maxOutput: 4_096,
+        },
+        {
+          modelId: 'anthropic/claude-3-sonnet',
           capabilities: ['vision', 'tool_use'],
           contextWindow: 200_000,
           maxOutput: 4_096,
         },
-        // Google Models
+        {
+          modelId: 'anthropic/claude-3-haiku',
+          capabilities: ['vision', 'tool_use'],
+          contextWindow: 200_000,
+          maxOutput: 4_096,
+        },
+        {
+          modelId: 'anthropic/claude-2.1',
+          capabilities: ['tool_use'],
+          contextWindow: 200_000,
+          maxOutput: 4_096,
+        },
+        // Google Models - Latest
         {
           modelId: 'google/gemini-pro-1.5',
-          capabilities: ['vision', 'tool_use'],
+          capabilities: ['vision', 'tool_use', 'reasoning'],
           contextWindow: 2_000_000,
           maxOutput: 8_192,
         },
         {
           modelId: 'google/gemini-flash-1.5',
+          capabilities: ['vision', 'tool_use', 'reasoning'],
+          contextWindow: 1_000_000,
+          maxOutput: 8_192,
+        },
+        {
+          modelId: 'google/gemini-pro-vision',
           capabilities: ['vision', 'tool_use'],
           contextWindow: 1_000_000,
           maxOutput: 8_192,
         },
-        // Meta Models
+        {
+          modelId: 'google/gemini-pro',
+          capabilities: ['tool_use'],
+          contextWindow: 1_000_000,
+          maxOutput: 8_192,
+        },
+        // Meta Models - Latest
         {
           modelId: 'meta-llama/llama-3.1-405b-instruct',
-          capabilities: ['tool_use'],
+          capabilities: ['tool_use', 'reasoning'],
           contextWindow: 128_000,
           maxOutput: 4_096,
         },
         {
           modelId: 'meta-llama/llama-3.1-70b-instruct',
-          capabilities: ['tool_use'],
+          capabilities: ['tool_use', 'reasoning'],
           contextWindow: 128_000,
           maxOutput: 4_096,
         },
         {
           modelId: 'meta-llama/llama-3.1-8b-instruct',
-          capabilities: ['tool_use'],
+          capabilities: ['tool_use', 'reasoning'],
           contextWindow: 128_000,
           maxOutput: 4_096,
         },
-        // Mistral Models
+        {
+          modelId: 'meta-llama/llama-3-70b-instruct',
+          capabilities: ['tool_use'],
+          contextWindow: 8_192,
+          maxOutput: 2_048,
+        },
+        {
+          modelId: 'meta-llama/llama-3-8b-instruct',
+          capabilities: ['tool_use'],
+          contextWindow: 8_192,
+          maxOutput: 2_048,
+        },
+        // Mistral Models - Latest
         {
           modelId: 'mistralai/mistral-large',
-          capabilities: ['tool_use'],
+          capabilities: ['tool_use', 'reasoning'],
           contextWindow: 32_000,
           maxOutput: 4_096,
         },
@@ -812,10 +872,16 @@ export const SystemProviders: ProviderBaseInfo[] = [
           contextWindow: 32_000,
           maxOutput: 4_096,
         },
-        // Cohere Models
+        {
+          modelId: 'mistralai/mistral-7b-instruct',
+          capabilities: ['tool_use'],
+          contextWindow: 32_000,
+          maxOutput: 4_096,
+        },
+        // Cohere Models - Latest
         {
           modelId: 'cohere/command-r-plus',
-          capabilities: ['tool_use'],
+          capabilities: ['tool_use', 'reasoning'],
           contextWindow: 128_000,
           maxOutput: 4_096,
         },
@@ -825,36 +891,54 @@ export const SystemProviders: ProviderBaseInfo[] = [
           contextWindow: 128_000,
           maxOutput: 4_096,
         },
-        // DeepSeek Models
+        {
+          modelId: 'cohere/command-light',
+          capabilities: ['tool_use'],
+          contextWindow: 128_000,
+          maxOutput: 4_096,
+        },
+        // DeepSeek Models - Latest
         {
           modelId: 'deepseek/deepseek-chat',
-          capabilities: ['tool_use'],
+          capabilities: ['tool_use', 'reasoning'],
           contextWindow: 64_000,
           maxOutput: 4_096,
         },
         {
           modelId: 'deepseek/deepseek-coder',
-          capabilities: ['tool_use'],
+          capabilities: ['tool_use', 'reasoning'],
           contextWindow: 64_000,
           maxOutput: 4_096,
         },
-        // xAI Models
+        {
+          modelId: 'deepseek/deepseek-coder-6.7b-instruct',
+          capabilities: ['tool_use'],
+          contextWindow: 16_384,
+          maxOutput: 4_096,
+        },
+        // xAI Models - Latest
         {
           modelId: 'x-ai/grok-beta',
-          capabilities: ['tool_use'],
+          capabilities: ['tool_use', 'reasoning'],
           contextWindow: 128_000,
           maxOutput: 4_096,
         },
         {
           modelId: 'x-ai/grok-2-1212',
-          capabilities: ['tool_use'],
+          capabilities: ['tool_use', 'reasoning'],
           contextWindow: 128_000,
           maxOutput: 4_096,
         },
-        // Perplexity Models
+        {
+          modelId: 'x-ai/grok-2-1212-vision',
+          capabilities: ['vision', 'tool_use', 'reasoning'],
+          contextWindow: 128_000,
+          maxOutput: 4_096,
+        },
+        // Perplexity Models - Latest
         {
           modelId: 'perplexity/llama-3.1-sonar-large-128k-online',
-          capabilities: ['web_search', 'tool_use'],
+          capabilities: ['web_search', 'tool_use', 'reasoning'],
           contextWindow: 128_000,
           maxOutput: 4_096,
         },
@@ -864,10 +948,16 @@ export const SystemProviders: ProviderBaseInfo[] = [
           contextWindow: 128_000,
           maxOutput: 4_096,
         },
-        // Groq Models
+        {
+          modelId: 'perplexity/llama-3.1-sonar-huge-128k-online',
+          capabilities: ['web_search', 'tool_use', 'reasoning'],
+          contextWindow: 128_000,
+          maxOutput: 4_096,
+        },
+        // Groq Models - Latest
         {
           modelId: 'groq/llama-3.1-70b-versatile',
-          capabilities: ['tool_use'],
+          capabilities: ['tool_use', 'reasoning'],
           contextWindow: 131_072,
           maxOutput: 32_768,
         },
@@ -877,16 +967,28 @@ export const SystemProviders: ProviderBaseInfo[] = [
           contextWindow: 131_072,
           maxOutput: 32_768,
         },
-        // Qwen Models
+        {
+          modelId: 'groq/llama-3.1-405b-versatile',
+          capabilities: ['tool_use', 'reasoning'],
+          contextWindow: 131_072,
+          maxOutput: 32_768,
+        },
+        {
+          modelId: 'groq/mixtral-8x7b-32768',
+          capabilities: ['tool_use'],
+          contextWindow: 32_768,
+          maxOutput: 32_768,
+        },
+        // Qwen Models - Latest
         {
           modelId: 'qwen/qwen-2.5-72b-instruct',
-          capabilities: ['tool_use'],
+          capabilities: ['tool_use', 'reasoning'],
           contextWindow: 32_000,
           maxOutput: 4_096,
         },
         {
           modelId: 'qwen/qwen-2.5-32b-instruct',
-          capabilities: ['tool_use'],
+          capabilities: ['tool_use', 'reasoning'],
           contextWindow: 32_000,
           maxOutput: 4_096,
         },
@@ -902,23 +1004,176 @@ export const SystemProviders: ProviderBaseInfo[] = [
           contextWindow: 32_000,
           maxOutput: 4_096,
         },
+        // Additional Specialized Models
+        {
+          modelId: '01-ai/yi-1.5-34b-chat',
+          capabilities: ['tool_use', 'reasoning'],
+          contextWindow: 200_000,
+          maxOutput: 4_096,
+        },
+        {
+          modelId: '01-ai/yi-1.5-9b-chat',
+          capabilities: ['tool_use'],
+          contextWindow: 200_000,
+          maxOutput: 4_096,
+        },
+        {
+          modelId: 'microsoft/phi-3-medium-128k-instruct',
+          capabilities: ['tool_use'],
+          contextWindow: 128_000,
+          maxOutput: 4_096,
+        },
+        {
+          modelId: 'microsoft/phi-3-mini-128k-instruct',
+          capabilities: ['tool_use'],
+          contextWindow: 128_000,
+          maxOutput: 4_096,
+        },
+        {
+          modelId: 'together/llama-3.1-405b-instruct',
+          capabilities: ['tool_use', 'reasoning'],
+          contextWindow: 128_000,
+          maxOutput: 4_096,
+        },
+        {
+          modelId: 'together/llama-3.1-70b-instruct',
+          capabilities: ['tool_use', 'reasoning'],
+          contextWindow: 128_000,
+          maxOutput: 4_096,
+        },
+        {
+          modelId: 'together/llama-3.1-8b-instruct',
+          capabilities: ['tool_use'],
+          contextWindow: 128_000,
+          maxOutput: 4_096,
+        },
+        // Code Specialized Models
+        {
+          modelId: 'stabilityai/stable-code-3b',
+          capabilities: ['tool_use'],
+          contextWindow: 100_000,
+          maxOutput: 4_096,
+        },
+        {
+          modelId: 'bigcode/starcoder2-15b-instruct',
+          capabilities: ['tool_use'],
+          contextWindow: 65_536,
+          maxOutput: 4_096,
+        },
+        {
+          modelId: 'bigcode/starcoder2-7b-instruct',
+          capabilities: ['tool_use'],
+          contextWindow: 65_536,
+          maxOutput: 4_096,
+        },
+        // Multimodal Models
+        {
+          modelId: 'llava/llava-v1.6-mistral-7b',
+          capabilities: ['vision', 'tool_use'],
+          contextWindow: 32_000,
+          maxOutput: 4_096,
+        },
+        {
+          modelId: 'llava/llava-v1.6-vicuna-13b',
+          capabilities: ['vision', 'tool_use'],
+          contextWindow: 32_000,
+          maxOutput: 4_096,
+        },
+        {
+          modelId: 'llava/llava-v1.6-34b',
+          capabilities: ['vision', 'tool_use'],
+          contextWindow: 32_000,
+          maxOutput: 4_096,
+        },
+        // Specialized Reasoning Models
+        {
+          modelId: 'openai/o1-preview',
+          capabilities: ['reasoning'],
+          contextWindow: 128_000,
+          maxOutput: 4_096,
+        },
+        {
+          modelId: 'openai/o1-mini',
+          capabilities: ['reasoning'],
+          contextWindow: 128_000,
+          maxOutput: 4_096,
+        },
+        // Image Generation Models
+        {
+          modelId: 'openai/dall-e-3',
+          capabilities: ['image_generation'],
+          contextWindow: 4_000,
+          maxOutput: 1,
+        },
+        {
+          modelId: 'openai/dall-e-2',
+          capabilities: ['image_generation'],
+          contextWindow: 1_000,
+          maxOutput: 1,
+        },
+        {
+          modelId: 'stabilityai/stable-diffusion-xl-base-1.0',
+          capabilities: ['image_generation'],
+          contextWindow: 1_000,
+          maxOutput: 1,
+        },
+        {
+          modelId: 'stabilityai/stable-diffusion-3-medium',
+          capabilities: ['image_generation'],
+          contextWindow: 1_000,
+          maxOutput: 1,
+        },
         // Embedding Models
         {
-          modelId: 'text-embedding-3-small',
+          modelId: 'openai/text-embedding-3-large',
           type: 'embedding',
+          capabilities: ['embedding'],
+          contextWindow: 8_192,
+          maxOutput: 3_072,
         },
         {
-          modelId: 'text-embedding-3-large',
+          modelId: 'openai/text-embedding-3-small',
           type: 'embedding',
+          capabilities: ['embedding'],
+          contextWindow: 8_192,
+          maxOutput: 1_536,
         },
         {
-          modelId: 'cohere/embed-english-v3.0',
+          modelId: 'openai/text-embedding-ada-002',
           type: 'embedding',
+          capabilities: ['embedding'],
+          contextWindow: 8_192,
+          maxOutput: 1_536,
         },
         {
-          modelId: 'cohere/embed-multilingual-v3.0',
+          modelId: 'sentence-transformers/all-MiniLM-L6-v2',
           type: 'embedding',
+          capabilities: ['embedding'],
+          contextWindow: 256,
+          maxOutput: 384,
         },
+        // Rerank Models
+        {
+          modelId: 'cohere/rerank-3',
+          type: 'rerank',
+          capabilities: ['rerank'],
+          contextWindow: 512,
+          maxOutput: 1,
+        },
+        {
+          modelId: 'cohere/rerank-multilingual-v3.0',
+          type: 'rerank',
+          capabilities: ['rerank'],
+          contextWindow: 512,
+          maxOutput: 1,
+        },
+        {
+          modelId: 'jina/jina-reranker-v1-base-en',
+          type: 'rerank',
+          capabilities: ['rerank'],
+          contextWindow: 512,
+          maxOutput: 1,
+        }
       ],
     },
   },
